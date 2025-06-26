@@ -10,6 +10,8 @@
     <!-- Bootstrap y iconos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <!-- AGREGAR ESTA LÍNEA -->
+    @RenderSection("Styles", required: false)
 
     <!-- Estilos personalizados adaptados a la paleta -->
     <style>
@@ -44,55 +46,55 @@
             border-right: 5px solid var(--amarillo);
         }
 
-        .sidebar h5 {
-            padding: 1rem;
-            margin: 0;
-            background-color: var(--azul-oscuro);
-            color: var(--blanco);
-            border-bottom: 2px solid var(--amarillo);
-        }
+            .sidebar h5 {
+                padding: 1rem;
+                margin: 0;
+                background-color: var(--azul-oscuro);
+                color: var(--blanco);
+                border-bottom: 2px solid var(--amarillo);
+            }
 
-        .sidebar a {
-            color: var(--blanco);
-            padding: 0.75rem 1.5rem;
-            display: block;
-            text-decoration: none;
-            transition: background-color 0.2s ease;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-        }
+            .sidebar a {
+                color: var(--blanco);
+                padding: 0.75rem 1.5rem;
+                display: block;
+                text-decoration: none;
+                transition: background-color 0.2s ease;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+            }
 
-        .sidebar a:hover {
-            background-color: var(--amarillo);
-            color: var(--azul-oscuro);
-        }
+                .sidebar a:hover {
+                    background-color: var(--amarillo);
+                    color: var(--azul-oscuro);
+                }
 
-        .sidebar .collapse a {
-            padding-left: 2.5rem;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
+            .sidebar .collapse a {
+                padding-left: 2.5rem;
+                background-color: rgba(255, 255, 255, 0.1);
+            }
 
-        .sidebar .collapse a:hover {
-            background-color: var(--amarillo);
-            color: var(--azul-oscuro);
-        }
+                .sidebar .collapse a:hover {
+                    background-color: var(--amarillo);
+                    color: var(--azul-oscuro);
+                }
 
-        /* Estilos para submenus anidados */
-        .sidebar .collapse .collapse a {
-            padding-left: 3.5rem;
-            background-color: rgba(255, 255, 255, 0.2);
-        }
+            /* Estilos para submenus anidados */
+            .sidebar .collapse .collapse a {
+                padding-left: 3.5rem;
+                background-color: rgba(255, 255, 255, 0.2);
+            }
 
-        /* Iconos de chevron */
-        .sidebar a[data-bs-toggle="collapse"] .bi-chevron-down {
-            transition: transform 0.2s ease;
-        }
+            /* Iconos de chevron */
+            .sidebar a[data-bs-toggle="collapse"] .bi-chevron-down {
+                transition: transform 0.2s ease;
+            }
 
-        .sidebar a[data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
-            transform: rotate(180deg);
-        }
+            .sidebar a[data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
+                transform: rotate(180deg);
+            }
 
         header {
             background-color: var(--azul-oscuro);
@@ -110,20 +112,20 @@
             gap: 1rem;
         }
 
-        .header-actions span {
-            font-weight: 500;
-        }
+            .header-actions span {
+                font-weight: 500;
+            }
 
         .btn-outline-custom {
             color: var(--blanco);
             border-color: var(--blanco);
         }
 
-        .btn-outline-custom:hover {
-            background-color: var(--amarillo);
-            color: var(--azul-oscuro);
-            border-color: var(--amarillo);
-        }
+            .btn-outline-custom:hover {
+                background-color: var(--amarillo);
+                color: var(--azul-oscuro);
+                border-color: var(--amarillo);
+            }
 
         .content {
             flex: 1;

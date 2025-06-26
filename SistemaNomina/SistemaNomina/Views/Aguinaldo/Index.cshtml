@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SistemaNomina.Models.Aguinaldo>
 
 @{
-    ViewBag.Title = "Gestión de Aguinaldos";
+    ViewBag.Title = "Gestion de Aguinaldos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -116,8 +116,8 @@
 <div class="header-section">
     <div class="row">
         <div class="col-md-8">
-            <h2><i class="fas fa-gift"></i> Gestión de Aguinaldos</h2>
-            <p class="mb-0">Sistema automatizado para el cálculo de aguinaldos según el Código de Trabajo de Costa Rica</p>
+            <h2><i class="fas fa-gift"></i> Gestion de Aguinaldos</h2>
+            <p class="mb-0">Sistema automatizado para el calculo de aguinaldos segun el Codigo de Trabajo de Costa Rica</p>
         </div>
         <div class="col-md-4">
             <div class="stats-card">
@@ -128,29 +128,29 @@
     </div>
 </div>
 
-<!-- Sección de Estadísticas -->
+<!-- Seccion de Estadisticas -->
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="stats-card">
             <div class="stats-number">@Model.Count(a => a.anio == DateTime.Now.Year)</div>
-            <div class="stats-label">Año @DateTime.Now.Year</div>
+            <div class="stats-label">Ano @DateTime.Now.Year</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
-            <div class="stats-number">@Model.Where(a => a.anio == DateTime.Now.Year).Sum(a => a.monto_total).ToString("C")</div>
+            <div class="stats-number">₡@Model.Where(a => a.anio == DateTime.Now.Year).Sum(a => a.monto_total).ToString("#,##0.00")</div>
             <div class="stats-label">Total @DateTime.Now.Year</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
             <div class="stats-number">@Model.GroupBy(a => a.anio).Count()</div>
-            <div class="stats-label">Años con Aguinaldos</div>
+            <div class="stats-label">Anos con Aguinaldos</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
-            <div class="stats-number">@Model.Average(a => a.monto_total).ToString("C")</div>
+            <div class="stats-number">₡@Model.Average(a => a.monto_total).ToString("#,##0.00")</div>
             <div class="stats-label">Promedio</div>
         </div>
     </div>
@@ -160,9 +160,9 @@
 <div class="filter-section">
     <div class="row">
         <div class="col-md-4">
-            <label for="filtroAnio" class="form-label fw-bold">Filtrar por Año:</label>
+            <label for="filtroAnio" class="form-label fw-bold">Filtrar por Ano:</label>
             <select id="filtroAnio" class="form-select">
-                <option value="">Todos los años</option>
+                <option value="">Todos los anos</option>
                 @foreach (var anio in Model.Select(a => a.anio).Distinct().OrderByDescending(a => a))
                 {
                     <option value="@anio">@anio</option>
@@ -171,10 +171,10 @@
         </div>
         <div class="col-md-4">
             <label for="filtroEmpleado" class="form-label fw-bold">Buscar Empleado:</label>
-            <input type="text" id="filtroEmpleado" class="form-control" placeholder="Nombre o cédula...">
+            <input type="text" id="filtroEmpleado" class="form-control" placeholder="Nombre o cedula...">
         </div>
         <div class="col-md-4">
-            <label class="form-label fw-bold">Acciones Rápidas:</label>
+            <label class="form-label fw-bold">Acciones Rapidas:</label>
             <div>
                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="limpiarFiltros()">
                     <i class="fas fa-eraser"></i> Limpiar Filtros
@@ -184,7 +184,7 @@
     </div>
 </div>
 
-<!-- Botones de Acción -->
+<!-- Botones de Accion -->
 <div class="action-buttons">
     <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
         <i class="fas fa-calculator"></i> Calcular Aguinaldo Individual
@@ -197,7 +197,7 @@
     </a>
 </div>
 
-<!-- Modal para Cálculo Masivo -->
+<!-- Modal para Calculo Masivo -->
 <div class="modal fade" id="modalCalculoMasivo" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -207,7 +207,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="anioCalculoMasivo" class="form-label">Año Fiscal:</label>
+                    <label for="anioCalculoMasivo" class="form-label">Ano Fiscal:</label>
                     <select id="anioCalculoMasivo" class="form-select">
                         <option value="@DateTime.Now.Year">@DateTime.Now.Year</option>
                         <option value="@(DateTime.Now.Year - 1)">@(DateTime.Now.Year - 1)</option>
@@ -215,14 +215,14 @@
                 </div>
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Información:</strong> Este proceso calculará automáticamente el aguinaldo para todos los empleados activos según el período legal (1 dic - 30 nov).
+                    <strong>Informacion:</strong> Este proceso calculara automaticamente el aguinaldo para todos los empleados activos segun el periodo legal (1 dic - 30 nov).
                 </div>
                 <div id="resultadoCalculoMasivo" style="display: none;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="ejecutarCalculoMasivo()">
-                    <i class="fas fa-play"></i> Ejecutar Cálculo
+                    <i class="fas fa-play"></i> Ejecutar Calculo
                 </button>
             </div>
         </div>
@@ -235,11 +235,11 @@
         <thead>
             <tr>
                 <th><i class="fas fa-user"></i> Empleado</th>
-                <th><i class="fas fa-id-card"></i> Cédula</th>
-                <th><i class="fas fa-calendar"></i> Año</th>
+                <th><i class="fas fa-id-card"></i> Cedula</th>
+                <th><i class="fas fa-calendar"></i> Ano</th>
                 <th><i class="fas fa-calendar-check"></i> Meses Laborados</th>
                 <th><i class="fas fa-dollar-sign"></i> Monto Total</th>
-                <th><i class="fas fa-clock"></i> Fecha Creación</th>
+                <th><i class="fas fa-clock"></i> Fecha Creacion</th>
                 <th><i class="fas fa-cogs"></i> Acciones</th>
             </tr>
         </thead>
@@ -258,7 +258,7 @@
                         <span class="badge bg-info">@item.meses_laborados meses</span>
                     </td>
                     <td>
-                        <strong style="color: var(--verde);">@item.monto_total.ToString("C")</strong>
+                        <strong style="color: var(--verde);">₡@item.monto_total.ToString("#,##0.00")</strong>
                     </td>
                     <td>
                         @if (item.fecha_creacion.HasValue)
@@ -350,14 +350,14 @@
         var anio = $('#anioCalculoMasivo').val();
         var btnEjecutar = $('button[onclick="ejecutarCalculoMasivo()"]');
 
-        // Deshabilitar botón y mostrar loading
+        // Deshabilitar boton y mostrar loading
         btnEjecutar.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Calculando...');
 
         $.post('@Url.Action("GenerarParaTodosLosEmpleados")', { anio: anio })
             .done(function(response) {
                 if (response.success) {
                     var html = '<div class="alert alert-success">' +
-                              '<h6><i class="fas fa-check-circle"></i> Cálculo Completado</h6>' +
+                              '<h6><i class="fas fa-check-circle"></i> Calculo Completado</h6>' +
                               '<p><strong>Exitosos:</strong> ' + response.exitosos + ' | ' +
                               '<strong>Errores:</strong> ' + response.errores + ' | ' +
                               '<strong>Total:</strong> ' + response.total + '</p></div>';
@@ -365,11 +365,11 @@
                     if (response.resultados && response.resultados.length > 0) {
                         html += '<div class="table-responsive" style="max-height: 300px; overflow-y: auto;">' +
                                '<table class="table-sm table">' +
-                               '<thead><tr><th>Empleado</th><th>Cédula</th><th>Monto</th><th>Estado</th></tr></thead><tbody>';
+                               '<thead><tr><th>Empleado</th><th>Cedula</th><th>Monto</th><th>Estado</th></tr></thead><tbody>';
 
                         response.resultados.forEach(function(item) {
                             var estadoClass = item.estado === 'Creado' ? 'success' :
-                                            item.estado === 'Ya existía' ? 'info' : 'danger';
+                                            item.estado === 'Ya existia' ? 'info' : 'danger';
                             html += '<tr><td>' + item.empleado + '</td>' +
                                    '<td>' + item.cedula + '</td>' +
                                    '<td>' + item.monto + '</td>' +
@@ -381,7 +381,7 @@
 
                     $('#resultadoCalculoMasivo').html(html).show();
 
-                    // Actualizar página después de 3 segundos
+                    // Actualizar pagina despues de 3 segundos
                     setTimeout(function() {
                         location.reload();
                     }, 3000);
@@ -396,12 +396,12 @@
             .fail(function() {
                 $('#resultadoCalculoMasivo').html(
                     '<div class="alert alert-danger">' +
-                    '<i class="fas fa-exclamation-triangle"></i> Error de conexión. Intente nuevamente.' +
+                    '<i class="fas fa-exclamation-triangle"></i> Error de conexion. Intente nuevamente.' +
                     '</div>'
                 ).show();
             })
             .always(function() {
-                btnEjecutar.prop('disabled', false).html('<i class="fas fa-play"></i> Ejecutar Cálculo');
+                btnEjecutar.prop('disabled', false).html('<i class="fas fa-play"></i> Ejecutar Calculo');
             });
     }
     </script>

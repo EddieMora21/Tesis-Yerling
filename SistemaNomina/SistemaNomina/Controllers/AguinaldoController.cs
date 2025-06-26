@@ -38,7 +38,7 @@ namespace SistemaNomina.Controllers
             return View(aguinaldo);
         }
 
-        // GET: Aguinaldo/CalcularAguinaldo - NUEVO MÉTODO PRINCIPAL
+        // GET: Aguinaldo/CalcularAguinaldo - MÉTODO PRINCIPAL
         public ActionResult CalcularAguinaldo()
         {
             // Cargar empleados activos para selección
@@ -56,24 +56,34 @@ namespace SistemaNomina.Controllers
             return View();
         }
 
-        // POST: Calcular aguinaldo automáticamente
+        // POST: Calcular aguinaldo automáticamente - MEJORADO
         [HttpPost]
-        
         public ActionResult CalcularAguinaldoAutomatico(int idEmpleado, int anio)
         {
             try
             {
-                // VALIDACIÓN: No permitir años muy futuros
+                // VALIDACIONES MEJORADAS
                 if (anio > DateTime.Now.Year + 1)
                 {
                     return Json(new { success = false, message = "No se puede calcular aguinaldo para años tan futuros" });
                 }
 
-                var empleado = db.Empleados.Find(idEmpleado);
+                if (anio < 2020)
+                {
+                    return Json(new { success = false, message = "Año muy antiguo para el cálculo" });
+                }
+
+                var empleado = db.Empleados.Include(e => e.Puestos).FirstOrDefault(e => e.id_empleado == idEmpleado);
                 if (empleado == null)
                 {
                     return Json(new { success = false, message = "Empleado no encontrado" });
                 }
+
+                // LOGGING PARA DEBUG
+                System.Diagnostics.Debug.WriteLine($"=== CALCULANDO AGUINALDO ===");
+                System.Diagnostics.Debug.WriteLine($"Empleado: {empleado.nombre1} {empleado.apellido1}");
+                System.Diagnostics.Debug.WriteLine($"Año: {anio}");
+                System.Diagnostics.Debug.WriteLine($"Salario Base Puesto: {empleado.Puestos?.salario_base}");
 
                 // Calcular período de aguinaldo (1 dic año anterior al 30 nov año actual)
                 DateTime fechaInicio = new DateTime(anio - 1, 12, 1);
@@ -97,27 +107,48 @@ namespace SistemaNomina.Controllers
                     fechaInicio = empleado.fecha_ingreso;
                 }
 
-                // Obtener salarios del período desde la tabla Nomina
+                System.Diagnostics.Debug.WriteLine($"Período: {fechaInicio:yyyy-MM-dd} a {fechaFin:yyyy-MM-dd}");
+
+                // OBTENER SALARIOS DEL PERÍODO DESDE LA TABLA NOMINA
                 var salariosDelPeriodo = db.Nomina
                     .Where(n => n.id_empleado == idEmpleado &&
                                ((n.anio == anio - 1 && n.mes == 12) ||
                                 (n.anio == anio && n.mes <= 11)))
+                    .OrderBy(n => n.anio).ThenBy(n => n.mes)
                     .ToList();
 
-                decimal sumaSalarios = salariosDelPeriodo.Sum(s => s.salario_bruto);
-                int mesesLaborados = salariosDelPeriodo.Count();
+                System.Diagnostics.Debug.WriteLine($"Registros de nómina encontrados: {salariosDelPeriodo.Count}");
 
-                // Si no hay registros en nómina, calcular con salario base
-                if (mesesLaborados == 0)
+                decimal sumaSalarios = 0;
+                int mesesLaborados = 0;
+
+                if (salariosDelPeriodo.Any())
                 {
-                    var puestoEmpleado = db.Puestos.Find(empleado.id_puesto);
-                    if (puestoEmpleado != null)
+                    // USAR DATOS REALES DE NÓMINA
+                    sumaSalarios = salariosDelPeriodo.Sum(s => s.salario_bruto);
+                    mesesLaborados = salariosDelPeriodo.Count();
+                    System.Diagnostics.Debug.WriteLine($"Usando datos de nómina - Suma: {sumaSalarios}, Meses: {mesesLaborados}");
+                }
+                else
+                {
+                    // FALLBACK: USAR SALARIO BASE DEL PUESTO
+                    if (empleado.Puestos != null)
                     {
                         // Calcular meses trabajados manualmente
                         DateTime fechaCalculoInicio = empleado.fecha_ingreso > fechaInicio ? empleado.fecha_ingreso : fechaInicio;
-                        TimeSpan diferencia = fechaFin - fechaCalculoInicio;
-                        mesesLaborados = Math.Max(1, (int)Math.Ceiling(diferencia.TotalDays / 30));
-                        sumaSalarios = puestoEmpleado.salario_base * mesesLaborados;
+
+                        // Calcular meses completos entre fechas
+                        mesesLaborados = CalcularMesesCompletos(fechaCalculoInicio, fechaFin);
+                        sumaSalarios = empleado.Puestos.salario_base * mesesLaborados;
+
+                        System.Diagnostics.Debug.WriteLine($"Usando salario base - Fecha inicio: {fechaCalculoInicio:yyyy-MM-dd}");
+                        System.Diagnostics.Debug.WriteLine($"Meses calculados: {mesesLaborados}");
+                        System.Diagnostics.Debug.WriteLine($"Salario base: {empleado.Puestos.salario_base}");
+                        System.Diagnostics.Debug.WriteLine($"Suma total: {sumaSalarios}");
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "No se encontró información salarial para el empleado" });
                     }
                 }
 
@@ -125,8 +156,13 @@ namespace SistemaNomina.Controllers
                 var ajustePorAusencias = ConsiderarAusenciasEnCalculo(idEmpleado, fechaInicio, fechaFin);
                 sumaSalarios -= ajustePorAusencias.montoDescontado;
 
-                // Aplicar fórmula legal: (Suma de salarios devengados / 12)
+                System.Diagnostics.Debug.WriteLine($"Ajuste por ausencias: -{ajustePorAusencias.montoDescontado}");
+                System.Diagnostics.Debug.WriteLine($"Suma final: {sumaSalarios}");
+
+                // APLICAR FÓRMULA LEGAL: (Suma de salarios devengados / 12)
                 decimal montoAguinaldo = sumaSalarios / 12m;
+
+                System.Diagnostics.Debug.WriteLine($"Aguinaldo calculado: {montoAguinaldo}");
 
                 // Verificar si ya existe aguinaldo para este empleado y año
                 var aguinaldoExistente = db.Aguinaldo
@@ -153,7 +189,9 @@ namespace SistemaNomina.Controllers
                             mes = s.mes,
                             anio = s.anio,
                             salario = s.salario_bruto.ToString("C")
-                        }).ToList()
+                        }).ToList(),
+                        usandoSalarioBase = !salariosDelPeriodo.Any(),
+                        salarioBasePuesto = empleado.Puestos?.salario_base.ToString("C")
                     }
                 };
 
@@ -161,42 +199,73 @@ namespace SistemaNomina.Controllers
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ERROR en CalcularAguinaldoAutomatico: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Error en el cálculo: " + ex.Message });
             }
         }
 
-        // Método auxiliar para considerar ausencias injustificadas
-        // Método auxiliar para considerar ausencias injustificadas - CORREGIDO
+        // MÉTODO AUXILIAR MEJORADO: Calcular meses completos entre fechas
+        private int CalcularMesesCompletos(DateTime fechaInicio, DateTime fechaFin)
+        {
+            int meses = 0;
+            DateTime fechaTemp = new DateTime(fechaInicio.Year, fechaInicio.Month, 1);
+            DateTime fechaFinMes = new DateTime(fechaFin.Year, fechaFin.Month, 1);
+
+            while (fechaTemp <= fechaFinMes)
+            {
+                meses++;
+                fechaTemp = fechaTemp.AddMonths(1);
+            }
+
+            return Math.Max(1, meses); // Mínimo 1 mes
+        }
+
+        // MÉTODO AUXILIAR CORREGIDO: Considerar ausencias injustificadas
         private (int diasDescontados, decimal montoDescontado) ConsiderarAusenciasEnCalculo(int idEmpleado, DateTime fechaInicio, DateTime fechaFin)
         {
             try
             {
-                // CORREGIR: Usar DbFunctions.TruncateTime en lugar de .Date
+                System.Diagnostics.Debug.WriteLine($"=== CALCULANDO AUSENCIAS ===");
+                System.Diagnostics.Debug.WriteLine($"Empleado ID: {idEmpleado}");
+                System.Diagnostics.Debug.WriteLine($"Período: {fechaInicio:yyyy-MM-dd} a {fechaFin:yyyy-MM-dd}");
+
+                // Obtener días con asistencia registrada
                 var diasConAsistencia = db.Asistencia
                     .Where(a => a.id_empleado == idEmpleado &&
                                a.fecha >= fechaInicio &&
                                a.fecha <= fechaFin &&
                                a.hora_entrada != null)
                     .Select(a => a.fecha)
-                    .ToList() // Materializar la consulta primero
-                    .Select(f => f.Date) // Ahora aplicar .Date en memoria
+                    .ToList()
+                    .Select(f => f.Date)
+                    .Distinct()
                     .ToList();
 
+                System.Diagnostics.Debug.WriteLine($"Días con asistencia: {diasConAsistencia.Count}");
+
+                // Obtener incapacidades
                 var incapacidades = db.Incapacidades
                     .Where(i => i.id_empleado == idEmpleado &&
                                i.fecha_inicio <= fechaFin &&
                                i.fecha_fin >= fechaInicio)
-                    .ToList(); // Materializar antes de procesar
+                    .ToList();
 
+                System.Diagnostics.Debug.WriteLine($"Incapacidades: {incapacidades.Count}");
+
+                // Obtener permisos aprobados
                 var permisosAprobados = db.Permisos
                     .Where(p => p.id_empleado == idEmpleado &&
                                p.fecha >= fechaInicio &&
                                p.fecha <= fechaFin &&
                                p.Estados.nombre == "Aprobado")
                     .Select(p => p.fecha)
-                    .ToList() // Materializar la consulta primero
-                    .Select(f => f.Date) // Ahora aplicar .Date en memoria
+                    .ToList()
+                    .Select(f => f.Date)
+                    .Distinct()
                     .ToList();
+
+                System.Diagnostics.Debug.WriteLine($"Permisos aprobados: {permisosAprobados.Count}");
 
                 // Calcular días laborales en el período (excluyendo fines de semana)
                 var diasLaborales = new List<DateTime>();
@@ -208,6 +277,8 @@ namespace SistemaNomina.Controllers
                     }
                 }
 
+                System.Diagnostics.Debug.WriteLine($"Días laborales totales: {diasLaborales.Count}");
+
                 // Días que deberían tener asistencia pero no la tienen
                 var diasAusencias = diasLaborales
                     .Where(d => !diasConAsistencia.Contains(d) &&
@@ -215,36 +286,47 @@ namespace SistemaNomina.Controllers
                                !incapacidades.Any(inc => d >= inc.fecha_inicio.Date && d <= inc.fecha_fin.Date))
                     .ToList();
 
-                // Calcular monto descontado basado en salario diario
-                var empleado = db.Empleados.Find(idEmpleado);
-                if (empleado?.Puestos?.salario_base == null)
-                {
-                    return (0, 0);
-                }
+                System.Diagnostics.Debug.WriteLine($"Días de ausencias injustificadas: {diasAusencias.Count}");
 
-                decimal salarioDiario = empleado.Puestos.salario_base / 30m;
-                decimal montoDescontado = diasAusencias.Count * salarioDiario;
+                // Calcular monto descontado basado en salario diario
+                decimal montoDescontado = 0;
+                if (diasAusencias.Count > 0)
+                {
+                    var empleado = db.Empleados.Include(e => e.Puestos).FirstOrDefault(e => e.id_empleado == idEmpleado);
+                    if (empleado?.Puestos?.salario_base != null)
+                    {
+                        decimal salarioDiario = empleado.Puestos.salario_base / 30m;
+                        montoDescontado = diasAusencias.Count * salarioDiario;
+                        System.Diagnostics.Debug.WriteLine($"Salario diario: {salarioDiario}, Monto descontado: {montoDescontado}");
+                    }
+                }
 
                 return (diasAusencias.Count, montoDescontado);
             }
             catch (Exception ex)
             {
-                // Log del error para debugging
                 System.Diagnostics.Debug.WriteLine($"Error en ConsiderarAusenciasEnCalculo: {ex.Message}");
-                return (0, 0); // Devolver valores seguros en caso de error
+                return (0, 0);
             }
         }
 
-        // POST: Generar aguinaldo para todos los empleados
+        // POST: Generar aguinaldo para todos los empleados - MEJORADO
         [HttpPost]
         public ActionResult GenerarParaTodosLosEmpleados(int anio)
         {
             try
             {
-                var empleadosActivos = db.Empleados.Where(e => e.estado == "Activo").ToList();
+                var empleadosActivos = db.Empleados
+                    .Include(e => e.Puestos)
+                    .Where(e => e.estado == "Activo")
+                    .ToList();
+
                 var resultados = new List<object>();
                 int exitosos = 0;
                 int errores = 0;
+
+                System.Diagnostics.Debug.WriteLine($"=== CÁLCULO MASIVO AGUINALDO {anio} ===");
+                System.Diagnostics.Debug.WriteLine($"Empleados activos: {empleadosActivos.Count}");
 
                 foreach (var empleado in empleadosActivos)
                 {
@@ -256,10 +338,17 @@ namespace SistemaNomina.Controllers
 
                         if (aguinaldoExistente == null)
                         {
-                            // Calcular aguinaldo para este empleado
+                            // Calcular período de aguinaldo
                             DateTime fechaInicio = new DateTime(anio - 1, 12, 1);
                             DateTime fechaFin = new DateTime(anio, 11, 30);
 
+                            // Ajustar fecha fin si es futuro
+                            if (fechaFin > DateTime.Today)
+                            {
+                                fechaFin = DateTime.Today;
+                            }
+
+                            // Verificar si el empleado trabajó en el período
                             if (empleado.fecha_ingreso <= fechaFin)
                             {
                                 if (empleado.fecha_ingreso > fechaInicio)
@@ -267,50 +356,84 @@ namespace SistemaNomina.Controllers
                                     fechaInicio = empleado.fecha_ingreso;
                                 }
 
+                                // Obtener salarios del período
                                 var salariosDelPeriodo = db.Nomina
                                     .Where(n => n.id_empleado == empleado.id_empleado &&
                                                ((n.anio == anio - 1 && n.mes == 12) ||
                                                 (n.anio == anio && n.mes <= 11)))
                                     .ToList();
 
-                                decimal sumaSalarios = salariosDelPeriodo.Sum(s => s.salario_bruto);
-                                int mesesLaborados = salariosDelPeriodo.Count();
+                                decimal sumaSalarios = 0;
+                                int mesesLaborados = 0;
 
-                                if (mesesLaborados == 0)
+                                if (salariosDelPeriodo.Any())
                                 {
-                                    var puestoEmpleado = db.Puestos.Find(empleado.id_puesto);
-                                    if (puestoEmpleado != null)
-                                    {
-                                        DateTime fechaCalculoInicio = empleado.fecha_ingreso > fechaInicio ? empleado.fecha_ingreso : fechaInicio;
-                                        TimeSpan diferencia = fechaFin - fechaCalculoInicio;
-                                        mesesLaborados = Math.Max(1, (int)Math.Ceiling(diferencia.TotalDays / 30));
-                                        sumaSalarios = puestoEmpleado.salario_base * mesesLaborados;
-                                    }
+                                    // Usar datos reales de nómina
+                                    sumaSalarios = salariosDelPeriodo.Sum(s => s.salario_bruto);
+                                    mesesLaborados = salariosDelPeriodo.Count();
+                                }
+                                else if (empleado.Puestos != null)
+                                {
+                                    // Usar salario base del puesto
+                                    DateTime fechaCalculoInicio = empleado.fecha_ingreso > fechaInicio ? empleado.fecha_ingreso : fechaInicio;
+                                    mesesLaborados = CalcularMesesCompletos(fechaCalculoInicio, fechaFin);
+                                    sumaSalarios = empleado.Puestos.salario_base * mesesLaborados;
                                 }
 
-                                var ajustePorAusencias = ConsiderarAusenciasEnCalculo(empleado.id_empleado, fechaInicio, fechaFin);
-                                sumaSalarios -= ajustePorAusencias.montoDescontado;
-
-                                decimal montoAguinaldo = sumaSalarios / 12m;
-
-                                var nuevoAguinaldo = new Aguinaldo
+                                if (sumaSalarios > 0)
                                 {
-                                    id_empleado = empleado.id_empleado,
-                                    monto_total = montoAguinaldo,
-                                    meses_laborados = mesesLaborados,
-                                    anio = anio,
-                                    fecha_creacion = DateTime.Now
-                                };
+                                    // Considerar ausencias
+                                    var ajustePorAusencias = ConsiderarAusenciasEnCalculo(empleado.id_empleado, fechaInicio, fechaFin);
+                                    sumaSalarios -= ajustePorAusencias.montoDescontado;
 
-                                db.Aguinaldo.Add(nuevoAguinaldo);
-                                exitosos++;
+                                    // Calcular aguinaldo
+                                    decimal montoAguinaldo = sumaSalarios / 12m;
 
+                                    var nuevoAguinaldo = new Aguinaldo
+                                    {
+                                        id_empleado = empleado.id_empleado,
+                                        monto_total = montoAguinaldo,
+                                        meses_laborados = mesesLaborados,
+                                        anio = anio,
+                                        fecha_creacion = DateTime.Now
+                                    };
+
+                                    db.Aguinaldo.Add(nuevoAguinaldo);
+                                    exitosos++;
+
+                                    resultados.Add(new
+                                    {
+                                        empleado = empleado.nombre1 + " " + empleado.apellido1,
+                                        cedula = empleado.cedula,
+                                        monto = montoAguinaldo.ToString("C"),
+                                        estado = "Creado",
+                                        meses = mesesLaborados
+                                    });
+
+                                    System.Diagnostics.Debug.WriteLine($"Aguinaldo creado - {empleado.nombre1} {empleado.apellido1}: {montoAguinaldo:C}");
+                                }
+                                else
+                                {
+                                    errores++;
+                                    resultados.Add(new
+                                    {
+                                        empleado = empleado.nombre1 + " " + empleado.apellido1,
+                                        cedula = empleado.cedula,
+                                        monto = "Error",
+                                        estado = "Sin datos salariales",
+                                        meses = 0
+                                    });
+                                }
+                            }
+                            else
+                            {
                                 resultados.Add(new
                                 {
                                     empleado = empleado.nombre1 + " " + empleado.apellido1,
                                     cedula = empleado.cedula,
-                                    monto = montoAguinaldo.ToString("C"),
-                                    estado = "Creado"
+                                    monto = "N/A",
+                                    estado = "No trabajó en el período",
+                                    meses = 0
                                 });
                             }
                         }
@@ -321,24 +444,30 @@ namespace SistemaNomina.Controllers
                                 empleado = empleado.nombre1 + " " + empleado.apellido1,
                                 cedula = empleado.cedula,
                                 monto = aguinaldoExistente.monto_total.ToString("C"),
-                                estado = "Ya existía"
+                                estado = "Ya existía",
+                                meses = aguinaldoExistente.meses_laborados
                             });
                         }
                     }
                     catch (Exception ex)
                     {
                         errores++;
+                        System.Diagnostics.Debug.WriteLine($"Error con empleado {empleado.nombre1} {empleado.apellido1}: {ex.Message}");
                         resultados.Add(new
                         {
                             empleado = empleado.nombre1 + " " + empleado.apellido1,
                             cedula = empleado.cedula,
                             monto = "Error",
-                            estado = "Error: " + ex.Message
+                            estado = "Error: " + ex.Message,
+                            meses = 0
                         });
                     }
                 }
 
+                // Guardar todos los cambios
                 db.SaveChanges();
+
+                System.Diagnostics.Debug.WriteLine($"Cálculo masivo completado - Exitosos: {exitosos}, Errores: {errores}");
 
                 return Json(new
                 {
@@ -351,6 +480,7 @@ namespace SistemaNomina.Controllers
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error general en GenerarParaTodosLosEmpleados: {ex.Message}");
                 return Json(new { success = false, message = "Error general: " + ex.Message });
             }
         }
@@ -447,6 +577,26 @@ namespace SistemaNomina.Controllers
             db.Aguinaldo.Remove(aguinaldo);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        // MÉTODO ADICIONAL: Limpiar y recalcular aguinaldos
+        [HttpPost]
+        public ActionResult LimpiarYRecalcular(int anio)
+        {
+            try
+            {
+                // Eliminar todos los aguinaldos del año especificado
+                var aguinaldosExistentes = db.Aguinaldo.Where(a => a.anio == anio);
+                db.Aguinaldo.RemoveRange(aguinaldosExistentes);
+                db.SaveChanges();
+
+                // Recalcular para todos los empleados
+                return GenerarParaTodosLosEmpleados(anio);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al limpiar y recalcular: " + ex.Message });
+            }
         }
 
         protected override void Dispose(bool disposing)

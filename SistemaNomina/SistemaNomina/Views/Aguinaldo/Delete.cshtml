@@ -162,16 +162,16 @@
 <div class="container">
     <!-- Header de Advertencia -->
     <div class="delete-header">
-        <h2><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h2>
-        <p class="mb-0">Esta acción <strong>NO PUEDE SER REVERTIDA</strong></p>
+        <h2><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminacion</h2>
+        <p class="mb-0">Esta accion <strong>NO PUEDE SER REVERTIDA</strong></p>
     </div>
 
     <!-- Advertencia Principal -->
     <div class="danger-section">
         <h4><i class="fas fa-skull-crossbones"></i> ¡PELIGRO!</h4>
         <p class="mb-0">
-            Está a punto de eliminar <strong>PERMANENTEMENTE</strong> el registro de aguinaldo.
-            Esta acción borrará toda la información relacionada y no puede ser deshecha.
+            Esta a punto de eliminar <strong>PERMANENTEMENTE</strong> el registro de aguinaldo.
+            Esta accion borrara toda la informacion relacionada y no puede ser deshecha.
         </p>
     </div>
 
@@ -193,7 +193,7 @@
         </div>
 
         <div class="detail-grid">
-            <div class="detail-label"><i class="fas fa-calendar"></i> Año Fiscal:</div>
+            <div class="detail-label"><i class="fas fa-calendar"></i> Ano Fiscal:</div>
             <div class="detail-value">@Html.DisplayFor(model => model.anio)</div>
         </div>
 
@@ -203,7 +203,7 @@
         </div>
 
         <div class="detail-grid">
-            <div class="detail-label"><i class="fas fa-calendar-plus"></i> Fecha de Creación:</div>
+            <div class="detail-label"><i class="fas fa-calendar-plus"></i> Fecha de Creacion:</div>
             <div class="detail-value">
                 @if (Model.fecha_creacion.HasValue)
                 {
@@ -219,27 +219,27 @@
         @if (Model.fecha_actualizacion.HasValue)
         {
             <div class="detail-grid">
-                <div class="detail-label"><i class="fas fa-calendar-edit"></i> Última Actualización:</div>
+                <div class="detail-label"><i class="fas fa-calendar-edit"></i> Ultima Actualizacion:</div>
                 <div class="detail-value">@Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")</div>
             </div>
         }
 
         <!-- Monto Destacado -->
         <div class="amount-highlight">
-            <i class="fas fa-dollar-sign"></i> Monto a Eliminar: @Html.DisplayFor(model => model.monto_total)
+            <i class="fas fa-dollar-sign"></i> Monto a Eliminar: ₡@Model.monto_total.ToString("#,##0.00")
         </div>
     </div>
 
-    <!-- Consecuencias de la Eliminación -->
+    <!-- Consecuencias de la Eliminacion -->
     <div class="warning-section">
-        <h4><i class="fas fa-list-ul"></i> Consecuencias de Esta Acción</h4>
+        <h4><i class="fas fa-list-ul"></i> Consecuencias de Esta Accion</h4>
         <div class="consequences-list">
             <ul>
-                <li><i class="fas fa-times-circle"></i> Se perderá <strong>PERMANENTEMENTE</strong> toda la información del aguinaldo</li>
-                <li><i class="fas fa-times-circle"></i> Los reportes contables se verán afectados</li>
-                <li><i class="fas fa-times-circle"></i> El historial del empleado quedará incompleto</li>
-                <li><i class="fas fa-times-circle"></i> Puede requerirse recálculo de otros procesos</li>
-                <li><i class="fas fa-times-circle"></i> La acción quedará registrada en auditoría</li>
+                <li><i class="fas fa-times-circle"></i> Se perdera <strong>PERMANENTEMENTE</strong> toda la informacion del aguinaldo</li>
+                <li><i class="fas fa-times-circle"></i> Los reportes contables se veran afectados</li>
+                <li><i class="fas fa-times-circle"></i> El historial del empleado quedara incompleto</li>
+                <li><i class="fas fa-times-circle"></i> Puede requerirse recalculo de otros procesos</li>
+                <li><i class="fas fa-times-circle"></i> La accion quedara registrada en auditoria</li>
             </ul>
         </div>
     </div>
@@ -250,18 +250,18 @@
         <p><strong>Antes de eliminar, considere:</strong></p>
         <ul>
             <li><i class="fas fa-edit text-warning"></i> <strong>Editar el registro</strong> si solo necesita corregir datos</li>
-            <li><i class="fas fa-calculator text-info"></i> <strong>Recalcular automáticamente</strong> si hay errores en el monto</li>
+            <li><i class="fas fa-calculator text-info"></i> <strong>Recalcular automaticamente</strong> si hay errores en el monto</li>
             <li><i class="fas fa-archive text-secondary"></i> <strong>Marcar como inactivo</strong> en lugar de eliminar</li>
-            <li><i class="fas fa-user-shield text-success"></i> <strong>Consultar con supervisión</strong> antes de proceder</li>
+            <li><i class="fas fa-user-shield text-success"></i> <strong>Consultar con supervision</strong> antes de proceder</li>
         </ul>
     </div>
 
-    <!-- Sección de Confirmación -->
+    <!-- Seccion de Confirmacion -->
     <div class="confirmation-section">
-        <h4><i class="fas fa-question-circle"></i> ¿Está completamente seguro?</h4>
+        <h4><i class="fas fa-question-circle"></i> ¿Esta completamente seguro?</h4>
         <p class="mb-3">
-            Para confirmar la eliminación, debe hacer clic en el botón <strong>"ELIMINAR DEFINITIVAMENTE"</strong> a continuación.
-            Esta acción es <span style="color: var(--rojo); font-weight: bold;">IRREVERSIBLE</span>.
+            Para confirmar la eliminacion, debe hacer clic en el boton <strong>"ELIMINAR DEFINITIVAMENTE"</strong> a continuacion.
+            Esta accion es <span style="color: var(--rojo); font-weight: bold;">IRREVERSIBLE</span>.
         </p>
 
         @using (Html.BeginForm("Delete", "Aguinaldo", FormMethod.Post))
@@ -283,16 +283,16 @@
         }
     </div>
 
-    <!-- Información Legal -->
+    <!-- Informacion Legal -->
     <div class="record-details mt-4">
         <h5><i class="fas fa-gavel"></i> Consideraciones Legales</h5>
         <p class="mb-2">
             <i class="fas fa-info-circle text-info"></i>
-            <strong>Importante:</strong> La eliminación de registros de aguinaldo puede tener implicaciones legales y contables.
+            <strong>Importante:</strong> La eliminacion de registros de aguinaldo puede tener implicaciones legales y contables.
         </p>
         <p class="mb-0">
             <i class="fas fa-shield-alt text-success"></i>
-            Se recomienda mantener respaldo de la información antes de proceder con la eliminación.
+            Se recomienda mantener respaldo de la informacion antes de proceder con la eliminacion.
         </p>
     </div>
 </div>
@@ -300,49 +300,49 @@
 @section Scripts {
     <script>
         function confirmarEliminacion() {
-            // Primera confirmación
-            if (!confirm('¿Está ABSOLUTAMENTE SEGURO de que desea eliminar este registro de aguinaldo?')) {
+            // Primera confirmacion
+            if (!confirm('¿Esta ABSOLUTAMENTE SEGURO de que desea eliminar este registro de aguinaldo?')) {
                 return false;
             }
 
-            // Segunda confirmación con más detalles
-            var mensaje = '⚠️ ÚLTIMA ADVERTENCIA ⚠️\n\n' +
-                         'Está a punto de eliminar PERMANENTEMENTE:\n' +
+            // Segunda confirmacion con mas detalles
+            var mensaje = '⚠️ ULTIMA ADVERTENCIA ⚠️\n\n' +
+                         'Esta a punto de eliminar PERMANENTEMENTE:\n' +
                          '• Aguinaldo de @Model.Empleados.nombre1 @Model.Empleados.apellido1\n' +
-                         '• Año: @Model.anio\n' +
-                         '• Monto: @Model.monto_total.ToString("C")\n\n' +
-                         'Esta acción NO PUEDE SER REVERTIDA.\n\n' +
+                         '• Ano: @Model.anio\n' +
+                         '• Monto: ₡@Model.monto_total.ToString("#,##0.00")\n\n' +
+                         'Esta accion NO PUEDE SER REVERTIDA.\n\n' +
                          '¿Confirma que desea proceder?';
 
             if (!confirm(mensaje)) {
                 return false;
             }
 
-            // Tercera confirmación final
+            // Tercera confirmacion final
             var confirmacionFinal = prompt(
-                'Para confirmar la eliminación, escriba exactamente la palabra: ELIMINAR\n\n' +
+                'Para confirmar la eliminacion, escriba exactamente la palabra: ELIMINAR\n\n' +
                 '(Esto es una medida de seguridad adicional)'
             );
 
             if (confirmacionFinal !== 'ELIMINAR') {
-                alert('❌ Eliminación cancelada. La palabra de confirmación no coincide.');
+                alert('❌ Eliminacion cancelada. La palabra de confirmacion no coincide.');
                 return false;
             }
 
-            // Si llegó hasta aquí, mostrar mensaje final
-            alert('🗑️ Procediendo con la eliminación...\n\nLa acción será registrada en auditoría.');
+            // Si llego hasta aqui, mostrar mensaje final
+            alert('🗑️ Procediendo con la eliminacion...\n\nLa accion sera registrada en auditoria.');
             return true;
         }
 
-        // Prevenir eliminación accidental con teclas
+        // Prevenir eliminacion accidental con teclas
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Delete' && e.ctrlKey) {
                 e.preventDefault();
-                alert('❌ La eliminación debe realizarse únicamente a través del botón correspondiente.');
+                alert('❌ La eliminacion debe realizarse unicamente a traves del boton correspondiente.');
             }
         });
 
-        // Agregar efecto visual al botón de eliminar
+        // Agregar efecto visual al boton de eliminar
         document.addEventListener('DOMContentLoaded', function() {
             var deleteBtn = document.querySelector('.btn-danger-custom');
             if (deleteBtn) {

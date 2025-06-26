@@ -39,10 +39,12 @@
         margin-bottom: 1.5rem;
     }
 
-    .form-label {
-        font-weight: 600;
-        color: var(--azul-oscuro);
-        margin-bottom: 0.5rem;
+    .warning-box {
+        background: #fff3cd;
+        border: 1px solid #ffecb5;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .form-control, .form-select {
@@ -56,29 +58,6 @@
             border-color: var(--celeste);
             box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
         }
-
-    .btn-primary-custom {
-        background: linear-gradient(135deg, var(--celeste) 0%, var(--azul-oscuro) 100%);
-        border: none;
-        color: var(--blanco);
-        padding: 12px 30px;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-    .info-card {
-        background: #e3f2fd;
-        border-left: 4px solid var(--celeste);
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-    }
 
     .calculation-preview {
         background: linear-gradient(135deg, var(--verde) 0%, #20c997 100%);
@@ -99,7 +78,7 @@
 <div class="container">
     <div class="form-header">
         <h2><i class="fas fa-plus-circle"></i> Registrar Nuevo Aguinaldo</h2>
-        <p class="mb-0">Complete la información para registrar el aguinaldo del empleado</p>
+        <p class="mb-0">Complete la informacion para registrar el aguinaldo del empleado</p>
     </div>
 
     @using (Html.BeginForm("Create", "Aguinaldo", FormMethod.Post))
@@ -109,9 +88,9 @@
         <div class="form-container">
             @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-            <!-- Información del Empleado -->
+            <!-- Informacion del Empleado -->
             <div class="form-section">
-                <h4 class="mb-3"><i class="fas fa-user"></i> Información del Empleado</h4>
+                <h4 class="mb-3"><i class="fas fa-user"></i> Informacion del Empleado</h4>
 
                 <div class="row">
                     <div class="col-md-8">
@@ -123,7 +102,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">
-                            <i class="fas fa-calendar"></i> Año Fiscal
+                            <i class="fas fa-calendar"></i> Ano Fiscal
                         </label>
                         @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control", @id = "anioInput" } })
                         @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
@@ -131,14 +110,14 @@
                 </div>
 
                 <div id="empleadoInfo" class="info-card mt-3" style="display: none;">
-                    <h6><i class="fas fa-info-circle"></i> Información del Empleado Seleccionado</h6>
+                    <h6><i class="fas fa-info-circle"></i> Informacion del Empleado Seleccionado</h6>
                     <div id="empleadoDetalles"></div>
                 </div>
             </div>
 
-            <!-- Cálculo del Aguinaldo -->
+            <!-- Calculo del Aguinaldo -->
             <div class="form-section">
-                <h4 class="mb-3"><i class="fas fa-calculator"></i> Cálculo del Aguinaldo</h4>
+                <h4 class="mb-3"><i class="fas fa-calculator"></i> Calculo del Aguinaldo</h4>
 
                 <div class="row">
                     <div class="col-md-4">
@@ -153,7 +132,12 @@
                         <label for="monto_total" class="form-label">
                             <i class="fas fa-dollar-sign"></i> Monto Total del Aguinaldo
                         </label>
-                        @Html.EditorFor(model => model.monto_total, new { htmlAttributes = new { @class = "form-control", @id = "montoInput", @step = "0.01" } })
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.monto_total, new { htmlAttributes = new { @class = "form-control", @id = "montoInput", @step = "0.01" } })
+                            <button type="button" class="btn btn-outline-info" onclick="recalcularMonto()">
+                                <i class="fas fa-sync-alt"></i> Recalcular
+                            </button>
+                        </div>
                         @Html.ValidationMessageFor(model => model.monto_total, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -162,7 +146,7 @@
                     <div class="col-md-12">
                         <div class="d-flex gap-2">
                             <button type="button" class="btn btn-outline-info" onclick="calcularAutomaticamente()">
-                                <i class="fas fa-magic"></i> Calcular Automáticamente
+                                <i class="fas fa-magic"></i> Calcular Automaticamente
                             </button>
                             <button type="button" class="btn btn-outline-secondary" onclick="verificarDuplicado()">
                                 <i class="fas fa-search"></i> Verificar si Ya Existe
@@ -172,47 +156,47 @@
                 </div>
 
                 <div id="calculationPreview" style="display: none;">
-                    <!-- Aquí se mostrará la vista previa del cálculo -->
+                    <!-- Aqui se mostrara la vista previa del calculo -->
                 </div>
             </div>
 
-            <!-- Fechas del Sistema -->
+            <!-- Control de Fechas -->
             <div class="form-section">
                 <h4 class="mb-3"><i class="fas fa-clock"></i> Control de Fechas</h4>
 
                 <div class="row">
                     <div class="col-md-6">
                         <label for="fecha_creacion" class="form-label">
-                            <i class="fas fa-calendar-plus"></i> Fecha de Creación
+                            <i class="fas fa-calendar-plus"></i> Fecha de Creacion
                         </label>
                         @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local" } })
                         @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-6">
                         <label for="fecha_actualizacion" class="form-label">
-                            <i class="fas fa-calendar-edit"></i> Fecha de Actualización
+                            <i class="fas fa-calendar-edit"></i> Fecha de Actualizacion
                         </label>
                         @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-                        <div class="form-text">Se actualizará automáticamente</div>
+                        <div class="form-text">Se actualiza automaticamente</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Información Legal -->
-            <div class="info-card">
-                <h6><i class="fas fa-gavel"></i> Base Legal del Cálculo</h6>
+            <!-- Informacion Legal -->
+            <div class="warning-box">
+                <h6><i class="fas fa-gavel"></i> Base Legal del Calculo</h6>
                 <ul class="mb-0">
-                    <li><strong>Período de cálculo:</strong> 1 de diciembre del año anterior al 30 de noviembre del año actual</li>
-                    <li><strong>Fórmula legal:</strong> (Suma de salarios devengados en el período) ÷ 12</li>
+                    <li><strong>Periodo de calculo:</strong> 1 de diciembre del ano anterior al 30 de noviembre del ano actual</li>
+                    <li><strong>Formula legal:</strong> (Suma de salarios devengados en el periodo) dividido 12</li>
                     <li><strong>Proporcional:</strong> Para empleados con menos de 12 meses laborados</li>
-                    <li><strong>Ausencias:</strong> Se descuentan ausencias injustificadas del cálculo</li>
+                    <li><strong>Ausencias:</strong> Se descuentan ausencias injustificadas del calculo</li>
                 </ul>
             </div>
 
-            <!-- Botones de Acción -->
+            <!-- Botones de Accion -->
             <div class="text-center">
-                <button type="submit" class="btn btn-primary-custom btn-lg me-3">
+                <button type="submit" class="btn btn-primary btn-lg me-3">
                     <i class="fas fa-save"></i> Registrar Aguinaldo
                 </button>
                 <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-lg">
@@ -225,7 +209,7 @@
     <!-- Enlaces Adicionales -->
     <div class="mt-3 text-center">
         <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-outline-info">
-            <i class="fas fa-calculator"></i> Ir a Calculadora Automática
+            <i class="fas fa-calculator"></i> Ir a Calculadora Automatica
         </a>
     </div>
 </div>
@@ -235,12 +219,12 @@
 
     <script>
         $(document).ready(function() {
-            // Establecer año actual por defecto
+            // Establecer ano actual por defecto
             if (!$('#anioInput').val()) {
                 $('#anioInput').val(new Date().getFullYear());
             }
 
-            // Cargar información del empleado cuando se selecciona
+            // Cargar informacion del empleado cuando se selecciona
             $('#empleadoSelect').change(function() {
                 var empleadoId = $(this).val();
                 if (empleadoId) {
@@ -258,7 +242,7 @@
 
         function cargarInfoEmpleado(empleadoId) {
             $('#empleadoInfo').show();
-            $('#empleadoDetalles').html('<p><i class="fas fa-spinner fa-spin"></i> Cargando información del empleado...</p>');
+            $('#empleadoDetalles').html('<p><i class="fas fa-spinner fa-spin"></i> Cargando informacion del empleado...</p>');
 
             // Simular carga de datos
             setTimeout(function() {
@@ -276,7 +260,7 @@
             var anio = $('#anioInput').val();
 
             if (!empleadoId || !anio) {
-                alert('Por favor seleccione un empleado y especifique el año');
+                alert('Por favor seleccione un empleado y especifique el ano');
                 return;
             }
 
@@ -284,11 +268,11 @@
             $('#calculationPreview').html(
                 '<div class="calculation-preview">' +
                 '<i class="fas fa-spinner fa-spin fa-2x"></i>' +
-                '<p class="mt-2">Calculando aguinaldo automáticamente...</p>' +
+                '<p class="mt-2">Calculando aguinaldo automaticamente...</p>' +
                 '</div>'
             ).show();
 
-            // Llamar al controlador para cálculo automático
+            // Llamar al controlador para calculo automatico
             $.post('@Url.Action("CalcularAguinaldoAutomatico")', {
                 idEmpleado: empleadoId,
                 anio: anio
@@ -299,7 +283,7 @@
                     $('#mesesInput').val(response.mesesLaborados);
                     $('#montoInput').val(parseFloat(response.montoAguinaldo.replace(/[^\d.-]/g, '')).toFixed(2));
 
-                    // Mostrar vista previa del cálculo
+                    // Mostrar vista previa del calculo
                     mostrarVistaPrevia(response);
                 } else {
                     $('#calculationPreview').html(
@@ -312,7 +296,7 @@
             .fail(function() {
                 $('#calculationPreview').html(
                     '<div class="alert alert-danger">' +
-                    '<i class="fas fa-exclamation-triangle"></i> Error de conexión. Intente nuevamente.' +
+                    '<i class="fas fa-exclamation-triangle"></i> Error de conexion. Intente nuevamente.' +
                     '</div>'
                 );
             });
@@ -320,14 +304,14 @@
 
         function mostrarVistaPrevia(data) {
             var html = '<div class="calculation-preview">' +
-                      '<h5><i class="fas fa-check-circle"></i> Cálculo Completado</h5>' +
+                      '<h5><i class="fas fa-check-circle"></i> Calculo Completado</h5>' +
                       '<div class="preview-amount">' + data.montoAguinaldo + '</div>' +
                       '<div class="row text-start">' +
-                      '<div class="col-md-6"><small><strong>Período:</strong> ' + data.periodoInicio + ' - ' + data.periodoFin + '</small></div>' +
+                      '<div class="col-md-6"><small><strong>Periodo:</strong> ' + data.periodoInicio + ' - ' + data.periodoFin + '</small></div>' +
                       '<div class="col-md-6"><small><strong>Suma de Salarios:</strong> ' + data.sumaSalarios + '</small></div>' +
                       '</div>' +
                       '<div class="row mt-2 text-start">' +
-                      '<div class="col-md-6"><small><strong>Días de Ausencias:</strong> ' + data.diasAusencias + '</small></div>' +
+                      '<div class="col-md-6"><small><strong>Dias de Ausencias:</strong> ' + data.diasAusencias + '</small></div>' +
                       '<div class="col-md-6"><small><strong>Descuento por Ausencias:</strong> ' + data.montoDescontadoAusencias + '</small></div>' +
                       '</div>' +
                       '</div>';
@@ -340,11 +324,11 @@
             var anio = $('#anioInput').val();
 
             if (!empleadoId || !anio) {
-                alert('Por favor seleccione un empleado y especifique el año');
+                alert('Por favor seleccione un empleado y especifique el ano');
                 return;
             }
 
-            alert('Funcionalidad de verificación de duplicados - Por implementar');
+            alert('Funcionalidad de verificacion de duplicados - Por implementar');
         }
 
         function actualizarVistaPrevia() {
@@ -352,9 +336,9 @@
             var monto = $('#montoInput').val();
 
             if (meses && monto) {
-                var montoFormateado = parseFloat(monto).toLocaleString('es-CR', {
-                    style: 'currency',
-                    currency: 'CRC'
+                var montoFormateado = '₡' + parseFloat(monto).toLocaleString('es-CR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 });
 
                 $('#calculationPreview').html(

@@ -79,20 +79,20 @@
 <div class="container">
     <div class="edit-header">
         <h2><i class="fas fa-edit"></i> Editar Aguinaldo</h2>
-        <p class="mb-0">Modificación del registro de aguinaldo - ID: @Model.id_aguinaldo</p>
+        <p class="mb-0">Modificacion del registro de aguinaldo - ID: @Model.id_aguinaldo</p>
     </div>
 
-    <!-- Información Actual -->
+    <!-- Informacion Actual -->
     <div class="current-info">
-        <h5><i class="fas fa-info-circle"></i> Información Actual del Registro</h5>
+        <h5><i class="fas fa-info-circle"></i> Informacion Actual del Registro</h5>
         <div class="row">
             <div class="col-md-6">
                 <strong>Empleado:</strong> @Model.Empleados.nombre1 @Model.Empleados.apellido1
-                <br><strong>Cédula:</strong> @Model.Empleados.cedula
+                <br><strong>Cedula:</strong> @Model.Empleados.cedula
             </div>
             <div class="col-md-6">
-                <strong>Monto Actual:</strong> @Model.monto_total.ToString("C")
-                <br><strong>Año:</strong> @Model.anio
+                <strong>Monto Actual:</strong> ₡@Model.monto_total.ToString("#,##0.00")
+                <br><strong>Ano:</strong> @Model.anio
             </div>
         </div>
     </div>
@@ -106,18 +106,18 @@
         <div class="edit-container">
             @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-            <!-- Advertencia sobre edición -->
+            <!-- Advertencia sobre edicion -->
             <div class="warning-box">
                 <h6><i class="fas fa-exclamation-triangle text-warning"></i> Importante</h6>
                 <p class="mb-0">
-                    La edición de aguinaldos debe realizarse con cuidado, ya que puede afectar reportes contables y registros laborales.
-                    Asegúrese de que los cambios estén debidamente justificados y documentados.
+                    La edicion de aguinaldos debe realizarse con cuidado, ya que puede afectar reportes contables y registros laborales.
+                    Asegurese de que los cambios esten debidamente justificados y documentados.
                 </p>
             </div>
 
             <!-- Datos del Empleado -->
             <div class="form-section">
-                <h4 class="mb-3"><i class="fas fa-user"></i> Información del Empleado</h4>
+                <h4 class="mb-3"><i class="fas fa-user"></i> Informacion del Empleado</h4>
 
                 <div class="row">
                     <div class="col-md-8">
@@ -132,7 +132,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="anio" class="form-label fw-bold">
-                            <i class="fas fa-calendar"></i> Año Fiscal
+                            <i class="fas fa-calendar"></i> Ano Fiscal
                         </label>
                         @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <!-- Cálculo del Aguinaldo -->
+            <!-- Calculo del Aguinaldo -->
             <div class="form-section">
                 <h4 class="mb-3"><i class="fas fa-calculator"></i> Datos del Aguinaldo (Editables)</h4>
 
@@ -168,7 +168,7 @@
                         </div>
                         @Html.ValidationMessageFor(model => model.monto_total, "", new { @class = "text-danger" })
                         <div class="form-text">
-                            Monto original: <strong>@Model.monto_total.ToString("C")</strong>
+                            Monto original: <strong>₡@Model.monto_total.ToString("#,##0.00")</strong>
                         </div>
                     </div>
                 </div>
@@ -176,11 +176,11 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label for="motivoEdicion" class="form-label fw-bold">
-                            <i class="fas fa-comment"></i> Motivo de la Edición
+                            <i class="fas fa-comment"></i> Motivo de la Edicion
                         </label>
                         <textarea id="motivoEdicion" name="motivoEdicion" class="form-control" rows="3"
-                                  placeholder="Especifique el motivo de esta modificación..."></textarea>
-                        <div class="form-text">Este campo es recomendado para fines de auditoría</div>
+                                  placeholder="Especifique el motivo de esta modificacion..."></textarea>
+                        <div class="form-text">Este campo es recomendado para fines de auditoria</div>
                     </div>
                 </div>
             </div>
@@ -192,7 +192,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">
-                            <i class="fas fa-calendar-plus"></i> Fecha de Creación
+                            <i class="fas fa-calendar-plus"></i> Fecha de Creacion
                         </label>
                         <input type="text" class="form-control"
                                value="@(Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm") ?? "No registrada")"
@@ -201,21 +201,21 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">
-                            <i class="fas fa-calendar-edit"></i> Fecha de Actualización
+                            <i class="fas fa-calendar-edit"></i> Fecha de Actualizacion
                         </label>
                         @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local", @readonly = "readonly" } })
-                        <div class="form-text">Se actualiza automáticamente al guardar</div>
+                        <div class="form-text">Se actualiza automaticamente al guardar</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Comparación de Cambios -->
+            <!-- Comparacion de Cambios -->
             <div id="comparacionCambios" class="form-section" style="display: none;">
                 <h4 class="mb-3"><i class="fas fa-balance-scale"></i> Resumen de Cambios</h4>
                 <div id="tablaComparacion"></div>
             </div>
 
-            <!-- Botones de Acción -->
+            <!-- Botones de Accion -->
             <div class="text-center">
                 <button type="submit" class="btn btn-warning btn-lg me-3">
                     <i class="fas fa-save"></i> Guardar Cambios
@@ -230,16 +230,16 @@
         </div>
     }
 
-    <!-- Información de Auditoría -->
+    <!-- Informacion de Auditoria -->
     <div class="audit-trail">
-        <h5><i class="fas fa-history"></i> Información de Auditoría</h5>
+        <h5><i class="fas fa-history"></i> Informacion de Auditoria</h5>
         <div class="row">
             <div class="col-md-6">
                 <small><strong>ID del Registro:</strong> @Model.id_aguinaldo</small><br>
                 <small><strong>Creado:</strong> @(Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm") ?? "No registrado")</small>
             </div>
             <div class="col-md-6">
-                <small><strong>Última Actualización:</strong> @(Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca actualizado")</small><br>
+                <small><strong>Ultima Actualizacion:</strong> @(Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca actualizado")</small><br>
                 <small><strong>Usuario Actual:</strong> @(User.Identity.Name ?? "Sistema")</small>
             </div>
         </div>
@@ -250,14 +250,14 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script>
-        // Valores originales para comparación
+        // Valores originales para comparacion
         var valoresOriginales = {
             meses: @Model.meses_laborados,
             monto: @Model.monto_total
         };
 
         $(document).ready(function() {
-            // Establecer fecha de actualización actual
+            // Establecer fecha de actualizacion actual
             var now = new Date();
             var localDateTime = now.getFullYear() + '-' +
                               String(now.getMonth() + 1).padStart(2, '0') + '-' +
@@ -266,7 +266,7 @@
                               String(now.getMinutes()).padStart(2, '0');
             $('input[name="fecha_actualizacion"]').val(localDateTime);
 
-            // Monitorear cambios para mostrar comparación
+            // Monitorear cambios para mostrar comparacion
             $('#mesesInput, #montoInput').on('input', function() {
                 mostrarComparacion();
             });
@@ -290,8 +290,8 @@
             if (Math.abs(montoActual - valoresOriginales.monto) > 0.01) {
                 cambios.push({
                     campo: 'Monto Total',
-                    original: valoresOriginales.monto.toLocaleString('es-CR', {style: 'currency', currency: 'CRC'}),
-                    nuevo: montoActual.toLocaleString('es-CR', {style: 'currency', currency: 'CRC'}),
+                    original: '₡' + valoresOriginales.monto.toLocaleString('es-CR', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    nuevo: '₡' + montoActual.toLocaleString('es-CR', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
                     tipo: montoActual > valoresOriginales.monto ? 'aumento' : 'disminucion'
                 });
             }
@@ -312,7 +312,7 @@
                            '<td><strong>' + cambio.campo + '</strong></td>' +
                            '<td>' + cambio.original + '</td>' +
                            '<td>' + cambio.nuevo + '</td>' +
-                           '<td>' + iconoCambio + ' ' + (cambio.tipo === 'aumento' ? 'Aumentó' : 'Disminuyó') + '</td>' +
+                           '<td>' + iconoCambio + ' ' + (cambio.tipo === 'aumento' ? 'Aumento' : 'Disminuyo') + '</td>' +
                            '</tr>';
                 });
 
@@ -330,11 +330,11 @@
             var anio = $('input[name="anio"]').val();
 
             if (!empleadoId || !anio) {
-                alert('No se puede recalcular: faltan datos del empleado o año');
+                alert('No se puede recalcular: faltan datos del empleado o ano');
                 return;
             }
 
-            if (confirm('¿Desea recalcular automáticamente el monto del aguinaldo? Esto reemplazará el valor actual.')) {
+            if (confirm('¿Desea recalcular automaticamente el monto del aguinaldo? Esto reemplazara el valor actual.')) {
                 // Mostrar loading
                 $('button[onclick="recalcularMonto()"]').html('<i class="fas fa-spinner fa-spin"></i> Calculando...');
 
@@ -357,7 +357,7 @@
                     }
                 })
                 .fail(function() {
-                    alert('Error de conexión al recalcular');
+                    alert('Error de conexion al recalcular');
                 })
                 .always(function() {
                     $('button[onclick="recalcularMonto()"]').html('<i class="fas fa-sync-alt"></i> Recalcular');

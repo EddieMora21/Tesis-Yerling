@@ -121,7 +121,7 @@
         <h2 style="color: var(--azul-oscuro);">
             <i class="fas fa-calculator"></i> Calculadora de Aguinaldo
         </h2>
-        <p class="text-muted">C�lculo autom�tico seg�n el C�digo de Trabajo de Costa Rica</p>
+        <p class="text-muted">Calculo automatico segun el Codigo de Trabajo de Costa Rica</p>
     </div>
 
     <!-- Indicador de Pasos -->
@@ -133,9 +133,9 @@
 
     <!-- Contenedor Principal -->
     <div class="calculator-container">
-        <!-- Paso 1: Selecci�n de Empleado y A�o -->
+        <!-- Paso 1: Seleccion de Empleado y Ano -->
         <div id="paso1" class="step-content">
-            <h4 class="mb-4"><i class="fas fa-user-check"></i> Seleccione Empleado y Per�odo</h4>
+            <h4 class="mb-4"><i class="fas fa-user-check"></i> Seleccione Empleado y Periodo</h4>
 
             <div class="row">
                 <div class="col-md-6">
@@ -149,7 +149,7 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="anioSelect" class="form-label fw-bold">A�o Fiscal:</label>
+                    <label for="anioSelect" class="form-label fw-bold">Ano Fiscal:</label>
                     <select id="anioSelect" class="form-select form-select-lg">
                         <option value="@ViewBag.AnioActual">@ViewBag.AnioActual</option>
                         <option value="@(ViewBag.AnioActual - 1)">@(ViewBag.AnioActual - 1)</option>
@@ -160,11 +160,11 @@
 
             <div class="alert alert-info mt-3">
                 <i class="fas fa-info-circle"></i>
-                <strong>Informaci�n del C�lculo:</strong>
+                <strong>Informacion del Calculo:</strong>
                 <ul class="mb-0 mt-2">
-                    <li>Per�odo legal: 1 de diciembre del a�o anterior al 30 de noviembre del a�o actual</li>
-                    <li>F�rmula: (Suma de salarios devengados en el per�odo) � 12</li>
-                    <li>Se consideran ausencias injustificadas para ajustar el c�lculo</li>
+                    <li>Periodo legal: 1 de diciembre del ano anterior al 30 de noviembre del ano actual</li>
+                    <li>Formula: (Suma de salarios devengados en el periodo) dividido 12</li>
+                    <li>Se consideran ausencias injustificadas para ajustar el calculo</li>
                 </ul>
             </div>
 
@@ -177,12 +177,12 @@
             </div>
         </div>
 
-        <!-- Paso 2: C�lculo en Progreso -->
+        <!-- Paso 2: Calculo en Progreso -->
         <div id="paso2" class="step-content" style="display: none;">
             <div class="py-5 text-center">
                 <i class="fas fa-cog fa-spin fa-5x text-primary mb-3"></i>
                 <h4>Calculando Aguinaldo...</h4>
-                <p class="text-muted">Analizando registros de n�mina y considerando ausencias</p>
+                <p class="text-muted">Analizando registros de nomina y considerando ausencias</p>
                 <div class="progress" style="max-width: 400px; margin: 0 auto;">
                     <div class="progress-bar progress-bar-striped progress-bar-animated"
                          role="progressbar" style="width: 100%"></div>
@@ -190,15 +190,15 @@
             </div>
         </div>
 
-        <!-- Paso 3: Resultado del C�lculo -->
+        <!-- Paso 3: Resultado del Calculo -->
         <div id="paso3" class="step-content" style="display: none;">
             <div id="resultadoCalculo">
-                <!-- El resultado se cargar� aqu� din�micamente -->
+                <!-- El resultado se cargara aqui dinamicamente -->
             </div>
         </div>
     </div>
 
-    <!-- Botones de Navegaci�n -->
+    <!-- Botones de Navegacion -->
     <div class="text-center">
         <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Volver al Listado
@@ -223,7 +223,7 @@
         // Cambiar a paso 2
         cambiarPaso(2);
 
-        // Ejecutar c�lculo
+        // Ejecutar calculo
         $.post('@Url.Action("CalcularAguinaldoAutomatico")', {
             idEmpleado: empleadoId,
             anio: anio
@@ -237,10 +237,10 @@
                     alert('Error: ' + response.message);
                     cambiarPaso(1);
                 }
-            }, 2000); // Simular tiempo de c�lculo
+            }, 2000); // Simular tiempo de calculo
         })
         .fail(function() {
-            alert('Error de conexi�n. Intente nuevamente.');
+            alert('Error de conexion. Intente nuevamente.');
             cambiarPaso(1);
         });
     }
@@ -266,14 +266,14 @@
         var html = `
             <div class="calculation-result">
                 <div class="text-center">
-                    <h3><i class="fas fa-check-circle"></i> C�lculo Completado</h3>
+                    <h3><i class="fas fa-check-circle"></i> Calculo Completado</h3>
                     <div class="amount-display">${data.montoAguinaldo}</div>
                     <p class="mb-0">Aguinaldo calculado para <strong>${data.empleado}</strong></p>
                 </div>
 
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-label">C�dula</div>
+                        <div class="info-label">Cedula</div>
                         <div class="info-value">${data.cedula}</div>
                     </div>
                     <div class="info-item">
@@ -285,20 +285,20 @@
                         <div class="info-value">${data.mesesLaborados}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Per�odo C�lculo</div>
+                        <div class="info-label">Periodo Calculo</div>
                         <div class="info-value">${data.periodoInicio} - ${data.periodoFin}</div>
                     </div>
                 </div>
             </div>
 
             <div class="detail-card">
-                <h5><i class="fas fa-chart-line"></i> Detalles del C�lculo</h5>
+                <h5><i class="fas fa-chart-line"></i> Detalles del Calculo</h5>
                 <div class="row">
                     <div class="col-md-6">
-                        <strong>Suma de Salarios del Per�odo:</strong> ${data.sumaSalarios}
+                        <strong>Suma de Salarios del Periodo:</strong> ${data.sumaSalarios}
                     </div>
                     <div class="col-md-6">
-                        <strong>D�as de Ausencias:</strong> ${data.diasAusencias}
+                        <strong>Dias de Ausencias:</strong> ${data.diasAusencias}
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -306,7 +306,7 @@
                         <strong>Monto Descontado por Ausencias:</strong> ${data.montoDescontadoAusencias}
                     </div>
                     <div class="col-md-6">
-                        <strong>F�rmula Aplicada:</strong> (Suma Salarios � 12)
+                        <strong>Formula Aplicada:</strong> (Suma Salarios dividido 12)
                     </div>
                 </div>
             </div>`;
@@ -314,11 +314,11 @@
         if (data.detalleCalculo && data.detalleCalculo.salariosIncluidos.length > 0) {
             html += `
                 <div class="detail-card">
-                    <h5><i class="fas fa-list"></i> Salarios Incluidos en el C�lculo</h5>
+                    <h5><i class="fas fa-list"></i> Salarios Incluidos en el Calculo</h5>
                     <div class="table-responsive">
                         <table class="table-sm table">
                             <thead>
-                                <tr><th>Mes</th><th>A�o</th><th>Salario</th></tr>
+                                <tr><th>Mes</th><th>Ano</th><th>Salario</th></tr>
                             </thead>
                             <tbody>`;
 
@@ -333,7 +333,7 @@
             html += `
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Advertencia:</strong> Ya existe un aguinaldo registrado para este empleado en el a�o seleccionado.
+                    <strong>Advertencia:</strong> Ya existe un aguinaldo registrado para este empleado en el ano seleccionado.
                 </div>`;
         } else {
             html += `
@@ -364,7 +364,7 @@
             return;
         }
 
-        // Redirigir a Create con par�metros
+        // Redirigir a Create con parametros
         var url = '@Url.Action("Create")' +
                  '?id_empleado=' + window.datosAguinaldo.idEmpleado +
                  '&monto_total=' + window.datosAguinaldo.montoTotal +

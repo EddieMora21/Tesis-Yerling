@@ -1,0 +1,471 @@
+﻿@model SistemaNomina.Models.CalculoLiquidacionViewModel
+
+@{
+    ViewBag.Title = "Calcular Liquidación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-md-8">
+            <h2><i class="fas fa-calculator"></i> Calcular Liquidación Laboral</h2>
+            <p class="text-muted">Calcula automáticamente la liquidación según el Código de Trabajo de Costa Rica</p>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="@Url.Action("Index")" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left"></i> Volver al Listado
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <i class="fas fa-exclamation-triangle"></i> @ViewBag.Error
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-plus"></i> Datos del Empleado
+                </h5>
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("CalcularLiquidacion", "Liquidaciones", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label for="idEmpleado" class="form-label">
+                            <i class="fas fa-user"></i> Empleado
+                        </label>
+                        @Html.DropDownList("idEmpleado", ViewBag.IdEmpleado as SelectList, "Seleccione un empleado...",
+                            new { @class = "form-control select2", @required = "required" })
+                        <div class="invalid-feedback">
+                            Por favor seleccione un empleado.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idTipo" class="form-label">
+                            <i class="fas fa-tag"></i> Tipo de Liquidación
+                        </label>
+                        @Html.DropDownList("idTipo", ViewBag.IdTipo as SelectList, "Seleccione el tipo...",
+                            new { @class = "form-control", @required = "required" })
+                        <div class="invalid-feedback">
+                            Por favor seleccione el tipo de liquidación.
+                        </div>
+                        <small class="form-text text-muted">
+                            Define qué conceptos aplican según el motivo de salida
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fechaSalida" class="form-label">
+                            <i class="fas fa-calendar"></i> Fecha de Salida
+                        </label>
+                        <input type="date" name="fechaSalida" id="fechaSalida"
+                               class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                               max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        <div class="invalid-feedback">
+                            Por favor ingrese la fecha de salida.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-calculator"></i> Calcular Liquidación
+                    </button>
+                }
+            </div>
+        </div>
+
+        @if (Model?.Calculo != null)
+        {
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-info-circle"></i> Información del Empleado
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>Nombre:</strong> @Model.Calculo.NombreCompleto</p>
+                            <p><strong>Cédula:</strong> @Model.Calculo.Cedula</p>
+                            <p><strong>Ingreso:</strong> @Model.Calculo.FechaIngreso.ToString("dd/MM/yyyy")</p>
+                            <p><strong>Salida:</strong> @Model.Calculo.FechaSalida.ToString("dd/MM/yyyy")</p>
+                            <p><strong>Años laborados:</strong> @Model.Calculo.AniosLaborados.ToString("F2")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-8">
+        @if (Model?.Calculo != null)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-file-invoice-dollar"></i> Cálculo de Liquidación
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Conceptos Positivos -->
+                    <div class="table-responsive mb-4">
+                        <table class="table-bordered table">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th colspan="2" class="text-center">
+                                        <i class="fas fa-plus-circle"></i> CONCEPTOS A FAVOR
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Calculo.Preaviso > 0)
+                                {
+                                    <tr>
+                                        <td><i class="fas fa-clock"></i> Preaviso</td>
+                                        <td class="font-weight-bold text-success text-right">
+                                            ₡@Model.Calculo.Preaviso.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (Model.Calculo.Cesantia > 0)
+                                {
+                                    <tr>
+                                        <td><i class="fas fa-briefcase"></i> Cesantía</td>
+                                        <td class="font-weight-bold text-success text-right">
+                                            ₡@Model.Calculo.Cesantia.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (Model.Calculo.VacacionesPendientes > 0)
+                                {
+                                    <tr>
+                                        <td>
+                                            <i class="fas fa-umbrella-beach"></i>
+                                            Vacaciones Pendientes (@Model.Calculo.DiasVacacionesPendientes días)
+                                        </td>
+                                        <td class="font-weight-bold text-success text-right">
+                                            ₡@Model.Calculo.VacacionesPendientes.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (Model.Calculo.AguinaldoProporcional > 0)
+                                {
+                                    <tr>
+                                        <td><i class="fas fa-gift"></i> Aguinaldo Proporcional</td>
+                                        <td class="font-weight-bold text-success text-right">
+                                            ₡@Model.Calculo.AguinaldoProporcional.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr class="table-success">
+                                    <td class="font-weight-bold">
+                                        <i class="fas fa-calculator"></i> SUBTOTAL
+                                    </td>
+                                    <td class="font-weight-bold text-right">
+                                        ₡@Model.Calculo.SalarioBruto.ToString("N2")
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Deducciones -->
+                    <div class="table-responsive mb-4">
+                        <table class="table-bordered table">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th colspan="2" class="text-center">
+                                        <i class="fas fa-minus-circle"></i> DEDUCCIONES LEGALES
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Calculo.CCSS > 0)
+                                {
+                                    <tr>
+                                        <td><i class="fas fa-hospital"></i> CCSS (9.34%)</td>
+                                        <td class="font-weight-bold text-warning text-right">
+                                            -₡@Model.Calculo.CCSS.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (Model.Calculo.IVM > 0)
+                                {
+                                    <tr>
+                                        <td><i class="fas fa-user-shield"></i> IVM (2.75%)</td>
+                                        <td class="font-weight-bold text-warning text-right">
+                                            -₡@Model.Calculo.IVM.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (Model.Calculo.ISR > 0)
+                                {
+                                    <tr>
+                                        <td><i class="fas fa-percentage"></i> Impuesto sobre la Renta</td>
+                                        <td class="font-weight-bold text-warning text-right">
+                                            -₡@Model.Calculo.ISR.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr class="table-warning">
+                                    <td class="font-weight-bold">
+                                        <i class="fas fa-calculator"></i> TOTAL DEDUCCIONES
+                                    </td>
+                                    <td class="font-weight-bold text-right">
+                                        -₡@Model.Calculo.TotalDeducciones.ToString("N2")
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total Final -->
+                    <div class="table-responsive">
+                        <table class="table-bordered table">
+                            <tbody>
+                                <tr class="table-dark">
+                                    <td class="font-weight-bold h5 mb-0">
+                                        <i class="fas fa-money-bill-wave"></i> TOTAL A PAGAR
+                                    </td>
+                                    <td class="font-weight-bold h4 mb-0 text-primary text-right">
+                                        ₡@Model.Calculo.TotalLiquidacion.ToString("N2")
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="mt-4 text-center">
+                        @using (Html.BeginForm("GuardarLiquidacion", "Liquidaciones", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.Calculo.IdEmpleado)
+                            @Html.HiddenFor(m => m.Calculo.IdTipo)
+                            @Html.HiddenFor(m => m.Calculo.FechaSalida)
+                            @Html.HiddenFor(m => m.Calculo.Preaviso)
+                            @Html.HiddenFor(m => m.Calculo.Cesantia)
+                            @Html.HiddenFor(m => m.Calculo.VacacionesPendientes)
+                            @Html.HiddenFor(m => m.Calculo.DiasVacacionesPendientes)
+                            @Html.HiddenFor(m => m.Calculo.AguinaldoProporcional)
+                            @Html.HiddenFor(m => m.Calculo.TotalLiquidacion)
+                            @Html.HiddenFor(m => m.Calculo.ISR)
+                            @Html.HiddenFor(m => m.Calculo.CCSS)
+                            @Html.HiddenFor(m => m.Calculo.IVM)
+
+                            <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('¿Está seguro de guardar esta liquidación? Esta acción no se puede deshacer.')">
+                                <i class="fas fa-save"></i> Guardar Liquidación
+                            </button>
+                        }
+
+                        <a href="@Url.Action("CalcularLiquidacion")" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-redo"></i> Calcular Otra
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body py-5 text-center">
+                    <i class="fas fa-calculator fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">Calculadora de Liquidaciones</h5>
+                    <p class="text-muted">
+                        Completa los datos del empleado en el panel izquierdo para iniciar el cálculo automático
+                        de la liquidación laboral según la legislación costarricense.
+                    </p>
+                    <div class="mt-4">
+                        <h6 class="text-primary">El cálculo incluye:</h6>
+                        <ul class="list-unstyled d-inline-block text-left">
+                            <li><i class="fas fa-check text-success"></i> Preaviso (según tipo)</li>
+                            <li><i class="fas fa-check text-success"></i> Cesantía (según años laborados)</li>
+                            <li><i class="fas fa-check text-success"></i> Vacaciones pendientes</li>
+                            <li><i class="fas fa-check text-success"></i> Aguinaldo proporcional</li>
+                            <li><i class="fas fa-check text-success"></i> Deducciones legales (CCSS, IVM, ISR)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Validación del formulario mejorada
+            $('.needs-validation').on('submit', function (e) {
+                var isValid = true;
+
+                // Validar empleado
+                var empleado = $('#idEmpleado').val();
+                if (!empleado || empleado === '') {
+                    isValid = false;
+                    $('#idEmpleado').addClass('is-invalid');
+                    mostrarError('Por favor seleccione un empleado');
+                } else {
+                    $('#idEmpleado').removeClass('is-invalid').addClass('is-valid');
+                }
+
+                // Validar tipo
+                var tipo = $('#idTipo').val();
+                if (!tipo || tipo === '') {
+                    isValid = false;
+                    $('#idTipo').addClass('is-invalid');
+                    mostrarError('Por favor seleccione un tipo de liquidación');
+                } else {
+                    $('#idTipo').removeClass('is-invalid').addClass('is-valid');
+                }
+
+                // Validar fecha
+                var fecha = $('#fechaSalida').val();
+                if (!fecha || fecha === '') {
+                    isValid = false;
+                    $('#fechaSalida').addClass('is-invalid');
+                    mostrarError('Por favor ingrese una fecha de salida');
+                } else {
+                    var fechaSeleccionada = new Date(fecha);
+                    var fechaHoy = new Date();
+
+                    if (fechaSeleccionada > fechaHoy) {
+                        isValid = false;
+                        $('#fechaSalida').addClass('is-invalid');
+                        mostrarError('La fecha de salida no puede ser mayor a hoy');
+                    } else {
+                        $('#fechaSalida').removeClass('is-invalid').addClass('is-valid');
+                    }
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                // Mostrar loading
+                $(this).find('button[type="submit"]').prop('disabled', true)
+                    .html('<i class="fas fa-spinner fa-spin"></i> Calculando...');
+
+                $(this).addClass('was-validated');
+            });
+
+            // Confirmación para guardar liquidación
+            $('form[action*="GuardarLiquidacion"]').on('submit', function (e) {
+                if (!confirm('¿Está seguro de guardar esta liquidación?\n\nEsta acción:\n• Guardará la liquidación permanentemente\n• Cambiará el estado del empleado a "Inactivo"\n• No se puede deshacer\n\n¿Continuar?')) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Mostrar loading
+                $(this).find('button[type="submit"]').prop('disabled', true)
+                    .html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+            });
+
+            // Limpiar validación al cambiar valores
+            $('#idEmpleado, #idTipo, #fechaSalida').on('change', function () {
+                $(this).removeClass('is-invalid is-valid');
+                $('.alert-danger').hide();
+            });
+        });
+
+        function mostrarError(mensaje) {
+            // Remover alertas anteriores
+            $('.alert-danger').remove();
+
+            // Crear nueva alerta
+            var alerta = '<div class="alert alert-danger alert-dismissible">' +
+                '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                '<i class="fas fa-exclamation-triangle"></i> ' + mensaje +
+                '</div>';
+
+            $('.page-header').after(alerta);
+
+            // Auto-hide después de 5 segundos
+            setTimeout(function () {
+                $('.alert-danger').fadeOut();
+            }, 5000);
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .table th {
+            font-weight: 600;
+            border-top: none;
+        }
+
+        .table-responsive {
+            border-radius: 5px;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .was-validated .form-control:invalid {
+            border-color: #dc3545;
+        }
+
+        .was-validated .form-control:valid {
+            border-color: #28a745;
+        }
+
+        @@media (max-width: 768px) {
+            .page-header .col-md-4 {
+                text-align: center !important;
+                margin-top: 1rem;
+            }
+
+            .btn-lg {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+}
