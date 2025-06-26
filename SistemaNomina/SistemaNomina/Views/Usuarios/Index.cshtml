@@ -1,0 +1,87 @@
+﻿@model IEnumerable<SistemaNomina.Models.Usuarios>
+
+@{
+    ViewBag.Title = "Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Validación mejorada de sesión
+    var usuarioSesion = Session["Usuario"] as string;
+    var rolSesion = Session["RolUsuario"] as string;
+    var userId = Session["UserId"] as int?;
+
+    if (string.IsNullOrEmpty(usuarioSesion) || string.IsNullOrEmpty(rolSesion) || !userId.HasValue)
+    {
+        Response.Redirect("~/Login/Login");
+    }
+
+    // Solo Admin puede acceder a esta vista
+    if (!rolSesion.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+    {
+        Response.Redirect("~/Home/AccesoDenegado");
+    }
+}
+
+<h2>Listado de Usuarios</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo Usuario", "Create", null, new { @class = "btn btn-success" })
+</p>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No hay usuarios registrados.</div>
+}
+else
+{
+    <table class="table-striped table-bordered table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.usuario)</th>
+                <th>Contraseña</th>
+                <th>Primer Ingreso</th>
+                <th>Fecha Creación</th>
+                <th>Fecha Actualización</th>
+                <th>Empleado</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.usuario)</td>
+                    <td>******</td>
+                    <td>@(item.primer_ingreso.HasValue ? (item.primer_ingreso.Value ? "Sí" : "No") : "N/A")</td>
+                    <td>@Html.DisplayFor(modelItem => item.fecha_creacion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.fecha_actualizacion)</td>
+                    <td>
+                        @if (item.Empleados != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Empleados.cedula)
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Roles != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Roles.nombre)
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.id_usuario }, new { @class = "btn btn-sm btn-primary" })
+                        @Html.ActionLink("Detalles", "Details", new { id = item.id_usuario }, new { @class = "btn btn-sm btn-info" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.id_usuario }, new { @class = "btn btn-sm btn-danger" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

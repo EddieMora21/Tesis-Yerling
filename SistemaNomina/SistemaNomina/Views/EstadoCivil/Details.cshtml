@@ -1,0 +1,34 @@
+﻿@model SistemaNomina.Models.EstadoCivil
+
+@{
+    // Define el título de la página
+    ViewBag.Title = "Details";
+
+    //  plantilla que se usará para esta vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EstadoCivil</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <!-- Muestra el nombre del campo 'nombre' -->
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            <!-- Muestra el valor del campo 'nombre' -->
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+    </dl>
+</div>
+<p>
+    <!-- Enlace para editar el registro actual, pasando el id -->
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_estado_civil }) |
+
+    <!-- Enlace para regresar a la lista de estados civiles -->
+    @Html.ActionLink("Back to List", "Index")
+</p>

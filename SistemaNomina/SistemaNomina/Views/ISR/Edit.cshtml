@@ -1,0 +1,135 @@
+﻿@model SistemaNomina.Models.ISR
+
+@{
+    // Título que aparecerá en la pestaña del navegador para esta vista
+    ViewBag.Title = "Edit";
+    //  vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>  <!-- Título principal de la página -->
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() // seguridad
+
+    <div class="form-horizontal">
+        <h4>ISR</h4>  <!-- Subtítulo  -->
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <!-- Resumen de validaciones y errores para mostrar al usuario -->
+
+        @Html.HiddenFor(model => model.id_isr)
+        <!-- Campo oculto para el ID del registro, necesario para la edición -->
+        <!-- Grupo de formulario para el campo 'anio' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.anio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <!-- Etiqueta para el campo 'anio'  -->
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control" } })
+                <!-- Control editable para el campo 'anio'  -->
+                @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
+                <!-- Mensaje de validación para 'anio' -->
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'limite_inferior' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.limite_inferior, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.limite_inferior, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.limite_inferior, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'limite_superior' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.limite_superior, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.limite_superior, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.limite_superior, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'porcentaje' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.porcentaje, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.porcentaje, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.porcentaje, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'exceso' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.exceso, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.exceso, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.exceso, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'credito_hijo' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.credito_hijo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.credito_hijo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.credito_hijo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'credito_conyuge' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.credito_conyuge, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.credito_conyuge, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'descripcion' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'fecha_creacion' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo de formulario para el campo 'fecha_actualizacion' -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Botón para enviar el formulario y guardar los cambios -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <!-- Enlace para regresar a la lista de registros -->
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    // Validación
+    @Scripts.Render("~/bundles/jqueryval")
+}

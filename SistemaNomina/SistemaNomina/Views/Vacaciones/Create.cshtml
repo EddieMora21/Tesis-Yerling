@@ -1,0 +1,92 @@
+﻿@model SistemaNomina.Models.Vacaciones  
+
+@{
+    ViewBag.Title = "Create"; @*  título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Create</h2>  @* titulo página *@
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* Seguridad  *@
+
+    <div class="form-horizontal">
+        <h4>Vacaciones</h4>  @* Subtítulo del formulario *@
+        <hr /> 
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @* Muestra un resumen de errores de validación si existen *@
+
+        <div class="form-group">
+            @* Campo: ID del empleado) *@
+            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+                @* Muestra mensaje de error si el valor es inválido *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo: Periodo de vacaciones *@
+            @Html.LabelFor(model => model.periodo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.periodo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.periodo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo: Días disponibles para vacaciones *@
+            @Html.LabelFor(model => model.dias_disponibles, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.dias_disponibles, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.dias_disponibles, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo: Días disfrutados por el colaborador *@
+            @Html.LabelFor(model => model.dias_disfrutados, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.dias_disfrutados, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.dias_disfrutados, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo: Fecha en que se registró esta información *@
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo: Fecha en que se actualizó por última vez *@
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Botón para enviar el formulario *@
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />  @* Botón que envía el formulario al servidor *@
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para volver a la lista principal de registros *@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @* validación *@
+}

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<SistemaNomina.Models.Empleados>
+
+@{
+    ViewBag.Title = "Lista de Empleados";
+}
+
+<h2>Lista de Empleados</h2>
+
+<p>
+    @Html.ActionLink("Nuevo Empleado", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table-striped table-hover table">
+    <thead>
+        <tr>
+            <th>Nombre Completo</th>
+            <th>Cédula</th>
+            <th>Puesto</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Vacaciones</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.apellido1) @Html.DisplayFor(modelItem => item.apellido2),
+                    @Html.DisplayFor(modelItem => item.nombre1) @Html.DisplayFor(modelItem => item.nombre2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cedula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Puestos.nombre_puesto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.telefono)
+                </td>
+                <td>
+                    <span class="label @(item.estado == "ACTIVO" ? "label-success" : "label-danger")">
+                        @Html.DisplayFor(modelItem => item.estado)
+                    </span>
+                </td>
+                <td>
+
+                    <a href="@Url.Action("DetalleVacaciones", "Empleados", new { id_empleado = item.id_empleado })"
+                       class="btn btn-outline-secondary btn-sm mt-1">
+                        Detalle de vacaciones
+                    </a>
+
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.id_empleado }, new { @class = "btn btn-xs btn-warning" })
+                    @Html.ActionLink("Detalles", "Details", new { id = item.id_empleado }, new { @class = "btn btn-xs btn-info" })
+
+                    @if (item.estado == "ACTIVO")
+                    {
+                        @Html.ActionLink("Desactivar", "Delete", new { id = item.id_empleado }, new { @class = "btn btn-xs btn-danger" })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

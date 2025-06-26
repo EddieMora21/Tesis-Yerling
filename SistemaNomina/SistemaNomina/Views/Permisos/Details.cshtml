@@ -1,0 +1,92 @@
+﻿@model SistemaNomina.Models.Permisos
+
+@{
+    ViewBag.Title = "Details"; @* Título de la página detalles *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Details</h2>  @* Encabezado principal de la página *@
+
+<div>
+    <h4>Permisos</h4>  @* Subtítulo *@
+    <hr /> 
+    <dl class="dl-horizontal">
+        @* Lista campos y valores *@
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha)  @* Nombre del campo 'fecha' *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha)  @* Valor del campo 'fecha' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horas)  @* Nombre del campo 'horas' *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.horas)  @* Valor del campo 'horas' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.motivo)  @* Nombre del campo 'motivo' *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.motivo)  @* Valor del campo 'motivo' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Nombre del campo 'fecha_creacion' *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)  @* Valor del campo 'fecha_creacion' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Nombre del campo 'fecha_actualizacion' *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)  @* Valor del campo 'fecha_actualizacion' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Empleados.cedula)  @* Nombre de la cédula del empleado  *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Empleados.cedula)  @* Valor de la cédula del empleado *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Estados.nombre)  @* Nombre del estado del permiso *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Estados.nombre)  @* Valor del estado *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Usuarios.usuario)  @* Nombre del usuario asociado al permiso *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Usuarios.usuario)  @* Valor del usuario *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TiposPermiso.nombre)  @* Nombre del tipo de permiso *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TiposPermiso.nombre)  @* Valor del tipo de permiso *@
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_permiso }) |  @* Enlace para editar este permiso *@
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista principal *@
+</p>

@@ -1,0 +1,72 @@
+﻿@model SistemaNomina.Models.Roles
+
+@{
+    ViewBag.Title = "Editar Rol"; // Título de la página
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Layout general
+}
+
+<h2>Editar Rol</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() <!-- Previene ataques CSRF -->
+
+    <div class="form-horizontal">
+        <h4>Roles</h4>
+        <hr />
+
+        <!-- Muestra errores generales de validación -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Campo oculto para el ID del rol (no editable) -->
+        @Html.HiddenFor(model => model.id_rol)
+
+        <!-- Campo para editar el nombre del rol -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para editar la descripción del rol -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para editar fecha de creación (formato fecha) -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para editar fecha de actualización (formato fecha) -->
+        <div class="form-group row">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Botones para enviar formulario o regresar a la lista -->
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-default ml-2" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval") <!-- Scripts de validación jQuery -->
+}

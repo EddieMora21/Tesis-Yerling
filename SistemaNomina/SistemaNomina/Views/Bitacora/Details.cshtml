@@ -1,0 +1,62 @@
+﻿@model SistemaNomina.Models.Bitacora
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Bitacora</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @* Mostrar el nombre del campo 'accion' *@
+        <dt>
+            @Html.DisplayNameFor(model => model.accion)
+        </dt>
+
+        @* Mostrar el valor del campo 'accion' *@
+        <dd>
+            @Html.DisplayFor(model => model.accion)
+        </dd>
+
+        @* Mostrar el nombre del campo 'detalle' *@
+        <dt>
+            @Html.DisplayNameFor(model => model.detalle)
+        </dt>
+
+        @* Mostrar el valor del campo 'detalle' *@
+        <dd>
+            @Html.DisplayFor(model => model.detalle)
+        </dd>
+
+        @* Mostrar el nombre del campo 'fecha_hora' *@
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_hora)
+        </dt>
+
+        @* Mostrar el valor del campo 'fecha_hora' *@
+        <dd>
+            @Html.DisplayFor(model => model.fecha_hora)
+        </dd>
+
+        @* Mostrar el nombre del usuario   *@
+        <dt>
+            @Html.DisplayNameFor(model => model.Usuarios.usuario)
+        </dt>
+
+        @* Mostrar el valor del usuario  *@
+        <dd>
+            @Html.DisplayFor(model => model.Usuarios.usuario)
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @* Enlace para editar el registro actual, pasando el id_log como parámetro *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_log }) |
+    @* Enlace para regresar a la lista principal *@
+    @Html.ActionLink("Back to List", "Index")
+</p>

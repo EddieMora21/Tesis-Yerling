@@ -1,0 +1,59 @@
+﻿@model SistemaNomina.Models.Departamentos
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Departamentos</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @* Muestra la etiqueta del campo nombre *@
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        @* Muestra el valor del campo nombre *@
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        @* Muestra la etiqueta del campo fecha de creación *@
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+
+        @* Muestra el valor del campo fecha de creación *@
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        @* Muestra la etiqueta del campo fecha de actualización *@
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+
+        @* Muestra el valor del campo fecha de actualización *@
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @* Formulario para confirmar la eliminación con protección antifalsificación *@
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            @* Botón para confirmar la eliminación *@
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @* Enlace para regresar a la lista de departamentos *@
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

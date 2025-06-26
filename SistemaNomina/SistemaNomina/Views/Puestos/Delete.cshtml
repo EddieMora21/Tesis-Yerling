@@ -1,0 +1,100 @@
+﻿@model SistemaNomina.Models.Puestos
+
+@{
+    // Establece el título de la página en la barra del navegador
+    ViewBag.Title = "Delete";
+
+    //  vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+// Título  página
+<h2>Delete</h2>
+
+// Mensaje de confirmación para el usuario
+<h3>Are you sure you want to delete this?</h3>
+
+<div>
+    <h4>Puestos</h4>
+    <hr />
+
+    // Muestra los detalles del puesto que se va a eliminar usando lista 
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre_puesto)  // Muestra el nombre del campo
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre_puesto)      // Muestra el valor del campo
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.salario_base)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.salario_base)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horas_jornada)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.horas_jornada)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.es_jefe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.es_jefe)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Departamentos.nombre)  // Campo relacionado 
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Departamentos.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Horarios.nombre)       
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Horarios.nombre)
+        </dd>
+    </dl>
+
+    // Formulario para confirmar la eliminación
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken() // seguridad
+
+        <div class="form-actions no-color">
+            // Botón para confirmar eliminación
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+
+            // Enlace para regresar a la lista de puestos
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

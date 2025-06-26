@@ -1,0 +1,381 @@
+﻿@{
+    ViewBag.Title = "Calcular Aguinaldo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --azul-oscuro: #221d42;
+        --celeste: #1788ca;
+        --amarillo: #fab61b;
+        --gris-claro: #e7e8eb;
+        --blanco: #ffffff;
+        --verde: #28a745;
+    }
+
+    .calculator-container {
+        background: var(--blanco);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--gris-claro);
+        color: var(--azul-oscuro);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+        font-weight: bold;
+        position: relative;
+    }
+
+        .step.active {
+            background-color: var(--celeste);
+            color: var(--blanco);
+        }
+
+        .step.completed {
+            background-color: var(--verde);
+            color: var(--blanco);
+        }
+
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 20px;
+            height: 2px;
+            background-color: var(--gris-claro);
+            transform: translateY(-50%);
+        }
+
+        .step:last-child::after {
+            display: none;
+        }
+
+    .calculation-result {
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
+        color: var(--blanco);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .detail-card {
+        background: var(--gris-claro);
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 10px 0;
+    }
+
+    .amount-display {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--amarillo);
+        text-align: center;
+        margin: 1rem 0;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .info-item {
+        background: rgba(255,255,255,0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+    <!-- Header -->
+    <div class="mb-4 text-center">
+        <h2 style="color: var(--azul-oscuro);">
+            <i class="fas fa-calculator"></i> Calculadora de Aguinaldo
+        </h2>
+        <p class="text-muted">C�lculo autom�tico seg�n el C�digo de Trabajo de Costa Rica</p>
+    </div>
+
+    <!-- Indicador de Pasos -->
+    <div class="step-indicator">
+        <div class="step active" id="step1">1</div>
+        <div class="step" id="step2">2</div>
+        <div class="step" id="step3">3</div>
+    </div>
+
+    <!-- Contenedor Principal -->
+    <div class="calculator-container">
+        <!-- Paso 1: Selecci�n de Empleado y A�o -->
+        <div id="paso1" class="step-content">
+            <h4 class="mb-4"><i class="fas fa-user-check"></i> Seleccione Empleado y Per�odo</h4>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="empleadoSelect" class="form-label fw-bold">Empleado:</label>
+                    <select id="empleadoSelect" class="form-select form-select-lg">
+                        <option value="">Seleccione un empleado...</option>
+                        @foreach (var empleado in ViewBag.EmpleadosActivos as List<SelectListItem>)
+                        {
+                            <option value="@empleado.Value">@empleado.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="anioSelect" class="form-label fw-bold">A�o Fiscal:</label>
+                    <select id="anioSelect" class="form-select form-select-lg">
+                        <option value="@ViewBag.AnioActual">@ViewBag.AnioActual</option>
+                        <option value="@(ViewBag.AnioActual - 1)">@(ViewBag.AnioActual - 1)</option>
+                        <option value="@(ViewBag.AnioActual + 1)">@(ViewBag.AnioActual + 1)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i>
+                <strong>Informaci�n del C�lculo:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Per�odo legal: 1 de diciembre del a�o anterior al 30 de noviembre del a�o actual</li>
+                    <li>F�rmula: (Suma de salarios devengados en el per�odo) � 12</li>
+                    <li>Se consideran ausencias injustificadas para ajustar el c�lculo</li>
+                </ul>
+            </div>
+
+            <div class="mt-4 text-center">
+                <button type="button" class="btn btn-lg"
+                        style="background-color: var(--celeste); color: var(--blanco); padding: 12px 30px;"
+                        onclick="ejecutarCalculo()">
+                    <i class="fas fa-play"></i> Calcular Aguinaldo
+                </button>
+            </div>
+        </div>
+
+        <!-- Paso 2: C�lculo en Progreso -->
+        <div id="paso2" class="step-content" style="display: none;">
+            <div class="py-5 text-center">
+                <i class="fas fa-cog fa-spin fa-5x text-primary mb-3"></i>
+                <h4>Calculando Aguinaldo...</h4>
+                <p class="text-muted">Analizando registros de n�mina y considerando ausencias</p>
+                <div class="progress" style="max-width: 400px; margin: 0 auto;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Resultado del C�lculo -->
+        <div id="paso3" class="step-content" style="display: none;">
+            <div id="resultadoCalculo">
+                <!-- El resultado se cargar� aqu� din�micamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de Navegaci�n -->
+    <div class="text-center">
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al Listado
+        </a>
+        <a href="@Url.Action("Create")" class="btn btn-outline-primary">
+            <i class="fas fa-plus"></i> Registro Manual
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    function ejecutarCalculo() {
+        var empleadoId = $('#empleadoSelect').val();
+        var anio = $('#anioSelect').val();
+
+        if (!empleadoId) {
+            alert('Por favor seleccione un empleado');
+            return;
+        }
+
+        // Cambiar a paso 2
+        cambiarPaso(2);
+
+        // Ejecutar c�lculo
+        $.post('@Url.Action("CalcularAguinaldoAutomatico")', {
+            idEmpleado: empleadoId,
+            anio: anio
+        })
+        .done(function(response) {
+            setTimeout(function() {
+                if (response.success) {
+                    mostrarResultado(response);
+                    cambiarPaso(3);
+                } else {
+                    alert('Error: ' + response.message);
+                    cambiarPaso(1);
+                }
+            }, 2000); // Simular tiempo de c�lculo
+        })
+        .fail(function() {
+            alert('Error de conexi�n. Intente nuevamente.');
+            cambiarPaso(1);
+        });
+    }
+
+    function cambiarPaso(numeroStep) {
+        // Ocultar todos los pasos
+        $('.step-content').hide();
+
+        // Resetear clases de steps
+        $('.step').removeClass('active completed');
+
+        // Mostrar el paso actual
+        $('#paso' + numeroStep).show();
+        $('#step' + numeroStep).addClass('active');
+
+        // Marcar pasos anteriores como completados
+        for (var i = 1; i < numeroStep; i++) {
+            $('#step' + i).addClass('completed');
+        }
+    }
+
+    function mostrarResultado(data) {
+        var html = `
+            <div class="calculation-result">
+                <div class="text-center">
+                    <h3><i class="fas fa-check-circle"></i> C�lculo Completado</h3>
+                    <div class="amount-display">${data.montoAguinaldo}</div>
+                    <p class="mb-0">Aguinaldo calculado para <strong>${data.empleado}</strong></p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">C�dula</div>
+                        <div class="info-value">${data.cedula}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fecha Ingreso</div>
+                        <div class="info-value">${data.fechaIngreso}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Meses Laborados</div>
+                        <div class="info-value">${data.mesesLaborados}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Per�odo C�lculo</div>
+                        <div class="info-value">${data.periodoInicio} - ${data.periodoFin}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-card">
+                <h5><i class="fas fa-chart-line"></i> Detalles del C�lculo</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Suma de Salarios del Per�odo:</strong> ${data.sumaSalarios}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>D�as de Ausencias:</strong> ${data.diasAusencias}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <strong>Monto Descontado por Ausencias:</strong> ${data.montoDescontadoAusencias}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>F�rmula Aplicada:</strong> (Suma Salarios � 12)
+                    </div>
+                </div>
+            </div>`;
+
+        if (data.detalleCalculo && data.detalleCalculo.salariosIncluidos.length > 0) {
+            html += `
+                <div class="detail-card">
+                    <h5><i class="fas fa-list"></i> Salarios Incluidos en el C�lculo</h5>
+                    <div class="table-responsive">
+                        <table class="table-sm table">
+                            <thead>
+                                <tr><th>Mes</th><th>A�o</th><th>Salario</th></tr>
+                            </thead>
+                            <tbody>`;
+
+            data.detalleCalculo.salariosIncluidos.forEach(function(salario) {
+                html += `<tr><td>${salario.mes}</td><td>${salario.anio}</td><td>${salario.salario}</td></tr>`;
+            });
+
+            html += `</tbody></table></div></div>`;
+        }
+
+        if (data.aguinaldoExistente) {
+            html += `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Advertencia:</strong> Ya existe un aguinaldo registrado para este empleado en el a�o seleccionado.
+                </div>`;
+        } else {
+            html += `
+                <div class="mt-4 text-center">
+                    <button type="button" class="btn btn-success btn-lg" onclick="guardarAguinaldo()">
+                        <i class="fas fa-save"></i> Guardar Aguinaldo
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="recalcular()">
+                        <i class="fas fa-redo"></i> Recalcular
+                    </button>
+                </div>`;
+        }
+
+        $('#resultadoCalculo').html(html);
+
+        // Guardar datos para uso posterior
+        window.datosAguinaldo = {
+            idEmpleado: $('#empleadoSelect').val(),
+            montoTotal: parseFloat(data.montoAguinaldo.replace(/[^\d.-]/g, '')),
+            mesesLaborados: data.mesesLaborados,
+            anio: $('#anioSelect').val()
+        };
+    }
+
+    function guardarAguinaldo() {
+        if (!window.datosAguinaldo) {
+            alert('Error: No hay datos para guardar');
+            return;
+        }
+
+        // Redirigir a Create con par�metros
+        var url = '@Url.Action("Create")' +
+                 '?id_empleado=' + window.datosAguinaldo.idEmpleado +
+                 '&monto_total=' + window.datosAguinaldo.montoTotal +
+                 '&meses_laborados=' + window.datosAguinaldo.mesesLaborados +
+                 '&anio=' + window.datosAguinaldo.anio;
+
+        window.location.href = url;
+    }
+
+    function recalcular() {
+        cambiarPaso(1);
+    }
+    </script>
+}

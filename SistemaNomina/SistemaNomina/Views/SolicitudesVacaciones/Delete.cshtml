@@ -1,0 +1,116 @@
+﻿@model SistemaNomina.Models.SolicitudesVacaciones
+
+@{
+    // Título navegador
+    ViewBag.Title = "Delete";
+
+    // vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>SolicitudesVacaciones</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!--  etiqueta  fecha_inicio -->
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_inicio)
+        </dt>
+
+        <!-- Muestra el valor  fecha_inicio -->
+        <dd>
+            @Html.DisplayFor(model => model.fecha_inicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_fin)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_fin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_solicitud)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_solicitud)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_aprobacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_aprobacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.comentario_solicitud)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.comentario_solicitud)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.comentario_respuesta)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.comentario_respuesta)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+        <!-- Muestra la etiqueta y el valor del nombre del estado  -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Estados.nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Estados.nombre)
+        </dd>
+
+        <!-- Muestra la etiqueta y el usuario  -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Usuarios.usuario)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Usuarios.usuario)
+        </dd>
+
+        <!-- Muestra la etiqueta y el periodo de vacaciones  -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Vacaciones.periodo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Vacaciones.periodo)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        // seguridad
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <!-- Botón para enviar el formulario y borrar el registro -->
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+
+            <!-- Enlace para volver a la lista sin borrar nada -->
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

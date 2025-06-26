@@ -1,0 +1,345 @@
+﻿@model SistemaNomina.Models.HorasExtras
+
+@{
+    ViewBag.Title = "Eliminar Horas Extras";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .horas-extras-delete-container {
+        max-width: 700px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: 2px solid #dc3545;
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .delete-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .delete-warning {
+        font-size: 1rem;
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+    }
+
+    .delete-body {
+        padding: 30px;
+    }
+
+    .warning-section {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .warning-icon {
+        font-size: 3rem;
+        color: #856404;
+        margin-bottom: 10px;
+    }
+
+    .warning-text {
+        font-size: 1.1rem;
+        color: #856404;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .warning-subtext {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+
+    .info-section {
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .info-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .info-value.highlight {
+        color: #dc3545;
+    }
+
+    .info-value.money {
+        color: #28a745;
+        font-family: 'Courier New', monospace;
+        font-size: 1.1rem;
+    }
+
+    .estado-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+
+    .estado-pendiente {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .estado-aprobado {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .bloqueo-section {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .bloqueo-text {
+        color: #721c24;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .actions-section {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        padding-top: 30px;
+        border-top: 1px solid #e9ecef;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        min-width: 150px;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    @@media (max-width: 768px) {
+        .horas-extras-delete-container {
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .delete-body {
+            padding: 20px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actions-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            margin: 5px 0;
+        }
+    }
+</style>
+
+<div class="horas-extras-delete-container">
+    <div class="delete-card">
+        <div class="delete-header">
+            <h1 class="delete-title">🗑️ Eliminar Horas Extras</h1>
+            <p class="delete-warning">¡Esta acción no se puede deshacer!</p>
+        </div>
+
+        <div class="delete-body">
+            <!-- Advertencia -->
+            @if (ViewBag.EsAprobada == true)
+            {
+                <div class="bloqueo-section">
+                    <div class="bloqueo-text">
+                        ⚠️ No se pueden eliminar horas extras que ya han sido aprobadas.
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="warning-section">
+                    <div class="warning-icon">⚠️</div>
+                    <div class="warning-text">¿Está seguro que desea eliminar este registro?</div>
+                    <div class="warning-subtext">Una vez eliminado, no podrá recuperar esta información.</div>
+                </div>
+            }
+
+            <!-- Información del Registro -->
+            <div class="info-section">
+                <h3 class="section-title">📋 Información del Registro a Eliminar</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Empleado</div>
+                        <div class="info-value">
+                            @if (Model.Empleados != null)
+                            {
+                                @($"{Model.Empleados.nombre1} {Model.Empleados.apellido1}")
+                            }
+                            else
+                            {
+                                @("Sin información")
+                            }
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Cédula</div>
+                        <div class="info-value">
+                            @(Model.Empleados?.cedula ?? "Sin información")
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fecha</div>
+                        <div class="info-value highlight">@Model.fecha.ToString("dd/MM/yyyy")</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Horario</div>
+                        <div class="info-value highlight">@Model.hora_inicio.ToString(@"hh\:mm") - @Model.hora_fin.ToString(@"hh\:mm")</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Horas</div>
+                        <div class="info-value highlight">@String.Format("{0:F2}", Model.horas) horas</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tipo</div>
+                        <div class="info-value">
+                            @(Model.TiposHoraExtra?.nombre ?? "Sin especificar")
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Monto Total</div>
+                        <div class="info-value money">₡@String.Format("{0:N2}", Model.total)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Estado</div>
+                        <div class="info-value">
+                            @{
+                                var estadoNombre = Model.Estados?.nombre ?? "Pendiente";
+                                var estadoClass = "estado-pendiente";
+                                if (estadoNombre == "Aprobado")
+                                {
+                                    estadoClass = "estado-aprobado";
+                                }
+                            }
+                            <span class="estado-badge @estadoClass">@estadoNombre</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.motivo))
+            {
+                <div class="info-section">
+                    <h3 class="section-title">📝 Motivo</h3>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
+                        <em>@Model.motivo</em>
+                    </div>
+                </div>
+            }
+
+            <!-- Acciones -->
+            <div class="actions-section">
+                @if (ViewBag.EsAprobada != true)
+                {
+                    using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="submit" value="🗑️ Confirmar Eliminación" class="btn btn-danger"
+                               onclick="return confirm('¿Está COMPLETAMENTE seguro? Esta acción no se puede deshacer.');" />
+                    }
+                }
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    ↩️ Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

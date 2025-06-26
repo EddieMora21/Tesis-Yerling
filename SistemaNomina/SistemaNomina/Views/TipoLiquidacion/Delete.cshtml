@@ -1,0 +1,60 @@
+﻿@model SistemaNomina.Models.TipoLiquidacion
+
+@{
+    ViewBag.Title = "Delete"; // Título de la página
+    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+}
+
+<h2>Delete</h2> @* Título de la vista *@
+
+<h3>Are you sure you want to delete this?</h3> @* Pregunta de confirmación para el usuario *@
+
+<div>
+    <h4>TipoLiquidacion</h4> @* Subtítulo  *@
+    <hr /> @* Línea divisoria *@
+
+    @* Lista de los datos del registro que se desea eliminar *@
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre) @* Muestra el nombre del campo "nombre" *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre) @* Muestra el valor del campo "nombre" *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+    </dl>
+
+    @* Formulario para confirmar la eliminación del registro *@
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken() @* seguridad *@
+
+        <div class="form-actions no-color">
+            @* Botón para eliminar el registro *@
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+
+            @* Enlace para regresar a la lista sin eliminar *@
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

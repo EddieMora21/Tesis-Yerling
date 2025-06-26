@@ -1,0 +1,113 @@
+﻿@model IEnumerable<SistemaNomina.ISR>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    @* Establece el título y  vista *@
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+    @*  nuevo registro ISR *@
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.anio)
+            @* Encabezado para el campo 'anio' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.limite_inferior)
+            @* Encabezado para 'límite inferior' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.limite_superior)
+            @* Encabezado para 'límite superior' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.porcentaje)
+            @* Encabezado para 'porcentaje' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.exceso)
+            @* Encabezado para 'exceso' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.credito_hijo)
+            @* Encabezado para 'crédito por hijo' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.credito_conyuge)
+            @* Encabezado para 'crédito por cónyuge' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+            @* Encabezado para 'descripción' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+            @* Encabezado para 'fecha de creación' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+            @* Encabezado para 'fecha de actualización' *@
+        </th>
+        <th></th> 
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        @* Recorre cada registro ISR y lo muestra en una fila *@
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.anio)
+                @* Muestra el año del registro *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.limite_inferior)
+                @* Muestra el límite inferior *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.limite_superior)
+                @* Muestra el límite superior *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.porcentaje)
+                @* Muestra el porcentaje aplicado *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.exceso)
+                @* Muestra el exceso aplicado *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.credito_hijo)
+                @* Muestra el crédito por hijo *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.credito_conyuge)
+                @* Muestra el crédito por cónyuge *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+                @* Muestra la descripción del registro *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_creacion)
+                @* Muestra la fecha de creación *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
+                @* Muestra la fecha de última actualización *@
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_isr }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id_isr }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_isr })
+                @* Acciones disponibles: Editar, Detallar, Eliminar *@
+            </td>
+        </tr>
+    }
+</table>

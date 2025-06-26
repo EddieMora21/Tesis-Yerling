@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Cambiar Contraseña";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<div class="container">
+    <h2>Cambiar Contraseña</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success">
+            @ViewBag.Success
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("CambiarContrasena", "Usuarios", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@ViewBag.id_usuario" />
+
+                <div class="form-group">
+                    <label for="nuevaContrasena" class="control-label">Nueva contraseña:</label>
+                    <input type="password" name="nuevaContrasena" id="nuevaContrasena" class="form-control" required
+                           minlength="6" title="La contraseña debe tener al menos 6 caracteres" />
+                    <small class="form-text text-muted">Mínimo 6 caracteres</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmarContrasena" class="control-label">Confirmar nueva contraseña:</label>
+                    <input type="password" name="confirmarContrasena" id="confirmarContrasena" class="form-control" required
+                           minlength="6" title="Las contraseñas deben coincidir" />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Cancelar</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Validación para que las contraseñas coincidan
+            $("#confirmarContrasena").on('keyup', function() {
+                if ($("#nuevaContrasena").val() != $("#confirmarContrasena").val()) {
+                    this.setCustomValidity("Las contraseñas no coinciden");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+
+            // Validación del formulario antes de enviar
+            $("form").submit(function(e) {
+                if ($("#nuevaContrasena").val() !== $("#confirmarContrasena").val()) {
+                    e.preventDefault();
+                    alert("Las contraseñas no coinciden");
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+}

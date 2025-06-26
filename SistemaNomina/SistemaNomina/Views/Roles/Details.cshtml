@@ -1,0 +1,35 @@
+﻿@model SistemaNomina.Models.Roles
+
+@{
+    ViewBag.Title = "Detalles del Rol"; // Título de la página
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Usamos el layout general
+}
+
+<h2>Detalles del Rol</h2>
+
+<div>
+    <h4>Información</h4>
+    <hr />
+
+    <!-- Lista con las propiedades del rol para mostrar -->
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.nombre)</dt>  <!-- Nombre del rol -->
+        <dd>@Html.DisplayFor(model => model.nombre)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.descripcion)</dt>  <!-- Descripción del rol -->
+        <dd>@Html.DisplayFor(model => model.descripcion)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.fecha_creacion)</dt>  <!-- Fecha de creación -->
+        <dd>@Html.DisplayFor(model => model.fecha_creacion)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.fecha_actualizacion)</dt>  <!-- Fecha de actualización -->
+        <dd>@Html.DisplayFor(model => model.fecha_actualizacion)</dd>
+    </dl>
+</div>
+
+<div class="form-group">
+    <!-- Botón para ir a la vista de edición, pasando el id del rol -->
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id_rol }, new { @class = "btn btn-primary" })
+    <!-- Botón para volver a la lista de roles -->
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-default" })
+</div>

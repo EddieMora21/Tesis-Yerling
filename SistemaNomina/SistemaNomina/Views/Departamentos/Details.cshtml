@@ -1,0 +1,52 @@
+﻿@model SistemaNomina.Models.Departamentos
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Departamentos</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @* Muestra la etiqueta del campo nombre *@
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        @* Muestra el valor del campo nombre *@
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        @* Muestra la etiqueta del campo fecha de creación *@
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+
+        @* Muestra el valor del campo fecha de creación *@
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        @* Muestra la etiqueta del campo fecha de actualización *@
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+
+        @* Muestra el valor del campo fecha de actualización *@
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @* Enlace para editar el departamento actual, pasando su id *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_departamento }) |
+    @* Enlace para regresar a la lista de departamentos *@
+    @Html.ActionLink("Back to List", "Index")
+</p>

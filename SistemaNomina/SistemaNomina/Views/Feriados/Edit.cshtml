@@ -1,0 +1,141 @@
+﻿@model SistemaNomina.Models.Feriados
+
+@{
+    ViewBag.Title = "Edit";
+    // Establece el título de la página como "Edit"
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // plantilla
+}
+
+<h2>Edit</h2>
+¨@*Título visible en la página que indica que se está editando un registro*@
+
+@using (Html.BeginForm())
+{
+    // Inicio del formulario
+
+    @Html.AntiForgeryToken()
+    // seguridad
+
+    <div class="form-horizontal">
+        @*Contenedor con clases para formularios*@
+
+        <h4>Feriados</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @*Muestra un resumen de errores de validación, si los hay*@
+
+        @Html.HiddenFor(model => model.id_feriado)
+        @*Campo oculto para enviar el id del feriado sin mostrarlo en la interfaz*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*Etiqueta para el campo 'nombre'*@
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @*Campo editable para 'nombre' con estilo de formulario*@
+
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                @*Mensaje de error para validación de 'nombre'*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*Etiqueta para el campo 'fecha'*@
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control" } })
+                @*Campo editable para la fecha con estilo*@
+
+                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+                @*Mensaje de validación para 'fecha'*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.pago_obligatorio, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*Etiqueta para el campo booleano 'pago_obligatorio'*@
+
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.pago_obligatorio)
+                    @*Checkbox para editar el valor de 'pago_obligatorio'*@
+
+                    @Html.ValidationMessageFor(model => model.pago_obligatorio, "", new { @class = "text-danger" })
+                    @* Mensaje de validación para 'pago_obligatorio'*@
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.recargo, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*Etiqueta para el campo 'recargo'*@
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.recargo, new { htmlAttributes = new { @class = "form-control" } })
+                @*Campo editable para 'recargo'*@
+
+                @Html.ValidationMessageFor(model => model.recargo, "", new { @class = "text-danger" })
+                @*Mensaje de validación para 'recargo'*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*Etiqueta para el campo 'descripcion'*@
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+
+
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+
+
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+
+
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                @*Botón para enviar el formulario y guardar los cambios*@
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+    @*Enlace para volver a la lista principal de feriados*@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @*validación*@
+}

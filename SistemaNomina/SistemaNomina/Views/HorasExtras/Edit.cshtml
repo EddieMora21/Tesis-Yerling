@@ -1,0 +1,344 @@
+﻿@model SistemaNomina.Models.HorasExtras
+
+@{
+    ViewBag.Title = "Editar Horas Extras";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .horas-extras-form-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #212529;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .form-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .form-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.25);
+            outline: none;
+        }
+
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .btn-warning {
+        background: #ffc107;
+        border: none;
+        color: #212529;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,193,7,0.3);
+        }
+
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin-left: 10px;
+    }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    .form-actions {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        margin-top: 30px;
+    }
+
+    .validation-summary {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .info-card {
+        background: #e7f3ff;
+        border: 1px solid #b3d7ff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+        .info-card h5 {
+            color: #0066cc;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #cce7ff;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .info-value {
+        color: #0066cc;
+        font-family: 'Courier New', monospace;
+    }
+
+    .row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .col-md-6 {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    @@media (max-width: 768px) {
+        .horas-extras-form-container {
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .form-body {
+            padding: 20px;
+        }
+
+        .row {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .col-md-6 {
+            min-width: auto;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="horas-extras-form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">✏️ Editar Horas Extras</h1>
+        </div>
+
+        <div class="form-body">
+            <!-- Información Actual CORREGIDA -->
+            <div class="info-card">
+                <h5>📊 Información Actual</h5>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">👤 Empleado:</span>
+                        <span class="info-value">
+                            @if (Model.Empleados != null)
+                            {
+                                @($"{Model.Empleados.nombre1} {Model.Empleados.apellido1}")
+                            }
+                            else
+                            {
+                                @("Sin información")
+                            }
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📅 Fecha:</span>
+                        <span class="info-value">@Model.fecha.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⏱️ Horas:</span>
+                        <span class="info-value">@String.Format("{0:F2}", Model.horas) hrs</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">💰 Total:</span>
+                        <span class="info-value">₡@String.Format("{0:N2}", Model.total)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Estado:</span>
+                        <span class="info-value">
+                            @(Model.Estados?.nombre ?? "Pendiente")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.id_hora_extra)
+                @Html.HiddenFor(model => model.fecha_creacion)
+
+                @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.id_empleado, "👤 Empleado:", new { @class = "form-label" })
+                    @Html.DropDownList("id_empleado", null, "-- Seleccionar Empleado --", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.id_tipo, "🏷️ Tipo de Hora Extra:", new { @class = "form-label" })
+                    @Html.DropDownList("id_tipo", null, "-- Seleccionar Tipo --", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.id_tipo, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fecha, "📅 Fecha:", new { @class = "form-label" })
+                    @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control", @type = "date", @max = DateTime.Today.ToString("yyyy-MM-dd") } })
+                    @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.hora_inicio, "🕐 Hora de Inicio:", new { @class = "form-label" })
+                            @Html.EditorFor(model => model.hora_inicio, new { htmlAttributes = new { @class = "form-control", @type = "time" } })
+                            @Html.ValidationMessageFor(model => model.hora_inicio, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.hora_fin, "🕐 Hora de Fin:", new { @class = "form-label" })
+                            @Html.EditorFor(model => model.hora_fin, new { htmlAttributes = new { @class = "form-control", @type = "time" } })
+                            @Html.ValidationMessageFor(model => model.hora_fin, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.motivo, "📝 Motivo/Justificación:", new { @class = "form-label" })
+                    @Html.TextAreaFor(model => model.motivo, new { @class = "form-control", @rows = "3", @placeholder = "Describe el motivo de las horas extras..." })
+                    @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-actions">
+                    <input type="submit" value="💾 Guardar Cambios" class="btn-warning" />
+                    <a href="@Url.Action("Index")" class="btn-secondary">↩️ Cancelar</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        // Calcular horas automáticamente
+        $('#hora_inicio, #hora_fin').on('change', function () {
+            var inicio = $('#hora_inicio').val();
+            var fin = $('#hora_fin').val();
+
+            if (inicio && fin) {
+                var inicioDate = new Date('1970-01-01T' + inicio);
+                var finDate = new Date('1970-01-01T' + fin);
+
+                if (finDate > inicioDate) {
+                    var diff = (finDate - inicioDate) / (1000 * 60 * 60); // horas
+                    $('#info-horas').remove();
+                    $('#hora_fin').after('<small id="info-horas" style="color: #ffc107; font-weight: 600;">⏱️ Nuevo total: ' + diff.toFixed(2) + ' horas</small>');
+                } else {
+                    $('#info-horas').remove();
+                    $('#hora_fin').after('<small id="info-horas" style="color: #dc3545; font-weight: 600;">❌ La hora de fin debe ser mayor a la de inicio</small>');
+                }
+            }
+        });
+
+        // Validar fecha no sea futura
+        $('#fecha').on('change', function () {
+            var fechaSeleccionada = new Date(this.value);
+            var hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            if (fechaSeleccionada > hoy) {
+                alert('⚠️ No se pueden registrar horas extras para fechas futuras.');
+                this.value = '';
+            }
+        });
+    </script>
+}

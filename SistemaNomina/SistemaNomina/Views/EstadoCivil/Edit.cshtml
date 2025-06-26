@@ -1,0 +1,56 @@
+﻿@model SistemaNomina.Models.EstadoCivil
+
+@{
+    // Define el título de la página
+    ViewBag.Title = "Edit";
+
+    // plantilla usar
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    // seguridad
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>EstadoCivil</h4>
+        <hr />
+        <!-- Muestra resumen de errores de validación -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Campo oculto para mantener el id del estado civil -->
+        @Html.HiddenFor(model => model.id_estado_civil)
+
+        <div class="form-group">
+            <!-- Etiqueta para el campo 'nombre'  -->
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!-- Campo editable para el nombre  -->
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+
+                <!-- Mensaje de validación específico para el campo 'nombre' -->
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <!-- Botón para enviar el formulario y guardar los cambios -->
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <!-- Enlace para regresar a la lista de estados civiles -->
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    <!-- validación -->
+    @Scripts.Render("~/bundles/jqueryval")
+}

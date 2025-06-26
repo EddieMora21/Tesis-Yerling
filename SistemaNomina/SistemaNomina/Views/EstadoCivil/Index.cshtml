@@ -1,0 +1,353 @@
+﻿@model IEnumerable<SistemaNomina.Models.EstadoCivil>
+
+@{
+    ViewBag.Title = "Estados Civiles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* === RESET Y BASE === */
+    * {
+        box-sizing: border-box;
+    }
+
+    .estados-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* === CARD PRINCIPAL === */
+    .card-estados {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    /* === HEADER === */
+    .header-estados {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .titulo-estados {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: #28a745;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+        .btn-nuevo:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+
+    /* === ALERTAS === */
+    .alerta {
+        margin: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .alerta-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alerta-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* === TABLA === */
+    .tabla-container {
+        overflow-x: auto;
+        margin: 20px;
+    }
+
+    .tabla-estados {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+        .tabla-estados th {
+            background: #343a40;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border: none;
+        }
+
+            .tabla-estados th.acciones-header {
+                text-align: center;
+                width: 200px;
+            }
+
+        .tabla-estados td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .tabla-estados tr:hover {
+            background: #f8f9fa;
+        }
+
+    .nombre-estado {
+        font-weight: 600;
+        color: #495057;
+        font-size: 1rem;
+    }
+
+    /* === BOTONES DE ACCIÓN === */
+    .acciones-container {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-accion {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 80px;
+        justify-content: center;
+    }
+
+    .btn-ver {
+        background: #17a2b8;
+        color: white;
+    }
+
+        .btn-ver:hover {
+            background: #138496;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(23,162,184,0.3);
+        }
+
+    .btn-editar {
+        background: #ffc107;
+        color: #212529;
+    }
+
+        .btn-editar:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(255,193,7,0.3);
+        }
+
+    .btn-eliminar {
+        background: #dc3545;
+        color: white;
+    }
+
+        .btn-eliminar:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(220,53,69,0.3);
+        }
+
+    /* === ESTADO VACÍO === */
+    .estado-vacio {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .estado-vacio h4 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .estado-vacio p {
+            margin-bottom: 20px;
+        }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 768px) {
+        .estados-container {
+            padding: 10px;
+        }
+
+        .header-estados {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .titulo-estados {
+            font-size: 1.5rem;
+        }
+
+        .btn-nuevo {
+            width: 100%;
+        }
+
+        .tabla-estados th,
+        .tabla-estados td {
+            padding: 10px 8px;
+            font-size: 0.875rem;
+        }
+
+        .acciones-container {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-accion {
+            width: 100%;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+
+        .tabla-estados th.acciones-header {
+            width: 120px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .header-estados {
+            padding: 15px;
+        }
+
+        .titulo-estados {
+            font-size: 1.3rem;
+        }
+
+        .tabla-estados {
+            font-size: 0.8rem;
+        }
+
+            .tabla-estados th,
+            .tabla-estados td {
+                padding: 8px 6px;
+            }
+
+        .btn-accion {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+
+        .nombre-estado {
+            font-size: 0.9rem;
+        }
+
+        .alerta {
+            margin: 10px;
+            padding: 10px;
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+<div class="estados-container">
+    <div class="card-estados">
+        <!-- Header -->
+        <div class="header-estados">
+            <h1 class="titulo-estados">Estados Civiles</h1>
+            <a href="@Url.Action("Create")" class="btn-nuevo">
+                ➕ Nuevo Estado Civil
+            </a>
+        </div>
+
+        <!-- Alertas -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alerta alerta-success">
+                ✅ @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alerta alerta-error">
+                ❌ @TempData["Error"]
+            </div>
+        }
+
+        <!-- Tabla -->
+        <div class="tabla-container">
+            <table class="tabla-estados">
+                <thead>
+                    <tr>
+                        <th>📋 Nombre</th>
+                        <th class="acciones-header">⚙️ Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="nombre-estado">@item.nombre</div>
+                            </td>
+                            <td>
+                                <div class="acciones-container">
+                                    <a href="@Url.Action("Details", new { id = item.id_estado_civil })"
+                                       class="btn-accion btn-ver"
+                                       title="Ver detalles">
+                                        👁️ Ver
+                                    </a>
+                                    <a href="@Url.Action("Edit", new { id = item.id_estado_civil })"
+                                       class="btn-accion btn-editar"
+                                       title="Editar">
+                                        ✏️ Editar
+                                    </a>
+                                    <a href="@Url.Action("Delete", new { id = item.id_estado_civil })"
+                                       class="btn-accion btn-eliminar"
+                                       title="Eliminar">
+                                        🗑️ Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estado vacío -->
+        @if (!Model.Any())
+        {
+            <div class="estado-vacio">
+                <h4>📝 No hay estados civiles registrados</h4>
+                <p>Comienza creando el primer estado civil para el sistema.</p>
+                <a href="@Url.Action("Create")" class="btn-nuevo">
+                    ➕ Crear el primero
+                </a>
+            </div>
+        }
+    </div>
+</div>

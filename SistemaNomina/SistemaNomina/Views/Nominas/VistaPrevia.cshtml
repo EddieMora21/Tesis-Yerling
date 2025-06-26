@@ -1,0 +1,124 @@
+﻿@model SistemaNomina.Models.VistaPreviaViewModel
+
+@{
+    ViewBag.Title = "Vista Previa de Nómina";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-eye"></i> Vista Previa - Nómina @Model.Mes/@Model.Anio
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    @if (Model.Resultados != null && Model.Resultados.Any())
+                    {
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            <strong>Revise los cálculos antes de guardar.</strong>
+                            Una vez guardada, la nómina se registrará en el sistema.
+                        </div>
+
+                        using (Html.BeginForm("GuardarNomina", "Nominas", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("mes", Model.Mes)
+                            @Html.Hidden("anio", Model.Anio)
+
+                            <div class="table-responsive">
+                                <table class="table-striped table-bordered table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Empleado</th>
+                                            <th>Salario Base</th>
+                                            <th>Horas Extras</th>
+                                            <th>Días Feriados</th>
+                                            <th>Salario Bruto</th>
+                                            <th>CCSS (9.34%)</th>
+                                            <th>IVM (2.75%)</th>
+                                            <th>ISR</th>
+                                            <th>Salario Neto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Resultados.Count; i++)
+                                        {
+                                            var resultado = Model.Resultados[i];
+
+                                            <!-- Campos hidden para enviar los datos -->
+                                            @Html.Hidden($"empleado_{i}", resultado.IdEmpleado)
+                                            @Html.Hidden($"salario_bruto_{i}", resultado.SalarioBruto)
+                                            @Html.Hidden($"horas_extras_{i}", resultado.HorasExtras)
+                                            @Html.Hidden($"dias_feriados_{i}", resultado.DiasFeriados)
+                                            @Html.Hidden($"ccss_{i}", resultado.CCSS)
+                                            @Html.Hidden($"ivm_{i}", resultado.IVM)
+                                            @Html.Hidden($"isr_{i}", resultado.ISR)
+                                            @Html.Hidden($"salario_neto_{i}", resultado.SalarioNeto)
+
+                                            <tr>
+                                                <td>
+                                                    <strong>@resultado.NombreCompleto</strong>
+                                                    <br><small class="text-muted">@resultado.Cedula</small>
+                                                </td>
+                                                <td class="text-right">₡@resultado.SalarioBase.ToString("N2")</td>
+                                                <td class="text-right">₡@resultado.HorasExtras.ToString("N2")</td>
+                                                <td class="text-right">₡@resultado.DiasFeriados.ToString("N2")</td>
+                                                <td class="text-right"><strong>₡@resultado.SalarioBruto.ToString("N2")</strong></td>
+                                                <td class="text-danger text-right">-₡@resultado.CCSS.ToString("N2")</td>
+                                                <td class="text-danger text-right">-₡@resultado.IVM.ToString("N2")</td>
+                                                <td class="text-danger text-right">-₡@resultado.ISR.ToString("N2")</td>
+                                                <td class="text-success text-right"><strong>₡@resultado.SalarioNeto.ToString("N2")</strong></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot class="thead-light">
+                                        @{
+                                            decimal totalBruto = Model.Resultados.Sum(r => r.SalarioBruto);
+                                            decimal totalNeto = Model.Resultados.Sum(r => r.SalarioNeto);
+                                            decimal totalCCSS = Model.Resultados.Sum(r => r.CCSS);
+                                            decimal totalIVM = Model.Resultados.Sum(r => r.IVM);
+                                            decimal totalISR = Model.Resultados.Sum(r => r.ISR);
+                                        }
+                                        <tr>
+                                            <th>TOTALES</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th class="text-right">₡@totalBruto.ToString("N2")</th>
+                                            <th class="text-danger text-right">-₡@totalCCSS.ToString("N2")</th>
+                                            <th class="text-danger text-right">-₡@totalIVM.ToString("N2")</th>
+                                            <th class="text-danger text-right">-₡@totalISR.ToString("N2")</th>
+                                            <th class="text-success text-right"><strong>₡@totalNeto.ToString("N2")</strong></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <!-- BOTONES DE ACCIÓN -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('¿Está seguro de guardar esta nómina?')">
+                                    <i class="fa fa-save"></i> Guardar Nómina
+                                </button>
+                                @Html.ActionLink("Recalcular", "SeleccionarPeriodo", null, new { @class = "btn btn-warning btn-lg" })
+                                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default btn-lg" })
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            No hay datos para mostrar.
+                            @Html.ActionLink("Volver a calcular", "SeleccionarPeriodo", null, new { @class = "btn btn-primary" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

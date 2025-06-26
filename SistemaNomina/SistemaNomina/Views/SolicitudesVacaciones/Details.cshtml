@@ -1,0 +1,107 @@
+﻿@model SistemaNomina.Models.SolicitudesVacaciones
+
+@{
+    // título navegador
+    ViewBag.Title = "Details";
+
+    // vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SolicitudesVacaciones</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!-- etiqueta para la fecha de inicio -->
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_inicio)
+        </dt>
+        <!-- Muestra el valor de la fecha de inicio -->
+        <dd>
+            @Html.DisplayFor(model => model.fecha_inicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_fin)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_fin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_solicitud)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_solicitud)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_aprobacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_aprobacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.comentario_solicitud)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.comentario_solicitud)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.comentario_respuesta)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.comentario_respuesta)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+        <!-- Muestra la etiqueta y el nombre del estado relacionado -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Estados.nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Estados.nombre)
+        </dd>
+
+        <!-- Muestra la etiqueta y el nombre del usuario relacionado -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Usuarios.usuario)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Usuarios.usuario)
+        </dd>
+
+        <!-- Muestra la etiqueta y el periodo de vacaciones relacionado -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Vacaciones.periodo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Vacaciones.periodo)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    <!-- Enlace para ir a la página de edición de esta solicitud -->
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_solicitud }) |
+
+    <!-- Enlace para regresar a la lista de solicitudes -->
+    @Html.ActionLink("Back to List", "Index")
+</p>

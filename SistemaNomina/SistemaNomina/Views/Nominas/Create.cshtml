@@ -1,0 +1,215 @@
+﻿@model SistemaNomina.Models.Nomina
+
+@{
+    ViewBag.Title = "Crear Nómina Manual";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- ENCABEZADO -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-primary">
+                        <i class="bi bi-plus-circle"></i> Crear Nómina Manual
+                    </h2>
+                    <p class="text-muted">Complete los datos para crear una nómina individual</p>
+                </div>
+                <div>
+                    @Html.ActionLink("📊 Generar Automática", "SeleccionarPeriodo", null, new { @class = "btn btn-success" })
+                    @Html.ActionLink("📋 Ver Nóminas", "Index", null, new { @class = "btn btn-outline-secondary" })
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- FORMULARIO PRINCIPAL -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">📝 Información de la Nómina</h5>
+                        </div>
+                        <div class="card-body">
+                            @using (Html.BeginForm())
+                            {
+                                @Html.AntiForgeryToken()
+
+                                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                                <div class="row mb-4">
+                                    <!-- SELECCIÓN DE EMPLEADO -->
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-person"></i> Empleado *
+                                            </label>
+                                            @Html.DropDownList("id_empleado", ViewBag.id_empleado as SelectList, "-- Seleccione un empleado --", new { @class = "form-select form-select-lg", @required = "required" })
+                                            @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger small" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <!-- PERÍODO -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-calendar"></i> Mes *
+                                            </label>
+                                            @Html.DropDownListFor(model => model.mes, new SelectList(new[]
+                                            {
+                                                new { Value = 1, Text = "Enero" },
+                                                new { Value = 2, Text = "Febrero" },
+                                                new { Value = 3, Text = "Marzo" },
+                                                new { Value = 4, Text = "Abril" },
+                                                new { Value = 5, Text = "Mayo" },
+                                                new { Value = 6, Text = "Junio" },
+                                                new { Value = 7, Text = "Julio" },
+                                                new { Value = 8, Text = "Agosto" },
+                                                new { Value = 9, Text = "Septiembre" },
+                                                new { Value = 10, Text = "Octubre" },
+                                                new { Value = 11, Text = "Noviembre" },
+                                                new { Value = 12, Text = "Diciembre" }
+                                            }, "Value", "Text"), "-- Seleccione mes --", new { @class = "form-select", @required = "required" })
+                                            @Html.ValidationMessageFor(model => model.mes, "", new { @class = "text-danger small" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-calendar-date"></i> Año *
+                                            </label>
+                                            @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control", @type = "number", @min = "2020", @max = "2030", @value = DateTime.Now.Year, @required = "required" } })
+                                            @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger small" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <!-- SALARIOS -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-currency-dollar"></i> Salario Bruto *
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">₡</span>
+                                                @Html.EditorFor(model => model.salario_bruto, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01", @min = "0", @required = "required", @placeholder = "0.00" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.salario_bruto, "", new { @class = "text-danger small" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-clock"></i> Horas Extras
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">₡</span>
+                                                @Html.EditorFor(model => model.horas_extras, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01", @min = "0", @placeholder = "0.00" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.horas_extras, "", new { @class = "text-danger small" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <!-- DEDUCCIONES AUTOMÁTICAS -->
+                                    <div class="col-md-12">
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle"></i>
+                                            <strong>Nota:</strong> Las deducciones legales (CCSS, IVM, ISR) se calcularán automáticamente basadas en el salario bruto.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BOTONES -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        @Html.ActionLink("⬅️ Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-warning me-2" onclick="calcularAutomatico()">
+                                            🧮 Calcular Deducciones
+                                        </button>
+                                        <button type="submit" class="btn btn-success btn-lg">
+                                            <i class="bi bi-save"></i> Crear Nómina
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL DE AYUDA -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">💡 Información Útil</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="text-primary">📊 Deducciones Legales:</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>CCSS:</strong> 9.34% del salario bruto</li>
+                                <li><strong>IVM:</strong> 2.75% del salario bruto</li>
+                                <li><strong>ISR:</strong> Según tabla progresiva</li>
+                            </ul>
+
+                            <hr>
+
+                            <h6 class="text-success">✨ Recomendación:</h6>
+                            <p class="small text-muted">
+                                Para múltiples empleados, es más eficiente usar la
+                                <strong>generación automática</strong> que calcula todo el período.
+                            </p>
+
+                            <div class="d-grid">
+                                @Html.ActionLink("📊 Generar Automática", "SeleccionarPeriodo", null, new { @class = "btn btn-outline-success" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ÚLTIMO REGISTRO PARA REFERENCIA -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6 class="card-title mb-0">📋 Última Nómina Creada</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="small text-muted">Referencia para verificar datos similares</p>
+                            <!-- Aquí podrías mostrar la última nómina del empleado seleccionado -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        function calcularAutomatico() {
+            var salarioBruto = parseFloat($('#salario_bruto').val()) || 0;
+
+            if (salarioBruto > 0) {
+                var ccss = salarioBruto * 0.0934;
+                var ivm = salarioBruto * 0.0275;
+
+                alert(`Deducciones calculadas:\n\nCCSS (9.34%): ₡${ccss.toFixed(2)}\nIVM (2.75%): ₡${ivm.toFixed(2)}\n\nEstos valores se aplicarán automáticamente.`);
+            } else {
+                alert('Por favor ingrese primero el salario bruto.');
+                $('#salario_bruto').focus();
+            }
+        }
+
+        // Validación en tiempo real
+        $('#salario_bruto').on('input', function() {
+            var value = parseFloat($(this).val());
+            if (value < 0) {
+                $(this).val(0);
+            }
+        });
+    </script>
+}

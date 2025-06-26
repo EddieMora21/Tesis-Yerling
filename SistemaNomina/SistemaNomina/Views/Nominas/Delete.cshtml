@@ -1,0 +1,168 @@
+﻿@model SistemaNomina.Models.Nomina
+
+@{
+    // Título de la página
+    ViewBag.Title = "Delete";
+    //  vistas
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Nomina</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!-- Mostrar el nombre del campo mes -->
+        <dt>
+            @Html.DisplayNameFor(model => model.mes)
+        </dt>
+
+        <!-- Mostrar el valor del campo mes -->
+        <dd>
+            @Html.DisplayFor(model => model.mes)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo anio -->
+        <dt>
+            @Html.DisplayNameFor(model => model.anio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.anio)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo salario_bruto -->
+        <dt>
+            @Html.DisplayNameFor(model => model.salario_bruto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.salario_bruto)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo horas_extras -->
+        <dt>
+            @Html.DisplayNameFor(model => model.horas_extras)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.horas_extras)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo salario_dias_feriados -->
+        <dt>
+            @Html.DisplayNameFor(model => model.salario_dias_feriados)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.salario_dias_feriados)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo ccss -->
+        <dt>
+            @Html.DisplayNameFor(model => model.ccss)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ccss)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo ivm -->
+        <dt>
+            @Html.DisplayNameFor(model => model.ivm)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ivm)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo isr -->
+        <dt>
+            @Html.DisplayNameFor(model => model.isr)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.isr)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo credito_hijos -->
+        <dt>
+            @Html.DisplayNameFor(model => model.credito_hijos)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.credito_hijos)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo credito_conyuge -->
+        <dt>
+            @Html.DisplayNameFor(model => model.credito_conyuge)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.credito_conyuge)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo otros_descuentos -->
+        <dt>
+            @Html.DisplayNameFor(model => model.otros_descuentos)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.otros_descuentos)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo base_imponible -->
+        <dt>
+            @Html.DisplayNameFor(model => model.base_imponible)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.base_imponible)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo salario_neto -->
+        <dt>
+            @Html.DisplayNameFor(model => model.salario_neto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.salario_neto)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo fecha_creacion -->
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo fecha_actualizacion -->
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo cedula del empleado relacionado -->
+        <dt>
+            @Html.DisplayNameFor(model => model.Empleados.cedula)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Empleados.cedula)
+        </dd>
+
+        <!-- Mostrar el nombre y valor del campo descripcion del ISR relacionado -->
+        <dt>
+            @Html.DisplayNameFor(model => model.ISR1.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ISR1.descripcion)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <!-- Botón para confirmar la eliminación -->
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <!-- Enlace para regresar a la lista -->
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

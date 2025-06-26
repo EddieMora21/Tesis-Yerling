@@ -1,0 +1,43 @@
+﻿@model SistemaNomina.Models.Estados
+
+@{
+    // Establece el título de la pestaña del navegador
+    ViewBag.Title = "Detalles del Estado";
+
+    // plantilla
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalles del Estado</h2>
+
+<div>
+    <h4>Estado</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd>
+            @*Muestra el valor del campo 'nombre'*@
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            
+            @Html.DisplayNameFor(model => model.modulo)
+        </dt>
+        <dd>
+            
+            @Html.DisplayFor(model => model.modulo)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @*Enlace para ir a la vista de edición del estado actual*@
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id_estado }) |
+
+    @*Enlace para regresar a la lista de estados*@
+    @Html.ActionLink("Regresar", "Index")
+</p>

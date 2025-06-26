@@ -1,0 +1,64 @@
+﻿@model SistemaNomina.Models.Empleados
+
+@{
+    // Define el título de la vista para mostrar en la pestaña o navegador
+    ViewBag.Title = "Desactivar Empleado";
+}
+
+<h2>Desactivar Empleado</h2>
+
+<h3>¿Está seguro que desea desactivar este empleado?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @*Muestra la etiqueta para la cédula del empleado*@
+            @Html.DisplayNameFor(model => model.cedula)
+        </dt>
+        <dd>
+            @*Muestra el valor de la cédula del empleado*@
+            @Html.DisplayFor(model => model.cedula)
+        </dd>
+
+        <dt>
+            Nombre Completo
+        </dt>
+        <dd>
+            @*Muestra los apellidos y nombres del empleado concatenados*@
+            @Html.DisplayFor(model => model.apellido1) @Html.DisplayFor(model => model.apellido2),
+            @Html.DisplayFor(model => model.nombre1) @Html.DisplayFor(model => model.nombre2)
+        </dd>
+
+        <dt>
+            Puesto
+        </dt>
+        <dd>
+            @*Muestra el nombre del puesto relacionado al empleado *@
+            @Html.DisplayFor(model => model.Puestos.nombre_puesto)
+        </dd>
+
+        <dt>
+            Estado Actual
+        </dt>
+        <dd>
+            @*Muestra el estado actual del empleado con una etiqueta de color:*@
+            @*verde si está ACTIVO, rojo si no lo está*@
+            <span class="label @(Model.estado == "ACTIVO" ? "label-success" : "label-danger")">
+                @Html.DisplayFor(model => model.estado)
+            </span>
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        // Seguridad
+        @Html.AntiForgeryToken()
+
+<div class="form-actions no-color">
+    @*Botón para enviar el formulario y desactivar el empleado*@
+    <input type="submit" value="Desactivar" class="btn btn-danger" />
+    @*Enlace para cancelar y regresar a la lista de empleados*@
+    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+</div>
+    }
+</div>

@@ -1,0 +1,151 @@
+﻿@model SistemaNomina.Models.SolicitudesVacaciones
+
+@{
+    // título  navegador
+    ViewBag.Title = "Edit";
+
+    // vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    // seguridad
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>SolicitudesVacaciones</h4>
+        <hr />
+
+        <!-- Muestra un resumen de validaciones (errores) si existen -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Campo oculto para guardar el id de la solicitud -->
+        @Html.HiddenFor(model => model.id_solicitud)
+
+        <!-- Grupo para seleccionar la vacación relacionada -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_vacacion, "id_vacacion", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!-- Lista desplegable para elegir la vacación -->
+                @Html.DropDownList("id_vacacion", null, htmlAttributes: new { @class = "form-control" })
+                <!-- Mensaje de error para este campo -->
+                @Html.ValidationMessageFor(model => model.id_vacacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para editar la fecha de inicio -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_inicio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!-- Campo para ingresar la fecha de inicio -->
+                @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @class = "form-control" } })
+                <!-- Mensaje de error para fecha de inicio -->
+                @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para editar la fecha de fin -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_fin, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para editar la fecha de solicitud -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_solicitud, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_solicitud, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_solicitud, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para editar la fecha de aprobación -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_aprobacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_aprobacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_aprobacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para seleccionar quién aprobó -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.aprobado_por, "aprobado_por", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!-- Lista desplegable para seleccionar aprobador -->
+                @Html.DropDownList("aprobado_por", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.aprobado_por, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para ingresar comentario de la solicitud -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.comentario_solicitud, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!-- Campo para texto del comentario -->
+                @Html.EditorFor(model => model.comentario_solicitud, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.comentario_solicitud, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para ingresar comentario de respuesta -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.comentario_respuesta, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.comentario_respuesta, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.comentario_respuesta, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para seleccionar el estado -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_estado, "id_estado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!-- Lista desplegable para estado -->
+                @Html.DropDownList("id_estado", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_estado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para editar la fecha de creación -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Grupo para editar la fecha de actualización -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Botón para enviar el formulario -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Enlace para regresar a la lista de solicitudes -->
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    <!-- validación -->
+    @Scripts.Render("~/bundles/jqueryval")
+}

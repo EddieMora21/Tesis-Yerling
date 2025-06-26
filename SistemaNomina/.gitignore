@@ -1,0 +1,11 @@
+# Visual Studio files
+.vs/
+*.user
+*.suo
+bin/
+obj/
+packages/
+
+# Other temp files
+*.tmp
+*.cache

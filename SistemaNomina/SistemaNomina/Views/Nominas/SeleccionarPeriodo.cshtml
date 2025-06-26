@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Generar Nómina - Seleccionar Período";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-calculator"></i> Generar Nómina - Seleccionar Período
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm("CalcularNomina", "Nominas", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <!-- SELECCIÓN DE PERÍODO -->
+                            <div class="col-md-6">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">📅 Período de Nómina</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label for="mes" class="control-label">Mes:</label>
+                                            @Html.DropDownList("mes", ViewBag.Meses as SelectList, "Seleccione un mes", new { @class = "form-control", @required = "required" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="anio" class="control-label">Año:</label>
+                                            @Html.TextBox("anio", DateTime.Now.Year, new { @class = "form-control", @type = "number", @min = "2020", @max = "2030", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SELECCIÓN DE EMPLEADOS -->
+                            <div class="col-md-6">
+                                <div class="panel panel-success">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            👥 Empleados a Incluir
+                                            <button type="button" class="btn btn-xs btn-default pull-right" onclick="toggleAllEmployees()">
+                                                Seleccionar Todos
+                                            </button>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body" style="max-height: 300px; overflow-y: auto;">
+                                        @if (ViewBag.Empleados != null)
+                                        {
+                                            foreach (var empleado in (List<SistemaNomina.Models.Empleados>)ViewBag.Empleados)
+                                            {
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="empleadosSeleccionados" value="@empleado.id_empleado" class="empleado-checkbox">
+                                                        <strong>@empleado.nombre1 @empleado.apellido1</strong>
+                                                        <br><small class="text-muted">@empleado.cedula - @empleado.Puestos.nombre_puesto</small>
+                                                    </label>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-warning">
+                                                <i class="fa fa-exclamation-triangle"></i>
+                                                No hay empleados activos registrados.
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BOTONES DE ACCIÓN -->
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fa fa-calculator"></i> Calcular Nómina
+                                </button>
+                                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default btn-lg" })
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleAllEmployees() {
+            var checkboxes = document.querySelectorAll('.empleado-checkbox');
+            var allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = !allChecked;
+            });
+        }
+
+        // Validación del formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var selectedEmployees = document.querySelectorAll('.empleado-checkbox:checked');
+
+            if (selectedEmployees.length === 0) {
+                e.preventDefault();
+                alert('⚠️ Debe seleccionar al menos un empleado para calcular la nómina.');
+                return false;
+            }
+        });
+    </script>
+}

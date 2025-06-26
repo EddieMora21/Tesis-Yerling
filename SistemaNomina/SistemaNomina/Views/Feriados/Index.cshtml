@@ -1,0 +1,99 @@
+﻿@model IEnumerable<SistemaNomina.Feriados>
+
+@{
+    ViewBag.Title = "Index";
+    // Establece el título de la página como "Index"
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // plantilla
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+  
+</p>
+
+<table class="table">
+    @*Tabla dar estilo*@
+
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)
+            @*Encabezado de columna que muestra el nombre del campo 'nombre'*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha)
+            @*Encabezado para la columna 'fecha'*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.pago_obligatorio)
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.recargo)
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+
+        </th>
+        <th></th>
+        @*Columna vacía para las acciones (editar, detalles, eliminar)*@
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        // Recorre cada objeto 'Feriados' en la colección para generar una fila en la tabla
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+                @*Muestra el valor del campo 'nombre' para el feriado actual*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha)
+                @*Muestra el valor de la fecha del feriado*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.pago_obligatorio)
+                
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.recargo)
+                
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+               
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_creacion)
+                
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
+                
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_feriado }) |
+                
+
+                @Html.ActionLink("Details", "Details", new { id = item.id_feriado }) |
+               
+
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_feriado })
+                
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,50 @@
+﻿@model SistemaNomina.Models.Estados
+
+@{
+    // Establece el título de la página
+    ViewBag.Title = "Eliminar Estado";
+
+    // plantilla
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Eliminar Estado</h2>
+
+<h3>¿Está seguro que desea eliminar este estado?</h3>
+
+<div>
+    <h4>Estado</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @*Muestra la etiqueta del campo 'nombre'*@
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+
+            @Html.DisplayNameFor(model => model.modulo)
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(model => model.modulo)
+        </dd>
+    </dl>
+
+    @*Formulario que ejecuta la acción de eliminación*@
+    @using (Html.BeginForm())
+    {
+        // segudidad
+        <div class="form-actions no-color">
+            @*Botón para confirmar la eliminación del estado*@
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+
+            @*Enlace para cancelar la acción y volver a la lista*@
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

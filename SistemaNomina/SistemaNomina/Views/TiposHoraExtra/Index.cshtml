@@ -1,0 +1,62 @@
+﻿@model IEnumerable<SistemaNomina.TiposHoraExtra> 
+
+@{
+    ViewBag.Title = "Index"; @*  título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Index</h2>  @* Título página *@
+
+<p>
+    @Html.ActionLink("Create New", "Create")  @*  nuevo registro *@
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)  @* Muestra el encabezado de la columna 'nombre'  *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.recargo)  @* Encabezado para la columna 'recargo' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)  @* Encabezado para la columna 'descripcion' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Encabezado para la columna 'fecha_creacion' *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Encabezado para la columna 'fecha_actualizacion' *@
+        </th>
+        <th></th>  @* Columna vacía para los botones de acción (Edit, Details, Delete) *@
+    </tr>
+
+    @foreach (var item in Model)
+    {@* Recorre lista de TiposHoraExtra *@
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre)  @* Muestra el valor de 'nombre' para cada registro *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.recargo)  @* Muestra el valor de 'recargo' *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.descripcion)  @* Muestra el valor de 'descripcion' *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_creacion)  @* Muestra la fecha de creación *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_actualizacion)  @* Muestra la fecha de última actualización *@
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo })  @* Enlace para editar el registro actual *@
+            |
+            @Html.ActionLink("Details", "Details", new { id = item.id_tipo })  @* Enlace para ver detalles del registro *@
+            |
+            @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo })  @* Enlace para eliminar el registro *@
+        </td>
+    </tr>
+}
+
+</table>  @* Fin de la tabla que contiene todos los registros *@

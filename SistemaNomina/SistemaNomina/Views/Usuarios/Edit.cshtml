@@ -1,0 +1,164 @@
+﻿@model SistemaNomina.Models.Usuarios
+
+@{
+    ViewBag.Title = "Editar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="edit-user-container">
+    <div class="header-section">
+        <h1 class="page-title">
+            <i class="icon-edit"></i>
+            Editar Usuario
+        </h1>
+        <p class="page-subtitle">Modificar información del usuario: <strong>@Model.usuario</strong></p>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+        @Html.HiddenFor(model => model.id_usuario)
+
+        <div class="form-container">
+            <!-- SECCIÓN EMPLEADO -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-person"></i>
+                    Información del Empleado
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_empleado">
+                        Empleado <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "validation-message" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN CREDENCIALES -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-key"></i>
+                    Credenciales de Acceso
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="usuario">
+                            Nombre de Usuario <span class="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            @Html.EditorFor(model => model.usuario, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.usuario, "", new { @class = "validation-message" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="contrasena">
+                            Nueva Contraseña <span class="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="password" id="contrasena" name="contrasena"
+                                   class="form-control"
+                                   placeholder="Dejar vacío para mantener contraseña actual"
+                                   value="" />
+                            @Html.ValidationMessageFor(model => model.contrasena, "", new { @class = "validation-message" })
+                            <small class="help-text">
+                                <i class="icon-info"></i>
+                                La contraseña actual está protegida. Ingrese una nueva o deje vacío para mantener la actual.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN ROL -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-shield"></i>
+                    Permisos y Rol
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_rol">
+                        Rol del Usuario <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        @Html.DropDownList("id_rol", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.id_rol, "", new { @class = "validation-message" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN CONFIGURACIÓN -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-settings"></i>
+                    Configuración de Cuenta
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            @Html.EditorFor(model => model.primer_ingreso, new { htmlAttributes = new { style = "margin-right: 0.5rem;" } })
+                            Forzar cambio de contraseña en próximo login
+                        </label>
+                        @Html.ValidationMessageFor(model => model.primer_ingreso, "", new { @class = "validation-message" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="fecha_creacion">Fecha de Creación</label>
+                        <div class="input-wrapper">
+                            @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="form-actions">
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="icon-save"></i>
+                        Guardar Cambios
+                    </button>
+                    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    /* Usar los mismos estilos del Create pero sin las funcionalidades de password toggle */
+    .edit-user-container, .header-section, .form-container, .form-section,
+    .section-title, .form-group, .form-label, .form-control, .input-wrapper,
+    .form-row, .form-actions, .action-buttons, .btn, .validation-message,
+    .required, .help-text {
+        /* Los mismos estilos del archivo Create.cshtml */
+    }
+
+    .icon-edit::before {
+        content: "✏️";
+    }
+
+    .icon-save::before {
+        content: "💾";
+    }
+
+    .icon-settings::before {
+        content: "⚙️";
+    }
+
+    .icon-info::before {
+        content: "ℹ️";
+    }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SistemaNomina.Models.Bitacora>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @* Enlace para crear un nuevo registro *@
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<table class="table">
+    <tr>
+        @* Encabezados de la tabla con los nombres de los campos a mostrar *@
+        <th>
+            @Html.DisplayNameFor(model => model.accion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.detalle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_hora)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Usuarios.usuario)
+        </th>
+        <th></th> @* Columna para las acciones (Editar, Detalles, Borrar) *@
+    </tr>
+
+    @* Iterar sobre cada elemento del modelo (lista de Bitacora) y mostrar sus datos *@
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.accion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.detalle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_hora)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Usuarios.usuario)
+            </td>
+            <td>
+                @* Enlaces para las acciones de Editar, Ver Detalles y Eliminar, enviando el id correspondiente *@
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_log }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id_log }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_log })
+            </td>
+        </tr>
+    }
+
+</table>

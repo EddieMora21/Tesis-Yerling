@@ -1,0 +1,85 @@
+﻿@model SistemaNomina.Models.Puestos 
+
+@{
+    ViewBag.Title = "Details"; @* Título que se mostrará en la pestaña del navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @*  vista *@
+}
+
+<h2>Details</h2>  @* Título  *@
+
+<div>
+    <h4>Puestos</h4>  @* Subtítulo  *@
+    <hr />
+    <dl class="dl-horizontal">
+        @* Lista etiquetas y valores *@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre_puesto)  @* Etiqueta para el campo 'nombre_puesto' *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre_puesto)  @* Valor del campo 'nombre_puesto' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.salario_base)  @* Etiqueta para el campo 'salario_base' *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.salario_base)  @* Valor del campo 'salario_base' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)  @* Etiqueta para el campo 'descripcion' *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)  @* Valor del campo 'descripcion' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.horas_jornada)  @* Etiqueta para el campo 'horas_jornada' *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.horas_jornada)  @* Valor del campo 'horas_jornada' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.es_jefe)  @* Etiqueta para el campo 'es_jefe' (indica si es jefe) *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.es_jefe)  @* Valor del campo 'es_jefe' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Etiqueta para la fecha de creación del puesto *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)  @* Valor de la fecha de creación *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Etiqueta para la fecha de actualización del puesto *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)  @* Valor de la fecha de actualización *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Departamentos.nombre)  @* Etiqueta para el nombre del departamento asociado *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Departamentos.nombre)  @* Valor del nombre del departamento *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Horarios.nombre)  @* Etiqueta para el nombre del horario asociado *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Horarios.nombre)  @* Valor del nombre del horario *@
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_puesto })  @* Enlace para editar el puesto actual *@ |
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para volver al listado de puestos *@
+</p>

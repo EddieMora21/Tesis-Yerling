@@ -1,0 +1,408 @@
+﻿@model IEnumerable<SistemaNomina.Models.Aguinaldo>
+
+@{
+    ViewBag.Title = "Gestión de Aguinaldos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --azul-oscuro: #221d42;
+        --celeste: #1788ca;
+        --amarillo: #fab61b;
+        --gris-claro: #e7e8eb;
+        --blanco: #ffffff;
+        --verde: #28a745;
+        --rojo: #dc3545;
+    }
+
+    .header-section {
+        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
+        color: var(--blanco);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .stats-card {
+        background: var(--blanco);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--celeste);
+    }
+
+    .stats-label {
+        color: var(--azul-oscuro);
+        font-size: 0.9rem;
+    }
+
+    .action-buttons {
+        margin-bottom: 2rem;
+    }
+
+    .btn-primary-custom {
+        background-color: var(--celeste);
+        border-color: var(--celeste);
+        color: var(--blanco);
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--azul-oscuro);
+            border-color: var(--azul-oscuro);
+        }
+
+    .btn-warning-custom {
+        background-color: var(--amarillo);
+        border-color: var(--amarillo);
+        color: var(--azul-oscuro);
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .table-responsive {
+        background: var(--blanco);
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .table th {
+        background-color: var(--azul-oscuro);
+        color: var(--blanco);
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+    }
+
+    .table td {
+        padding: 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--gris-claro);
+    }
+
+    .badge-year {
+        background-color: var(--celeste);
+        color: var(--blanco);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    .filter-section {
+        background: var(--blanco);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="header-section">
+    <div class="row">
+        <div class="col-md-8">
+            <h2><i class="fas fa-gift"></i> Gestión de Aguinaldos</h2>
+            <p class="mb-0">Sistema automatizado para el cálculo de aguinaldos según el Código de Trabajo de Costa Rica</p>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="stats-number">@Model.Count()</div>
+                <div class="stats-label">Aguinaldos Registrados</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">@Model.Count(a => a.anio == DateTime.Now.Year)</div>
+            <div class="stats-label">Año @DateTime.Now.Year</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">@Model.Where(a => a.anio == DateTime.Now.Year).Sum(a => a.monto_total).ToString("C")</div>
+            <div class="stats-label">Total @DateTime.Now.Year</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">@Model.GroupBy(a => a.anio).Count()</div>
+            <div class="stats-label">Años con Aguinaldos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">@Model.Average(a => a.monto_total).ToString("C")</div>
+            <div class="stats-label">Promedio</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="filter-section">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="filtroAnio" class="form-label fw-bold">Filtrar por Año:</label>
+            <select id="filtroAnio" class="form-select">
+                <option value="">Todos los años</option>
+                @foreach (var anio in Model.Select(a => a.anio).Distinct().OrderByDescending(a => a))
+                {
+                    <option value="@anio">@anio</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="filtroEmpleado" class="form-label fw-bold">Buscar Empleado:</label>
+            <input type="text" id="filtroEmpleado" class="form-control" placeholder="Nombre o cédula...">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Acciones Rápidas:</label>
+            <div>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="limpiarFiltros()">
+                    <i class="fas fa-eraser"></i> Limpiar Filtros
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Botones de Acción -->
+<div class="action-buttons">
+    <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
+        <i class="fas fa-calculator"></i> Calcular Aguinaldo Individual
+    </a>
+    <button type="button" class="btn btn-warning-custom" onclick="mostrarCalculoMasivo()">
+        <i class="fas fa-users"></i> Calcular para Todos los Empleados
+    </button>
+    <a href="@Url.Action("Create")" class="btn btn-success">
+        <i class="fas fa-plus"></i> Registro Manual
+    </a>
+</div>
+
+<!-- Modal para Cálculo Masivo -->
+<div class="modal fade" id="modalCalculoMasivo" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Calcular Aguinaldo Masivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="anioCalculoMasivo" class="form-label">Año Fiscal:</label>
+                    <select id="anioCalculoMasivo" class="form-select">
+                        <option value="@DateTime.Now.Year">@DateTime.Now.Year</option>
+                        <option value="@(DateTime.Now.Year - 1)">@(DateTime.Now.Year - 1)</option>
+                    </select>
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Información:</strong> Este proceso calculará automáticamente el aguinaldo para todos los empleados activos según el período legal (1 dic - 30 nov).
+                </div>
+                <div id="resultadoCalculoMasivo" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="ejecutarCalculoMasivo()">
+                    <i class="fas fa-play"></i> Ejecutar Cálculo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Aguinaldos -->
+<div class="table-responsive">
+    <table class="table-hover table" id="tablaAguinaldos">
+        <thead>
+            <tr>
+                <th><i class="fas fa-user"></i> Empleado</th>
+                <th><i class="fas fa-id-card"></i> Cédula</th>
+                <th><i class="fas fa-calendar"></i> Año</th>
+                <th><i class="fas fa-calendar-check"></i> Meses Laborados</th>
+                <th><i class="fas fa-dollar-sign"></i> Monto Total</th>
+                <th><i class="fas fa-clock"></i> Fecha Creación</th>
+                <th><i class="fas fa-cogs"></i> Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderByDescending(a => a.anio).ThenBy(a => a.Empleados.apellido1))
+            {
+                <tr>
+                    <td>
+                        <strong>@item.Empleados.nombre1 @item.Empleados.apellido1</strong>
+                        <br>
+                        <small class="text-muted">@item.Empleados.nombre2 @item.Empleados.apellido2</small>
+                    </td>
+                    <td>@item.Empleados.cedula</td>
+                    <td><span class="badge-year">@item.anio</span></td>
+                    <td>
+                        <span class="badge bg-info">@item.meses_laborados meses</span>
+                    </td>
+                    <td>
+                        <strong style="color: var(--verde);">@item.monto_total.ToString("C")</strong>
+                    </td>
+                    <td>
+                        @if (item.fecha_creacion.HasValue)
+                        {
+                            @item.fecha_creacion.Value.ToString("dd/MM/yyyy")
+                        }
+                        else
+                        {
+                            <span class="text-muted">No registrada</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="@Url.Action("Details", new { id = item.id_aguinaldo })"
+                               class="btn btn-sm btn-outline-info" title="Ver Detalles">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a href="@Url.Action("Edit", new { id = item.id_aguinaldo })"
+                               class="btn btn-sm btn-outline-warning" title="Editar">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = item.id_aguinaldo })"
+                               class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="py-5 text-center">
+        <i class="fas fa-gift fa-5x text-muted mb-3"></i>
+        <h3 class="text-muted">No hay aguinaldos registrados</h3>
+        <p class="text-muted">Comience calculando el aguinaldo para sus empleados</p>
+        <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
+            <i class="fas fa-calculator"></i> Calcular Primer Aguinaldo
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+    // Filtros en tiempo real
+    $(document).ready(function() {
+        $('#filtroAnio, #filtroEmpleado').on('input change', function() {
+            filtrarTabla();
+        });
+    });
+
+    function filtrarTabla() {
+        var filtroAnio = $('#filtroAnio').val().toLowerCase();
+        var filtroEmpleado = $('#filtroEmpleado').val().toLowerCase();
+
+        $('#tablaAguinaldos tbody tr').each(function() {
+            var fila = $(this);
+            var anio = fila.find('td:eq(2)').text().toLowerCase();
+            var empleado = fila.find('td:eq(0)').text().toLowerCase();
+            var cedula = fila.find('td:eq(1)').text().toLowerCase();
+
+            var mostrarAnio = filtroAnio === '' || anio.includes(filtroAnio);
+            var mostrarEmpleado = filtroEmpleado === '' ||
+                                 empleado.includes(filtroEmpleado) ||
+                                 cedula.includes(filtroEmpleado);
+
+            if (mostrarAnio && mostrarEmpleado) {
+                fila.show();
+            } else {
+                fila.hide();
+            }
+        });
+    }
+
+    function limpiarFiltros() {
+        $('#filtroAnio').val('');
+        $('#filtroEmpleado').val('');
+        filtrarTabla();
+    }
+
+    function mostrarCalculoMasivo() {
+        $('#modalCalculoMasivo').modal('show');
+    }
+
+    function ejecutarCalculoMasivo() {
+        var anio = $('#anioCalculoMasivo').val();
+        var btnEjecutar = $('button[onclick="ejecutarCalculoMasivo()"]');
+
+        // Deshabilitar botón y mostrar loading
+        btnEjecutar.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Calculando...');
+
+        $.post('@Url.Action("GenerarParaTodosLosEmpleados")', { anio: anio })
+            .done(function(response) {
+                if (response.success) {
+                    var html = '<div class="alert alert-success">' +
+                              '<h6><i class="fas fa-check-circle"></i> Cálculo Completado</h6>' +
+                              '<p><strong>Exitosos:</strong> ' + response.exitosos + ' | ' +
+                              '<strong>Errores:</strong> ' + response.errores + ' | ' +
+                              '<strong>Total:</strong> ' + response.total + '</p></div>';
+
+                    if (response.resultados && response.resultados.length > 0) {
+                        html += '<div class="table-responsive" style="max-height: 300px; overflow-y: auto;">' +
+                               '<table class="table-sm table">' +
+                               '<thead><tr><th>Empleado</th><th>Cédula</th><th>Monto</th><th>Estado</th></tr></thead><tbody>';
+
+                        response.resultados.forEach(function(item) {
+                            var estadoClass = item.estado === 'Creado' ? 'success' :
+                                            item.estado === 'Ya existía' ? 'info' : 'danger';
+                            html += '<tr><td>' + item.empleado + '</td>' +
+                                   '<td>' + item.cedula + '</td>' +
+                                   '<td>' + item.monto + '</td>' +
+                                   '<td><span class="badge bg-'+ estadoClass +'">' + item.estado + '</span></td></tr>';
+                        });
+
+                        html += '</tbody></table></div>';
+                    }
+
+                    $('#resultadoCalculoMasivo').html(html).show();
+
+                    // Actualizar página después de 3 segundos
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                } else {
+                    $('#resultadoCalculoMasivo').html(
+                        '<div class="alert alert-danger">' +
+                        '<i class="fas fa-exclamation-triangle"></i> Error: ' + response.message +
+                        '</div>'
+                    ).show();
+                }
+            })
+            .fail(function() {
+                $('#resultadoCalculoMasivo').html(
+                    '<div class="alert alert-danger">' +
+                    '<i class="fas fa-exclamation-triangle"></i> Error de conexión. Intente nuevamente.' +
+                    '</div>'
+                ).show();
+            })
+            .always(function() {
+                btnEjecutar.prop('disabled', false).html('<i class="fas fa-play"></i> Ejecutar Cálculo');
+            });
+    }
+    </script>
+}

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SistemaNomina.TipoLiquidacion> 
+
+@{
+    ViewBag.Title = "Index";  // Título navegador
+    Layout = "~/Views/Shared/_Layout.cshtml";  // Vista
+}
+
+<h2>Index</h2>  @* Título página *@
+
+<p>
+    @Html.ActionLink("Create New", "Create")  @*  nuevo registro *@
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)  @* Encabezado de la columna para el campo "nombre" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)  @* Encabezado para "descripcion" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Encabezado para "fecha_creacion" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Encabezado para "fecha_actualizacion" *@
+        </th>
+        <th></th> 
+    </tr>
+
+    @* Recorre cada elemento  *@
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)  @* Muestra el valor del campo "nombre" del registro actual *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)  @* Muestra "descripcion" del registro *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_creacion)  @* Muestra "fecha_creacion" *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_actualizacion)  @* Muestra "fecha_actualizacion" *@
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo }) |  @* Enlace para editar el registro actual *@
+                @Html.ActionLink("Details", "Details", new { id = item.id_tipo }) |  @* Enlace para ver detalles del registro *@
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo })  @* Enlace para eliminar el registro *@
+            </td>
+        </tr>
+    }
+
+</table>

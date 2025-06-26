@@ -1,0 +1,80 @@
+﻿@model SistemaNomina.Models.Horarios
+
+@{
+    ViewBag.Title = "Details";
+    // Establece el título de la página como "Details"
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // plantilla
+}
+
+<h2>Details</h2>
+@*Título pag*@
+
+<div>
+    <h4>Horarios</h4>
+    @*Subtítulo que indica la entidad relacionada*@
+    <hr />
+    @* Línea horizontal para separar visualmente*@
+
+<dl class="dl-horizontal">
+    @* Lista mostrar detalles del registro*@
+
+    <dt>
+        @Html.DisplayNameFor(model => model.nombre)
+        @*Etiqueta que muestra el nombre del campo 'nombre'*@
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.nombre)
+        @*Muestra el valor del campo 'nombre'*@
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.hora_entrada)
+        
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.hora_entrada)
+       
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.hora_salida)
+        
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.hora_salida)
+        
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.fecha_creacion)
+        
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.fecha_creacion)
+        
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.fecha_actualizacion)
+        
+    </dd>
+
+</dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_horario }) |
+    @*Enlace para editar el registro actual, pasando el ID del horario*@
+
+    @Html.ActionLink("Back to List", "Index")
+    @*Enlace para regresar a la lista principal*@
+</p>

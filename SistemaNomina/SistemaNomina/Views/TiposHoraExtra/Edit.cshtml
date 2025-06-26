@@ -1,0 +1,75 @@
+﻿@model SistemaNomina.Models.TiposHoraExtra 
+
+@{
+    ViewBag.Title = "Edit"; @* Título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Edit</h2>  @* Título página *@
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-horizontal">
+        @*  formulario  *@
+        <h4>TiposHoraExtra</h4>  @* Subtítulo  *@
+        <hr />  
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  @* Muestra errores generales de validación si los hay *@
+        @Html.HiddenFor(model => model.id_tipo)  @* Campo oculto para mantener el ID del registro que se está editando *@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para el campo 'nombre'  *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })  @* Campo de texto editable para 'nombre' *@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })  @* Muestra mensaje de error si 'nombre' no es válido *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.recargo, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para el campo 'recargo' *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.recargo, new { htmlAttributes = new { @class = "form-control" } })  @* Campo editable para 'recargo' *@
+                @Html.ValidationMessageFor(model => model.recargo, "", new { @class = "text-danger" })  @* Mensaje de error si 'recargo' no es válido *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para el campo 'descripcion' *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo editable para 'descripcion' *@
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })  @* Mensaje de error si 'descripcion' no es válida *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para el campo 'fecha_creacion' *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo editable para 'fecha_creacion' *@
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })  @* Mensaje de error si hay problema con la fecha *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para 'fecha_actualizacion' *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo editable para 'fecha_actualizacion' *@
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })  @* Mensaje de error si hay problema con la fecha *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />  @* Botón para guardar los cambios *@
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista principal *@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")  @* validación *@
+}

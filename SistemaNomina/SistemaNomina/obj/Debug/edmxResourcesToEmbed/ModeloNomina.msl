@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="smartbuilding_rhModelStoreContainer" CdmEntityContainer="smartbuilding_rhEntities">
+    <EntitySetMapping Name="Aguinaldo">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Aguinaldo">
+        <MappingFragment StoreEntitySet="Aguinaldo">
+          <ScalarProperty Name="id_aguinaldo" ColumnName="id_aguinaldo" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="monto_total" ColumnName="monto_total" />
+          <ScalarProperty Name="meses_laborados" ColumnName="meses_laborados" />
+          <ScalarProperty Name="anio" ColumnName="anio" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Asistencia">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Asistencia">
+        <MappingFragment StoreEntitySet="Asistencia">
+          <ScalarProperty Name="id_asistencia" ColumnName="id_asistencia" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="hora_entrada" ColumnName="hora_entrada" />
+          <ScalarProperty Name="hora_salida" ColumnName="hora_salida" />
+          <ScalarProperty Name="es_feriado" ColumnName="es_feriado" />
+          <ScalarProperty Name="fecha_registro" ColumnName="fecha_registro" />
+          <ScalarProperty Name="id_feriado" ColumnName="id_feriado" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Bitacora">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Bitacora">
+        <MappingFragment StoreEntitySet="Bitacora">
+          <ScalarProperty Name="id_log" ColumnName="id_log" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+          <ScalarProperty Name="accion" ColumnName="accion" />
+          <ScalarProperty Name="detalle" ColumnName="detalle" />
+          <ScalarProperty Name="fecha_hora" ColumnName="fecha_hora" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Departamentos">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Departamentos">
+        <MappingFragment StoreEntitySet="Departamentos">
+          <ScalarProperty Name="id_departamento" ColumnName="id_departamento" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Empleados">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Empleados">
+        <MappingFragment StoreEntitySet="Empleados">
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="cedula" ColumnName="cedula" />
+          <ScalarProperty Name="nombre1" ColumnName="nombre1" />
+          <ScalarProperty Name="nombre2" ColumnName="nombre2" />
+          <ScalarProperty Name="apellido1" ColumnName="apellido1" />
+          <ScalarProperty Name="apellido2" ColumnName="apellido2" />
+          <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
+          <ScalarProperty Name="direccion" ColumnName="direccion" />
+          <ScalarProperty Name="correo" ColumnName="correo" />
+          <ScalarProperty Name="telefono" ColumnName="telefono" />
+          <ScalarProperty Name="id_estado_civil" ColumnName="id_estado_civil" />
+          <ScalarProperty Name="cantidad_hijos" ColumnName="cantidad_hijos" />
+          <ScalarProperty Name="id_puesto" ColumnName="id_puesto" />
+          <ScalarProperty Name="id_horario" ColumnName="id_horario" />
+          <ScalarProperty Name="fecha_ingreso" ColumnName="fecha_ingreso" />
+          <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EstadoCivil">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.EstadoCivil">
+        <MappingFragment StoreEntitySet="EstadoCivil">
+          <ScalarProperty Name="id_estado_civil" ColumnName="id_estado_civil" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Estados">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Estados">
+        <MappingFragment StoreEntitySet="Estados">
+          <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="modulo" ColumnName="modulo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Feriados">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Feriados">
+        <MappingFragment StoreEntitySet="Feriados">
+          <ScalarProperty Name="id_feriado" ColumnName="id_feriado" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="pago_obligatorio" ColumnName="pago_obligatorio" />
+          <ScalarProperty Name="recargo" ColumnName="recargo" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Horarios">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Horarios">
+        <MappingFragment StoreEntitySet="Horarios">
+          <ScalarProperty Name="id_horario" ColumnName="id_horario" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="hora_entrada" ColumnName="hora_entrada" />
+          <ScalarProperty Name="hora_salida" ColumnName="hora_salida" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HorasExtras">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.HorasExtras">
+        <MappingFragment StoreEntitySet="HorasExtras">
+          <ScalarProperty Name="id_hora_extra" ColumnName="id_hora_extra" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="hora_inicio" ColumnName="hora_inicio" />
+          <ScalarProperty Name="hora_fin" ColumnName="hora_fin" />
+          <ScalarProperty Name="horas" ColumnName="horas" />
+          <ScalarProperty Name="valor_hora" ColumnName="valor_hora" />
+          <ScalarProperty Name="recargo" ColumnName="recargo" />
+          <ScalarProperty Name="total" ColumnName="total" />
+          <ScalarProperty Name="motivo" ColumnName="motivo" />
+          <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+          <ScalarProperty Name="aprobado_por" ColumnName="aprobado_por" />
+          <ScalarProperty Name="fecha_aprobacion" ColumnName="fecha_aprobacion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Incapacidades">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Incapacidades">
+        <MappingFragment StoreEntitySet="Incapacidades">
+          <ScalarProperty Name="id_incapacidad" ColumnName="id_incapacidad" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+          <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
+          <ScalarProperty Name="numero_boleta" ColumnName="numero_boleta" />
+          <ScalarProperty Name="id_tipo_incapacidad" ColumnName="id_tipo_incapacidad" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+          <ScalarProperty Name="dias_incapacidad" ColumnName="dias_incapacidad" />
+          <ScalarProperty Name="fecha_registro" ColumnName="fecha_registro" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ISR">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.ISR">
+        <MappingFragment StoreEntitySet="ISR">
+          <ScalarProperty Name="id_isr" ColumnName="id_isr" />
+          <ScalarProperty Name="anio" ColumnName="anio" />
+          <ScalarProperty Name="limite_inferior" ColumnName="limite_inferior" />
+          <ScalarProperty Name="limite_superior" ColumnName="limite_superior" />
+          <ScalarProperty Name="porcentaje" ColumnName="porcentaje" />
+          <ScalarProperty Name="exceso" ColumnName="exceso" />
+          <ScalarProperty Name="credito_hijo" ColumnName="credito_hijo" />
+          <ScalarProperty Name="credito_conyuge" ColumnName="credito_conyuge" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Liquidaciones">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Liquidaciones">
+        <MappingFragment StoreEntitySet="Liquidaciones">
+          <ScalarProperty Name="id_liquidacion" ColumnName="id_liquidacion" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
+          <ScalarProperty Name="fecha_salida" ColumnName="fecha_salida" />
+          <ScalarProperty Name="preaviso" ColumnName="preaviso" />
+          <ScalarProperty Name="cesantia" ColumnName="cesantia" />
+          <ScalarProperty Name="vacaciones_pendientes" ColumnName="vacaciones_pendientes" />
+          <ScalarProperty Name="dias_vacaciones_pendientes" ColumnName="dias_vacaciones_pendientes" />
+          <ScalarProperty Name="aguinaldo_proporcional" ColumnName="aguinaldo_proporcional" />
+          <ScalarProperty Name="total_liquidacion" ColumnName="total_liquidacion" />
+          <ScalarProperty Name="isr_liquidacion" ColumnName="isr_liquidacion" />
+          <ScalarProperty Name="css_liquidacion" ColumnName="css_liquidacion" />
+          <ScalarProperty Name="ivm_liquidacion" ColumnName="ivm_liquidacion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Nomina">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Nomina">
+        <MappingFragment StoreEntitySet="Nomina">
+          <ScalarProperty Name="id_nomina" ColumnName="id_nomina" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="id_isr" ColumnName="id_isr" />
+          <ScalarProperty Name="mes" ColumnName="mes" />
+          <ScalarProperty Name="anio" ColumnName="anio" />
+          <ScalarProperty Name="salario_bruto" ColumnName="salario_bruto" />
+          <ScalarProperty Name="horas_extras" ColumnName="horas_extras" />
+          <ScalarProperty Name="salario_dias_feriados" ColumnName="salario_dias_feriados" />
+          <ScalarProperty Name="ccss" ColumnName="ccss" />
+          <ScalarProperty Name="ivm" ColumnName="ivm" />
+          <ScalarProperty Name="isr" ColumnName="isr" />
+          <ScalarProperty Name="credito_hijos" ColumnName="credito_hijos" />
+          <ScalarProperty Name="credito_conyuge" ColumnName="credito_conyuge" />
+          <ScalarProperty Name="otros_descuentos" ColumnName="otros_descuentos" />
+          <ScalarProperty Name="base_imponible" ColumnName="base_imponible" />
+          <ScalarProperty Name="salario_neto" ColumnName="salario_neto" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Permisos">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Permisos">
+        <MappingFragment StoreEntitySet="Permisos">
+          <ScalarProperty Name="id_permiso" ColumnName="id_permiso" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="horas" ColumnName="horas" />
+          <ScalarProperty Name="id_tipo_permiso" ColumnName="id_tipo_permiso" />
+          <ScalarProperty Name="motivo" ColumnName="motivo" />
+          <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+          <ScalarProperty Name="aprobado_por" ColumnName="aprobado_por" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Puestos">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Puestos">
+        <MappingFragment StoreEntitySet="Puestos">
+          <ScalarProperty Name="id_puesto" ColumnName="id_puesto" />
+          <ScalarProperty Name="nombre_puesto" ColumnName="nombre_puesto" />
+          <ScalarProperty Name="id_departamento" ColumnName="id_departamento" />
+          <ScalarProperty Name="salario_base" ColumnName="salario_base" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="horas_jornada" ColumnName="horas_jornada" />
+          <ScalarProperty Name="es_jefe" ColumnName="es_jefe" />
+          <ScalarProperty Name="id_horario" ColumnName="id_horario" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Roles">
+        <MappingFragment StoreEntitySet="Roles">
+          <ScalarProperty Name="id_rol" ColumnName="id_rol" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SolicitudesVacaciones">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.SolicitudesVacaciones">
+        <MappingFragment StoreEntitySet="SolicitudesVacaciones">
+          <ScalarProperty Name="id_solicitud" ColumnName="id_solicitud" />
+          <ScalarProperty Name="id_vacacion" ColumnName="id_vacacion" />
+          <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+          <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
+          <ScalarProperty Name="fecha_solicitud" ColumnName="fecha_solicitud" />
+          <ScalarProperty Name="fecha_aprobacion" ColumnName="fecha_aprobacion" />
+          <ScalarProperty Name="aprobado_por" ColumnName="aprobado_por" />
+          <ScalarProperty Name="comentario_solicitud" ColumnName="comentario_solicitud" />
+          <ScalarProperty Name="comentario_respuesta" ColumnName="comentario_respuesta" />
+          <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.sysdiagrams">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TipoIncapacidades">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.TipoIncapacidades">
+        <MappingFragment StoreEntitySet="TipoIncapacidades">
+          <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="dias_maximos" ColumnName="dias_maximos" />
+          <ScalarProperty Name="pago_planilla" ColumnName="pago_planilla" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TipoLiquidacion">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.TipoLiquidacion">
+        <MappingFragment StoreEntitySet="TipoLiquidacion">
+          <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TiposHoraExtra">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.TiposHoraExtra">
+        <MappingFragment StoreEntitySet="TiposHoraExtra">
+          <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="recargo" ColumnName="recargo" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TiposPermiso">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.TiposPermiso">
+        <MappingFragment StoreEntitySet="TiposPermiso">
+          <ScalarProperty Name="id_tipo_permiso" ColumnName="id_tipo_permiso" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="con_goce" ColumnName="con_goce" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Usuarios">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Usuarios">
+        <MappingFragment StoreEntitySet="Usuarios">
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="usuario" ColumnName="usuario" />
+          <ScalarProperty Name="contrasena" ColumnName="contrasena" />
+          <ScalarProperty Name="id_rol" ColumnName="id_rol" />
+          <ScalarProperty Name="primer_ingreso" ColumnName="primer_ingreso" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Vacaciones">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Vacaciones">
+        <MappingFragment StoreEntitySet="Vacaciones">
+          <ScalarProperty Name="id_vacacion" ColumnName="id_vacacion" />
+          <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
+          <ScalarProperty Name="periodo" ColumnName="periodo" />
+          <ScalarProperty Name="dias_disponibles" ColumnName="dias_disponibles" />
+          <ScalarProperty Name="dias_disfrutados" ColumnName="dias_disfrutados" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

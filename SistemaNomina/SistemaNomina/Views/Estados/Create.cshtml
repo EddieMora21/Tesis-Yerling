@@ -1,0 +1,68 @@
+﻿@model SistemaNomina.Models.Estados
+
+@{
+    // Define el título de la página
+    ViewBag.Title = "Crear Nuevo Estado";
+
+    // plantilla uso
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Crear Nuevo Estado</h2>
+
+@using (Html.BeginForm())
+{
+    // seguridad
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Estados</h4>
+    <hr />
+
+    @*Muestra un resumen de validación si hay errores*@
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<div class="form-group">
+    @*Etiqueta para el campo 'nombre'*@
+    @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+
+    <div class="col-md-10">
+        @*Campo de texto para ingresar el nombre del estado*@
+        @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+
+        @*Muestra mensaje de error si hay problemas con la validación del nombre*@
+        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @*Etiqueta para el campo 'modulo'*@
+    @Html.LabelFor(model => model.modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+
+    <div class="col-md-10">
+        @*Lista desplegable para seleccionar el módulo relacionado al estado*@
+        @Html.DropDownListFor(model => model.modulo, new SelectList(ViewBag.Modulos), "Seleccione módulo", new { @class = "form-control" })
+
+        @*Muestra mensaje de error si hay problemas con la validación del módulo*@
+        @Html.ValidationMessageFor(model => model.modulo, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @*Botón para enviar el formulario*@
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" value="Crear" class="btn btn-primary" />
+    </div>
+</div>
+</div>
+}
+
+<div>
+    @*Enlace para regresar a la vista de lista (Index)*@
+    @Html.ActionLink("Regresar", "Index")
+</div>
+
+@section Scripts {
+    // validación
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,117 @@
+﻿@model IEnumerable<SistemaNomina.Models.Asistencia>
+
+@if (Model.Any())
+{
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h4><i class="fa fa-table"></i> Resultados del Reporte (@Model.Count() registros)</h4>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table-striped table-hover table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Empleado</th>
+                            <th>Cédula</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Horas Trabajadas</th>
+                            <th>Estado</th>
+                            <th>Feriado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.fecha.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Empleados.nombre1 @item.Empleados.apellido1</td>
+                                <td>@item.Empleados.cedula</td>
+                                <td>
+                                    @if (item.hora_entrada.HasValue)
+                                    {
+                                        @item.hora_entrada.Value.ToString(@"hh\:mm")
+                                        if (item.hora_entrada.Value > new TimeSpan(8, 15, 0))
+                                        {
+                                            <span class="label label-warning">Tardanza</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin marcar</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.hora_salida.HasValue)
+                                    {
+                                        @item.hora_salida.Value.ToString(@"hh\:mm")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin marcar</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                                    {
+                                        var horas = (item.hora_salida.Value - item.hora_entrada.Value).TotalHours;
+                                        @Math.Round(horas, 2)<text> hrs</text>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                                    {
+                                        <span class="label label-success">Completo</span>
+                                    }
+                                    else if (item.hora_entrada.HasValue)
+                                    {
+                                        <span class="label label-warning">Sin salida</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-danger">Sin entrada</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.es_feriado == true)
+                                    {
+                                        <span class="label label-info">
+                                            @(item.Feriados != null ? item.Feriados.nombre : "Feriado")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-right">
+                <button class="btn btn-success" onclick="exportarPDF()">
+                    <i class="fa fa-file-pdf-o"></i> Exportar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i> No se encontraron registros con los filtros aplicados.
+    </div>
+}
+
+<script>
+    function exportarPDF() {
+        alert('Funcionalidad de exportación a PDF pendiente de implementar');
+    }
+</script>

@@ -1,0 +1,30 @@
+﻿@model SistemaNomina.Models.Usuarios
+
+<h2 class="mb-4">Iniciar sesión</h2> @* Título página *@
+
+@using (Html.BeginForm("Login", "Usuarios", FormMethod.Post))
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-group">
+        <label for="usuario">Usuario:</label> @* campo usuario *@
+        <input type="text" name="usuario" id="usuario" class="form-control" required autofocus />
+        @* usuario, obligatorio, y autofocus para que el cursor se ponga aquí al cargar la página *@
+    </div>
+
+    <div class="form-group">
+        <label for="contrasena">Contraseña:</label> @* campo contraseña *@
+        <input type="password" name="contrasena" id="contrasena" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+    @* Botón para enviar formulario y validar el login *@
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger mt-2">
+        @* Muestra el mensaje de error recibido desde el controlador si el login falla *@
+        @ViewBag.Error
+    </div>
+}

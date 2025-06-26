@@ -1,0 +1,58 @@
+﻿@model SistemaNomina.Models.Usuarios
+
+@{
+    ViewBag.Title = "Eliminar Usuario";  // Título que aparece en la pestaña del navegador
+    Layout = "~/Views/Shared/_Layout.cshtml";  // Vista maestra del sistema
+}
+
+<h2>Eliminar Usuario</h2>  <!-- Título principal en la página -->
+
+<h3>¿Está seguro de que desea eliminar este usuario?</h3>  <!-- Confirmación para el usuario -->
+
+<div>
+    <h4>Detalles del Usuario</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!-- Formato de lista para mostrar los detalles -->
+
+        <dt>@Html.DisplayNameFor(model => model.usuario)</dt>
+        <dd>@Html.DisplayFor(model => model.usuario)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.contrasena)</dt>
+        <dd>@Html.DisplayFor(model => model.contrasena)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.primer_ingreso)</dt>
+        <dd>@Html.DisplayFor(model => model.primer_ingreso)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.fecha_creacion)</dt>
+        <dd>@Html.DisplayFor(model => model.fecha_creacion)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.fecha_actualizacion)</dt>
+        <dd>@Html.DisplayFor(model => model.fecha_actualizacion)</dd>
+
+        @* Validamos que las propiedades de navegación no sean nulas *@
+        @if (Model.Empleados != null)
+        {
+            <dt>Cédula del Empleado</dt>
+            <dd>@Html.DisplayFor(model => model.Empleados.cedula)</dd>
+        }
+
+        @if (Model.Roles != null)
+        {
+            <dt>Rol Asignado</dt>
+            <dd>@Html.DisplayFor(model => model.Roles.nombre)</dd>
+        }
+    </dl>
+
+    <!-- Formulario de eliminación protegido con token antifalsificación -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> <!-- Botón rojo para eliminar -->
+            @Html.Raw("&nbsp;") <!-- Espacio entre botones -->
+            @Html.ActionLink("Volver al Listado", "Index", null, new { @class = "btn btn-secondary" }) <!-- Botón de regreso -->
+        </div>
+    }
+</div>

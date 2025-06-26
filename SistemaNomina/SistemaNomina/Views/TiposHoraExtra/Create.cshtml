@@ -1,0 +1,74 @@
+﻿@model SistemaNomina.Models.TiposHoraExtra  
+@{
+    ViewBag.Title = "Create";  // Título navegador
+    Layout = "~/Views/Shared/_Layout.cshtml";  // vista
+}
+
+<h2>Create</h2>  // Título página
+
+
+@using (Html.BeginForm())  // formulario 
+{
+    @Html.AntiForgeryToken()  // seguridad 
+    
+    <div class="form-horizontal"> 
+        <h4>TiposHoraExtra</h4>  // Subtítulo formulario
+        <hr /> 
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  // Muestra errores de validación en rojo
+
+        <div class="form-group">  // Grupo para el campo "nombre"
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })  // Etiqueta con estilos
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })  // Campo para ingresar "nombre" 
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })  // Mensaje de error para "nombre"
+            </div>
+        </div>
+
+        <div class="form-group">  // Grupo para el campo "recargo"
+            @Html.LabelFor(model => model.recargo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.recargo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.recargo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">  // Grupo para el campo "descripcion"
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">  // Grupo para el campo "fecha_creacion"
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">  // Grupo para el campo "fecha_actualizacion"
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">  // Grupo para el botón de enviar formulario
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />  // Botón para enviar el formulario
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")  // Enlace para volver a la lista de registros
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")  // validación
+}

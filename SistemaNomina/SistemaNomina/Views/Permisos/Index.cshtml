@@ -1,0 +1,97 @@
+﻿@model IEnumerable<SistemaNomina.Permisos>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    @* vista *@
+}
+
+<h2>Index</h2>
+@* Título  *@
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+    @* Enlace creación *@
+</p>
+
+<table class="table">
+    <tr>
+        @* Encabezados de la tabla  *@
+        <th>
+            @Html.DisplayNameFor(model => model.fecha)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.horas)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.motivo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Empleados.cedula)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Estados.nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Usuarios.usuario)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TiposPermiso.nombre)
+        </th>
+        <th></th> @* Columna vacía para los botones de acción *@
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha)
+                @* Muestra la fecha del permiso *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.horas)
+                @* Muestra la cantidad de horas solicitadas *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.motivo)
+                @* Muestra el motivo del permiso *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_creacion)
+                @* Muestra la fecha en que se creó el registro *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
+                @* Muestra la fecha de la última modificación *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Empleados.cedula)
+                @* Muestra la cédula del empleado que solicitó el permiso *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estados.nombre)
+                @* Muestra el estado del permiso  *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Usuarios.usuario)
+                @* Muestra el nombre del usuario que registró el permiso *@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TiposPermiso.nombre)
+                @* Muestra el tipo de permiso  *@
+            </td>
+            <td>
+                @* Enlaces para editar, ver detalles o eliminar el permiso *@
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_permiso }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id_permiso }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_permiso })
+            </td>
+        </tr>
+    }
+</table>

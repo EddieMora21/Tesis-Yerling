@@ -1,0 +1,99 @@
+﻿@model SistemaNomina.Models.Vacaciones
+
+@{
+    // Título de la página
+    ViewBag.Title = "Edit";
+
+    // visita
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    // seguridad
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Vacaciones</h4>
+        <hr />
+
+        <!-- Muestra errores de validación generales -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Campo oculto para mantener el ID del registro que se está editando -->
+        @Html.HiddenFor(model => model.id_vacacion)
+
+        <!-- Campo para seleccionar el empleado al que pertenece el registro de vacaciones -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para el período de vacaciones -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.periodo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.periodo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.periodo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para los días disponibles -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.dias_disponibles, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.dias_disponibles, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.dias_disponibles, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para los días disfrutados -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.dias_disfrutados, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.dias_disfrutados, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.dias_disfrutados, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para la fecha de creación -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo para la fecha de actualización -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Botón para guardar los cambios -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Enlace para regresar a la lista de registros -->
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    // validación
+    @Scripts.Render("~/bundles/jqueryval")
+}

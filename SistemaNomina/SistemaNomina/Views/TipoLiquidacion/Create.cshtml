@@ -1,0 +1,75 @@
+﻿@model SistemaNomina.Models.TipoLiquidacion
+
+@{
+    ViewBag.Title = "Create"; // Título de la página
+    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+}
+
+<h2>Create</h2> @* titulo página *@
+
+@*  formulario  *@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-horizontal">
+        <h4>TipoLiquidacion</h4> @* Subtítulo del formulario *@
+        <hr /> @* Línea divisoria *@
+
+        @* Muestra errores generales de validación del modelo (si los hay) *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Campo: Nombre *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" }) @* Etiqueta del campo *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } }) @* Campo de entrada *@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" }) @* Mensaje de validación *@
+            </div>
+        </div>
+
+        @* Campo: Descripción *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo: Fecha de creación *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo: Fecha de actualización *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Botón para enviar el formulario *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@* Enlace para regresar a la lista de registros *@
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @* validación *@
+    @Scripts.Render("~/bundles/jqueryval")
+}

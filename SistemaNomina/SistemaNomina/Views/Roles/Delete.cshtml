@@ -1,0 +1,43 @@
+﻿@model SistemaNomina.Models.Roles
+
+@{
+    ViewBag.Title = "Eliminar Rol"; // Título de la página
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Usa el layout general del sitio
+}
+
+<h2>Eliminar Rol</h2>
+
+<h3>¿Está seguro de que desea eliminar este rol?</h3>
+
+<div>
+    <h4>Detalles del Rol</h4>
+    <hr />
+
+    <!-- Lista de propiedades del rol que vamos a eliminar -->
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.nombre)</dt>
+        <dd>@Html.DisplayFor(model => model.nombre)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.descripcion)</dt>
+        <dd>@Html.DisplayFor(model => model.descripcion)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.fecha_creacion)</dt>
+        <dd>@Html.DisplayFor(model => model.fecha_creacion)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.fecha_actualizacion)</dt>
+        <dd>@Html.DisplayFor(model => model.fecha_actualizacion)</dd>
+    </dl>
+
+    <!-- Formulario para confirmar eliminación -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken() <!-- Protección contra ataques CSRF -->
+
+        <div class="form-actions">
+            <!-- Botón para eliminar -->
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            <!-- Link para cancelar y regresar a la lista -->
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

@@ -1,0 +1,78 @@
+﻿@model SistemaNomina.Models.TipoLiquidacion
+
+@{
+    ViewBag.Title = "Edit"; // Título pestaña
+    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+}
+
+<h2>Edit</h2> @* Título vista *@
+
+@* formulario  *@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-horizontal">
+        <h4>TipoLiquidacion</h4> @* Subtítulo *@
+        <hr /> @* Línea divisoria *@
+
+        @* Muestra errores de validación generales del modelo (si existen) *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Campo oculto para el ID,  para saber qué registro se está editando *@
+        @Html.HiddenFor(model => model.id_tipo)
+
+        @* Campo para editar el nombre *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" }) @* Etiqueta del campo *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } }) @* Campo editable *@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" }) @* Mensaje de error si el campo no es válido *@
+            </div>
+        </div>
+
+        @* Campo para editar la descripción *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para editar la fecha de creación *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para editar la fecha de actualización *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Botón para guardar los cambios *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@* Enlace para regresar a la lista de registros *@
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@*validación *@
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

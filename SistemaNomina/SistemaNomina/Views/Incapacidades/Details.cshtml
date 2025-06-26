@@ -1,0 +1,452 @@
+﻿@model SistemaNomina.Models.Incapacidades
+
+@{
+    ViewBag.Title = "Detalles de Incapacidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Header -->
+            <div class="page-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="page-title">
+                            <i class="fas fa-eye text-info"></i>
+                            Detalles de Incapacidad
+                        </h2>
+                        <p class="text-muted">Información completa del registro de incapacidad</p>
+                    </div>
+                    <div class="page-actions">
+                        @Html.ActionLink("Volver a Lista", "Index", null, new { @class = "btn btn-secondary btn-lg" })
+                        @Html.ActionLink("Editar", "Edit", new { id = Model.id_incapacidad }, new { @class = "btn btn-warning btn-lg text-dark" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = Model.id_incapacidad }, new { @class = "btn btn-danger btn-lg" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información principal -->
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Tarjeta principal de información -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-user-injured"></i>
+                                Información de la Incapacidad
+                                <span class="badge bg-light text-dark ms-2">ID: @Model.id_incapacidad</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Datos del empleado -->
+                                <div class="col-md-6">
+                                    <div class="detail-section">
+                                        <h6 class="section-title">
+                                            <i class="fas fa-user text-primary"></i> Empleado
+                                        </h6>
+                                        <div class="detail-item">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="avatar-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                                    @if (Model.Empleados != null && !string.IsNullOrEmpty(Model.Empleados.nombre1) && !string.IsNullOrEmpty(Model.Empleados.apellido1))
+                                                    {
+                                                        @Model.Empleados.nombre1.Substring(0, 1)@Model.Empleados.apellido1.Substring(0, 1)
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>??</text>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-1">
+                                                        @if (Model.Empleados != null)
+                                                        {
+                                                            @(Model.Empleados.nombre1 ?? "Sin nombre") @(Model.Empleados.apellido1 ?? "Sin apellido")
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">Sin empleado asignado</span>
+                                                        }
+                                                    </h5>
+                                                    <p class="text-muted mb-0">
+                                                        <i class="fas fa-id-card me-1"></i>
+                                                        Cédula: @(Model.Empleados?.cedula ?? "No disponible")
+                                                    </p>
+                                                    @if (Model.Empleados?.Puestos != null && !string.IsNullOrEmpty(Model.Empleados.Puestos.nombre_puesto))
+                                                    {
+                                                        <p class="text-muted mb-0">
+                                                            <i class="fas fa-briefcase me-1"></i>
+                                                            @Model.Empleados.Puestos.nombre_puesto
+                                                        </p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tipo y estado -->
+                                <div class="col-md-6">
+                                    <div class="detail-section">
+                                        <h6 class="section-title">
+                                            <i class="fas fa-clipboard-list text-success"></i> Clasificación
+                                        </h6>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Tipo de Incapacidad:</label>
+                                            <div class="detail-value">
+                                                @if (Model.TipoIncapacidades != null && !string.IsNullOrEmpty(Model.TipoIncapacidades.nombre))
+                                                {
+                                                    <span class="badge bg-info text-white">@Model.TipoIncapacidades.nombre</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No especificado</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Estado Actual:</label>
+                                            <div class="detail-value">
+                                                @{
+                                                    string badgeClass = "bg-secondary";
+                                                    string iconClass = "fas fa-question";
+                                                    string estadoNombre = "Sin estado";
+
+                                                    if (Model.Estados != null && !string.IsNullOrEmpty(Model.Estados.nombre))
+                                                    {
+                                                        estadoNombre = Model.Estados.nombre;
+                                                        switch (Model.Estados.nombre.ToLower())
+                                                        {
+                                                            case "pendiente":
+                                                                badgeClass = "bg-warning text-dark";
+                                                                iconClass = "fas fa-clock";
+                                                                break;
+                                                            case "aprobado":
+                                                                badgeClass = "bg-success";
+                                                                iconClass = "fas fa-check";
+                                                                break;
+                                                            case "rechazado":
+                                                                badgeClass = "bg-danger";
+                                                                iconClass = "fas fa-times";
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                                <span class="badge @badgeClass">
+                                                    <i class="@iconClass me-1"></i>
+                                                    @estadoNombre
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Fechas y duración -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="detail-section">
+                                        <h6 class="section-title">
+                                            <i class="fas fa-calendar-alt text-warning"></i> Período de Incapacidad
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="detail-item">
+                                                    <label class="detail-label">Fecha Inicio:</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-calendar-plus text-success me-1"></i>
+                                                        <strong>@Model.fecha_inicio.ToString("dd/MM/yyyy")</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="detail-item">
+                                                    <label class="detail-label">Fecha Fin:</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-calendar-minus text-danger me-1"></i>
+                                                        <strong>@Model.fecha_fin.ToString("dd/MM/yyyy")</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="detail-item">
+                                                    <label class="detail-label">Duración:</label>
+                                                    <div class="detail-value">
+                                                        <span class="badge bg-primary fs-6">
+                                                            <i class="fas fa-hourglass-half me-1"></i>
+                                                            @(Model.dias_incapacidad ?? 0) días
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="detail-item">
+                                                    <label class="detail-label">Días transcurridos:</label>
+                                                    <div class="detail-value">
+                                                        @{
+                                                            var hoy = DateTime.Now.Date;
+                                                            var fechaInicio = Model.fecha_inicio.Date;
+                                                            var fechaFin = Model.fecha_fin.Date;
+
+                                                            var diasTranscurridos = (hoy - fechaInicio).Days;
+                                                            if (diasTranscurridos < 0) { diasTranscurridos = 0; }
+
+                                                            var diasRestantes = (fechaFin - hoy).Days;
+                                                            if (diasRestantes < 0) { diasRestantes = 0; }
+                                                        }
+                                                        <span class="text-info">
+                                                            <i class="fas fa-clock me-1"></i>
+                                                            @diasTranscurridos días
+                                                        </span>
+                                                        @if (diasRestantes > 0)
+                                                        {
+                                                            <small class="text-muted d-block">@diasRestantes días restantes</small>
+                                                        }
+                                                        else if (hoy > fechaFin)
+                                                        {
+                                                            <small class="text-success d-block">Incapacidad finalizada</small>
+                                                        }
+                                                        else if (hoy >= fechaInicio && hoy <= fechaFin)
+                                                        {
+                                                            <small class="text-warning d-block">En curso</small>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.descripcion))
+                            {
+                                <hr class="my-4">
+                                <!-- Descripción -->
+                                <div class="detail-section">
+                                    <h6 class="section-title">
+                                        <i class="fas fa-comment-medical text-info"></i> Descripción
+                                    </h6>
+                                    <div class="description-box">
+                                        @Model.descripcion
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="col-md-4">
+                    <!-- Datos administrativos -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            <h6 class="card-title mb-0">
+                                <i class="fas fa-cog"></i> Información Administrativa
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if (!string.IsNullOrEmpty(Model.numero_boleta))
+                            {
+                                <div class="detail-item mb-3">
+                                    <label class="detail-label">Número de Boleta:</label>
+                                    <div class="detail-value">
+                                        <span class="font-monospace fw-bold text-primary">@Model.numero_boleta</span>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="detail-item mb-3">
+                                <label class="detail-label">Fecha de Registro:</label>
+                                <div class="detail-value">
+                                    <i class="fas fa-calendar-plus me-1"></i>
+                                    @if (Model.fecha_registro.HasValue)
+                                    {
+                                        @Model.fecha_registro.Value.ToString("dd/MM/yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No disponible</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <label class="detail-label">ID del Registro:</label>
+                                <div class="detail-value">
+                                    <span class="font-monospace">#@Model.id_incapacidad.ToString("D6")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones rápidas -->
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h6 class="card-title mb-0">
+                                <i class="fas fa-tools"></i> Acciones Rápidas
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                @Html.ActionLink("✏️ Editar Incapacidad", "Edit", new { id = Model.id_incapacidad }, new { @class = "btn btn-warning" })
+                                @Html.ActionLink("📋 Imprimir Reporte", "#", new { @class = "btn btn-info", @onclick = "window.print(); return false;" })
+                                @Html.ActionLink("📧 Enviar por Email", "#", new { @class = "btn btn-secondary" })
+                                <hr>
+                                @Html.ActionLink("🗑️ Eliminar Registro", "Delete", new { id = Model.id_incapacidad }, new { @class = "btn btn-outline-danger", @onclick = "return confirm('¿Está seguro de eliminar esta incapacidad?')" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        /* Estilos para Details */
+        .page-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: 0.5rem;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .avatar-lg {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .description-box {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #17a2b8;
+            font-style: italic;
+            color: #495057;
+        }
+
+        .badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+        }
+
+        .font-monospace {
+            font-family: 'Courier New', monospace;
+        }
+
+        .d-grid .btn {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsivo */
+        @@media (max-width: 768px) {
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .page-actions {
+                margin-top: 1rem;
+            }
+
+            .page-actions .btn {
+                display: block;
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+
+            .avatar-lg {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+
+            .detail-value {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Impresión */
+        @@media print {
+            .page-actions, .card:last-child {
+                display: none;
+            }
+
+            .page-header {
+                background: none !important;
+                color: #000 !important;
+            }
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            // Mejorar tooltips
+            $('[title]').tooltip();
+
+            // Animaciones suaves
+            $('.card').hide().fadeIn(500);
+        });
+    </script>
+}

@@ -1,0 +1,107 @@
+﻿@model SistemaNomina.Models.Nomina
+
+@{
+    // Establece el título de la página
+    ViewBag.Title = "Edit";
+    //  vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) // Inicio del formulario que enviará los datos al servidor
+{
+    @Html.AntiForgeryToken() // seguridad
+
+    <div class="form-horizontal">
+        <h4>Nomina</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <!-- Muestra errores de validación si hay -->
+
+        @Html.HiddenFor(model => model.id_nomina)
+        <!-- Campo oculto para el ID de la nómina  -->
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <!-- Etiqueta para el campo id_empleado -->
+            <div class="col-md-10">
+                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
+                <!-- Lista desplegable para seleccionar el empleado -->
+                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+                <!-- Mensaje de error si el campo no es válido -->
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_isr, "id_isr", htmlAttributes: new { @class = "control-label col-md-2" })
+            <!-- Etiqueta para el campo id_isr -->
+            <div class="col-md-10">
+                @Html.DropDownList("id_isr", null, htmlAttributes: new { @class = "form-control" })
+                <!-- Lista desplegable para seleccionar el ISR -->
+                @Html.ValidationMessageFor(model => model.id_isr, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!--  editables etiquetas y validaciones -->
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.mes, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.mes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.mes, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.anio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!--  campos de entrada -->
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.salario_bruto, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.salario_bruto, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.salario_bruto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.horas_extras, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.horas_extras, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.horas_extras, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Botón para enviar el formulario -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <!-- Enlace para regresar a la lista principal -->
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    <!-- validación -->
+    @Scripts.Render("~/bundles/jqueryval")
+}

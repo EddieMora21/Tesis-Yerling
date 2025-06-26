@@ -1,0 +1,52 @@
+﻿@model SistemaNomina.Models.TipoLiquidacion
+
+@{
+    ViewBag.Title = "Details"; // Título pestaña 
+    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+}
+
+<h2>Details</h2> @* Título página *@
+
+<div>
+    <h4>TipoLiquidacion</h4> @* Subtítulo  *@
+    <hr /> @* Línea divisoria *@
+
+    @* Lista de campos y sus valores *@
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre) @* Nombre del campo: "nombre" *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre) @* Valor del campo "nombre" del modelo *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @* Enlace para ir a la vista de edición, pasando el ID del registro actual *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_tipo }) |
+
+    @* Enlace para volver a la lista de registros *@
+    @Html.ActionLink("Back to List", "Index")
+</p>

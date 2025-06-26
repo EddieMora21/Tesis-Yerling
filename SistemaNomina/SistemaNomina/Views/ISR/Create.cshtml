@@ -1,0 +1,127 @@
+﻿@model SistemaNomina.Models.ISR
+
+@{
+    // Título de la página que aparecerá en la pestaña del navegador
+    ViewBag.Title = "Create";
+    //  vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    // seguridad
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>ISR</h4>
+        <hr />
+        // Muestra un resumen de errores de validación, si los hay
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        // etiqueta, el campo de entrada y mensaje de validación
+
+        <div class="form-group">
+            // Etiqueta para el campo 'anio' (año)
+            @Html.LabelFor(model => model.anio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                // Campo editable para 'anio' 
+                @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control" } })
+                // Mensaje de validación para el campo 'anio'
+                @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Bloques similares para cada propiedad  -->
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.limite_inferior, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.limite_inferior, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.limite_inferior, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.limite_superior, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.limite_superior, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.limite_superior, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.porcentaje, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.porcentaje, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.porcentaje, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.exceso, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.exceso, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.exceso, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.credito_hijo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.credito_hijo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.credito_hijo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.credito_conyuge, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.credito_conyuge, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                // Botón para enviar el formulario y crear el nuevo registro
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    // Enlace para regresar a la lista principal (Index)
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    // validación
+    @Scripts.Render("~/bundles/jqueryval")
+}

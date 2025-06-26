@@ -1,0 +1,164 @@
+﻿@model SistemaNomina.Models.Liquidaciones
+
+@{
+    ViewBag.Title = "Edit"; // Título de la vista
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Plantilla de diseño
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) // Inicia formulario
+{
+    @Html.AntiForgeryToken() // Seguridad
+
+    <div class="form-horizontal">
+        <!-- estilo formulario -->
+        <h4>Liquidaciones</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" }) // Muestra errores generales de validación
+        @Html.HiddenFor(model => model.id_liquidacion) // Campo oculto con el ID de la liquidación
+
+        <!-- Selección del empleado -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" }) // Lista desplegable
+                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" }) // Muestra errores
+            </div>
+        </div>
+
+        <!-- Selección del tipo de liquidación -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_tipo, "id_tipo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_tipo", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_tipo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Fecha de salida del empleado -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_salida, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_salida, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_salida, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Monto por preaviso -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.preaviso, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.preaviso, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.preaviso, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Monto por cesantía -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.cesantia, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.cesantia, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.cesantia, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Monto por vacaciones pendientes -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.vacaciones_pendientes, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.vacaciones_pendientes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vacaciones_pendientes, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Cantidad de días pendientes de vacaciones -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.dias_vacaciones_pendientes, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.dias_vacaciones_pendientes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.dias_vacaciones_pendientes, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Aguinaldo proporcional -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.aguinaldo_proporcional, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.aguinaldo_proporcional, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.aguinaldo_proporcional, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Total de la liquidación -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.total_liquidacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.total_liquidacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.total_liquidacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Impuesto sobre la renta aplicado a la liquidación -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.isr_liquidacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.isr_liquidacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.isr_liquidacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Costo de la Caja del Seguro Social (CSS) aplicado -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.css_liquidacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.css_liquidacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.css_liquidacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Costo del IVM (Invalidez, Vejez y Muerte) -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.ivm_liquidacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ivm_liquidacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ivm_liquidacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Fecha de creación del registro -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Fecha de última actualización del registro -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Botón para guardar los cambios -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Enlace para volver a la lista de liquidaciones -->
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<!--  validación -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

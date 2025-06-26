@@ -1,0 +1,66 @@
+﻿@model SistemaNomina.Models.TiposHoraExtra  
+@{
+    ViewBag.Title = "Delete"; @* Título de la página *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @*  vista *@
+}
+
+<h2>Delete</h2>  @* nombre página *@
+
+<h3>Are you sure you want to delete this?</h3>  @* Pregunta de confirmación para eliminar *@
+
+<div>
+    <h4>TiposHoraExtra</h4>  @* Subtítulo  *@
+    <hr />  @* Línea para separar*@
+    <dl class="dl-horizontal">
+        @* Lista de definiciones  *@
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)  @* Etiqueta para el campo nombre *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)  @* Muestra el valor del campo nombre *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.recargo)  @* Etiqueta para el campo recargo *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.recargo)  @* Muestra el valor del campo recargo *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)  @* Etiqueta para el campo descripcion *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)  @* Muestra el valor del campo descripcion *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Etiqueta para el campo fecha_creacion *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)  @* Muestra el valor del campo fecha_creacion *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Etiqueta para el campo fecha_actualizacion *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)  @* Muestra el valor del campo fecha_actualizacion *@
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {@* Formulario para confirmar eliminación *@
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-default" /> |  @* Botón para eliminar *@
+        @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista *@
+    </div>
+}
+</div>

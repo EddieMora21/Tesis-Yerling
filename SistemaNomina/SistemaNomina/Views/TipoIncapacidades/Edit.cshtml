@@ -1,0 +1,97 @@
+﻿@model SistemaNomina.Models.TipoIncapacidades
+
+@{
+    ViewBag.Title = "Edit"; //  título página
+    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+}
+
+<h2>Edit</h2> @* Título vista *@
+
+@* Formulario tipo de incapacidad *@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-horizontal">
+        <h4>TipoIncapacidades</h4>
+        <hr />
+        @* Muestra errores de validación si los hay *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Campo oculto para mantener el ID del registro que se va a editar *@
+        @Html.HiddenFor(model => model.id_tipo)
+
+        @* Campo para editar el nombre del tipo de incapacidad *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para editar los días máximos permitidos *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.dias_maximos, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.dias_maximos, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.dias_maximos, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*  indicar si se paga en planilla *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.pago_planilla, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.pago_planilla)
+                    @Html.ValidationMessageFor(model => model.pago_planilla, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @* Campo para editar la descripción del tipo de incapacidad *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para editar la fecha de creación del registro *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para editar la fecha de última actualización del registro *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Botón para guardar los cambios realizados *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@* Enlace para volver a la lista de tipos de incapacidades *@
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @* validación *@
+    @Scripts.Render("~/bundles/jqueryval")
+}

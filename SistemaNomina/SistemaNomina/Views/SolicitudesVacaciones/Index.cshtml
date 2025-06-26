@@ -1,0 +1,889 @@
+﻿@model IEnumerable<SistemaNomina.Models.SolicitudesVacaciones>
+
+@{
+    ViewBag.Title = "Solicitudes de Vacaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions {
+    public static int CalcularDiasLaborales(DateTime inicio, DateTime fin)
+    {
+        int dias = 0;
+        for (var fecha = inicio; fecha <= fin; fecha = fecha.AddDays(1))
+        {
+            if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
+                dias++;
+        }
+        return dias;
+    }
+}
+
+<div class="solicitudes-container">
+    <!-- Header -->
+    <div class="page-header">
+        <h2>📋 Solicitudes de Vacaciones</h2>
+        <p class="subtitle">Gestiona las solicitudes de vacaciones del sistema</p>
+    </div>
+
+    <!-- Barra de acciones y filtros -->
+    <div class="action-bar">
+        <div class="action-left">
+            @if (Session["RolUsuario"] as string == "Admin" || Session["RolUsuario"] as string == "RRHH")
+            {
+                <a href="@Url.Action("Create")" class="btn btn-success">
+                    ➕ Nueva Solicitud
+                </a>
+            }
+
+            @if (Session["RolUsuario"] as string != "Empleado")
+            {
+                <a href="@Url.Action("SolicitudesPendientes")" class="btn btn-warning">
+                    ⏳ Pendientes
+                </a>
+            }
+
+            <a href="@Url.Action("MisVacaciones", "Vacaciones")" class="btn btn-info">
+                🏖️ Mis Vacaciones
+            </a>
+        </div>
+        <div class="action-right">
+            <div class="filters-container">
+                <select id="filtroEstado" class="filter-select">
+                    <option value="">🔍 Todos los estados</option>
+                    <option value="Pendiente">⏳ Pendiente</option>
+                    <option value="Aprobado">✅ Aprobado</option>
+                    <option value="Rechazado">❌ Rechazado</option>
+                </select>
+                <input type="text" id="filtroBusqueda" class="search-input" placeholder="Buscar empleado..." />
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel principal -->
+    <div class="main-panel">
+        <div class="panel-header">
+            <h3>📊 Lista de Solicitudes</h3>
+            <div class="stats">
+                <span class="stat-item">
+                    <span class="stat-number">@Model.Count()</span>
+                    <span class="stat-label">Total</span>
+                </span>
+                <span class="stat-item">
+                    <span class="stat-number">@Model.Count(s => s.Estados?.nombre == "Pendiente")</span>
+                    <span class="stat-label">Pendientes</span>
+                </span>
+                <span class="stat-item">
+                    <span class="stat-number">@Model.Count(s => s.Estados?.nombre == "Aprobado")</span>
+                    <span class="stat-label">Aprobadas</span>
+                </span>
+            </div>
+        </div>
+        <div class="panel-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-container">
+                    <table class="solicitudes-table" id="tablaSolicitudes">
+                        <thead>
+                            <tr>
+                                <th>👤 Empleado</th>
+                                <th>📅 Periodo</th>
+                                <th>📆 Fecha Solicitud</th>
+                                <th>🗓️ Días Solicitados</th>
+                                <th>📊 Estado</th>
+                                <th>👨‍💼 Aprobado Por</th>
+                                <th>💬 Comentarios</th>
+                                <th>⚙️ Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var diasSolicitados = CalcularDiasLaborales(item.fecha_inicio, item.fecha_fin);
+
+                                <tr data-estado="@(item.Estados?.nombre ?? "")">
+                                    <td>
+                                        <div class="employee-info">
+                                            <strong>@(item.Vacaciones?.Empleados?.nombre1) @(item.Vacaciones?.Empleados?.apellido1)</strong>
+                                            <small>@(item.Vacaciones?.Empleados?.cedula)</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="period-info">
+                                            <strong>@item.fecha_inicio.ToString("dd/MM/yyyy")</strong>
+                                            <small>al</small>
+                                            <strong>@item.fecha_fin.ToString("dd/MM/yyyy")</strong>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="date-badge">
+                                            @(item.fecha_solicitud?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="days-badge">@diasSolicitados días</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @switch (item.Estados?.nombre)
+                                        {
+                                            case "Pendiente":
+                                                <span class="status-badge status-pending">⏳ Pendiente</span>
+                                                break;
+                                            case "Aprobado":
+                                                <span class="status-badge status-approved">✅ Aprobado</span>
+                                                break;
+                                            case "Rechazado":
+                                                <span class="status-badge status-rejected">❌ Rechazado</span>
+                                                break;
+                                            default:
+                                                <span class="status-badge status-unknown">❓ Desconocido</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Usuarios != null)
+                                        {
+                                            <span class="approver-info">
+                                                @item.Usuarios.Empleados?.nombre1 @item.Usuarios.Empleados?.apellido1
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="comments-info">
+                                            @if (!string.IsNullOrEmpty(item.comentario_solicitud))
+                                            {
+                                                <div class="comment-item">
+                                                    <strong>Solicitud:</strong>
+                                                    <span>@(item.comentario_solicitud.Length > 50 ? item.comentario_solicitud.Substring(0, 50) + "..." : item.comentario_solicitud)</span>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.comentario_respuesta))
+                                            {
+                                                <div class="comment-item">
+                                                    <strong>Respuesta:</strong>
+                                                    <span>@(item.comentario_respuesta.Length > 50 ? item.comentario_respuesta.Substring(0, 50) + "..." : item.comentario_respuesta)</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="@Url.Action("Details", new { id = item.id_solicitud })"
+                                               class="btn-action btn-info" title="Ver detalles">
+                                                👁️
+                                            </a>
+
+                                            @if (Session["RolUsuario"] as string != "Empleado" && item.Estados?.nombre == "Pendiente")
+                                            {
+                                                <button type="button"
+                                                        class="btn-action btn-success"
+                                                        onclick="aprobarSolicitud(@item.id_solicitud)"
+                                                        title="Aprobar">
+                                                    ✅
+                                                </button>
+                                                <button type="button"
+                                                        class="btn-action btn-danger"
+                                                        onclick="rechazarSolicitud(@item.id_solicitud)"
+                                                        title="Rechazar">
+                                                    ❌
+                                                </button>
+                                            }
+
+                                            @if (Session["RolUsuario"] as string == "Admin" || Session["RolUsuario"] as string == "RRHH")
+                                            {
+                                                <a href="@Url.Action("Edit", new { id = item.id_solicitud })"
+                                                   class="btn-action btn-warning" title="Editar">
+                                                    ✏️
+                                                </a>
+                                                <a href="@Url.Action("Delete", new { id = item.id_solicitud })"
+                                                   class="btn-action btn-secondary" title="Eliminar">
+                                                    🗑️
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <h4>No hay solicitudes de vacaciones</h4>
+                    <p>Cuando se realicen solicitudes aparecerán aquí.</p>
+                    <a href="@Url.Action("SolicitarVacaciones", "Vacaciones")" class="btn btn-success">
+                        ➕ Hacer Primera Solicitud
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal para aprobar/rechazar -->
+<div id="modalAccion" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 id="modalTitulo">Confirmar Acción</h4>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="formAccion">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="comentarioRespuesta">💬 Comentario (Opcional):</label>
+                    <textarea id="comentarioRespuesta" class="form-textarea" rows="3"
+                              placeholder="Agrega un comentario sobre tu decisión..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btnConfirmarAccion" class="btn btn-primary">
+                Confirmar
+            </button>
+            <button type="button" class="modal-close btn btn-secondary">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Todo el CSS y JavaScript igual que antes -->
+<style>
+    /* Todo el CSS igual que en la versión anterior */
+    .solicitudes-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-header {
+        margin-bottom: 25px;
+    }
+
+        .page-header h2 {
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+    .subtitle {
+        color: #6c757d;
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .action-left {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .filters-container {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .filter-select, .search-input {
+        padding: 8px 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+    }
+
+        .filter-select:focus, .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+    .search-input {
+        min-width: 200px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #212529;
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+    }
+
+    .main-panel {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .panel-header {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .panel-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+    .stats {
+        display: flex;
+        gap: 20px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .solicitudes-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .solicitudes-table th {
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            white-space: nowrap;
+        }
+
+        .solicitudes-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .solicitudes-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+
+    .employee-info strong {
+        display: block;
+        color: #333;
+    }
+
+    .employee-info small {
+        color: #6c757d;
+        font-size: 11px;
+    }
+
+    .period-info {
+        text-align: center;
+    }
+
+        .period-info strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .period-info small {
+            color: #6c757d;
+            font-size: 10px;
+        }
+
+    .date-badge, .days-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        background-color: #e9ecef;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .status-pending {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .status-approved {
+        background-color: #28a745;
+    }
+
+    .status-rejected {
+        background-color: #dc3545;
+    }
+
+    .status-unknown {
+        background-color: #6c757d;
+    }
+
+    .comments-info {
+        max-width: 200px;
+    }
+
+    .comment-item {
+        margin-bottom: 5px;
+        font-size: 11px;
+    }
+
+        .comment-item strong {
+            color: #333;
+            display: block;
+        }
+
+        .comment-item span {
+            color: #6c757d;
+        }
+
+    .approver-info {
+        font-size: 12px;
+        color: #333;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-action.btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-action.btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-action.btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-action.btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-action.btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h4 {
+        margin: 20px 0 10px 0;
+        color: #495057;
+    }
+
+    .empty-state p {
+        margin-bottom: 30px;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .modal-header h4 {
+            margin: 0;
+            color: #333;
+        }
+
+    .modal-close {
+        font-size: 24px;
+        cursor: pointer;
+        color: #6c757d;
+        background: none;
+        border: none;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        padding: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+    .form-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+    @@media (max-width: 768px) {
+        .action-bar {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .filters-container {
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .filter-select, .search-input {
+            width: 100%;
+        }
+
+        .panel-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stats {
+            justify-content: center;
+        }
+
+        .solicitudes-table {
+            font-size: 11px;
+        }
+
+            .solicitudes-table th,
+            .solicitudes-table td {
+                padding: 8px 4px;
+            }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .btn-action {
+            width: 24px;
+            height: 24px;
+            font-size: 10px;
+        }
+
+        .comments-info {
+            max-width: 120px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .solicitudes-container {
+            padding: 10px;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+        }
+
+        .action-left {
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let accionActual = null;
+    let solicitudId = null;
+
+    const filtroEstado = document.getElementById('filtroEstado');
+    const filtroBusqueda = document.getElementById('filtroBusqueda');
+    const tabla = document.getElementById('tablaSolicitudes');
+    const modal = document.getElementById('modalAccion');
+    const modalTitulo = document.getElementById('modalTitulo');
+    const btnConfirmar = document.getElementById('btnConfirmarAccion');
+    const comentarioRespuesta = document.getElementById('comentarioRespuesta');
+
+    if (filtroEstado) {
+        filtroEstado.addEventListener('change', function() {
+            filtrarTabla();
+        });
+    }
+
+    if (filtroBusqueda) {
+        filtroBusqueda.addEventListener('input', function() {
+            filtrarTabla();
+        });
+    }
+
+    document.querySelectorAll('.modal-close').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    });
+
+    if (btnConfirmar) {
+        btnConfirmar.addEventListener('click', function() {
+            ejecutarAccion();
+        });
+    }
+
+    function filtrarTabla() {
+        if (!tabla) return;
+
+        const estadoSeleccionado = filtroEstado ? filtroEstado.value.toLowerCase() : '';
+        const textoBusqueda = filtroBusqueda ? filtroBusqueda.value.toLowerCase() : '';
+        const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        for (let i = 0; i < filas.length; i++) {
+            const fila = filas[i];
+            const estado = fila.getAttribute('data-estado').toLowerCase();
+            const texto = fila.textContent.toLowerCase();
+
+            const coincideEstado = !estadoSeleccionado || estado.includes(estadoSeleccionado);
+            const coincideTexto = !textoBusqueda || texto.includes(textoBusqueda);
+
+            if (coincideEstado && coincideTexto) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        }
+    }
+
+    window.aprobarSolicitud = function(id) {
+        accionActual = 'aprobar';
+        solicitudId = id;
+        modalTitulo.textContent = '✅ Aprobar Solicitud';
+        btnConfirmar.textContent = '✅ Aprobar';
+        btnConfirmar.className = 'btn btn-success';
+        comentarioRespuesta.placeholder = 'Comentario sobre la aprobación (opcional)...';
+        modal.style.display = 'flex';
+    };
+
+    window.rechazarSolicitud = function(id) {
+        accionActual = 'rechazar';
+        solicitudId = id;
+        modalTitulo.textContent = '❌ Rechazar Solicitud';
+        btnConfirmar.textContent = '❌ Rechazar';
+        btnConfirmar.className = 'btn btn-danger';
+        comentarioRespuesta.placeholder = 'Motivo del rechazo (recomendado)...';
+        modal.style.display = 'flex';
+    };
+
+    function ejecutarAccion() {
+        if (!accionActual || !solicitudId) return;
+
+        const url = accionActual === 'aprobar' ? '@Url.Action("Aprobar")' : '@Url.Action("Rechazar")';
+        const datos = {
+            id: solicitudId,
+            comentario_respuesta: comentarioRespuesta.value,
+            __RequestVerificationToken: document.querySelector('[name="__RequestVerificationToken"]').value
+        };
+
+        btnConfirmar.disabled = true;
+        btnConfirmar.textContent = '⏳ Procesando...';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ ' + data.message);
+                location.reload();
+            } else {
+                alert('❌ ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('❌ Error de conexión');
+        })
+        .finally(() => {
+            modal.style.display = 'none';
+            btnConfirmar.disabled = false;
+            comentarioRespuesta.value = '';
+        });
+    }
+
+    document.querySelectorAll('a[href*="Delete"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            if (!confirm('¿Está seguro de que desea eliminar esta solicitud?')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>

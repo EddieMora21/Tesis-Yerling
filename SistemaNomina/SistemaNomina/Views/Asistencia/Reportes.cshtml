@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Reportes de Asistencia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2><i class="fa fa-chart-bar"></i> Reportes de Asistencia</h2>
+<hr />
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4><i class="fa fa-filter"></i> Filtros de Busqueda</h4>
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("GenerarReporte", "Asistencia", FormMethod.Post, new { @id = "formReporte" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Empleado</label>
+                        @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos --", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Departamento</label>
+                        @Html.DropDownList("departamentoId", ViewBag.Departamentos as SelectList, "-- Todos --", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Fecha Inicio</label>
+                        <input type="date" name="fechaInicio" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Fecha Fin</label>
+                        <input type="date" name="fechaFin" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>&nbsp;</label><br />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i> Generar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div id="resultadoReporte">
+    <div class="text-muted text-center">
+        <i class="fa fa-info-circle"></i> Seleccione los filtros y haga clic en "Generar" para ver el reporte.
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    $(document).ready(function () {
+        $('#formReporte').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                beforeSend: function () {
+                    $('#resultadoReporte').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-2x"></i><br/>Generando reporte...</div>');
+                },
+                success: function (response) {
+                    $('#resultadoReporte').html(response);
+                },
+                error: function () {
+                    $('#resultadoReporte').html('<div class="alert alert-danger">Error al generar el reporte</div>');
+                }
+            });
+        });
+    });
+    </script>
+}

@@ -1,0 +1,366 @@
+﻿@using SistemaNomina.Helpers
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - SBS SISTEMA DE RH</title>
+
+    <!-- Bootstrap y iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+    <!-- Estilos personalizados adaptados a la paleta -->
+    <style>
+        :root {
+            --azul-oscuro: #221d42;
+            --celeste: #1788ca;
+            --amarillo: #fab61b;
+            --gris-claro: #e7e8eb;
+            --blanco: #ffffff;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--gris-claro);
+        }
+
+        .wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--celeste);
+            color: var(--blanco);
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 5px solid var(--amarillo);
+        }
+
+        .sidebar h5 {
+            padding: 1rem;
+            margin: 0;
+            background-color: var(--azul-oscuro);
+            color: var(--blanco);
+            border-bottom: 2px solid var(--amarillo);
+        }
+
+        .sidebar a {
+            color: var(--blanco);
+            padding: 0.75rem 1.5rem;
+            display: block;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--amarillo);
+            color: var(--azul-oscuro);
+        }
+
+        .sidebar .collapse a {
+            padding-left: 2.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .collapse a:hover {
+            background-color: var(--amarillo);
+            color: var(--azul-oscuro);
+        }
+
+        /* Estilos para submenus anidados */
+        .sidebar .collapse .collapse a {
+            padding-left: 3.5rem;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Iconos de chevron */
+        .sidebar a[data-bs-toggle="collapse"] .bi-chevron-down {
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar a[data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        header {
+            background-color: var(--azul-oscuro);
+            color: var(--blanco);
+            padding: 0.75rem 1.25rem;
+            border-bottom: 4px solid var(--amarillo);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-actions span {
+            font-weight: 500;
+        }
+
+        .btn-outline-custom {
+            color: var(--blanco);
+            border-color: var(--blanco);
+        }
+
+        .btn-outline-custom:hover {
+            background-color: var(--amarillo);
+            color: var(--azul-oscuro);
+            border-color: var(--amarillo);
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            background-color: var(--gris-claro);
+        }
+
+        .page-template {
+            background-color: var(--blanco);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            border-left: 6px solid var(--amarillo);
+        }
+
+        footer {
+            border-top: 2px solid var(--amarillo);
+            background-color: var(--gris-claro);
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    @* Seguridad: redirige a login si el usuario no está autenticado *@
+    @{
+        var path = Context.Request.Path.ToString().ToLower();
+        if (!User.Identity.IsAuthenticated &&
+            !path.StartsWith("/usuarios/login") &&
+            !path.StartsWith("/usuarios/logout") &&
+            !path.StartsWith("/usuarios/cambiarcontrasena"))
+        {
+            Response.Redirect("/Usuarios/Login");
+        }
+    }
+
+    <!-- Encabezado -->
+    <header>
+        <h4 class="mb-0">SBS SISTEMA DE RH</h4>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="header-actions">
+                <span><i class="bi bi-person-circle me-1"></i> @User.Identity.Name</span>
+                <a href="/Usuarios/CambiarContrasena" class="btn btn-outline-custom btn-sm">Cambiar contraseña</a>
+                <a href="/Usuarios/Logout" class="btn btn-outline-custom btn-sm">Cerrar sesión</a>
+            </div>
+        }
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="wrapper">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- Menú lateral con control de acceso por roles -->
+            <nav class="sidebar">
+                <h5>Menú</h5>
+                <a href="/Home/Index"><i class="bi bi-house-door"></i> Inicio</a>
+
+                <!-- Gestiones - Solo para Admin, RRHH e IT -->
+                @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "IT"))
+                {
+                    <a data-bs-toggle="collapse" href="#gestionesMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="gestionesMenu">
+                        <span><i class="bi bi-gear"></i> Gestiones</span>
+                        <i class="bi bi-chevron-down me-2"></i>
+                    </a>
+                    <div class="collapse" id="gestionesMenu">
+                        <a href="/Estados">Estados</a>
+                        <a href="/EstadoCivil">Estado Civil</a>
+                        <a href="/TiposPermiso">Tipos de Permiso</a>
+                        <a href="/TiposHoraExtra">Tipos de Hora Extra</a>
+                        <a href="/Feriados">Feriados</a>
+                        <a href="/ISR">ISR</a>
+                        <a href="/TipoIncapacidades">Tipos de Incapacidades</a>
+                        <a href="/Departamentos">Departamentos</a>
+                        <a href="/Horarios">Horarios</a>
+                        <a href="/Puestos">Puestos</a>
+                        <a href="/Empleados">Empleados</a>
+
+                        <!-- Registro de Asistencia - Submenu -->
+                        <a data-bs-toggle="collapse" href="#asistenciaSubmenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="asistenciaSubmenu">
+                            <span> Registro de Asistencia</span>
+                            <i class="bi bi-chevron-down me-2"></i>
+                        </a>
+                        <div class="collapse" id="asistenciaSubmenu">
+                            <a href="/Asistencia/Marcar">Marcar Asistencia</a>
+                            <a href="/Asistencia/Index">Ver Asistencias</a>
+                            <a href="/Asistencia/Reportes">Reportes</a>
+                        </div>
+
+                        <a href="/HorasExtras">Control de Horas Extras</a>
+                        <a href="/Vacaciones">Gestión de Vacaciones</a>
+                        <a href="/Incapacidades">Gestión de Incapacidades</a>
+                        <a href="/Aguinaldo">Cálculo de Aguinaldo</a>
+                        <!-- Pago de Nómina - Submenu -->
+                        <a data-bs-toggle="collapse" href="#nominaSubmenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="nominaSubmenu">
+                            <span> Pago de Nómina</span>
+                            <i class="bi bi-chevron-down me-2"></i>
+                        </a>
+                        <div class="collapse" id="nominaSubmenu">
+                            <a href="/Nominas/SeleccionarPeriodo">Generar Nómina</a>
+                            <a href="/Nominas/Index">Ver Nóminas</a>
+                            <a href="/Nominas/Create">Crear Manual</a>
+                        </div>
+                        <a href="/TipoLiquidacion">Tipos de Liquidación</a>
+                        <a href="/Liquidaciones">Cálculo de Liquidaciones</a>
+                    </div>
+                }
+
+                <!-- Solicitudes - Para varios roles -->
+                @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "Empleado", "IT"))
+                {
+                    <a data-bs-toggle="collapse" href="#solicitudesMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="solicitudesMenu">
+                        <span><i class="bi bi-file-earmark-text"></i> Solicitudes</span>
+                        <i class="bi bi-chevron-down me-2"></i>
+                    </a>
+                    <div class="collapse" id="solicitudesMenu">
+                        <a href="/SolicitudesVacaciones">Solicitud de Vacaciones</a>
+
+                        @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Empleado", "IT"))
+                        {
+                            <a href="/Incapacidades">Solicitud de Incapacidad</a>
+                        }
+
+                        @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "IT"))
+                        {
+                            <a href="/SolicitudesVacaciones/SolicitudesPendientes">Solicitudes Pendientes</a>
+                        }
+                    </div>
+                }
+
+                <!-- Permisos - Para varios roles -->
+                @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "Empleado", "IT"))
+                {
+                    <a data-bs-toggle="collapse" href="#permisosMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="permisosMenu">
+                        <span><i class="bi bi-patch-check"></i> Permisos</span>
+                        <i class="bi bi-chevron-down me-2"></i>
+                    </a>
+                    <div class="collapse" id="permisosMenu">
+                        <a href="/Permisos">Permisos</a>
+                    </div>
+                }
+
+                <!-- Seguridad - Solo Admin e IT -->
+                @if (RoleHelper.UserHasAnyRole("Admin", "IT"))
+                {
+                    <a data-bs-toggle="collapse" href="#seguridadMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="seguridadMenu">
+                        <span><i class="bi bi-shield-lock"></i> Seguridad</span>
+                        <i class="bi bi-chevron-down me-2"></i>
+                    </a>
+                    <div class="collapse" id="seguridadMenu">
+                        <a href="/Usuarios">Gestión de Usuarios</a>
+                        <a href="/Roles">Roles</a>
+                    </div>
+                }
+            </nav>
+        }
+
+        <!-- Sección principal -->
+        <main class="content">
+            <div class="page-template">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <small>&copy; 2025 Smart Building Solutions - Todos los derechos reservados.</small>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para mejorar la funcionalidad del sidebar -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar todos los collapses
+            var collapseElements = document.querySelectorAll('.collapse');
+            collapseElements.forEach(function (element) {
+                new bootstrap.Collapse(element, {
+                    toggle: false
+                });
+            });
+
+            // Agregar funcionalidad para rotar iconos
+            var toggleButtons = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            toggleButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var icon = this.querySelector('.bi-chevron-down');
+                    if (icon) {
+                        // Pequeño delay para sincronizar con la animación
+                        setTimeout(function () {
+                            var isExpanded = button.getAttribute('aria-expanded') === 'true';
+                            if (isExpanded) {
+                                icon.style.transform = 'rotate(180deg)';
+                            } else {
+                                icon.style.transform = 'rotate(0deg)';
+                            }
+                        }, 50);
+                    }
+                });
+            });
+
+            // Mantener el estado del menú activo
+            var currentPath = window.location.pathname;
+            var menuLinks = document.querySelectorAll('.sidebar a[href]');
+            menuLinks.forEach(function (link) {
+                if (link.getAttribute('href') === currentPath) {
+                    link.style.backgroundColor = 'var(--amarillo)';
+                    link.style.color = 'var(--azul-oscuro)';
+
+                    // Expandir el menú padre si es necesario
+                    var parentCollapse = link.closest('.collapse');
+                    if (parentCollapse) {
+                        var collapse = new bootstrap.Collapse(parentCollapse, {
+                            show: true
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

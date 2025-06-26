@@ -1,0 +1,86 @@
+﻿@model SistemaNomina.Models.TiposPermiso
+
+@{
+    ViewBag.Title = "Edit"; @* Título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* visita *@
+}
+
+<h2>Edit</h2>  @* Título página *@
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-horizontal">
+       
+        <h4>TiposPermiso</h4>  @* Subtítulo del formulario *@
+        <hr /> 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  @* Muestra errores de validación, si hay *@
+        @Html.HiddenFor(model => model.id_tipo_permiso)  @* Campo oculto que contiene el ID del registro que se está editando *@
+
+        <div class="form-group">
+            @* Grupo de controles para el campo 'nombre' *@
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta con estilos *@
+            <div class="col-md-10">
+                @* Contenedor del campo de entrada *@
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })  @* Campo editable con estilo *@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })  @* Mensaje de error si el campo no es válido *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo de controles para el campo booleano 'con_goce' *@
+            @Html.LabelFor(model => model.con_goce, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @* Contenedor para el checkbox (sí/no) *@
+                    @Html.EditorFor(model => model.con_goce)  @* Campo editable *@
+                    @Html.ValidationMessageFor(model => model.con_goce, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo de controles para el campo 'descripcion' *@
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo de controles para el campo 'fecha_creacion' *@
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo de controles para el campo 'fecha_actualizacion' *@
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Botón para enviar *@
+            <div class="col-md-offset-2 col-md-10">
+                @* Ajuste de posición del botón *@
+                <input type="submit" value="Save" class="btn btn-default" /> 
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista de registros *@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")  @* validación *@
+}

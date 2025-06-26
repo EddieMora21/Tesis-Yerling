@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SistemaNomina.Liquidaciones>
+
+@{
+    // Título que se mostrará en la pestaña del navegador y en el encabezado de la página
+    ViewBag.Title = "Index";
+    //  vista 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <!-- crear una nueva liquidación -->
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<!--  lista de liquidaciones -->
+<table class="table">
+    <tr>
+        <!-- Encabezados de las columnas -->
+        <th>@Html.DisplayNameFor(model => model.fecha_salida)</th>
+        <th>@Html.DisplayNameFor(model => model.preaviso)</th>
+        <th>@Html.DisplayNameFor(model => model.cesantia)</th>
+        <th>@Html.DisplayNameFor(model => model.vacaciones_pendientes)</th>
+        <th>@Html.DisplayNameFor(model => model.dias_vacaciones_pendientes)</th>
+        <th>@Html.DisplayNameFor(model => model.aguinaldo_proporcional)</th>
+        <th>@Html.DisplayNameFor(model => model.total_liquidacion)</th>
+        <th>@Html.DisplayNameFor(model => model.isr_liquidacion)</th>
+        <th>@Html.DisplayNameFor(model => model.css_liquidacion)</th>
+        <th>@Html.DisplayNameFor(model => model.ivm_liquidacion)</th>
+        <th>@Html.DisplayNameFor(model => model.fecha_creacion)</th>
+        <th>@Html.DisplayNameFor(model => model.fecha_actualizacion)</th>
+        <th>@Html.DisplayNameFor(model => model.Empleados.cedula)</th> <!-- Cedula del empleado  -->
+        <th>@Html.DisplayNameFor(model => model.TipoLiquidacion.nombre)</th> <!-- Nombre del tipo de liquidación -->
+        <th></th> <!-- Columna para acciones (Editar, Detalles, Eliminar) -->
+    </tr>
+
+    <!-- Recorrer lista -->
+    @foreach (var item in Model)
+    {
+        <tr>
+            <!-- Mostrar  celda -->
+            <td>@Html.DisplayFor(modelItem => item.fecha_salida)</td>
+            <td>@Html.DisplayFor(modelItem => item.preaviso)</td>
+            <td>@Html.DisplayFor(modelItem => item.cesantia)</td>
+            <td>@Html.DisplayFor(modelItem => item.vacaciones_pendientes)</td>
+            <td>@Html.DisplayFor(modelItem => item.dias_vacaciones_pendientes)</td>
+            <td>@Html.DisplayFor(modelItem => item.aguinaldo_proporcional)</td>
+            <td>@Html.DisplayFor(modelItem => item.total_liquidacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.isr_liquidacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.css_liquidacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.ivm_liquidacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.fecha_creacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.fecha_actualizacion)</td>
+            <td>@Html.DisplayFor(modelItem => item.Empleados.cedula)</td> <!-- Mostrar la cédula del empleado -->
+            <td>@Html.DisplayFor(modelItem => item.TipoLiquidacion.nombre)</td> <!-- Mostrar el tipo de liquidación -->
+            <td>
+                <!-- Enlaces para editar, ver detalles o eliminar la liquidación seleccionada -->
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_liquidacion }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id_liquidacion }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_liquidacion })
+            </td>
+        </tr>
+    }
+
+</table>

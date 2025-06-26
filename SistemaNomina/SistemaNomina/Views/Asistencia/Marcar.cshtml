@@ -1,0 +1,377 @@
+﻿@{
+    ViewBag.Title = "Marcar Asistencia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var empleado = ViewBag.Empleado as SistemaNomina.Models.Empleados;
+    var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Models.Asistencia;
+    var esFeriado = (bool)ViewBag.EsFeriado;
+    var feriado = ViewBag.Feriado as SistemaNomina.Models.Feriados;
+}
+
+<style>
+    .marcar-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(30, 60, 114, 0.3);
+        color: white;
+        text-align: center;
+    }
+
+    .welcome-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .employee-info h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.8em;
+        font-weight: 300;
+        color: #ffffff;
+    }
+
+    .employee-details {
+        opacity: 0.9;
+        font-size: 1.1em;
+        color: #e8f4f8;
+    }
+
+    .time-display {
+        font-size: 3em;
+        font-weight: bold;
+        margin: 20px 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        font-family: 'Courier New', monospace;
+        color: #00d4aa;
+    }
+
+    .date-display {
+        font-size: 1.3em;
+        opacity: 0.9;
+        margin-bottom: 20px;
+        color: #b8d4e3;
+    }
+
+    .mark-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-mark {
+        position: relative;
+        padding: 20px 40px;
+        font-size: 1.2em;
+        font-weight: bold;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 180px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        overflow: hidden;
+    }
+
+    .btn-mark:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-mark:hover:before {
+        left: 100%;
+    }
+
+    .btn-entrada {
+        background: linear-gradient(45deg, #00d4aa, #00b894);
+        color: #003d36;
+        box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+    }
+
+    .btn-entrada:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 212, 170, 0.6);
+        background: linear-gradient(45deg, #00f5cc, #00d4aa);
+    }
+
+    .btn-salida {
+        background: linear-gradient(45deg, #ff7675, #fd79a8);
+        color: #2d3436;
+        box-shadow: 0 8px 25px rgba(255, 118, 117, 0.4);
+    }
+
+    .btn-salida:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(255, 118, 117, 0.6);
+        background: linear-gradient(45deg, #ff9ff3, #ff7675);
+    }
+
+    .btn-mark:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    .status-info {
+        margin-top: 25px;
+        padding: 15px;
+        background: rgba(0, 212, 170, 0.1);
+        border-radius: 10px;
+        border-left: 4px solid #00d4aa;
+        color: #e8f4f8;
+    }
+
+    .feriado-alert {
+        background: rgba(253, 203, 110, 0.2);
+        border: 1px solid rgba(253, 203, 110, 0.5);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        color: #fdcb6e;
+    }
+
+    .icon {
+        font-size: 1.5em;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    .loading {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .spinner {
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top: 3px solid #00d4aa;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .success-message {
+        background: rgba(0, 212, 170, 0.2);
+        border: 1px solid #00d4aa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+        color: #00d4aa;
+        display: none;
+    }
+
+    .error-message {
+        background: rgba(255, 118, 117, 0.2);
+        border: 1px solid #ff7675;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+        color: #ff7675;
+        display: none;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .marcar-container {
+            margin: 10px;
+            padding: 20px;
+        }
+
+        .time-display {
+            font-size: 2.5em;
+        }
+
+        .btn-mark {
+            min-width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="marcar-container">
+    @if (esFeriado && feriado != null)
+    {
+        <div class="feriado-alert">
+            <i class="fa fa-calendar icon"></i>
+            <strong>Día Feriado:</strong> @feriado.nombre
+        </div>
+    }
+
+    <div class="welcome-card">
+        <div class="employee-info">
+            <h2><i class="fa fa-building"></i> Smart Building Solutions</h2>
+            <div class="employee-details">
+                <strong>@empleado.nombre1 @empleado.apellido1</strong><br>
+                <small>@empleado.Puestos.nombre_puesto - @empleado.Puestos.Departamentos.nombre</small><br>
+                <small><i class="fa fa-id-card"></i> @empleado.cedula</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="time-display pulse" id="currentTime"></div>
+    <div class="date-display" id="currentDate"></div>
+
+    <div class="mark-buttons">
+        @if (asistenciaHoy == null)
+        {
+            <button class="btn-mark btn-entrada" id="btnEntrada">
+                <i class="fa fa-sign-in icon"></i>
+                Marcar Entrada
+            </button>
+        }
+        else if (!asistenciaHoy.hora_salida.HasValue)
+        {
+            <button class="btn-mark btn-salida" id="btnSalida">
+                <i class="fa fa-sign-out icon"></i>
+                Marcar Salida
+            </button>
+        }
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Guardando en base de datos...</p>
+    </div>
+
+    <!-- Mensajes de respuesta -->
+    <div class="success-message" id="successMessage">
+        <i class="fa fa-check-circle"></i> <span id="successText"></span>
+    </div>
+
+    <div class="error-message" id="errorMessage">
+        <i class="fa fa-exclamation-triangle"></i> <span id="errorText"></span>
+    </div>
+
+    @if (asistenciaHoy != null)
+    {
+        <div class="status-info">
+            <h4><i class="fa fa-clock-o icon"></i>Registro de Hoy</h4>
+            @if (asistenciaHoy.hora_entrada.HasValue)
+            {
+                <p><strong>Entrada:</strong> @asistenciaHoy.hora_entrada.Value.ToString(@"hh\:mm") hrs</p>
+            }
+            @if (asistenciaHoy.hora_salida.HasValue)
+            {
+                <p><strong>Salida:</strong> @asistenciaHoy.hora_salida.Value.ToString(@"hh\:mm") hrs</p>
+                <p><i class="fa fa-check"></i> Asistencia completa guardada en sistema</p>
+            }
+            else if (asistenciaHoy.hora_entrada.HasValue)
+            {
+                <p><i class="fa fa-hourglass-half"></i> Esperando marca de salida...</p>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Actualizar reloj cada segundo
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // Marcar entrada
+            $('#btnEntrada').click(function () {
+                marcarAsistencia('entrada');
+            });
+
+            // Marcar salida
+            $('#btnSalida').click(function () {
+                marcarAsistencia('salida');
+            });
+        });
+
+        function updateClock() {
+            var now = new Date();
+            var time = now.toLocaleTimeString('es-CR', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            var date = now.toLocaleDateString('es-CR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            $('#currentTime').text(time);
+            $('#currentDate').text(date.charAt(0).toUpperCase() + date.slice(1));
+        }
+
+        function marcarAsistencia(tipo) {
+            var url = tipo === 'entrada' ? '@Url.Action("MarcarEntrada", "Asistencia")' : '@Url.Action("MarcarSalida", "Asistencia")';
+            var btn = tipo === 'entrada' ? '#btnEntrada' : '#btnSalida';
+
+            // Ocultar mensajes previos
+            $('#successMessage, #errorMessage').hide();
+
+            $(btn).prop('disabled', true);
+            $('#loading').show();
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    $('#loading').hide();
+
+                    if (response.success) {
+                        // Mostrar mensaje de éxito
+                        $('#successText').text(response.message + ' a las ' + response.hora);
+                        $('#successMessage').fadeIn();
+
+                        // Recargar página después de 3 segundos
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000);
+                    } else {
+                        $('#errorText').text(response.message);
+                        $('#errorMessage').fadeIn();
+                        $(btn).prop('disabled', false);
+                    }
+                },
+                error: function () {
+                    $('#loading').hide();
+                    $('#errorText').text('Error de conexión con la base de datos. Inténtelo nuevamente.');
+                    $('#errorMessage').fadeIn();
+                    $(btn).prop('disabled', false);
+                }
+            });
+        }
+    </script>
+}
+
+@Html.AntiForgeryToken()

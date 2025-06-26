@@ -1,0 +1,66 @@
+﻿@model SistemaNomina.Models.Estados
+
+@{
+    // Establece el título de la página
+    ViewBag.Title = "Editar Estado";
+
+    // plantilla
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Editar Estado</h2>
+
+@using (Html.BeginForm()) // Inicia el formulario
+{
+    @Html.AntiForgeryToken() // seguridad
+
+    <div class="form-horizontal">
+        <h4>Estados</h4>
+        <hr />
+
+        @*Muestra errores de validación si los hay*@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @*Campo oculto para mantener el ID del estado*@
+        @Html.HiddenFor(model => model.id_estado)
+
+        <div class="form-group">
+            @*Etiqueta para el campo 'nombre'*@
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*Campo de entrada para editar el nombre*@
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @*Mensaje de validación para el campo 'nombre'*@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @*Etiqueta para el campo 'modulo'*@
+            @Html.LabelFor(model => model.modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*seleccionar el módulo*@
+                @Html.DropDownListFor(model => model.modulo, new SelectList(ViewBag.Modulos), "Seleccione módulo", new { @class = "form-control" })
+                @*Mensaje de validación para el campo 'modulo'*@
+                @Html.ValidationMessageFor(model => model.modulo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*Botón para enviar el formulario*@
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @*Enlace para regresar a la lista de estados*@
+    @Html.ActionLink("Regresar", "Index")
+</div>
+
+@section Scripts {
+    @*validación*@
+    @Scripts.Render("~/bundles/jqueryval")
+}

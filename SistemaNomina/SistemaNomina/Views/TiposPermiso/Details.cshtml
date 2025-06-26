@@ -1,0 +1,62 @@
+﻿@model SistemaNomina.Models.TiposPermiso  
+
+@{
+    ViewBag.Title = "Details"; @* Título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* Vista *@
+}
+
+<h2>Details</h2>  @* Título página *@
+
+<div>
+    <h4>TiposPermiso</h4>  @* Subtítulo *@
+    <hr /> 
+
+    <dl class="dl-horizontal">
+        @* Lista descriptiva *@
+
+        <dt>
+            @* Etiqueta o nombre del campo 'nombre' *@
+            @Html.DisplayNameFor(model => model.nombre)  @* Muestra el nombre de la propiedad 'nombre' *@
+        </dt>
+        <dd>
+            @* Valor del campo 'nombre' *@
+            @Html.DisplayFor(model => model.nombre)  @* Muestra el valor actual de 'nombre' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.con_goce)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.con_goce)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @* Sección para los botones de acción *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_tipo_permiso })  @* Enlace al formulario para editar este registro, pasando el ID *@
+    |  @* Separador visual *@
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista de registros *@
+</p>

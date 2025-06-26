@@ -1,0 +1,117 @@
+﻿@model SistemaNomina.Models.Permisos
+
+@{
+    ViewBag.Title = "Edit"; @* Título de la página editar *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Edit</h2>  @* Encabezado principal de la página *@
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-horizontal">
+        @*  formulario *@
+        <h4>Permisos</h4>  @* Subtítulo  *@
+        <hr /> 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  @* Muestra errores de validación generales *@
+        @Html.HiddenFor(model => model.id_permiso)  @* Campo oculto para guardar el id del permiso *@
+
+        <div class="form-group">
+            @* Grupo de controles para id_empleado *@
+            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta del campo *@
+            <div class="col-md-10">
+                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar empleado *@
+                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })  @* Mensaje de error para id_empleado *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para fecha *@
+            @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta fecha *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha *@
+                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })  @* Mensaje de error fecha *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para horas *@
+            @Html.LabelFor(model => model.horas, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta horas *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.horas, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar horas *@
+                @Html.ValidationMessageFor(model => model.horas, "", new { @class = "text-danger" })  @* Mensaje de error horas *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para tipo de permiso *@
+            @Html.LabelFor(model => model.id_tipo_permiso, "id_tipo_permiso", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta tipo permiso *@
+            <div class="col-md-10">
+                @Html.DropDownList("id_tipo_permiso", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar tipo permiso *@
+                @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "text-danger" })  @* Mensaje de error tipo permiso *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para motivo *@
+            @Html.LabelFor(model => model.motivo, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta motivo *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.motivo, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar motivo *@
+                @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger" })  @* Mensaje de error motivo *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para estado *@
+            @Html.LabelFor(model => model.id_estado, "id_estado", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta estado *@
+            <div class="col-md-10">
+                @Html.DropDownList("id_estado", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar estado *@
+                @Html.ValidationMessageFor(model => model.id_estado, "", new { @class = "text-danger" })  @* Mensaje de error estado *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para aprobado_por *@
+            @Html.LabelFor(model => model.aprobado_por, "aprobado_por", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta aprobado por *@
+            <div class="col-md-10">
+                @Html.DropDownList("aprobado_por", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar quién aprobó *@
+                @Html.ValidationMessageFor(model => model.aprobado_por, "", new { @class = "text-danger" })  @* Mensaje de error aprobado_por *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para fecha_creacion *@
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta fecha de creación *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha de creación *@
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })  @* Mensaje de error fecha_creacion *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para fecha_actualizacion *@
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta fecha de actualización *@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha de actualización *@
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })  @* Mensaje de error fecha_actualizacion *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Grupo para botón guardar *@
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />  @* Botón para guardar cambios *@
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista de permisos *@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")  @* validación *@
+}

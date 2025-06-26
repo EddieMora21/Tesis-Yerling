@@ -1,0 +1,71 @@
+﻿@model SistemaNomina.Models.Departamentos
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    @* Se genera el formulario para crear un nuevo registro *@
+    @Html.AntiForgeryToken() @* Seguridad *@
+
+    <div class="form-horizontal">
+        <h4>Departamentos</h4>
+        <hr />
+        @* Muestra un resumen de validación si hay errores *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @* Etiqueta para el campo nombre *@
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Campo de entrada para nombre *@
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @* Mensaje de validación para nombre *@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Etiqueta para fecha de creación *@
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Campo de entrada para fecha de creación *@
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+                @* Mensaje de validación para fecha de creación *@
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Etiqueta para fecha de actualización *@
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Campo de entrada para fecha de actualización *@
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @* Mensaje de validación para fecha de actualización *@
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @* Botón para enviar el formulario y crear el departamento *@
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @* Enlace para volver a la lista principal de departamentos *@
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @* Validación *@
+    @Scripts.Render("~/bundles/jqueryval")
+}

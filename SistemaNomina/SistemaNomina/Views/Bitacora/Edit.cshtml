@@ -1,0 +1,83 @@
+﻿@model SistemaNomina.Models.Bitacora
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Bitacora</h4>
+        <hr />
+        @* Mostrar resumen de errores de validación, si los hay *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @* Campo oculto para el id del registro, necesario para identificar el registro a editar *@
+        @Html.HiddenFor(model => model.id_log)
+
+        <div class="form-group">
+            @* Etiqueta para el campo id_usuario *@
+            @Html.LabelFor(model => model.id_usuario, "id_usuario", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Lista desplegable para seleccionar usuario *@
+                @Html.DropDownList("id_usuario", null, htmlAttributes: new { @class = "form-control" })
+                @* Mensaje de error para validación del campo id_usuario *@
+                @Html.ValidationMessageFor(model => model.id_usuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Etiqueta para el campo accion *@
+            @Html.LabelFor(model => model.accion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Editor para el campo accion *@
+                @Html.EditorFor(model => model.accion, new { htmlAttributes = new { @class = "form-control" } })
+                @* Mensaje de error para validación del campo accion *@
+                @Html.ValidationMessageFor(model => model.accion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Etiqueta para el campo detalle *@
+            @Html.LabelFor(model => model.detalle, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Editor para el campo detalle *@
+                @Html.EditorFor(model => model.detalle, new { htmlAttributes = new { @class = "form-control" } })
+                @* Mensaje de error para validación del campo detalle *@
+                @Html.ValidationMessageFor(model => model.detalle, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Etiqueta para el campo fecha_hora *@
+            @Html.LabelFor(model => model.fecha_hora, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Editor para el campo fecha_hora *@
+                @Html.EditorFor(model => model.fecha_hora, new { htmlAttributes = new { @class = "form-control" } })
+                @* Mensaje de error para validación del campo fecha_hora *@
+                @Html.ValidationMessageFor(model => model.fecha_hora, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @* Botón para enviar el formulario y guardar los cambios *@
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @* Enlace para regresar a la lista principal *@
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @*  validación  *@
+    @Scripts.Render("~/bundles/jqueryval")
+}

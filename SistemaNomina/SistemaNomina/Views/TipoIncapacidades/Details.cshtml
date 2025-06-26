@@ -1,0 +1,65 @@
+﻿@model SistemaNomina.Models.TipoIncapacidades
+
+@{
+    ViewBag.Title = "Details"; //  título navegador
+    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+}
+
+<h2>Details</h2> @* Título página *@
+
+<div>
+    <h4>TipoIncapacidades</h4> @* Nombre modulo *@
+    <hr />
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre) @* Etiqueta del campo 'nombre' *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre) @* Valor del campo 'nombre' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dias_maximos)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.dias_maximos)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pago_planilla)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.pago_planilla)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @* Enlace para ir a la vista de edición del registro actual *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_tipo }) |
+
+    @* Enlace para regresar a la lista de registros *@
+    @Html.ActionLink("Back to List", "Index")
+</p>

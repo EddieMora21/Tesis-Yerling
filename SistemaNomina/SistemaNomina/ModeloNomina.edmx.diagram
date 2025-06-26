@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6802d859a7c44dccb2c5d5ad571b0919" Name="Diagram1">
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Aguinaldo" Width="1.5" PointX="5.25" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Asistencia" Width="1.5" PointX="8.25" PointY="25" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Bitacora" Width="1.5" PointX="13.5" PointY="31.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Departamentos" Width="1.5" PointX="3.75" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Empleados" Width="1.5" PointX="3" PointY="23" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.EstadoCivil" Width="1.5" PointX="0.75" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Estados" Width="1.5" PointX="9" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Feriados" Width="1.5" PointX="6" PointY="35.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Horarios" Width="1.5" PointX="0.75" PointY="25.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.HorasExtras" Width="1.5" PointX="5.25" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Incapacidades" Width="1.5" PointX="8.25" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.ISR" Width="1.5" PointX="9" PointY="37.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Liquidaciones" Width="1.5" PointX="8.25" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Nomina" Width="1.5" PointX="11.25" PointY="24" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Permisos" Width="1.5" PointX="11.25" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Puestos" Width="1.5" PointX="6" PointY="24.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Roles" Width="1.5" PointX="9" PointY="34.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.SolicitudesVacaciones" Width="1.5" PointX="13.5" PointY="44.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.TipoIncapacidades" Width="1.5" PointX="6" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.TipoLiquidacion" Width="1.5" PointX="6" PointY="39.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.TiposHoraExtra" Width="1.5" PointX="3" PointY="31.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.TiposPermiso" Width="1.5" PointX="9" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Usuarios" Width="1.5" PointX="11.25" PointY="30.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="smartbuilding_rhModel.Vacaciones" Width="1.5" PointX="5.25" PointY="59.875" IsExpanded="true" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_aguinaldo_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_asistencia_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_asistencia_feriado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_bitacora_usuario" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_puesto_departamento" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_empleado_estadocivil" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_empleado_horario" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_empleado_puesto" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_horasextras_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_incapacidades_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_liquidaciones_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_nomina_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_permisos_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_usuario_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_vacaciones_empleado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_horasextras_estado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_incapacidades_estado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_permisos_estado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_solicitud_estado" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_puesto_horario" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_horasextras_aprobador" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_horasextras_tipo" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_incapacidad_tipo" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_nomina_isr" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_liquidaciones_tipo" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_permisos_aprobador" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_permisos_tipo" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_usuario_rol" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_solicitud_aprobador" ManuallyRouted="false" />
+        <AssociationConnector Association="smartbuilding_rhModel.fk_solicitud_vacacion" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

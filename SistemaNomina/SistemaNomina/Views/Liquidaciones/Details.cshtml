@@ -1,0 +1,141 @@
+﻿@model SistemaNomina.Models.Liquidaciones
+
+@{
+    // Establece el título de la página en la pestaña del navegador
+    ViewBag.Title = "Details";
+
+    //  vista 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Liquidaciones</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @* Muestra el nombre del campo 'fecha_salida' *@
+            @Html.DisplayNameFor(model => model.fecha_salida)
+        </dt>
+
+        <dd>
+            @* Muestra el valor de 'fecha_salida' *@
+            @Html.DisplayFor(model => model.fecha_salida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.preaviso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.preaviso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cesantia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cesantia)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.vacaciones_pendientes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.vacaciones_pendientes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dias_vacaciones_pendientes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dias_vacaciones_pendientes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.aguinaldo_proporcional)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.aguinaldo_proporcional)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.total_liquidacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.total_liquidacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.isr_liquidacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.isr_liquidacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.css_liquidacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.css_liquidacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ivm_liquidacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ivm_liquidacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+        <dt>
+            @* Accede al campo 'cedula' del empleado  *@
+            @Html.DisplayNameFor(model => model.Empleados.cedula)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Empleados.cedula)
+        </dd>
+
+        <dt>
+            @* Muestra el nombre del tipo de liquidación  *@
+            @Html.DisplayNameFor(model => model.TipoLiquidacion.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TipoLiquidacion.nombre)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @* Enlace para ir a la pantalla de edición de esta liquidación *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_liquidacion }) |
+
+    @* Enlace para regresar a la lista de liquidaciones *@
+    @Html.ActionLink("Back to List", "Index")
+</p>

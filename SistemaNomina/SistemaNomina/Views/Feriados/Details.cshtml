@@ -1,0 +1,98 @@
+﻿@model SistemaNomina.Models.Feriados
+
+@{
+    ViewBag.Title = "Details";
+    // Establece el título de la página como "Details"
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // plantilla
+}
+
+<h2>Details</h2>
+@*Título visible en la página para indicar que se muestran los detalles*@
+
+<div>
+    <h4>Feriados</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @*Lista de definición*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+            @*Muestra la etiqueta del campo 'nombre'*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+            @*Muestra el valor de 'nombre'*@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha)
+            
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha)
+            
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pago_obligatorio)
+            
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pago_obligatorio)
+            
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.recargo)
+            
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.recargo)
+            
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+            
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+            
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+            
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+            
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+            
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+            
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_feriado }) |
+    @*Enlace para editar el registro actual, pasando el id correspondiente*@
+
+    @Html.ActionLink("Back to List", "Index")
+    @*Enlace para regresar a la lista principal de feriados*@
+</p>

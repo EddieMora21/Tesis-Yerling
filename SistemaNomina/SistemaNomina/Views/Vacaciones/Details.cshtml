@@ -1,0 +1,69 @@
+﻿@model SistemaNomina.Models.Vacaciones
+
+@{
+    //  título navegador
+    ViewBag.Title = "Details";
+
+    // visita
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Vacaciones</h4>
+    <hr />
+
+    <!-- Lista de detalles del objeto Vacaciones  -->
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.periodo) <!-- Muestra el nombre del campo 'periodo' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.periodo) <!-- Muestra el valor del campo 'periodo' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dias_disponibles) <!-- Muestra el nombre del campo 'días disponibles' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.dias_disponibles) <!-- Muestra el valor de 'días disponibles' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dias_disfrutados) <!-- Muestra el nombre del campo 'días disfrutados' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.dias_disfrutados) <!-- Muestra el valor de 'días disfrutados' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion) <!-- Muestra el nombre del campo 'fecha de creación' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion) <!-- Muestra el valor de 'fecha de creación' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion) <!-- Muestra el nombre del campo 'fecha de actualización' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion) <!-- Muestra el valor de 'fecha de actualización' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Empleados.cedula) <!-- Muestra el nombre del campo 'cédula del empleado' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Empleados.cedula) <!-- Muestra el valor de la cédula del empleado -->
+        </dd>
+    </dl>
+</div>
+
+<p>
+    <!-- Enlace para ir a la vista de edición de este registro -->
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_vacacion })
+    |
+    <!-- Enlace para volver a la lista de vacaciones -->
+    @Html.ActionLink("Back to List", "Index")
+</p>

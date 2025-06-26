@@ -1,0 +1,104 @@
+﻿@model SistemaNomina.Models.Asistencia
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Asistencia</h4>
+        <hr />
+        @* Mostrar errores de validación si existen *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @* Campo oculto para almacenar el id de la asistencia *@
+        @Html.HiddenFor(model => model.id_asistencia)
+
+        <div class="form-group">
+            @* Selector desplegable para elegir el empleado asociado a la asistencia *@
+            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo para editar la fecha de la asistencia *@
+            @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo para editar la hora de entrada *@
+            @Html.LabelFor(model => model.hora_entrada, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.hora_entrada, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.hora_entrada, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo para editar la hora de salida *@
+            @Html.LabelFor(model => model.hora_salida, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.hora_salida, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.hora_salida, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Checkbox para indicar si la asistencia fue en un día feriado *@
+            @Html.LabelFor(model => model.es_feriado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.es_feriado)
+                    @Html.ValidationMessageFor(model => model.es_feriado, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Campo para editar la fecha de registro de la asistencia *@
+            @Html.LabelFor(model => model.fecha_registro, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_registro, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_registro, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Selector desplegable para elegir el feriado asociado, si aplica *@
+            @Html.LabelFor(model => model.id_feriado, "id_feriado", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_feriado", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_feriado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* Botón para enviar el formulario y guardar los cambios *@
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @* Enlace para regresar a la lista de asistencias *@
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @* Incluir scripts de validación jQuery *@
+    @Scripts.Render("~/bundles/jqueryval")
+}

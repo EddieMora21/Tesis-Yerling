@@ -1,0 +1,18 @@
+C:\Users\hrive\source\repos\smartbuilding_rh\bin\Debug\smartbuilding_rh.dacpac
+C:\Users\hrive\source\repos\smartbuilding_rh\bin\Debug\smartbuilding_rh.dll
+C:\Users\hrive\source\repos\smartbuilding_rh\bin\Debug\smartbuilding_rh.pdb
+C:\Users\hrive\source\repos\smartbuilding_rh\obj\Debug\smartbuilding_rh.sqlproj.AssemblyReference.cache
+C:\Users\hrive\source\repos\smartbuilding_rh\obj\Debug\smartbuilding_rh.dll
+C:\Users\hrive\source\repos\smartbuilding_rh\obj\Debug\smartbuilding_rh.pdb
+C:\Users\hrive\OneDrive\Escritorio\New folder\SistemaNomina\smartbuilding_rh\bin\Debug\smartbuilding_rh.dacpac
+C:\Users\hrive\OneDrive\Escritorio\New folder\SistemaNomina\smartbuilding_rh\bin\Debug\smartbuilding_rh.dll
+C:\Users\hrive\OneDrive\Escritorio\New folder\SistemaNomina\smartbuilding_rh\bin\Debug\smartbuilding_rh.pdb
+C:\Users\hrive\OneDrive\Escritorio\New folder\SistemaNomina\smartbuilding_rh\obj\Debug\smartbuilding_rh.sqlproj.AssemblyReference.cache
+C:\Users\hrive\OneDrive\Escritorio\New folder\SistemaNomina\smartbuilding_rh\obj\Debug\smartbuilding_rh.dll
+C:\Users\hrive\OneDrive\Escritorio\New folder\SistemaNomina\smartbuilding_rh\obj\Debug\smartbuilding_rh.pdb
+C:\Users\yerli\OneDrive\Documentos\REPOSITORIOS\nomina-main\nomina-main\smartbuilding_rh\bin\Debug\smartbuilding_rh.dacpac
+C:\Users\yerli\OneDrive\Documentos\REPOSITORIOS\nomina-main\nomina-main\smartbuilding_rh\bin\Debug\smartbuilding_rh.dll
+C:\Users\yerli\OneDrive\Documentos\REPOSITORIOS\nomina-main\nomina-main\smartbuilding_rh\bin\Debug\smartbuilding_rh.pdb
+C:\Users\yerli\OneDrive\Documentos\REPOSITORIOS\nomina-main\nomina-main\smartbuilding_rh\obj\Debug\smartbuilding_rh.sqlproj.AssemblyReference.cache
+C:\Users\yerli\OneDrive\Documentos\REPOSITORIOS\nomina-main\nomina-main\smartbuilding_rh\obj\Debug\smartbuilding_rh.dll
+C:\Users\yerli\OneDrive\Documentos\REPOSITORIOS\nomina-main\nomina-main\smartbuilding_rh\obj\Debug\smartbuilding_rh.pdb

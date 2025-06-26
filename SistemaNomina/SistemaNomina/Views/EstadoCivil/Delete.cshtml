@@ -1,0 +1,43 @@
+﻿@model SistemaNomina.Models.EstadoCivil
+
+@{
+    // Define el título de la página
+    ViewBag.Title = "Delete";
+
+    // plantilla que se usará para esta vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3> <!-- Confirmación para eliminar -->
+
+<div>
+    <h4>EstadoCivil</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <!-- Muestra el nombre del campo para 'nombre' -->
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            <!-- Muestra el valor del campo 'nombre' -->
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        // seg
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <!-- Botón para confirmar la eliminación -->
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+
+            <!-- Enlace para regresar a la lista sin eliminar -->
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

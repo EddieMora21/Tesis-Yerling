@@ -1,0 +1,365 @@
+﻿@model SistemaNomina.Models.Aguinaldo
+
+@{
+    ViewBag.Title = "Detalles del Aguinaldo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --azul-oscuro: #221d42;
+        --celeste: #1788ca;
+        --amarillo: #fab61b;
+        --gris-claro: #e7e8eb;
+        --blanco: #ffffff;
+        --verde: #28a745;
+    }
+
+    .details-container {
+        background: var(--blanco);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .details-header {
+        background: linear-gradient(135deg, var(--celeste) 0%, var(--azul-oscuro) 100%);
+        color: var(--blanco);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .amount-display {
+        font-size: 3rem;
+        font-weight: bold;
+        color: var(--amarillo);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        margin: 1rem 0;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 5px solid var(--celeste);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .info-card {
+        background: var(--blanco);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .info-icon {
+        font-size: 2rem;
+        color: var(--celeste);
+        margin-bottom: 0.5rem;
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--azul-oscuro);
+    }
+
+    .calculation-breakdown {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .formula-display {
+        background: var(--azul-oscuro);
+        color: var(--blanco);
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        text-align: center;
+        margin: 1rem 0;
+    }
+
+    .timeline-item {
+        border-left: 3px solid var(--celeste);
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--celeste);
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .btn-custom {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-edit {
+        background: var(--amarillo);
+        color: var(--azul-oscuro);
+    }
+
+        .btn-edit:hover {
+            background: #e09900;
+            color: var(--blanco);
+            transform: translateY(-2px);
+        }
+
+    .btn-delete {
+        background: #dc3545;
+        color: var(--blanco);
+    }
+
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+    .btn-back {
+        background: var(--gris-claro);
+        color: var(--azul-oscuro);
+    }
+
+        .btn-back:hover {
+            background: #d1d3d4;
+            transform: translateY(-2px);
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        background: var(--verde);
+        color: var(--blanco);
+    }
+</style>
+
+<div class="container">
+    <!-- Header Principal -->
+    <div class="details-header">
+        <h2><i class="fas fa-file-invoice-dollar"></i> Detalles del Aguinaldo</h2>
+        <div class="amount-display">@Model.monto_total.ToString("C")</div>
+        <p class="mb-0">
+            <strong>@Model.Empleados.nombre1 @Model.Empleados.apellido1</strong> - Año @Model.anio
+        </p>
+        <span class="status-badge">
+            <i class="fas fa-check-circle"></i> Registrado
+        </span>
+    </div>
+
+    <!-- Información Principal -->
+    <div class="info-section">
+        <h4 class="mb-3"><i class="fas fa-user-tie"></i> Información del Empleado</h4>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-id-card"></i></div>
+                <div class="info-label">Cédula</div>
+                <div class="info-value">@Html.DisplayFor(model => model.Empleados.cedula)</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-user"></i></div>
+                <div class="info-label">Nombre Completo</div>
+                <div class="info-value">
+                    @Html.DisplayFor(model => model.Empleados.nombre1) @Html.DisplayFor(model => model.Empleados.nombre2)<br>
+                    @Html.DisplayFor(model => model.Empleados.apellido1) @Html.DisplayFor(model => model.Empleados.apellido2)
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-calendar-user"></i></div>
+                <div class="info-label">Fecha de Ingreso</div>
+                <div class="info-value">@Html.DisplayFor(model => model.Empleados.fecha_ingreso)</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-briefcase"></i></div>
+                <div class="info-label">Estado</div>
+                <div class="info-value">@Html.DisplayFor(model => model.Empleados.estado)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalles del Aguinaldo -->
+    <div class="info-section">
+        <h4 class="mb-3"><i class="fas fa-calculator"></i> Detalles del Cálculo</h4>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="info-label">Meses Laborados</div>
+                <div class="info-value">@Html.DisplayFor(model => model.meses_laborados) meses</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="info-label">Año Fiscal</div>
+                <div class="info-value">@Html.DisplayFor(model => model.anio)</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="info-label">Monto Total</div>
+                <div class="info-value">@Html.DisplayFor(model => model.monto_total)</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-percentage"></i></div>
+                <div class="info-label">Promedio Mensual</div>
+                <div class="info-value">@((Model.monto_total / Math.Max(Model.meses_laborados, 1)).ToString("C"))</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desglose del Cálculo -->
+    <div class="calculation-breakdown">
+        <h4 class="mb-3"><i class="fas fa-chart-line"></i> Desglose Legal del Cálculo</h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h6><strong>Período de Cálculo Legal:</strong></h6>
+                <p class="mb-2">
+                    <i class="fas fa-calendar-week"></i>
+                    Del 1 de diciembre de @(Model.anio - 1) al 30 de noviembre de @Model.anio
+                </p>
+
+                <h6><strong>Base Legal:</strong></h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-gavel text-primary"></i> Código de Trabajo de Costa Rica</li>
+                    <li><i class="fas fa-book text-primary"></i> Artículos relacionados con aguinaldo</li>
+                    <li><i class="fas fa-balance-scale text-primary"></i> Ministerio de Trabajo (MTSS)</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><strong>Fórmula Aplicada:</strong></h6>
+                <div class="formula-display">
+                    Aguinaldo = (Suma de Salarios del Período) ÷ 12
+                </div>
+
+                <h6><strong>Consideraciones:</strong></h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Cálculo proporcional por meses laborados</li>
+                    <li><i class="fas fa-check text-success"></i> Ausencias injustificadas descontadas</li>
+                    <li><i class="fas fa-check text-success"></i> Conforme a normativa vigente</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información de Auditoría -->
+    <div class="info-section">
+        <h4 class="mb-3"><i class="fas fa-history"></i> Información de Auditoría</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="timeline-item">
+                    <h6><strong>Creación del Registro</strong></h6>
+                    <p class="mb-1">
+                        <i class="fas fa-calendar-plus"></i>
+                        @if (Model.fecha_creacion.HasValue)
+                        {
+                            @Model.fecha_creacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Fecha no registrada</span>
+                        }
+                    </p>
+                </div>
+
+                @if (Model.fecha_actualizacion.HasValue)
+                {
+                    <div class="timeline-item">
+                        <h6><strong>Última Actualización</strong></h6>
+                        <p class="mb-1">
+                            <i class="fas fa-calendar-edit"></i>
+                            @Model.fecha_actualizacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm")
+                        </p>
+                    </div>
+                }
+            </div>
+            <div class="col-md-6">
+                <div class="info-card">
+                    <div class="info-icon"><i class="fas fa-fingerprint"></i></div>
+                    <div class="info-label">ID del Registro</div>
+                    <div class="info-value">#@Model.id_aguinaldo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="info-section">
+        <h4 class="mb-3"><i class="fas fa-info-circle"></i> Información Legal Importante</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="fas fa-exclamation-triangle text-warning"></i> Obligaciones del Empleador:</h6>
+                <ul>
+                    <li>Pago obligatorio antes del 20 de diciembre</li>
+                    <li>No puede ser sustituido por otros beneficios</li>
+                    <li>Debe pagarse en efectivo o depósito bancario</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="fas fa-shield-alt text-success"></i> Derechos del Trabajador:</h6>
+                <ul>
+                    <li>Derecho irrenunciable del trabajador</li>
+                    <li>Proporcional al tiempo laborado</li>
+                    <li>No afectado por permisos justificados</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="action-buttons">
+        <a href="@Url.Action("Edit", new { id = Model.id_aguinaldo })" class="btn-custom btn-edit">
+            <i class="fas fa-edit"></i> Editar Registro
+        </a>
+        <a href="@Url.Action("Delete", new { id = Model.id_aguinaldo })" class="btn-custom btn-delete">
+            <i class="fas fa-trash-alt"></i> Eliminar
+        </a>
+        <a href="@Url.Action("Index")" class="btn-custom btn-back">
+            <i class="fas fa-arrow-left"></i> Volver al Listado
+        </a>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+﻿@model IEnumerable<SistemaNomina.TiposPermiso> 
+
+@{
+    ViewBag.Title = "Index"; @* Título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Index</h2>  @* Título página *@
+
+<p>
+    @Html.ActionLink("Create New", "Create")  @* nuevo registro *@
+</p>
+
+<table class="table">
+    @*  tabla muestra datos *@
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)  @* Nombre de la columna "nombre" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.con_goce)  @* Nombre de la columna "con_goce" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)  @* Nombre de la columna "descripcion" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Nombre de la columna "fecha_creacion" *@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Nombre de la columna "fecha_actualizacion" *@
+        </th>
+        <th></th>  @* Columna vacía para los botones de acción (Edit, Details, Delete) *@
+    </tr>
+
+    @foreach (var item in Model)
+    {@* Recorre lista de TiposPermiso *@
+    <tr>
+        @* Fila mostrar datos de cada objeto *@
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre)  @* Muestra el valor de "nombre"  *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.con_goce)  @* Muestra el valor de "con_goce"  *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.descripcion)  @* Muestra la descripción del tipo de permiso *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_creacion)  @* Muestra la fecha de creación del permiso *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_actualizacion)  @* Muestra la fecha de la última actualización *@
+        </td>
+        <td>
+            @* Sección con enlaces de acción para cada fila *@
+            @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo_permiso }) |  @* Enlace para editar este permiso *@
+            @Html.ActionLink("Details", "Details", new { id = item.id_tipo_permiso }) |  @* Enlace para ver los detalles *@
+            @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo_permiso })  @* Enlace para eliminar este permiso *@
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,69 @@
+﻿@model SistemaNomina.Models.TiposPermiso 
+
+@{
+    ViewBag.Title = "Delete"; @* Título navegador *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Delete</h2>  @* Título página *@
+
+<h3>Are you sure you want to delete this?</h3>  @* Mensaje de confirmación para el usuario *@
+
+<div>
+    <h4>TiposPermiso</h4>  @* Subtítulo a eliminar *@
+    <hr /> 
+
+    <dl class="dl-horizontal">
+        @* Lista detalles del objeto *@
+
+        <dt>
+            @* Encabezado para el campo 'nombre' *@
+            @Html.DisplayNameFor(model => model.nombre)  @* Muestra el nombre del campo (etiqueta) *@
+        </dt>
+        <dd>
+            @* Valor del campo 'nombre' *@
+            @Html.DisplayFor(model => model.nombre)  @* Muestra el valor actual del campo 'nombre' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.con_goce)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.con_goce)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {@* Inicia el formulario que enviará la solicitud para eliminar el registro *@
+    @Html.AntiForgeryToken() @* seguridad *@
+
+    <div class="form-actions no-color">
+        @* Contenedor para los botones de acción *@
+        <input type="submit" value="Delete" class="btn btn-default" />  @* Botón para confirmar la eliminación del registro *@
+        |  @* Separador visual entre los botones *@
+        @Html.ActionLink("Back to List", "Index")  @* Enlace para volver a la lista sin eliminar nada *@
+    </div>
+}
+</div>

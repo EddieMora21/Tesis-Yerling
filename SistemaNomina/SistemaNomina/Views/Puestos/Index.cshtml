@@ -1,0 +1,92 @@
+﻿@model IEnumerable<SistemaNomina.Models.Puestos> 
+
+@{
+    ViewBag.Title = "Index"; <!-- Título de la página -->
+    Layout = "~/Views/Shared/_Layout.cshtml"; <!-- vista -->
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")  <!--  nuevo puesto -->
+</p>
+
+<table class="table">
+    <!-- Tabla lista de puestos -->
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre_puesto)
+            <!-- Muestra el nombre campo 'nombre_puesto' -->
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.salario_base)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.horas_jornada)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.es_jefe)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Departamentos.nombre)
+            <!-- Muestra el nombre del departamento  -->
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Horarios.nombre)
+            <!-- Muestra el nombre del horario  -->
+        </th>
+        <th></th> <!-- Columna vacía para las acciones -->
+    </tr>
+
+    @foreach (var item in Model)
+    {<!--  puesto en el modelo -->
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre_puesto)
+                <!-- Muestra el valor del nombre del puesto -->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.salario_base)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.horas_jornada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.es_jefe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_creacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Departamentos.nombre)
+                <!-- Muestra el nombre del departamento al que pertenece el puesto -->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Horarios.nombre)
+                <!-- Muestra el nombre del horario -->
+            </td>
+            <td>
+                <!-- Enlaces para acciones Editar, Ver Detalles y Eliminar, pasando el id del puesto -->
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_puesto }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id_puesto }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_puesto })
+            </td>
+        </tr>
+    }
+
+</table>

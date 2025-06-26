@@ -1,0 +1,71 @@
+﻿@model SistemaNomina.Models.Asistencia
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Asistencia</h4>
+    <hr />
+    @* Mostrar los detalles del registro de asistencia seleccionado *@
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.hora_entrada)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.hora_entrada)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.hora_salida)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.hora_salida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.es_feriado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.es_feriado)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_registro)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_registro)
+        </dd>
+
+        @* Mostrar la cédula del empleado asociado a esta asistencia *@
+        <dt>
+            @Html.DisplayNameFor(model => model.Empleados.cedula)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Empleados.cedula)
+        </dd>
+
+        @* Mostrar el nombre del feriado asociado, si existe *@
+        <dt>
+            @Html.DisplayNameFor(model => model.Feriados.nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Feriados.nombre)
+        </dd>
+    </dl>
+</div>
+<p>
+    @* Enlaces para editar el registro actual o regresar a la lista general *@
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_asistencia }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

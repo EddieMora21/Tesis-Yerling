@@ -1,0 +1,191 @@
+﻿@model SistemaNomina.Models.Puestos
+
+@{
+    ViewBag.Title = "Crear Nuevo Puesto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @* Muestra errores de validación si existen *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger alert alert-danger" })
+
+        @* Campo para el nombre del puesto *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre_puesto, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre_puesto, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingrese el nombre del puesto" } })
+                @Html.ValidationMessageFor(model => model.nombre_puesto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para seleccionar el departamento *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_departamento, "Departamento", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_departamento", null, "-- Seleccione Departamento --", htmlAttributes: new { @class = "form-control", id = "departamentoSelect" })
+                @Html.ValidationMessageFor(model => model.id_departamento, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para el salario base *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.salario_base, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.salario_base, new { htmlAttributes = new { @class = "form-control", placeholder = "0.00" } })
+                @Html.ValidationMessageFor(model => model.salario_base, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para la descripción del puesto *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.descripcion, new { @class = "form-control", rows = "3", placeholder = "Descripción de las responsabilidades del puesto" })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Campo para las horas de la jornada laboral *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.horas_jornada, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.horas_jornada, new { htmlAttributes = new { @class = "form-control", min = "1", max = "24" } })
+                @Html.ValidationMessageFor(model => model.horas_jornada, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*  indicar si este puesto es de jefe *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.es_jefe, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.es_jefe, new { htmlAttributes = new { id = "esJefeCheckbox" } })
+                    @Html.ValidationMessageFor(model => model.es_jefe, "", new { @class = "text-danger" })
+
+                    @* Texto de ayuda para el usuario *@
+                    <small id="jefeHelp" class="form-text text-muted">Solo puede haber un jefe por departamento.</small>
+
+                    @* Alerta que aparece si ya hay un jefe en ese departamento *@
+                    <div id="jefeExistenteAlert" class="alert alert-warning mt-2" style="display:none;">
+                        <strong>Advertencia:</strong> Este departamento ya tiene un jefe asignado (<span id="nombreJefeActual"></span>).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Campo para seleccionar el horario opcional *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.id_horario, "Horario", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("id_horario", null, "-- Seleccione Horario (Opcional) --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_horario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Botón para guardar y enlace para cancelar *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-primary" id="submitButton" />
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function() {
+            // Permite solo números y un punto en el campo de salario
+            $('#salario_base').on('input', function() {
+                this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+            });
+
+            // Permite solo números enteros en el campo de horas de jornada, máximo 24
+            $('#horas_jornada').on('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (parseInt(this.value) > 24) this.value = '24';
+            });
+
+            // Verifica si ya hay un jefe en el departamento seleccionado
+            $('#departamentoSelect, #esJefeCheckbox').change(function() {
+                verificarJefatura();
+            });
+
+            function verificarJefatura() {
+                var departamentoId = $('#departamentoSelect').val();
+                var esJefe = $('#esJefeCheckbox').is(':checked');
+
+                // Solo realiza la verificación si se seleccionó jefe y un departamento
+                if (esJefe && departamentoId) {
+                    $.get('@Url.Action("CheckJefeDepartamento", "Puestos")', {
+                        departamentoId: departamentoId
+                    }, function(data) {
+                        if (data.existe) {
+                            // Muestra advertencia y desmarca la casilla de jefe si ya existe uno
+                            $('#jefeExistenteAlert').show();
+                            $('#nombreJefeActual').text(data.nombreJefe);
+                            $('#esJefeCheckbox').prop('checked', false);
+                            $('#submitButton').prop('disabled', false);
+                        } else {
+                            // Oculta la advertencia si no existe jefe
+                            $('#jefeExistenteAlert').hide();
+                            $('#submitButton').prop('disabled', false);
+                        }
+                    }).fail(function() {
+                        // Si falla la consulta, oculta la advertencia y permite guardar
+                        $('#jefeExistenteAlert').hide();
+                        $('#submitButton').prop('disabled', false);
+                    });
+                } else {
+                    $('#jefeExistenteAlert').hide();
+                    $('#submitButton').prop('disabled', false);
+                }
+            }
+
+            // Validación final antes de enviar el formulario
+            $('form').submit(function(e) {
+                var departamentoId = $('#departamentoSelect').val();
+                var esJefe = $('#esJefeCheckbox').is(':checked');
+
+                // Si se marcó como jefe, hace verificación sincronizada
+                if (esJefe && departamentoId) {
+                    $('#submitButton').prop('disabled', true);
+
+                    var existeJefe = false;
+
+                    $.ajax({
+                        url: '@Url.Action("CheckJefeDepartamento", "Puestos")',
+                        data: { departamentoId: departamentoId },
+                        async: false, // La solicitud es síncrona para detener el envío del formulario
+                        success: function(data) {
+                            existeJefe = data.existe;
+                            if (existeJefe) {
+                                $('#jefeExistenteAlert').show();
+                                $('#nombreJefeActual').text(data.nombreJefe);
+                                $('#esJefeCheckbox').prop('checked', false);
+                                e.preventDefault(); // Detiene el envío
+                            }
+                        },
+                        complete: function() {
+                            $('#submitButton').prop('disabled', false);
+                        }
+                    });
+
+                    if (existeJefe) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        });
+    </script>
+}

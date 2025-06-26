@@ -1,0 +1,484 @@
+﻿@model IEnumerable<SistemaNomina.Models.Incapacidades>
+
+@{
+    ViewBag.Title = "Gestión de Incapacidades";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Header de la página -->
+            <div class="page-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="page-title">
+                            <i class="fas fa-user-injured text-primary"></i>
+                            Gestión de Incapacidades
+                        </h2>
+                        <p class="text-muted">Administra las incapacidades médicas del personal</p>
+                    </div>
+                    <div class="page-actions">
+                        @Html.ActionLink("Nueva Incapacidad", "Create", null, new { @class = "btn btn-success btn-lg" })
+                        <button class="btn btn-info btn-lg" onclick="window.print()">
+                            <i class="fas fa-print"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensajes de estado -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Panel de filtros -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-filter"></i> Filtros de búsqueda
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="filtroEmpleado" class="form-label">Buscar empleado</label>
+                            <input type="text" id="filtroEmpleado" class="form-control" placeholder="Nombre, apellido o cédula...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="filtroEstado" class="form-label">Estado</label>
+                            <select id="filtroEstado" class="form-control">
+                                <option value="">Todos los estados</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Aprobado">Aprobado</option>
+                                <option value="Rechazado">Rechazado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="filtroFecha" class="form-label">Mes y año</label>
+                            <input type="month" id="filtroFecha" class="form-control">
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex align-items-end">
+                            <button onclick="limpiarFiltros()" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de incapacidades -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list"></i>
+                        Lista de Incapacidades
+                        <span class="badge bg-light text-dark ms-2" id="totalRegistros">@Model.Count() registros</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table-hover mb-0 table" id="tablaIncapacidades">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Empleado</th>
+                                        <th>Cédula</th>
+                                        <th>Tipo Incapacidad</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th class="text-center">Días</th>
+                                        <th class="text-center">Estado</th>
+                                        <th>N° Boleta</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{int contador = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold text-center">@contador</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                        @item.Empleados.nombre1.Substring(0, 1)@item.Empleados.apellido1.Substring(0, 1)
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-semibold">@item.Empleados.nombre1 @item.Empleados.apellido1</div>
+                                                        <small class="text-muted">
+                                                            @{
+                                                                string puesto = "Sin puesto asignado";
+                                                                try
+                                                                {
+                                                                    if (item.Empleados.Puestos != null && !string.IsNullOrEmpty(item.Empleados.Puestos.nombre_puesto))
+                                                                    {
+                                                                        puesto = item.Empleados.Puestos.nombre_puesto;
+                                                                    }
+                                                                }
+                                                                catch
+                                                                {
+                                                                    puesto = "Sin puesto asignado";
+                                                                }
+                                                            }
+                                                            @puesto
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="font-monospace">@item.Empleados.cedula</span>
+                                            </td>
+                                            <td>
+                                                @if (item.TipoIncapacidades != null && !string.IsNullOrEmpty(item.TipoIncapacidades.nombre))
+                                                {
+                                                    <span class="badge bg-info text-dark">@item.TipoIncapacidades.nombre</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No especificado</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-calendar-alt text-muted me-1"></i>
+                                                @item.fecha_inicio.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-calendar-alt text-muted me-1"></i>
+                                                @item.fecha_fin.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-primary">
+                                                    @(item.dias_incapacidad ?? 0) días
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                @{
+                                                    string badgeClass = "bg-secondary";
+                                                    string iconClass = "fas fa-question";
+                                                    string estadoNombre = "Sin estado";
+
+                                                    if (item.Estados != null && !string.IsNullOrEmpty(item.Estados.nombre))
+                                                    {
+                                                        estadoNombre = item.Estados.nombre;
+                                                        switch (item.Estados.nombre)
+                                                        {
+                                                            case "Pendiente":
+                                                                badgeClass = "bg-warning text-dark";
+                                                                iconClass = "fas fa-clock";
+                                                                break;
+                                                            case "Aprobado":
+                                                                badgeClass = "bg-success";
+                                                                iconClass = "fas fa-check";
+                                                                break;
+                                                            case "Rechazado":
+                                                                badgeClass = "bg-danger";
+                                                                iconClass = "fas fa-times";
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                                <span class="badge @badgeClass">
+                                                    <i class="@iconClass me-1"></i>
+                                                    @estadoNombre
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.numero_boleta))
+                                                {
+                                                    <span class="font-monospace fw-bold">@item.numero_boleta</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Sin boleta</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-1">
+                                                    <a href="@Url.Action("Details", new { id = item.id_incapacidad })"
+                                                       class="btn btn-sm btn-info text-white"
+                                                       title="Ver detalles">
+                                                        👁️ Ver
+                                                    </a>
+                                                    <a href="@Url.Action("Edit", new { id = item.id_incapacidad })"
+                                                       class="btn btn-sm btn-primary"
+                                                       title="Editar">
+                                                        ✏️ Editar
+                                                    </a>
+                                                    <a href="@Url.Action("Delete", new { id = item.id_incapacidad })"
+                                                       class="btn btn-sm btn-danger"
+                                                       title="Eliminar"
+                                                       onclick="return confirm('¿Está seguro de eliminar esta incapacidad?')">
+                                                        🗑️ Borrar
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        contador++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="py-5 text-center">
+                            <i class="fas fa-user-injured fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">No hay incapacidades registradas</h4>
+                            <p class="text-muted mb-4">Comienza registrando la primera incapacidad médica</p>
+                            @Html.ActionLink("Registrar Primera Incapacidad", "Create", null, new { @class = "btn btn-primary btn-lg" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        /* Estilos personalizados - SIN gradientes */
+        .page-header {
+            background-color: #007bff;
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-actions .btn {
+            margin-left: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: 0.5rem;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #dee2e6;
+            background-color: #007bff !important;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+            border-top: none;
+            padding: 1rem 0.75rem;
+        }
+
+        .table td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        .avatar-sm {
+            width: 40px;
+            height: 40px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Botones de acción mejorados */
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 0.3rem;
+            white-space: nowrap;
+        }
+
+        .gap-1 {
+            gap: 0.25rem !important;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-center {
+            justify-content: center;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.375rem 0.75rem;
+        }
+
+        .font-monospace {
+            font-family: 'Courier New', monospace;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        /* Filtros */
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 0.375rem;
+            border: 1px solid #ced4da;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* Responsivo */
+        @@media (max-width: 768px) {
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .page-actions {
+                margin-top: 1rem;
+            }
+
+            .page-actions .btn {
+                display: block;
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+
+            .btn-sm {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .avatar-sm {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .table th,
+            .table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.8rem;
+            }
+
+            .d-flex.gap-1 {
+                flex-direction: column;
+                gap: 0.15rem !important;
+            }
+
+            .btn-sm {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            // Inicializar tooltips
+            $('[title]').tooltip();
+
+            // Filtros en tiempo real
+            $('#filtroEmpleado, #filtroEstado, #filtroFecha').on('keyup change', function() {
+                filtrarTabla();
+            });
+        });
+
+        function filtrarTabla() {
+            var filtroEmpleado = $('#filtroEmpleado').val().toLowerCase();
+            var filtroEstado = $('#filtroEstado').val().toLowerCase();
+            var filtroFecha = $('#filtroFecha').val();
+            var registrosVisibles = 0;
+
+            $('#tablaIncapacidades tbody tr').each(function() {
+                var empleado = $(this).find('td:eq(1)').text().toLowerCase();
+                var cedula = $(this).find('td:eq(2)').text().toLowerCase();
+                var estado = $(this).find('td:eq(7)').text().toLowerCase();
+                var fechaInicio = $(this).find('td:eq(4)').text();
+
+                var mostrar = true;
+
+                // Filtro por empleado (nombre o cédula)
+                if (filtroEmpleado && !empleado.includes(filtroEmpleado) && !cedula.includes(filtroEmpleado)) {
+                    mostrar = false;
+                }
+
+                // Filtro por estado
+                if (filtroEstado && !estado.includes(filtroEstado)) {
+                    mostrar = false;
+                }
+
+                // Filtro por fecha
+                if (filtroFecha) {
+                    var fechaFiltro = new Date(filtroFecha);
+                    var fechaRegistro = convertirFecha(fechaInicio);
+                    if (fechaRegistro.getMonth() !== fechaFiltro.getMonth() ||
+                        fechaRegistro.getFullYear() !== fechaFiltro.getFullYear()) {
+                        mostrar = false;
+                    }
+                }
+
+                $(this).toggle(mostrar);
+                if (mostrar) registrosVisibles++;
+            });
+
+            // Actualizar contador
+            $('#totalRegistros').text(registrosVisibles + ' registro' + (registrosVisibles !== 1 ? 's' : ''));
+        }
+
+        function convertirFecha(fechaStr) {
+            var fechaLimpia = fechaStr.replace(/[^0-9\/]/g, '');
+            var partes = fechaLimpia.split('/');
+            return new Date(partes[2], partes[1] - 1, partes[0]);
+        }
+
+        function limpiarFiltros() {
+            $('#filtroEmpleado, #filtroEstado, #filtroFecha').val('');
+            $('#tablaIncapacidades tbody tr').show();
+            $('#totalRegistros').text('@Model.Count() registro@(Model.Count() != 1 ? "s" : "")');
+        }
+    </script>
+}

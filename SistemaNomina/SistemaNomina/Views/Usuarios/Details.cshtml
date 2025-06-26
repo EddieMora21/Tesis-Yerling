@@ -1,0 +1,386 @@
+﻿@model SistemaNomina.Models.Usuarios
+
+@{
+    ViewBag.Title = "Detalles del Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="user-details-container">
+    <div class="header-section">
+        <h1 class="page-title">
+            <i class="icon-user"></i>
+            Detalles del Usuario
+        </h1>
+        <p class="page-subtitle">Información completa del usuario seleccionado</p>
+    </div>
+
+    <div class="details-content">
+        <div class="info-section">
+            <h3 class="section-title">
+                <i class="icon-info"></i>
+                Información Básica
+            </h3>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <label class="detail-label">Usuario:</label>
+                    <span class="detail-value">@Html.DisplayFor(model => model.usuario)</span>
+                </div>
+
+                <div class="detail-item">
+                    <label class="detail-label">Contraseña:</label>
+                    <span class="detail-value">
+                        <span class="password-protected">
+                            <i class="icon-lock"></i>
+                            ••••••••
+                            <small class="security-note">(Oculta por seguridad)</small>
+                        </span>
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <label class="detail-label">Primer Ingreso:</label>
+                    <span class="detail-value">
+                        @if (Model.primer_ingreso.HasValue)
+                        {
+                            if (Model.primer_ingreso.Value)
+                            {
+                                <span class="badge badge-warning">
+                                    <i class="icon-warning"></i>
+                                    Pendiente cambio
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-success">
+                                    <i class="icon-check"></i>
+                                    Completado
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge badge-secondary">N/A</span>
+                        }
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <label class="detail-label">Fecha de Creación:</label>
+                    <span class="detail-value">@Html.DisplayFor(model => model.fecha_creacion)</span>
+                </div>
+
+                <div class="detail-item">
+                    <label class="detail-label">Última Actualización:</label>
+                    <span class="detail-value">@Html.DisplayFor(model => model.fecha_actualizacion)</span>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Empleados != null || Model.Roles != null)
+        {
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="icon-relation"></i>
+                    Información Relacionada
+                </h3>
+
+                <div class="details-grid">
+                    @if (Model.Empleados != null)
+                    {
+                        <div class="detail-item">
+                            <label class="detail-label">Empleado Asociado:</label>
+                            <span class="detail-value">
+                                <span class="employee-info">
+                                    <strong>@Html.DisplayFor(model => model.Empleados.cedula)</strong>
+                                    <small>(@(Model.Empleados.nombre1) @(Model.Empleados.apellido1))</small>
+                                </span>
+                            </span>
+                        </div>
+                    }
+
+                    @if (Model.Roles != null)
+                    {
+                        <div class="detail-item">
+                            <label class="detail-label">Rol Asignado:</label>
+                            <span class="detail-value">
+                                <span class="role-badge role-@(Model.Roles.nombre.ToLower())">
+                                    <i class="icon-shield"></i>
+                                    @Html.DisplayFor(model => model.Roles.nombre)
+                                </span>
+                                @if (!string.IsNullOrEmpty(Model.Roles.descripcion))
+                                {
+                                    <small class="role-description">@Model.Roles.descripcion</small>
+                                }
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="action-section">
+        @Html.ActionLink("Editar", "Edit", new { id = Model.id_usuario }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Volver al Listado", "Index", null, new { @class = "btn btn-secondary" })
+    </div>
+</div>
+
+<style>
+    /* Estilos limpios para Details */
+    .user-details-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .page-subtitle {
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .details-content {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        color: #2c3e50;
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .details-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .detail-item {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 1rem;
+        align-items: start;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .detail-value {
+        color: #212529;
+    }
+
+    .password-protected {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6c757d;
+    }
+
+    .security-note {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    /* Badges */
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .badge-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .badge-secondary {
+        background: #e2e3e5;
+        color: #6c757d;
+    }
+
+    /* Role Badges */
+    .role-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .role-admin {
+        background: #dc3545;
+        color: white;
+    }
+
+    .role-rrhh {
+        background: #28a745;
+        color: white;
+    }
+
+    .role-supervisor {
+        background: #17a2b8;
+        color: white;
+    }
+
+    .role-empleado {
+        background: #6c757d;
+        color: white;
+    }
+
+    .role-it {
+        background: #6f42c1;
+        color: white;
+    }
+
+    .role-description {
+        display: block;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
+
+    .employee-info strong {
+        color: #2c3e50;
+    }
+
+    .employee-info small {
+        color: #6c757d;
+    }
+
+    .action-section {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+    /* Icons */
+    .icon-user::before {
+        content: "👤";
+    }
+
+    .icon-info::before {
+        content: "ℹ️";
+    }
+
+    .icon-relation::before {
+        content: "🔗";
+    }
+
+    .icon-shield::before {
+        content: "🛡️";
+    }
+
+    .icon-lock::before {
+        content: "🔒";
+    }
+
+    .icon-check::before {
+        content: "✅";
+    }
+
+    .icon-warning::before {
+        content: "⚠️";
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .user-details-container {
+            padding: 1rem;
+        }
+
+        .detail-item {
+            grid-template-columns: 1fr;
+            gap: 0.25rem;
+        }
+
+        .action-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn {
+            text-align: center;
+            justify-content: center;
+        }
+    }
+</style>

@@ -1,0 +1,495 @@
+﻿@model IEnumerable<SistemaNomina.Models.HorasExtras>
+
+@{
+    ViewBag.Title = "Horas Extras";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* === RESET Y BASE === */
+    * {
+        box-sizing: border-box;
+    }
+
+    .horas-extras-container {
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* === CARD PRINCIPAL === */
+    .card-horas-extras {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    /* === HEADER === */
+    .header-horas-extras {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .titulo-horas-extras {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: #28a745;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-nuevo:hover {
+        background: #1e7e34;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* === ALERTAS === */
+    .alerta {
+        margin: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .alerta-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alerta-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* === TABLA === */
+    .tabla-container {
+        overflow-x: auto;
+        margin: 20px;
+    }
+
+    .tabla-horas-extras {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .tabla-horas-extras th {
+        background: #343a40;
+        color: white;
+        padding: 12px 8px;
+        text-align: left;
+        font-weight: 600;
+        border: none;
+        font-size: 0.9rem;
+    }
+
+    .tabla-horas-extras th.acciones-header {
+        text-align: center;
+        width: 180px;
+    }
+
+    .tabla-horas-extras th.estado-header {
+        text-align: center;
+        width: 120px;
+    }
+
+    .tabla-horas-extras td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #dee2e6;
+        vertical-align: middle;
+        font-size: 0.85rem;
+    }
+
+    .tabla-horas-extras tr:hover {
+        background: #f8f9fa;
+    }
+
+    /* === BADGES DE ESTADO === */
+    .badge-estado {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+
+    .badge-pendiente {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .badge-aprobado {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .badge-rechazado {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* === EMPLEADO INFO === */
+    .empleado-info {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .empleado-cedula {
+        color: #6c757d;
+        font-size: 0.8rem;
+        display: block;
+    }
+
+    /* === HORAS Y MONTOS === */
+    .horas-valor {
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .monto-total {
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        color: #28a745;
+        font-size: 0.9rem;
+    }
+
+    /* === BOTONES DE ACCIÓN === */
+    .acciones-container {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-accion {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 60px;
+        justify-content: center;
+    }
+
+    .btn-ver {
+        background: #17a2b8;
+        color: white;
+    }
+
+    .btn-ver:hover {
+        background: #138496;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-editar {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .btn-editar:hover {
+        background: #e0a800;
+        color: #212529;
+        text-decoration: none;
+    }
+
+    .btn-eliminar {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-eliminar:hover {
+        background: #c82333;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-aprobar {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-aprobar:hover {
+        background: #1e7e34;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-rechazar {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-rechazar:hover {
+        background: #545b62;
+        color: white;
+        text-decoration: none;
+    }
+
+    /* === ESTADO VACÍO === */
+    .estado-vacio {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .estado-vacio h4 {
+        margin-bottom: 10px;
+        color: #495057;
+    }
+
+    .estado-vacio p {
+        margin-bottom: 20px;
+    }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 768px) {
+        .horas-extras-container {
+            padding: 10px;
+        }
+
+        .header-horas-extras {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .titulo-horas-extras {
+            font-size: 1.5rem;
+        }
+
+        .btn-nuevo {
+            width: 100%;
+        }
+
+        .tabla-horas-extras th,
+        .tabla-horas-extras td {
+            padding: 8px 4px;
+            font-size: 0.8rem;
+        }
+
+        .acciones-container {
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .btn-accion {
+            width: 100%;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            min-width: auto;
+        }
+    }
+</style>
+
+<div class="horas-extras-container">
+    <div class="card-horas-extras">
+        <!-- Header -->
+        <div class="header-horas-extras">
+            <h1 class="titulo-horas-extras">⏰ Gestión de Horas Extras</h1>
+            <a href="@Url.Action("Create")" class="btn-nuevo">
+                ➕ Registrar Horas Extras
+            </a>
+        </div>
+
+        <!-- Alertas -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alerta alerta-success">
+                ✅ @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alerta alerta-error">
+                ❌ @TempData["Error"]
+            </div>
+        }
+
+        <!-- Tabla -->
+        <div class="tabla-container">
+            <table class="tabla-horas-extras">
+                <thead>
+                    <tr>
+                        <th>👤 Empleado</th>
+                        <th>📅 Fecha</th>
+                        <th>🕐 Horario</th>
+                        <th>⏱️ Horas</th>
+                        <th>💰 Monto</th>
+                        <th class="estado-header">📊 Estado</th>
+                        <th class="acciones-header">⚙️ Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="empleado-info">
+                                    @Html.DisplayFor(modelItem => item.Empleados.nombre1) @Html.DisplayFor(modelItem => item.Empleados.apellido1)
+                                </div>
+                                <span class="empleado-cedula">@Html.DisplayFor(modelItem => item.Empleados.cedula)</span>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.fecha)
+                            </td>
+                            <td>
+                                <div class="horas-valor">
+                                    @item.hora_inicio.ToString(@"hh\:mm") - @item.hora_fin.ToString(@"hh\:mm")
+                                </div>
+                            </td>
+                            <td>
+                                <div class="horas-valor">
+                                    @Html.DisplayFor(modelItem => item.horas) hrs
+                                </div>
+                            </td>
+                            <td>
+                                <div class="monto-total">
+                                    ₡@((item.total ?? 0).ToString("N2"))
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                @{
+                                    var estadoClass = "badge-pendiente";
+                                    if (item.Estados != null)
+                                    {
+                                        switch (item.Estados.nombre.ToLower())
+                                        {
+                                            case "aprobado":
+                                                estadoClass = "badge-aprobado";
+                                                break;
+                                            case "rechazado":
+                                                estadoClass = "badge-rechazado";
+                                                break;
+                                        }
+                                    }
+                                }
+                                <span class="badge-estado @estadoClass">
+                                    @Html.DisplayFor(modelItem => item.Estados.nombre)
+                                </span>
+                            </td>
+                            <td>
+                                <div class="acciones-container">
+                                    <a href="@Url.Action("Details", new { id = item.id_hora_extra })"
+                                       class="btn-accion btn-ver"
+                                       title="Ver detalles">
+                                        👁️ Ver
+                                    </a>
+
+                                    @if (item.Estados?.nombre == "Pendiente")
+                                    {
+                                        <a href="@Url.Action("Edit", new { id = item.id_hora_extra })"
+                                           class="btn-accion btn-editar"
+                                           title="Editar">
+                                            ✏️ Editar
+                                        </a>
+
+                                        <button onclick="aprobarHorasExtras(@item.id_hora_extra)"
+                                                class="btn-accion btn-aprobar"
+                                                title="Aprobar">
+                                            ✅ Aprobar
+                                        </button>
+
+                                        <button onclick="rechazarHorasExtras(@item.id_hora_extra)"
+                                                class="btn-accion btn-rechazar"
+                                                title="Rechazar">
+                                            ❌ Rechazar
+                                        </button>
+
+                                        <a href="@Url.Action("Delete", new { id = item.id_hora_extra })"
+                                           class="btn-accion btn-eliminar"
+                                           title="Eliminar">
+                                            🗑️ Eliminar
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estado vacío -->
+        @if (!Model.Any())
+        {
+            <div class="estado-vacio">
+                <h4>⏰ No hay horas extras registradas</h4>
+                <p>Comienza registrando las primeras horas extras del sistema.</p>
+                <a href="@Url.Action("Create")" class="btn-nuevo">
+                    ➕ Registrar las primeras
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- JavaScript para aprobar/rechazar -->
+<script>
+    function aprobarHorasExtras(id) {
+        if (confirm('¿Está seguro que desea aprobar estas horas extras?')) {
+            $.post('@Url.Action("Aprobar")', { id: id })
+                .done(function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    alert('Error al comunicarse con el servidor.');
+                });
+        }
+    }
+
+    function rechazarHorasExtras(id) {
+        if (confirm('¿Está seguro que desea rechazar estas horas extras?')) {
+            $.post('@Url.Action("Rechazar")', { id: id })
+                .done(function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    alert('Error al comunicarse con el servidor.');
+                });
+        }
+    }
+</script>

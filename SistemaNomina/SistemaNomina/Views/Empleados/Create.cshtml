@@ -1,0 +1,200 @@
+﻿@model SistemaNomina.Models.Empleados
+
+@{
+    // Define el título de la vista que aparecerá en el navegador o pestaña
+    ViewBag.Title = "Nuevo Empleado";
+}
+
+<h2>Nuevo Empleado</h2>
+
+@using (Html.BeginForm())
+{
+    // Seguridad
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @*Muestra un resumen de los errores de validación si los hay, con estilo para mensajes de error*@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Sección izquierda del formulario con campos personales -->
+
+                <div class="form-group">
+                    @*Etiqueta y campo para ingresar la cédula con formato y validación*@
+                    @Html.LabelFor(model => model.cedula, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control", placeholder = "000-0000000-0", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para el primer nombre, obligatorio*@
+                    @Html.LabelFor(model => model.nombre1, "Primer Nombre", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.nombre1, new { htmlAttributes = new { @class = "form-control", placeholder = "Primer nombre", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.nombre1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para segundo nombre, opcional*@
+                    @Html.LabelFor(model => model.nombre2, "Segundo Nombre", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.nombre2, new { htmlAttributes = new { @class = "form-control", placeholder = "Segundo nombre (opcional)" } })
+                        @Html.ValidationMessageFor(model => model.nombre2, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para primer apellido, obligatorio*@
+                    @Html.LabelFor(model => model.apellido1, "Primer Apellido", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.apellido1, new { htmlAttributes = new { @class = "form-control", placeholder = "Primer apellido", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.apellido1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para segundo apellido, opcional*@
+                    @Html.LabelFor(model => model.apellido2, "Segundo Apellido", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.apellido2, new { htmlAttributes = new { @class = "form-control", placeholder = "Segundo apellido (opcional)" } })
+                        @Html.ValidationMessageFor(model => model.apellido2, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Sección derecha del formulario con datos adicionales -->
+
+                <div class="form-group">
+                    @*Campo para fecha de nacimiento con restricción de mínimo 18 años*@
+                    @Html.LabelFor(model => model.fecha_nacimiento, "Fecha Nacimiento", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.fecha_nacimiento, new { htmlAttributes = new { @class = "form-control", type = "date", @required = "required", max = DateTime.Today.AddYears(-18).ToString("yyyy-MM-dd") } })
+                        @Html.ValidationMessageFor(model => model.fecha_nacimiento, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para dirección, opcional*@
+                    @Html.LabelFor(model => model.direccion, "Dirección", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control", placeholder = "Dirección completa" } })
+                        @Html.ValidationMessageFor(model => model.direccion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    @Html.LabelFor(model => model.correo, "Correo Electrónico", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control", type = "email", placeholder = "ejemplo@dominio.com" } })
+                        @Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    @Html.LabelFor(model => model.telefono, "Teléfono", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control", placeholder = "809-555-1234" } })
+                        @Html.ValidationMessageFor(model => model.telefono, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*estado civil, obligatorio*@
+                    @Html.LabelFor(model => model.id_estado_civil, "Estado Civil", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownList("id_estado_civil", null, "-- Seleccione --", htmlAttributes: new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.id_estado_civil, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para cantidad de hijos, con valor mínimo 0 y valor por defecto 0*@
+                    @Html.LabelFor(model => model.cantidad_hijos, "Cantidad de Hijos", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.cantidad_hijos, new { htmlAttributes = new { @class = "form-control", min = "0", value = "0" } })
+                        @Html.ValidationMessageFor(model => model.cantidad_hijos, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Segunda fila con selección de puesto y fecha de ingreso -->
+
+                <div class="form-group">
+                    @*seleccionar el puesto, obligatorio*@
+                    @Html.LabelFor(model => model.id_puesto, "Puesto", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownList("id_puesto", null, "-- Seleccione --", htmlAttributes: new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.id_puesto, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*Campo para fecha de ingreso con validación de no ser futura*@
+                    @Html.LabelFor(model => model.fecha_ingreso, "Fecha de Ingreso", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.fecha_ingreso, new { htmlAttributes = new { @class = "form-control", type = "date", @required = "required", max = DateTime.Today.ToString("yyyy-MM-dd") } })
+                        @Html.ValidationMessageFor(model => model.fecha_ingreso, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Segunda fila con selección de horario y estado -->
+
+                <div class="form-group">
+                    @*seleccionar horario, obligatorio*@
+                    @Html.LabelFor(model => model.id_horario, "Horario", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownList("id_horario", null, "-- Seleccione --", htmlAttributes: new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.id_horario, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*estado del empleado, obligatorio*@
+                    @Html.LabelFor(model => model.estado, "Estado", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.DropDownList("estado", null, htmlAttributes: new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <!-- Botones para enviar o cancelar el formulario -->
+                <button type="submit" class="btn btn-success">
+                    <i class="glyphicon glyphicon-floppy-disk"></i> Guardar
+                </button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @*Sección para incluir scripts adicionales de validación y formato*@
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @*Librería para aplicar máscara de entrada a la cédula*@
+    <script src="~/Scripts/jquery.maskedinput.min.js"></script>
+    <script>
+        $(function () {
+            // Aplica máscara para formato de cédula costarricense: 000-0000000-0
+            $("#cedula").mask("999-9999999-9");
+        });
+    </script>
+}

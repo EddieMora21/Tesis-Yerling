@@ -1,0 +1,763 @@
+﻿@model SistemaNomina.Models.Usuarios
+
+@{
+    ViewBag.Title = "Crear Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="create-user-container">
+    <div class="header-section">
+        <h1 class="page-title">
+            <i class="icon-user"></i>
+            Crear Nuevo Usuario
+        </h1>
+        <p class="page-subtitle">Complete la información para crear una nueva cuenta de usuario</p>
+    </div>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-error">
+            <i class="icon-warning"></i>
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success">
+            <i class="icon-check"></i>
+            @ViewBag.SuccessMessage
+        </div>
+    }
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-container">
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+
+            <!-- SECCIÓN EMPLEADO -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-person"></i>
+                    Información del Empleado
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_empleado">
+                        Empleado <span class="required">*</span>
+                    </label>
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            @{
+                                var empleadosList = ViewBag.id_empleado as SelectList;
+                                if (empleadosList != null && empleadosList.Any())
+                                {
+                                    @Html.DropDownList("id_empleado", empleadosList, "-- Seleccione un empleado --", htmlAttributes: new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    <select class="form-control disabled" id="id_empleado" name="id_empleado" disabled>
+                                        <option value="">-- No hay empleados disponibles --</option>
+                                    </select>
+                                    <small class="help-text error">Debe crear un empleado primero</small>
+                                }
+                            }
+                        </div>
+                        <a href="@Url.Action("Create", "Empleados", new { returnUrl = Url.Action("Create", "Usuarios") })"
+                           class="btn btn-success btn-sm">
+                            <i class="icon-plus"></i>
+                            Nuevo Empleado
+                        </a>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "validation-message" })
+                </div>
+            </div>
+
+            <!-- SECCIÓN CREDENCIALES -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-key"></i>
+                    Credenciales de Acceso
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="usuario">
+                            Nombre de Usuario <span class="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            @Html.EditorFor(model => model.usuario, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: jperez" } })
+                            <small class="help-text">Recomendación: inicial del nombre + apellido</small>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.usuario, "", new { @class = "validation-message" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="contrasena">
+                            Contraseña Temporal <span class="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            @Html.PasswordFor(model => model.contrasena, new { @class = "form-control", placeholder = "Mínimo 6 caracteres" })
+                            <small class="help-text">El usuario deberá cambiar esta contraseña en su primer ingreso</small>
+                            <div class="password-strength" id="passwordStrength">
+                                <span class="strength-text">Fortaleza: </span>
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.contrasena, "", new { @class = "validation-message" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN ROL -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="icon-shield"></i>
+                    Permisos y Rol
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_rol">
+                        Rol del Usuario <span class="required">*</span>
+                    </label>
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            @{
+                                var rolesList = ViewBag.id_rol as SelectList;
+                                if (rolesList != null && rolesList.Any())
+                                {
+                                    @Html.DropDownList("id_rol", rolesList, "-- Seleccione un rol --", htmlAttributes: new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    <select class="form-control disabled" id="id_rol" name="id_rol" disabled>
+                                        <option value="">-- No hay roles disponibles --</option>
+                                    </select>
+                                    <small class="help-text error">Debe crear un rol primero</small>
+                                }
+                            }
+                        </div>
+                        <a href="@Url.Action("Create", "Roles", new { returnUrl = Url.Action("Create", "Usuarios") })"
+                           class="btn btn-info btn-sm">
+                            <i class="icon-plus"></i>
+                            Nuevo Rol
+                        </a>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.id_rol, "", new { @class = "validation-message" })
+                </div>
+            </div>
+
+            <!-- CAMPOS OCULTOS -->
+            @Html.HiddenFor(model => model.primer_ingreso, new { Value = "true" })
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="form-actions">
+                @{
+                    bool puedeCrear = (ViewBag.id_empleado as SelectList)?.Any() == true &&
+                                    (ViewBag.id_rol as SelectList)?.Any() == true;
+                }
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary @(puedeCrear ? "" : "disabled")" @(puedeCrear ? "" : "disabled")>
+                        <i class="icon-check"></i>
+                        Crear Usuario
+                    </button>
+
+                    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+
+                    @if (puedeCrear)
+                    {
+                        <button type="button" class="btn btn-outline" onclick="location.reload();" title="Actualizar listas">
+                            <i class="icon-refresh"></i>
+                            Actualizar
+                        </button>
+                    }
+                </div>
+
+                @if (!puedeCrear)
+                {
+                    <div class="warning-section">
+                        <div class="alert alert-warning">
+                            <i class="icon-warning"></i>
+                            <strong>Atención:</strong> Para crear un usuario necesita al menos un empleado y un rol disponibles.
+                            <div class="quick-actions">
+                                @if ((ViewBag.id_empleado as SelectList)?.Any() != true)
+                                {
+                                    <a href="@Url.Action("Create", "Empleados", new { returnUrl = Url.Action("Create", "Usuarios") })" class="btn btn-success btn-sm">
+                                        <i class="icon-plus"></i> Crear empleado primero
+                                    </a>
+                                }
+                                @if ((ViewBag.id_rol as SelectList)?.Any() != true)
+                                {
+                                    <a href="@Url.Action("Create", "Roles", new { returnUrl = Url.Action("Create", "Usuarios") })" class="btn btn-info btn-sm">
+                                        <i class="icon-plus"></i> Crear rol primero
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+     /* ==========================================================================
+    SISTEMA DE CREAR USUARIO - DISEÑO MODERNO Y RESPONSIVE
+    ========================================================================== */
+
+     /* Variables CSS */
+     :root {
+         --primary-color: #3498db;
+         --secondary-color: #2c3e50;
+         --success-color: #27ae60;
+         --warning-color: #f39c12;
+         --error-color: #e74c3c;
+         --info-color: #3498db;
+         --light-gray: #f8f9fa;
+         --medium-gray: #e9ecef;
+         --dark-gray: #6c757d;
+         --white: #ffffff;
+         --border-radius: 8px;
+         --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+         --transition: all 0.3s ease;
+     }
+
+     /* Container Principal */
+     .create-user-container {
+         max-width: 1000px;
+         margin: 0 auto;
+         padding: 2rem;
+         background: var(--white);
+         border-radius: var(--border-radius);
+         box-shadow: var(--box-shadow);
+     }
+
+     /* Header Section */
+     .header-section {
+         text-align: center;
+         margin-bottom: 2.5rem;
+         padding-bottom: 1.5rem;
+         border-bottom: 2px solid var(--light-gray);
+     }
+
+     .page-title {
+         font-size: 2.5rem;
+         font-weight: 700;
+         color: var(--secondary-color);
+         margin: 0 0 0.5rem 0;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 1rem;
+     }
+
+     .page-subtitle {
+         font-size: 1.1rem;
+         color: var(--dark-gray);
+         margin: 0;
+     }
+
+     /* Iconos */
+     .icon-user::before {
+         content: "👤";
+     }
+
+     .icon-person::before {
+         content: "👨‍💼";
+     }
+
+     .icon-key::before {
+         content: "🔑";
+     }
+
+     .icon-shield::before {
+         content: "🛡️";
+     }
+
+     .icon-plus::before {
+         content: "➕";
+     }
+
+     .icon-check::before {
+         content: "✅";
+     }
+
+     .icon-warning::before {
+         content: "⚠️";
+     }
+
+     .icon-refresh::before {
+         content: "🔄";
+     }
+
+     /* Form Container */
+     .form-container {
+         display: grid;
+         gap: 2rem;
+     }
+
+     /* Secciones del Formulario */
+     .form-section {
+         background: var(--light-gray);
+         padding: 1.5rem;
+         border-radius: var(--border-radius);
+         border-left: 4px solid var(--primary-color);
+     }
+
+     .section-title {
+         font-size: 1.3rem;
+         font-weight: 600;
+         color: var(--secondary-color);
+         margin: 0 0 1.5rem 0;
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+     }
+
+     /* Form Groups */
+     .form-group {
+         margin-bottom: 1.5rem;
+     }
+
+     .form-row {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 1.5rem;
+     }
+
+     /* Labels */
+     .form-label {
+         display: block;
+         font-weight: 600;
+         color: var(--secondary-color);
+         margin-bottom: 0.5rem;
+         font-size: 0.95rem;
+     }
+
+     .required {
+         color: var(--error-color);
+         font-weight: bold;
+     }
+
+     /* Input Groups */
+     .input-group {
+         display: flex;
+         gap: 0.75rem;
+         align-items: flex-start;
+     }
+
+     .input-wrapper {
+         flex: 1;
+     }
+
+     /* Form Controls */
+     .form-control {
+         width: 100%;
+         padding: 0.75rem 1rem;
+         border: 2px solid var(--medium-gray);
+         border-radius: var(--border-radius);
+         font-size: 1rem;
+         transition: var(--transition);
+         background: var(--white);
+     }
+
+         .form-control:focus {
+             outline: none;
+             border-color: var(--primary-color);
+             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+         }
+
+         .form-control.disabled {
+             background: #f1f1f1;
+             color: var(--dark-gray);
+             cursor: not-allowed;
+         }
+
+         .form-control.is-valid {
+             border-color: var(--success-color);
+         }
+
+         .form-control.is-invalid {
+             border-color: var(--error-color);
+         }
+
+     /* Help Text */
+     .help-text {
+         display: block;
+         font-size: 0.85rem;
+         color: var(--dark-gray);
+         margin-top: 0.25rem;
+     }
+
+         .help-text.error {
+             color: var(--error-color);
+         }
+
+     /* Password Strength */
+     .password-strength {
+         margin-top: 0.5rem;
+         display: none;
+     }
+
+         .password-strength.show {
+             display: block;
+         }
+
+     .strength-text {
+         font-size: 0.8rem;
+         color: var(--dark-gray);
+     }
+
+     .strength-bar {
+         width: 100%;
+         height: 4px;
+         background: var(--medium-gray);
+         border-radius: 2px;
+         overflow: hidden;
+         margin-top: 0.25rem;
+     }
+
+     .strength-fill {
+         height: 100%;
+         width: 0%;
+         transition: var(--transition);
+         border-radius: 2px;
+     }
+
+         .strength-fill.weak {
+             background: var(--error-color);
+             width: 33%;
+         }
+
+         .strength-fill.medium {
+             background: var(--warning-color);
+             width: 66%;
+         }
+
+         .strength-fill.strong {
+             background: var(--success-color);
+             width: 100%;
+         }
+
+     /* Botones */
+     .btn {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.5rem;
+         padding: 0.75rem 1.5rem;
+         border: none;
+         border-radius: var(--border-radius);
+         font-size: 0.95rem;
+         font-weight: 600;
+         text-decoration: none;
+         cursor: pointer;
+         transition: var(--transition);
+         text-align: center;
+     }
+
+     .btn-primary {
+         background: var(--primary-color);
+         color: var(--white);
+     }
+
+         .btn-primary:hover:not(.disabled) {
+             background: #2980b9;
+             transform: translateY(-1px);
+             box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+         }
+
+     .btn-secondary {
+         background: var(--dark-gray);
+         color: var(--white);
+     }
+
+         .btn-secondary:hover {
+             background: #5a6268;
+         }
+
+     .btn-success {
+         background: var(--success-color);
+         color: var(--white);
+     }
+
+         .btn-success:hover {
+             background: #229954;
+         }
+
+     .btn-info {
+         background: var(--info-color);
+         color: var(--white);
+     }
+
+         .btn-info:hover {
+             background: #2980b9;
+         }
+
+     .btn-outline {
+         background: transparent;
+         color: var(--primary-color);
+         border: 2px solid var(--primary-color);
+     }
+
+         .btn-outline:hover {
+             background: var(--primary-color);
+             color: var(--white);
+         }
+
+     .btn-sm {
+         padding: 0.5rem 1rem;
+         font-size: 0.85rem;
+     }
+
+     .btn.disabled {
+         opacity: 0.6;
+         cursor: not-allowed;
+         transform: none !important;
+         box-shadow: none !important;
+     }
+
+     /* Form Actions */
+     .form-actions {
+         background: var(--white);
+         padding: 1.5rem;
+         border-radius: var(--border-radius);
+         border: 1px solid var(--medium-gray);
+     }
+
+     .action-buttons {
+         display: flex;
+         gap: 1rem;
+         justify-content: flex-start;
+         flex-wrap: wrap;
+     }
+
+     /* Alertas */
+     .alert {
+         padding: 1rem;
+         border-radius: var(--border-radius);
+         margin-bottom: 1.5rem;
+         display: flex;
+         align-items: flex-start;
+         gap: 0.5rem;
+     }
+
+     .alert-success {
+         background: #d4edda;
+         color: #155724;
+         border: 1px solid #c3e6cb;
+     }
+
+     .alert-error {
+         background: #f8d7da;
+         color: #721c24;
+         border: 1px solid #f5c6cb;
+     }
+
+     .alert-warning {
+         background: #fff3cd;
+         color: #856404;
+         border: 1px solid #ffeaa7;
+     }
+
+     .warning-section {
+         margin-top: 1rem;
+     }
+
+     .quick-actions {
+         display: flex;
+         gap: 0.5rem;
+         margin-top: 1rem;
+         flex-wrap: wrap;
+     }
+
+     /* Validation Messages */
+     .validation-message {
+         display: block;
+         color: var(--error-color);
+         font-size: 0.85rem;
+         margin-top: 0.25rem;
+     }
+
+     .validation-summary {
+         background: #f8d7da;
+         color: #721c24;
+         padding: 1rem;
+         border-radius: var(--border-radius);
+         margin-bottom: 1.5rem;
+         border: 1px solid #f5c6cb;
+     }
+
+     /* Responsive Design - CORREGIDO CON @@ */
+     @@media (max-width: 768px) {
+         .create-user-container {
+             padding: 1rem;
+             margin: 1rem;
+         }
+
+         .page-title {
+             font-size: 2rem;
+             flex-direction: column;
+             gap: 0.5rem;
+         }
+
+         .form-row {
+             grid-template-columns: 1fr;
+             gap: 1rem;
+         }
+
+         .input-group {
+             flex-direction: column;
+             gap: 0.5rem;
+         }
+
+         .action-buttons {
+             flex-direction: column;
+         }
+
+         .btn {
+             width: 100%;
+             justify-content: center;
+         }
+
+         .quick-actions {
+             flex-direction: column;
+         }
+     }
+
+     @@media (max-width: 480px) {
+         .create-user-container {
+             padding: 0.5rem;
+             margin: 0.5rem;
+         }
+
+         .form-section {
+             padding: 1rem;
+         }
+
+         .page-title {
+             font-size: 1.5rem;
+         }
+     }
+
+     /* Animaciones */
+     @@keyframes fadeIn {
+         from {
+             opacity: 0;
+             transform: translateY(10px);
+         }
+
+         to {
+             opacity: 1;
+             transform: translateY(0);
+         }
+     }
+
+     .form-section {
+         animation: fadeIn 0.3s ease-out;
+     }
+
+     /* Estados de hover para inputs */
+     .form-control:hover:not(:focus):not(.disabled) {
+         border-color: var(--primary-color);
+     }
+
+     /* Mejoras de accesibilidad */
+     .btn:focus,
+     .form-control:focus {
+         outline: 2px solid var(--primary-color);
+         outline-offset: 2px;
+     }
+
+     /* Dark mode (opcional) */
+     @@media (prefers-color-scheme: dark) {
+         :root {
+             --white: #2c3e50;
+             --light-gray: #34495e;
+             --medium-gray: #7f8c8d;
+             --secondary-color: #ecf0f1;
+             --dark-gray: #bdc3c7;
+         }
+     }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            // Refrescar página cuando se regrese de crear empleado/rol
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('refresh') === 'true') {
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                $('<div class="alert alert-success" style="animation: fadeIn 0.3s ease-out;">' +
+                  '<i class="icon-check"></i>' +
+                  '<strong>¡Éxito!</strong> Registro creado correctamente. Las listas han sido actualizadas.' +
+                  '</div>').prependTo('.form-container').delay(5000).fadeOut();
+            }
+
+            // Validación en tiempo real de contraseña
+            $('#contrasena').on('keyup', function() {
+                var password = $(this).val();
+                var strengthIndicator = $('#passwordStrength');
+                var strengthFill = $('.strength-fill');
+                var strengthText = $('.strength-text');
+
+                if (password.length > 0) {
+                    strengthIndicator.addClass('show');
+
+                    var strength = calculatePasswordStrength(password);
+                    strengthFill.removeClass('weak medium strong').addClass(strength.class);
+                    strengthText.text('Fortaleza: ' + strength.text);
+
+                    if (strength.valid) {
+                        $(this).removeClass('is-invalid').addClass('is-valid');
+                    } else {
+                        $(this).removeClass('is-valid').addClass('is-invalid');
+                    }
+                } else {
+                    strengthIndicator.removeClass('show');
+                    $(this).removeClass('is-valid is-invalid');
+                }
+            });
+
+            // Generar sugerencia de usuario basada en empleado seleccionado
+            $('#id_empleado').on('change', function() {
+                var selectedText = $(this).find('option:selected').text();
+                if (selectedText && selectedText !== '-- Seleccione un empleado --') {
+                    var cedula = selectedText.split(' - ')[0];
+                    if (cedula && !$('#usuario').val()) {
+                        $('#usuario').val(cedula.toLowerCase()).focus();
+                    }
+                }
+            });
+
+            // Función para calcular fortaleza de contraseña
+            function calculatePasswordStrength(password) {
+                var score = 0;
+                var hasLetter = /[a-zA-Z]/.test(password);
+                var hasNumber = /\d/.test(password);
+                var hasSpecial = /[!@@#$%^&*(),.?':{}|<>]/.test(password);
+                var isLongEnough = password.length >= 6;
+
+                if (isLongEnough) score++;
+                if (hasLetter) score++;
+                if (hasNumber) score++;
+                if (hasSpecial) score++;
+
+                if (score < 2) {
+                    return { class: 'weak', text: 'Débil', valid: false };
+                } else if (score < 3) {
+                    return { class: 'medium', text: 'Media', valid: isLongEnough && hasLetter && hasNumber };
+                } else {
+                    return { class: 'strong', text: 'Fuerte', valid: true };
+                }
+            }
+        });
+    </script>
+}

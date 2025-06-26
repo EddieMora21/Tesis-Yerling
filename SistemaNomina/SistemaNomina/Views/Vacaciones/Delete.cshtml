@@ -1,0 +1,75 @@
+﻿@model SistemaNomina.Models.Vacaciones
+@{
+    // título navegador
+    ViewBag.Title = "Delete";
+
+    // vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<!-- Título que pregunta al usuario  -->
+<h3>Are you sure you want to delete this?</h3>
+
+<div>
+    <h4>Vacaciones</h4>
+    <hr />
+
+    <!-- Lista de datos Vacaciones que se van a mostrar antes de eliminar -->
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.periodo) <!-- Muestra el nombre del campo 'periodo' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.periodo) <!-- Muestra el valor del campo 'periodo' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dias_disponibles) <!-- Nombre del campo 'días disponibles' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.dias_disponibles) <!-- Valor de 'días disponibles' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dias_disfrutados) <!-- Nombre del campo 'días disfrutados' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.dias_disfrutados) <!-- Valor de 'días disfrutados' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion) <!-- Nombre del campo 'fecha de creación' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion) <!-- Valor de 'fecha de creación' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion) <!-- Nombre del campo 'fecha de actualización' -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion) <!-- Valor de 'fecha de actualización' -->
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Empleados.cedula) <!-- Muestra el nombre del campo de la cédula del empleado -->
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Empleados.cedula) <!-- Muestra la cédula del empleado  -->
+        </dd>
+    </dl>
+
+    <!-- Formulario para confirmar la eliminación del registro -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken() <!-- seguridad -->
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> <!-- Botón para confirmar la eliminación -->
+            |
+            @Html.ActionLink("Back to List", "Index") <!-- Enlace para regresar a la lista sin eliminar -->
+        </div>
+    }
+</div>

@@ -1,0 +1,896 @@
+﻿@model IEnumerable<SistemaNomina.Models.Departamentos>
+@{
+    ViewBag.Title = "Gestión de Departamentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Mensajes de alerta -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert-success">
+        <span class="alert-icon">✓</span>
+        @TempData["Success"]
+        <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert-error">
+        <span class="alert-icon">⚠</span>
+        @TempData["Error"]
+        <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
+    </div>
+}
+
+<!-- Header principal -->
+<div class="header-container">
+    <div class="header-info">
+        <h1 class="page-title">
+            <span class="title-icon">🏢</span>
+            Gestión de Departamentos
+        </h1>
+        <p class="page-subtitle">Administra los departamentos de la empresa</p>
+    </div>
+    <div class="header-actions">
+        @Html.ActionLink("+ Nuevo Departamento", "Create", null, new
+        {
+            @class = "btn-primary-custom",
+            @title = "Crear nuevo departamento"
+        })
+    </div>
+</div>
+
+<!-- Barra de búsqueda -->
+<div class="search-container">
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar departamentos..." class="search-input">
+    </div>
+    <div class="counter-badge">
+        Total: <span id="totalCount">@Model.Count()</span> departamentos
+    </div>
+</div>
+
+<!-- Tabla de departamentos -->
+<div class="table-container">
+    <table class="custom-table" id="departamentosTable">
+        <thead>
+            <tr>
+                <th class="th-nombre">
+                    <span class="th-icon">🏷️</span>
+                    Nombre
+                </th>
+                <th class="th-fecha hidden-mobile">
+                    <span class="th-icon">📅</span>
+                    Fecha Creación
+                </th>
+                <th class="th-fecha hidden-tablet">
+                    <span class="th-icon">⏰</span>
+                    Última Actualización
+                </th>
+                <th class="th-acciones">
+                    <span class="th-icon">⚙️</span>
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr class="departamento-row">
+                        <td class="td-nombre">
+                            <div class="departamento-info">
+                                <div class="departamento-avatar">
+                                    <span class="avatar-icon">🏢</span>
+                                </div>
+                                <div class="departamento-details">
+                                    <h3 class="departamento-name">@item.nombre</h3>
+                                    <span class="departamento-id">ID: @item.id_departamento</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="td-fecha hidden-mobile">
+                            @if (item.fecha_creacion.HasValue)
+                            {
+                                <div class="fecha-info">
+                                    <span class="fecha-date">@item.fecha_creacion.Value.ToString("dd/MM/yyyy")</span>
+                                    <span class="fecha-time">@item.fecha_creacion.Value.ToString("HH:mm")</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="fecha-empty">No registrada</span>
+                            }
+                        </td>
+                        <td class="td-fecha hidden-tablet">
+                            @if (item.fecha_actualizacion.HasValue)
+                            {
+                                <div class="fecha-info">
+                                    <span class="fecha-date">@item.fecha_actualizacion.Value.ToString("dd/MM/yyyy")</span>
+                                    <span class="fecha-time">@item.fecha_actualizacion.Value.ToString("HH:mm")</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="fecha-empty">No registrada</span>
+                            }
+                        </td>
+                        <td class="td-acciones">
+                            <div class="action-buttons">
+                                <a href="@Url.Action("Details", new { id = item.id_departamento })"
+                                   class="btn-action btn-info"
+                                   title="Ver detalles">
+                                    <span class="btn-icon">👁️</span>
+                                    <span class="btn-text">Ver</span>
+                                </a>
+
+                                <a href="@Url.Action("Edit", new { id = item.id_departamento })"
+                                   class="btn-action btn-warning"
+                                   title="Editar departamento">
+                                    <span class="btn-icon">✏️</span>
+                                    <span class="btn-text">Editar</span>
+                                </a>
+
+                                <button type="button" class="btn-action btn-danger"
+                                        onclick="openDeleteModal(@item.id_departamento, '@item.nombre')"
+                                        title="Eliminar departamento">
+                                    <span class="btn-icon">🗑️</span>
+                                    <span class="btn-text">Eliminar</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="empty-state">
+                        <div class="empty-content">
+                            <div class="empty-icon">📁</div>
+                            <h3>No hay departamentos registrados</h3>
+                            <p>Comienza creando tu primer departamento</p>
+                            @Html.ActionLink("Crear Departamento", "Create", null, new { @class = "btn-primary-custom" })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de confirmación para eliminar -->
+<div id="deleteModal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <span class="modal-icon">⚠️</span>
+                Confirmar Eliminación
+            </h3>
+            <button type="button" class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro que desea eliminar el departamento <strong id="departamentoNombre"></strong>?</p>
+            <div class="modal-warning">
+                <span class="warning-icon">ℹ️</span>
+                Esta acción no se puede deshacer.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary-custom" onclick="closeDeleteModal()">
+                <span class="btn-icon">❌</span>
+                Cancelar
+            </button>
+            <a id="confirmDeleteBtn" href="#" class="btn-danger-custom">
+                <span class="btn-icon">🗑️</span>
+                Eliminar
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 🎨 ESTILOS PERSONALIZADOS COMPLETOS */
+
+/* Variables CSS */
+:root {
+    --primary-color: #3b82f6;
+    --secondary-color: #6b7280;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #06b6d4;
+    --light-bg: #f8fafc;
+    --white: #ffffff;
+    --border-color: #e5e7eb;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border-radius: 8px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Reset y base */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+/* Alertas */
+.alert-success, .alert-error {
+    padding: 16px 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideDown 0.3s ease;
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.alert-icon {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.alert-close {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+/* Header */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title-icon {
+    font-size: 1.8rem;
+}
+
+.page-subtitle {
+    margin: 5px 0 0 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Botones personalizados */
+.btn-primary-custom, .btn-secondary-custom, .btn-danger-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    color: var(--white);
+    box-shadow: var(--shadow);
+}
+
+.btn-primary-custom:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+    color: var(--white);
+    text-decoration: none;
+}
+
+.btn-secondary-custom {
+    background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-secondary-custom:hover {
+    background-color: #4b5563;
+    color: var(--white);
+    text-decoration: none;
+}
+
+.btn-danger-custom {
+    background-color: var(--danger-color);
+    color: var(--white);
+}
+
+.btn-danger-custom:hover {
+    background-color: #dc2626;
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* Búsqueda */
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.counter-badge {
+    background-color: var(--info-color);
+    color: var(--white);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Tabla */
+.table-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.custom-table thead {
+    background-color: #1f2937;
+    color: var(--white);
+}
+
+.custom-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+.th-icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.custom-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.departamento-row {
+    transition: background-color 0.2s ease;
+}
+
+.departamento-row:hover {
+    background-color: #f8fafc;
+}
+
+/* Información del departamento */
+.departamento-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.departamento-avatar {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, var(--primary-color), #2563eb);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.avatar-icon {
+    font-size: 20px;
+    filter: grayscale(1) brightness(2);
+}
+
+.departamento-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.departamento-id {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Fechas */
+.fecha-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fecha-date {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.fecha-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.fecha-empty {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 70px;
+    justify-content: center;
+}
+
+.btn-info {
+    background-color: var(--info-color);
+    color: var(--white);
+    border-color: var(--info-color);
+}
+
+.btn-info:hover {
+    background-color: #0891b2;
+    transform: translateY(-1px);
+    color: var(--white);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: var(--white);
+    border-color: var(--warning-color);
+}
+
+.btn-warning:hover {
+    background-color: #d97706;
+    transform: translateY(-1px);
+    color: var(--white);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--white);
+    border-color: var(--danger-color);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    color: var(--white);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-icon {
+    font-size: 14px;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    width: 90%;
+    max-width: 500px;
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-warning {
+    background-color: #fef3cd;
+    border: 1px solid #facc15;
+    color: #92400e;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-content {
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.empty-content p {
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none;
+    }
+
+    .header-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        min-width: auto;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .btn-action {
+        min-width: auto;
+        padding: 10px 15px;
+    }
+
+    .btn-text {
+        display: inline;
+    }
+}
+
+@@media (max-width: 1024px) {
+    .hidden-tablet {
+        display: none;
+    }
+}
+
+/* Animaciones */
+@@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Estados de carga */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Mejoras de accesibilidad */
+.btn-action:focus,
+.btn-primary-custom:focus,
+.btn-secondary-custom:focus,
+.btn-danger-custom:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+</style>
+
+<script>
+// 🚀 JavaScript puro - Sin dependencias
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 🔍 Búsqueda en tiempo real
+    const searchInput = document.getElementById('searchInput');
+    const totalCount = document.getElementById('totalCount');
+    const departamentoRows = document.querySelectorAll('.departamento-row');
+
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            let visibleCount = 0;
+
+            departamentoRows.forEach(function(row) {
+                const departamentoName = row.querySelector('.departamento-name').textContent.toLowerCase();
+                const departamentoId = row.querySelector('.departamento-id').textContent.toLowerCase();
+
+                if (departamentoName.includes(searchTerm) || departamentoId.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Actualizar contador
+            if (totalCount) {
+                totalCount.textContent = visibleCount;
+            }
+
+            // Mostrar mensaje si no hay resultados
+            const tableBody = document.querySelector('#departamentosTable tbody');
+            const noResults = document.getElementById('noResults');
+
+            if (visibleCount === 0 && searchTerm !== '') {
+                if (!noResults) {
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'noResults';
+                    noResultsRow.innerHTML = `
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-content">
+                                <div class="empty-icon">🔍</div>
+                                <h3>No se encontraron resultados</h3>
+                                <p>Intenta con otro término de búsqueda</p>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(noResultsRow);
+                }
+            } else {
+                if (noResults) {
+                    noResults.remove();
+                }
+            }
+        });
+    }
+
+    // ✨ Animaciones de entrada
+    departamentoRows.forEach(function(row, index) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+
+        setTimeout(function() {
+            row.style.transition = 'all 0.3s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+
+// 🗑️ Funciones del modal
+function openDeleteModal(departamentoId, departamentoNombre) {
+    const modal = document.getElementById('deleteModal');
+    const nombreElement = document.getElementById('departamentoNombre');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+
+    if (modal && nombreElement && confirmBtn) {
+        nombreElement.textContent = departamentoNombre;
+        confirmBtn.href = '@Url.Action("Delete", "Departamentos")/' + departamentoId;
+        modal.style.display = 'flex';
+
+        // Prevenir scroll del body
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.style.display = 'none';
+
+        // Restaurar scroll del body
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Cerrar modal al hacer clic fuera
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('deleteModal');
+    if (e.target === modal) {
+        closeDeleteModal();
+    }
+});
+
+// Cerrar modal con Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteModal();
+    }
+});
+</script>

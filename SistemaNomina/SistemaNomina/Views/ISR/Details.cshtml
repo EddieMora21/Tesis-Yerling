@@ -1,0 +1,123 @@
+﻿@model SistemaNomina.Models.ISR
+
+@{
+    // Título que se mostrará en la pestaña del navegador
+    ViewBag.Title = "Details";
+    // Vista
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>  <!-- Título principal de la página -->
+
+<div>
+    <h4>ISR</h4>  <!-- Título detalle -->
+    <hr />
+    <dl class="dl-horizontal">
+        <!-- Lista de definición para mostrar etiquetas y valores o -->
+        <dt>
+            <!-- Etiqueta para el campo 'anio' -->
+            @Html.DisplayNameFor(model => model.anio)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'anio' -->
+            @Html.DisplayFor(model => model.anio)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'limite_inferior' -->
+            @Html.DisplayNameFor(model => model.limite_inferior)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'limite_inferior' -->
+            @Html.DisplayFor(model => model.limite_inferior)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'limite_superior' -->
+            @Html.DisplayNameFor(model => model.limite_superior)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'limite_superior' -->
+            @Html.DisplayFor(model => model.limite_superior)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'porcentaje' -->
+            @Html.DisplayNameFor(model => model.porcentaje)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'porcentaje' -->
+            @Html.DisplayFor(model => model.porcentaje)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'exceso' -->
+            @Html.DisplayNameFor(model => model.exceso)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'exceso' -->
+            @Html.DisplayFor(model => model.exceso)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'credito_hijo' -->
+            @Html.DisplayNameFor(model => model.credito_hijo)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'credito_hijo' -->
+            @Html.DisplayFor(model => model.credito_hijo)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'credito_conyuge' -->
+            @Html.DisplayNameFor(model => model.credito_conyuge)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'credito_conyuge' -->
+            @Html.DisplayFor(model => model.credito_conyuge)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'descripcion' -->
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'descripcion' -->
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'fecha_creacion' -->
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'fecha_creacion' -->
+            @Html.DisplayFor(model => model.fecha_creacion)
+        </dd>
+
+        <dt>
+            <!-- Etiqueta para el campo 'fecha_actualizacion' -->
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+        </dt>
+
+        <dd>
+            <!-- Valor correspondiente al campo 'fecha_actualizacion' -->
+            @Html.DisplayFor(model => model.fecha_actualizacion)
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_isr }) |  <!-- Enlace para editar este registro, pasando el id -->
+    @Html.ActionLink("Back to List", "Index")  <!-- Enlace para regresar a la lista general -->
+</p>

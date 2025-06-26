@@ -1,0 +1,59 @@
+﻿@model SistemaNomina.Models.Departamentos
+
+@{
+    ViewBag.Title = "Edit"; // Título de la vista que aparecerá en la pestaña del navegador
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Layout general que se usa para esta vista
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) // Formulario para enviar datos al servidor
+{
+    @Html.AntiForgeryToken() // Seguridad
+
+    <div class="form-horizontal">
+        <h4>Departamentos</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" }) @*Muestra resumen de errores de validación*@
+
+        @Html.HiddenFor(model => model.id_departamento) @* Campo oculto para enviar el id del departamento*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" }) @*Etiqueta para el campo nombre*@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } }) @*Campo de entrada editable para nombre*@
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" }) @* Mensaje de error para nombre*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" }) @*Etiqueta para fecha de creación*@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } }) @*Campo editable para fecha de creación*@
+                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" }) @*Mensaje de error para fecha de creación*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" /> <!-- Botón para enviar el formulario -->
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index") @*Enlace para volver a la lista de departamentos*@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval") @*Validación*@
+}

@@ -1,0 +1,61 @@
+﻿@model SistemaNomina.Models.TiposHoraExtra 
+
+@{
+    ViewBag.Title = "Details"; @*  título de la página *@
+    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+}
+
+<h2>Details</h2>  @* titulo página *@
+
+<div>
+    <h4>TiposHoraExtra</h4>  @* Subtítulo *@
+    <hr />  
+    <dl class="dl-horizontal">
+        @*definiciones  *@
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)  @* Muestra el nombre del campo 'nombre'  *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)  @* Muestra el valor del campo 'nombre' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.recargo)  @* Muestra el nombre del campo 'recargo'  *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.recargo)  @* Muestra el valor del campo 'recargo' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)  @* Muestra el nombre del campo 'descripcion'  *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)  @* Muestra el valor del campo 'descripcion' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Muestra el nombre del campo 'fecha_creacion'  *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_creacion)  @* Muestra el valor del campo 'fecha_creacion' *@
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Muestra el nombre del campo 'fecha_actualizacion'  *@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_actualizacion)  @* Muestra el valor del campo 'fecha_actualizacion' *@
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id_tipo })  @* Enlace para editar el registro actual usando su ID *@
+    |
+    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar al listado de registros *@
+</p>

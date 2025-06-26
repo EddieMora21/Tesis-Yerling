@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SistemaNomina.Models.Asistencia>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @* Enlace para crear un nuevo registro de asistencia *@
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<table class="table">
+    <tr>
+        @* Encabezados de la tabla que muestran los nombres de las columnas de la asistencia *@
+        <th>
+            @Html.DisplayNameFor(model => model.fecha)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.hora_entrada)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.hora_salida)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.es_feriado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_registro)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Empleados.cedula)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Feriados.nombre)
+        </th>
+        <th></th> @* Columna vacía para las acciones (editar, detalles, eliminar) *@
+    </tr>
+
+    @* Recorre cada registro de asistencia en el modelo para mostrar sus datos en filas de la tabla *@
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.hora_entrada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.hora_salida)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.es_feriado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_registro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Empleados.cedula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Feriados.nombre)
+            </td>
+            <td>
+                @* Enlaces para editar, ver detalles o eliminar el registro actual de asistencia *@
+                @Html.ActionLink("Edit", "Edit", new { id = item.id_asistencia }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id_asistencia }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id_asistencia })
+            </td>
+        </tr>
+    }
+
+</table>

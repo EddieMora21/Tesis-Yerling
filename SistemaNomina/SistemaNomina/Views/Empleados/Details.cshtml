@@ -1,0 +1,110 @@
+﻿@model SistemaNomina.Models.Empleados
+
+@{
+    // Establece el título de la vista que aparecerá en la pestaña o navegador
+    ViewBag.Title = "Detalles del Empleado";
+}
+
+<h2>Detalles del Empleado</h2>
+
+<div class="form-horizontal">
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Cédula</dt>
+                @*Muestra el número de cédula del empleado*@
+                <dd>@Html.DisplayFor(model => model.cedula)</dd>
+
+                <dt>Primer Nombre</dt>
+                @*Muestra el primer nombre del empleado*@
+                <dd>@Html.DisplayFor(model => model.nombre1)</dd>
+
+                <dt>Segundo Nombre</dt>
+                @*Muestra el segundo nombre del empleado*@
+                <dd>@Html.DisplayFor(model => model.nombre2)</dd>
+
+                <dt>Primer Apellido</dt>
+                
+                <dd>@Html.DisplayFor(model => model.apellido1)</dd>
+
+                <dt>Segundo Apellido</dt>
+                
+                <dd>@Html.DisplayFor(model => model.apellido2)</dd>
+
+                <dt>Fecha de Nacimiento</dt>
+                
+                <dd>@Html.DisplayFor(model => model.fecha_nacimiento)</dd>
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Dirección</dt>
+                @*Muestra la dirección del empleado*@
+                <dd>@Html.DisplayFor(model => model.direccion)</dd>
+
+                <dt>Correo Electrónico</dt>
+                @* Muestra el correo electrónico del empleado*@
+                <dd>@Html.DisplayFor(model => model.correo)</dd>
+
+                <dt>Teléfono</dt>
+                
+                <dd>@Html.DisplayFor(model => model.telefono)</dd>
+
+                <dt>Estado Civil</dt>
+                
+                <dd>@Html.DisplayFor(model => model.EstadoCivil.nombre)</dd>
+
+                <dt>Cantidad de Hijos</dt>
+                
+                <dd>@Html.DisplayFor(model => model.cantidad_hijos)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Puesto</dt>
+                @*Muestra el nombre del puesto del empleado*@
+                <dd>@Html.DisplayFor(model => model.Puestos.nombre_puesto)</dd>
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Horario</dt>
+                @* Muestra el horario asignado al empleado*@
+                <dd>@Html.DisplayFor(model => model.Horarios.nombre)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Fecha de Ingreso</dt>
+                @*Muestra la fecha en que el empleado ingresó a la empresa*@
+                <dd>@Html.DisplayFor(model => model.fecha_ingreso)</dd>
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Estado</dt>
+                @*Muestra el estado actual del empleado*@
+                <dd>@Html.DisplayFor(model => model.estado)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @* Botón para ir a la vista de edición del empleado, pasando el ID del empleado*@
+            @Html.ActionLink("Editar", "Edit", new { id = Model.id_empleado }, new { @class = "btn btn-primary" })
+            @*Botón para regresar a la lista general de empleados*@
+            @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    </div>
+</div>
