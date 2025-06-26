@@ -1,0 +1,286 @@
+﻿@{
+    ViewBag.Title = "Histórico de Planillas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-history"></i> Histórico de Planillas
+                    </h4>
+                    <small>Consulta planillas generadas en períodos anteriores</small>
+                </div>
+
+                <div class="card-body">
+                    <!-- 🔍 FORMULARIO DE FILTROS -->
+                    @using (Html.BeginForm("BuscarPlanillas", "Consultas", FormMethod.Post, new { @id = "formBuscarPlanillas" }))
+                    {
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Mes
+                                </label>
+                                @Html.DropDownList("mes", ViewBag.Meses as SelectList, "-- Todos los meses --", new { @class = "form-select" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar"></i> Año
+                                </label>
+                                @Html.DropDownList("anio", ViewBag.Anios as SelectList, "-- Todos los años --", new { @class = "form-select" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user"></i> Empleado
+                                </label>
+                                @Html.DropDownList("idEmpleado", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select select2" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">
+                                    <i class="fas fa-building"></i> Departamento
+                                </label>
+                                @Html.DropDownList("idDepartamento", ViewBag.Departamentos as SelectList, "-- Todos los departamentos --", new { @class = "form-select" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="fas fa-search"></i> Buscar Planillas
+                                </button>
+                                <button type="button" class="btn btn-secondary me-2" onclick="limpiarFiltros()">
+                                    <i class="fas fa-eraser"></i> Limpiar Filtros
+                                </button>
+                                <button type="button" class="btn btn-success" onclick="exportarPlanillas('excel')" style="display:none;" id="btnExportarExcel">
+                                    <i class="fas fa-file-excel"></i> Exportar Excel
+                                </button>
+                                <button type="button" class="btn btn-danger ms-2" onclick="exportarPlanillas('pdf')" style="display:none;" id="btnExportarPdf">
+                                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- 📊 ÁREA DE RESULTADOS -->
+            <div id="resultadosContainer" style="display:none;">
+                <div class="card mt-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table"></i> Resultados de Búsqueda
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="resultadosPlanillas">
+                            <!-- Aquí se cargarán los resultados vía AJAX -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📈 ESTADÍSTICAS -->
+            <div id="estadisticasContainer" style="display:none;">
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar"></i> Estadísticas del Resultado
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-2">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body">
+                                        <h5 id="totalRegistros">0</h5>
+                                        <small>Registros</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body">
+                                        <h5 id="empleadosUnicos">0</h5>
+                                        <small>Empleados</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body">
+                                        <h5 id="totalSalarioBruto">₡0</h5>
+                                        <small>Total Salario Bruto</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body">
+                                        <h5 id="totalSalarioNeto">₡0</h5>
+                                        <small>Total Salario Neto</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body">
+                                        <h5 id="totalDeducciones">₡0</h5>
+                                        <small>Deducciones</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 🔄 LOADING MODAL -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Buscando...</span>
+                </div>
+                <p class="mt-2 mb-0">Buscando planillas...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    $(document).ready(function() {
+        // Inicializar Select2 para búsqueda de empleados
+        $('.select2').select2({
+            placeholder: '-- Buscar empleado --',
+            allowClear: true,
+            language: "es"
+        });
+    });
+
+    // 🔍 BUSCAR PLANILLAS VIA AJAX
+    $('#formBuscarPlanillas').on('submit', function(e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        // Mostrar loading
+        $('#loadingModal').modal('show');
+
+        $.ajax({
+            url: '@Url.Action("BuscarPlanillas", "Consultas")',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                $('#loadingModal').modal('hide');
+
+                if (response.success === false) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Sin resultados',
+                        text: response.message,
+                        confirmButtonColor: '#3085d6'
+                    });
+
+                    $('#resultadosContainer').hide();
+                    $('#estadisticasContainer').hide();
+                    $('#btnExportarExcel, #btnExportarPdf').hide();
+                } else {
+                    // Mostrar resultados
+                    $('#resultadosPlanillas').html(response);
+                    $('#resultadosContainer').show();
+
+                    // Mostrar estadísticas si están disponibles
+                    if (window.estadisticasData) {
+                        mostrarEstadisticas(window.estadisticasData);
+                        $('#estadisticasContainer').show();
+                    }
+
+                    // Mostrar botones de exportación
+                    $('#btnExportarExcel, #btnExportarPdf').show();
+
+                    // Scroll hacia los resultados
+                    $('html, body').animate({
+                        scrollTop: $('#resultadosContainer').offset().top - 20
+                    }, 500);
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#loadingModal').modal('hide');
+                console.error('Error en la búsqueda:', error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al realizar la búsqueda. Intente nuevamente.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    });
+
+    // 🧹 LIMPIAR FILTROS
+    function limpiarFiltros() {
+        $('#formBuscarPlanillas')[0].reset();
+        $('.select2').val(null).trigger('change');
+        $('#resultadosContainer').hide();
+        $('#estadisticasContainer').hide();
+        $('#btnExportarExcel, #btnExportarPdf').hide();
+    }
+
+    // 📊 MOSTRAR ESTADÍSTICAS
+    function mostrarEstadisticas(stats) {
+        $('#totalRegistros').text(stats.TotalRegistros.toLocaleString());
+        $('#empleadosUnicos').text(stats.EmpleadosUnicos.toLocaleString());
+        $('#totalSalarioBruto').text('₡' + stats.TotalSalarioBruto.toLocaleString('es-CR', {minimumFractionDigits: 2}));
+        $('#totalSalarioNeto').text('₡' + stats.TotalSalarioNeto.toLocaleString('es-CR', {minimumFractionDigits: 2}));
+        $('#totalDeducciones').text('₡' + stats.TotalDeducciones.toLocaleString('es-CR', {minimumFractionDigits: 2}));
+    }
+
+    // 📤 EXPORTAR PLANILLAS
+    function exportarPlanillas(formato) {
+        var formData = $('#formBuscarPlanillas').serialize() + '&formato=' + formato;
+
+        $.ajax({
+            url: '@Url.Action("ExportarPlanillas", "Consultas")',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Exportación exitosa',
+                        text: response.message,
+                        confirmButtonColor: '#28a745'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en exportación',
+                        text: response.message,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la exportación:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al exportar. Intente nuevamente.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    }
+    </script>
+}

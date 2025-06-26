@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "Consultar por Colaborador";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h2><i class="fa fa-user-search"></i> Consultar por Colaborador</h2>
+                <p class="text-muted">Busque informaci�n detallada de cualquier colaborador</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de b�squeda -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-search"></i> Criterios de B�squeda</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="formBusqueda" class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Empleado:</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("idEmpleado", (SelectList)ViewBag.Empleados,
+                                            "-- Seleccionar empleado --",
+                                            new { @class = "form-control", @id = "ddlEmpleado" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">C�dula:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="txtCedula" name="cedula" class="form-control"
+                                               placeholder="Ingrese n�mero de c�dula" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Nombre:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="txtNombre" name="nombre" class="form-control"
+                                               placeholder="Ingrese nombre o apellido" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fa fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg" onclick="limpiarFormulario()">
+                                    <i class="fa fa-eraser"></i> Limpiar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- �rea de resultados -->
+    <div class="row">
+        <div class="col-md-12">
+            <div id="resultadosContainer" style="display: none;">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-list"></i> Resultados de la B�squeda</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="resultadosContent">
+                            <!-- Aqu� se cargar�n los resultados -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loadingSpinner" style="display: none;" class="text-center">
+        <div class="alert alert-info">
+            <i class="fa fa-spinner fa-spin"></i> Buscando colaboradores...
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+$(document).ready(function() {
+    // Manejar env�o del formulario
+    $('#formBusqueda').on('submit', function(e) {
+        e.preventDefault();
+        buscarColaboradores();
+    });
+
+    // Limpiar otros campos cuando se selecciona empleado
+    $('#ddlEmpleado').on('change', function() {
+        if ($(this).val()) {
+            $('#txtCedula, #txtNombre').val('');
+        }
+    });
+
+    // Limpiar dropdown cuando se escribe en otros campos
+    $('#txtCedula, #txtNombre').on('input', function() {
+        if ($(this).val()) {
+            $('#ddlEmpleado').val('');
+        }
+    });
+});
+
+function buscarColaboradores() {
+    var idEmpleado = $('#ddlEmpleado').val();
+    var cedula = $('#txtCedula').val().trim();
+    var nombre = $('#txtNombre').val().trim();
+
+    // Validar que al menos un campo est� lleno
+    if (!idEmpleado && !cedula && !nombre) {
+        mostrarAlerta('warning', 'Debe especificar al menos un criterio de b�squeda.');
+        return;
+    }
+
+    // Mostrar loading
+    $('#loadingSpinner').show();
+    $('#resultadosContainer').hide();
+
+    // Realizar b�squeda
+    $.ajax({
+        url: '@Url.Action("BuscarColaborador", "Consultas")',
+        type: 'POST',
+        data: {
+            idEmpleado: idEmpleado || null,
+            cedula: cedula || null,
+            nombre: nombre || null
+        },
+        success: function(response) {
+            $('#loadingSpinner').hide();
+
+            if (response.success === false) {
+                mostrarAlerta('warning', response.message);
+            } else {
+                $('#resultadosContent').html(response);
+                $('#resultadosContainer').show();
+            }
+        },
+        error: function() {
+            $('#loadingSpinner').hide();
+            mostrarAlerta('danger', 'Error al realizar la b�squeda. Int�ntelo de nuevo.');
+        }
+    });
+}
+
+function limpiarFormulario() {
+    $('#formBusqueda')[0].reset();
+    $('#ddlEmpleado').val('');
+    $('#resultadosContainer').hide();
+}
+
+function mostrarAlerta(tipo, mensaje) {
+    var alertHtml = '<div class="alert alert-'+ tipo +' alert-dismissible">' +
+                   '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                   '<i class="fa fa-exclamation-triangle"></i> ' + mensaje +
+                   '</div>';
+
+    // Remover alertas anteriores
+    $('.alert').remove();
+
+    // Agregar nueva alerta
+    $('#formBusqueda').before(alertHtml);
+
+    // Auto-ocultar despu�s de 5 segundos
+    setTimeout(function() {
+        $('.alert').fadeOut();
+    }, 5000);
+}
+    </script>
+}

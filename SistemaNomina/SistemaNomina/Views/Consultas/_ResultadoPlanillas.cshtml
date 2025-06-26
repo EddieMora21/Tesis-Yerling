@@ -1,0 +1,226 @@
+﻿@model List<SistemaNomina.Models.Nomina>
+
+<div class="table-responsive">
+    <table class="table-striped table-hover table" id="tablaPlanillas">
+        <thead class="table-dark">
+            <tr>
+                <th><i class="fas fa-calendar"></i> Período</th>
+                <th><i class="fas fa-id-card"></i> Cédula</th>
+                <th><i class="fas fa-user"></i> Empleado</th>
+                <th><i class="fas fa-building"></i> Departamento</th>
+                <th><i class="fas fa-briefcase"></i> Puesto</th>
+                <th class="text-end"><i class="fas fa-dollar-sign"></i> Salario Bruto</th>
+                <th class="text-end"><i class="fas fa-minus-circle"></i> CCSS</th>
+                <th class="text-end"><i class="fas fa-minus-circle"></i> IVM</th>
+                <th class="text-end"><i class="fas fa-minus-circle"></i> ISR</th>
+                <th class="text-end"><i class="fas fa-money-bill-wave"></i> Salario Neto</th>
+                <th class="text-center"><i class="fas fa-cogs"></i> Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var planilla in Model)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge bg-primary">
+                                @DateTime.Parse($"{planilla.mes}/01/{planilla.anio}").ToString("MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))
+                            </span>
+                        </td>
+                        <td>
+                            <strong>@planilla.Empleados.cedula</strong>
+                        </td>
+                        <td>
+                            <div>
+                                <strong>@planilla.Empleados.nombre1 @planilla.Empleados.apellido1</strong>
+                                @if (!string.IsNullOrEmpty(planilla.Empleados.apellido2))
+                                {
+                                    <br><small class="text-muted">@planilla.Empleados.apellido2</small>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">
+                                @(planilla.Empleados.Puestos?.Departamentos?.nombre ?? "N/A")
+                            </span>
+                        </td>
+                        <td>
+                            <small>@(planilla.Empleados.Puestos?.nombre_puesto ?? "N/A")</small>
+                        </td>
+                        <td class="text-end">
+                            <strong class="text-success">
+                                ₡@planilla.salario_bruto.ToString("N2", new System.Globalization.CultureInfo("es-CR"))
+                            </strong>
+                        </td>
+                        <td class="text-end">
+                            <span class="text-danger">
+                                ₡@((planilla.ccss ?? 0).ToString("N2", new System.Globalization.CultureInfo("es-CR")))
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <span class="text-danger">
+                                ₡@((planilla.ivm ?? 0).ToString("N2", new System.Globalization.CultureInfo("es-CR")))
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <span class="text-danger">
+                                ₡@((planilla.isr ?? 0).ToString("N2", new System.Globalization.CultureInfo("es-CR")))
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <strong class="text-primary">
+                                ₡@planilla.salario_neto.ToString("N2", new System.Globalization.CultureInfo("es-CR"))
+                            </strong>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="@Url.Action("DetalleColaborador", "Consultas", new { id = planilla.id_empleado })"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Ver detalle del empleado">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-info"
+                                        onclick="verDetallePlanilla(@planilla.id_nomina)"
+                                        title="Ver detalle de planilla">
+                                    <i class="fas fa-receipt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="11" class="py-4 text-center">
+                        <div class="text-muted">
+                            <i class="fas fa-search fa-3x mb-3"></i>
+                            <p>No se encontraron registros de planillas con los filtros especificados.</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <p class="text-muted">
+                <i class="fas fa-info-circle"></i>
+                Mostrando <strong>@Model.Count</strong> registros encontrados
+            </p>
+        </div>
+        <div class="col-md-6 text-end">
+            <small class="text-muted">
+                <i class="fas fa-clock"></i>
+                Consultado el @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+            </small>
+        </div>
+    </div>
+}
+
+<!-- 📱 MODAL DETALLE DE PLANILLA -->
+<div class="modal fade" id="modalDetallePlanilla" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-receipt"></i> Detalle de Planilla
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detalleContenido">
+                <!-- Contenido se carga vía AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // 📊 Inicializar DataTable si hay datos
+        @if (Model != null && Model.Any())
+        {
+            @:// Pasar estadísticas al scope global
+            @:window.estadisticasData = @Html.Raw(Json.Encode(ViewBag.Estadisticas));
+
+            @:// Inicializar DataTable con opciones avanzadas
+            @:$('#tablaPlanillas').DataTable({
+                @:language: {
+                    @:"url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
+                @:},
+                @:responsive: true,
+                @:pageLength: 25,
+                @:lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                @:dom: 'Bfrtip',
+                @:buttons: [
+                    @:{
+                        @:extend: 'copy',
+                        @:text: '<i class="fas fa-copy"></i> Copiar',
+                        @:className: 'btn btn-outline-secondary btn-sm'
+                    @:},
+                    @:{
+                        @:extend: 'excel',
+                        @:text: '<i class="fas fa-file-excel"></i> Excel',
+                        @:className: 'btn btn-outline-success btn-sm',
+                        @:filename: 'Planillas_' + new Date().toISOString().slice(0,10)
+                    @:},
+                    @:{
+                        @:extend: 'pdf',
+                        @:text: '<i class="fas fa-file-pdf"></i> PDF',
+                        @:className: 'btn btn-outline-danger btn-sm',
+                        @:filename: 'Planillas_' + new Date().toISOString().slice(0,10),
+                        @:orientation: 'landscape',
+                        @:pageSize: 'A4'
+                    @:},
+                    @:{
+                        @:extend: 'print',
+                        @:text: '<i class="fas fa-print"></i> Imprimir',
+                        @:className: 'btn btn-outline-primary btn-sm'
+                    @:}
+                @:],
+                @:order: [[0, 'desc']], // Ordenar por período descendente
+                @:columnDefs: [
+                    @:{ targets: [5,6,7,8,9], className: 'text-end' }, // Columnas numéricas alineadas a la derecha
+                    @:{ targets: [10], orderable: false } // Columna de acciones no ordenable
+                @:]
+            @:});
+        }
+    });
+
+    // 🔍 VER DETALLE DE PLANILLA
+    function verDetallePlanilla(idNomina) {
+        // Aquí implementarías la carga del detalle específico de la planilla
+        $('#detalleContenido').html(`
+            <div class="py-4 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2">Cargando detalle de planilla...</p>
+            </div>
+        `);
+
+        $('#modalDetallePlanilla').modal('show');
+
+        // Simular carga de datos (implementar según necesidades)
+        setTimeout(function() {
+            $('#detalleContenido').html(`
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Funcionalidad en desarrollo</strong><br>
+                    El detalle específico de la planilla ID: ${idNomina} se implementará próximamente.
+                </div>
+            `);
+        }, 1000);
+    }
+</script>

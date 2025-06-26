@@ -265,6 +265,7 @@
     <Compile Include="Controllers\AguinaldoController.cs" />
     <Compile Include="Controllers\AsistenciaController.cs" />
     <Compile Include="Controllers\BitacoraController.cs" />
+    <Compile Include="Controllers\ConsultasController.cs" />
     <Compile Include="Controllers\DepartamentosController.cs" />
     <Compile Include="Controllers\EmpleadosController.cs" />
     <Compile Include="Controllers\EstadoCivilController.cs" />
@@ -314,6 +315,7 @@
     <Compile Include="Models\Bitacora.cs" />
     <Compile Include="Models\CalculoNominaViewModel.cs" />
     <Compile Include="Models\Departamentos.cs" />
+    <Compile Include="Models\DetalleColaboradorViewModel.cs" />
     <Compile Include="Models\Empleados.cs" />
     <Compile Include="Models\EstadoCivil.cs" />
     <Compile Include="Models\Estados.cs" />
@@ -545,6 +547,12 @@
     <Content Include="Views\Nominas\VistaPrevia.cshtml" />
     <Content Include="Views\Aguinaldo\CalcularAguinaldo.cshtml" />
     <Content Include="Views\Liquidaciones\CalcularLiquidacion.cshtml" />
+    <Content Include="Views\Consultas\Index.cshtml" />
+    <Content Include="Views\Consultas\ConsultarPorColaborador.cshtml" />
+    <Content Include="Views\Consultas\_ResultadosEmpleados.cshtml" />
+    <Content Include="Views\Consultas\DetalleColaborador.cshtml" />
+    <Content Include="Views\Consultas\HistoricoPlanillas.cshtml" />
+    <Content Include="Views\Consultas\_ResultadoPlanillas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

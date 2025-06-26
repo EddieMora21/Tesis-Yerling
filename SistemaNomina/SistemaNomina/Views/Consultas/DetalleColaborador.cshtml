@@ -1,0 +1,443 @@
+﻿@model SistemaNomina.Models.DetalleColaboradorViewModel
+@{
+    ViewBag.Title = "Detalle del Colaborador";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h2>
+                    <i class="fa fa-user"></i>
+                    @Model.Empleado.nombre1 @Model.Empleado.apellido1
+                    <small>Detalle Completo del Colaborador</small>
+                </h2>
+                <p>
+                    @Html.ActionLink("« Volver a Consultas", "ConsultarPorColaborador", null,
+                        new { @class = "btn btn-default" })
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Personal -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-user"></i> Información Personal</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table-bordered table">
+                        <tr>
+                            <th width="40%">Cédula:</th>
+                            <td><strong>@Model.Empleado.cedula</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Nombre Completo:</th>
+                            <td>@Model.Empleado.nombre1 @Model.Empleado.nombre2 @Model.Empleado.apellido1 @Model.Empleado.apellido2</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha de Nacimiento:</th>
+                            <td>@Model.Empleado.fecha_nacimiento.Value.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>Estado Civil:</th>
+                            <td>@(Model.Empleado.EstadoCivil?.nombre ?? "No especificado")</td>
+                        </tr>
+                        <tr>
+                            <th>Cantidad de Hijos:</th>
+                            <td>@(Model.Empleado.cantidad_hijos ?? 0)</td>
+                        </tr>
+                        <tr>
+                            <th>Dirección:</th>
+                            <td>@(Model.Empleado.direccion ?? "No especificada")</td>
+                        </tr>
+                        <tr>
+                            <th>Teléfono:</th>
+                            <td>@(Model.Empleado.telefono ?? "No especificado")</td>
+                        </tr>
+                        <tr>
+                            <th>Correo:</th>
+                            <td>@(Model.Empleado.correo ?? "No especificado")</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-briefcase"></i> Información Laboral</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table-bordered table">
+                        <tr>
+                            <th width="40%">Puesto:</th>
+                            <td><strong>@(Model.Empleado.Puestos?.nombre_puesto ?? "No asignado")</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Departamento:</th>
+                            <td>@(Model.Empleado.Puestos?.Departamentos?.nombre ?? "No asignado")</td>
+                        </tr>
+                        <tr>
+                            <th>Salario Base:</th>
+                            <td>₡@((Model.Empleado.Puestos?.salario_base ?? 0).ToString("N2"))</td>
+                        </tr>
+                        <tr>
+                            <th>Horario:</th>
+                            <td>@(Model.Empleado.Horarios?.nombre ?? "No asignado")</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha de Ingreso:</th>
+                            <td><strong>@Model.Empleado.fecha_ingreso.ToString("dd/MM/yyyy")</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Antigüedad:</th>
+                            <td>
+                                @{
+                                    var antiguedad = DateTime.Now - Model.Empleado.fecha_ingreso;
+                                    var años = antiguedad.Days / 365;
+                                    var meses = (antiguedad.Days % 365) / 30;
+                                }
+                                @años años, @meses meses
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Estado:</th>
+                            <td>
+                                @if (Model.Empleado.estado == "Activo")
+                                {
+                                    <span class="label label-success">@Model.Empleado.estado</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-default">@Model.Empleado.estado</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs de información adicional -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#nominas" role="tab" data-toggle="tab">
+                                <i class="fa fa-money"></i> Últimas Nóminas
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#vacaciones" role="tab" data-toggle="tab">
+                                <i class="fa fa-calendar"></i> Vacaciones
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#horas-extras" role="tab" data-toggle="tab">
+                                <i class="fa fa-clock-o"></i> Horas Extras
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#incapacidades" role="tab" data-toggle="tab">
+                                <i class="fa fa-medkit"></i> Incapacidades
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#asistencia" role="tab" data-toggle="tab">
+                                <i class="fa fa-check-circle"></i> Asistencia Reciente
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <!-- Nóminas -->
+                        <div role="tabpanel" class="tab-pane active" id="nominas">
+                            <h4>Últimas 6 Nóminas</h4>
+                            @if (Model.UltimasNominas != null && Model.UltimasNominas.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table-striped table">
+                                        <thead>
+                                            <tr>
+                                                <th>Período</th>
+                                                <th>Salario Bruto</th>
+                                                <th>CCSS</th>
+                                                <th>IVM</th>
+                                                <th>ISR</th>
+                                                <th>Salario Neto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var nomina in Model.UltimasNominas)
+                                            {
+                                                <tr>
+                                                    <td>@nomina.mes/@nomina.anio</td>
+                                                    <td>₡@nomina.salario_bruto.ToString("N2")</td>
+                                                    <td>₡@((nomina.ccss ?? 0).ToString("N2"))</td>
+                                                    <td>₡@((nomina.ivm ?? 0).ToString("N2"))</td>
+                                                    <td>₡@((nomina.isr ?? 0).ToString("N2"))</td>
+                                                    <td><strong>₡@nomina.salario_neto.ToString("N2")</strong></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">No hay registros de nómina.</div>
+                            }
+                        </div>
+
+                        <!-- Vacaciones -->
+                        <div role="tabpanel" class="tab-pane" id="vacaciones">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Estado Actual de Vacaciones</h4>
+                                    @if (Model.VacacionesActuales != null)
+                                    {
+                                        <table class="table-bordered table">
+                                            <tr>
+                                                <th>Período:</th>
+                                                <td>@Model.VacacionesActuales.periodo</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Días Disponibles:</th>
+                                                <td><strong>@Model.VacacionesActuales.dias_disponibles</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Días Disfrutados:</th>
+                                                <td>@(Model.VacacionesActuales.dias_disfrutados ?? 0)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Saldo Pendiente:</th>
+                                                <td><strong class="text-success">@(Model.VacacionesActuales.dias_disponibles - (Model.VacacionesActuales.dias_disfrutados ?? 0))</strong></td>
+                                            </tr>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-info">No hay registro de vacaciones.</div>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Últimas Solicitudes</h4>
+                                    @if (Model.SolicitudesVacaciones != null && Model.SolicitudesVacaciones.Any())
+                                    {
+                                        foreach (var solicitud in Model.SolicitudesVacaciones)
+                                        {
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <strong>@solicitud.fecha_inicio.ToString("dd/MM/yyyy") - @solicitud.fecha_fin.ToString("dd/MM/yyyy")</strong>
+                                                    <br />
+                                                    Estado:
+                                                    @if (solicitud.Estados.nombre == "Aprobado")
+                                                    {
+                                                        <span class="label label-success">@solicitud.Estados.nombre</span>
+                                                    }
+                                                    else if (solicitud.Estados.nombre == "Pendiente")
+                                                    {
+                                                        <span class="label label-warning">@solicitud.Estados.nombre</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="label label-danger">@solicitud.Estados.nombre</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-info">No hay solicitudes de vacaciones.</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Horas Extras -->
+                        <div role="tabpanel" class="tab-pane" id="horas-extras">
+                            <h4>Horas Extras del Año @DateTime.Now.Year</h4>
+                            @if (Model.HorasExtrasAnual != null && Model.HorasExtrasAnual.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table-striped table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Tipo</th>
+                                                <th>Horas</th>
+                                                <th>Valor Hora</th>
+                                                <th>Total</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var horaExtra in Model.HorasExtrasAnual)
+                                            {
+                                                <tr>
+                                                    <td>@horaExtra.fecha.ToString("dd/MM/yyyy")</td>
+                                                    <td>@(horaExtra.TiposHoraExtra?.nombre ?? "N/A")</td>
+                                                    <td>@horaExtra.horas.ToString("N2")</td>
+                                                    <td>₡@horaExtra.valor_hora.ToString("N2")</td>
+                                                    <td><strong>₡@(horaExtra.total?.ToString("N2") ?? "0.00")</strong></td>
+                                                    <td>
+                                                        @if (horaExtra.Estados?.nombre == "Aprobado")
+                                                        {
+                                                            <span class="label label-success">@horaExtra.Estados.nombre</span>
+                                                        }
+                                                        else if (horaExtra.Estados?.nombre == "Pendiente")
+                                                        {
+                                                            <span class="label label-warning">@horaExtra.Estados.nombre</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="label label-danger">@(horaExtra.Estados?.nombre ?? "N/A")</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="alert alert-info">
+                                    <strong>Total de horas extras del año:</strong> @Model.HorasExtrasAnual.Sum(h => h.horas).ToString("N2") horas
+                                    <br />
+                                    <strong>Total pagado en horas extras:</strong> ₡@Model.HorasExtrasAnual.Where(h => h.Estados.nombre == "Aprobado").Sum(h => h.total ?? 0).ToString("N2")
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">No hay registros de horas extras este año.</div>
+                            }
+                        </div>
+
+                        <!-- Incapacidades -->
+                        <div role="tabpanel" class="tab-pane" id="incapacidades">
+                            <h4>Registro de Incapacidades</h4>
+                            @if (Model.Incapacidades != null && Model.Incapacidades.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table-striped table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Fin</th>
+                                                <th>Días</th>
+                                                <th>Tipo</th>
+                                                <th>Número Boleta</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var incapacidad in Model.Incapacidades)
+                                            {
+                                                <tr>
+                                                    <td>@incapacidad.fecha_inicio.ToString("dd/MM/yyyy")</td>
+                                                    <td>@incapacidad.fecha_fin.ToString("dd/MM/yyyy")</td>
+                                                    <td><strong>@(incapacidad.dias_incapacidad ?? 0)</strong></td>
+                                                    <td>@(incapacidad.TipoIncapacidades?.nombre ?? "N/A")</td>
+                                                    <td>@(incapacidad.numero_boleta ?? "N/A")</td>
+                                                    <td>
+                                                        <span class="label label-info">@(incapacidad.Estados?.nombre ?? "N/A")</span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">No hay registros de incapacidades.</div>
+                            }
+                        </div>
+
+                        <!-- Asistencia -->
+                        <div role="tabpanel" class="tab-pane" id="asistencia">
+                            <h4>Asistencia de los Últimos 30 Días</h4>
+                            @if (Model.AsistenciaReciente != null && Model.AsistenciaReciente.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table-striped table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Entrada</th>
+                                                <th>Salida</th>
+                                                <th>Horas Trabajadas</th>
+                                                <th>Feriado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var asistencia in Model.AsistenciaReciente)
+                                            {
+                                                <tr>
+                                                    <td>@asistencia.fecha.ToString("dd/MM/yyyy")</td>
+                                                    <td>
+                                                        @if (asistencia.hora_entrada.HasValue)
+                                                        {
+                                                            @asistencia.hora_entrada.Value.ToString(@"hh\:mm")
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-danger">No marcó</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (asistencia.hora_salida.HasValue)
+                                                        {
+                                                            @asistencia.hora_salida.Value.ToString(@"hh\:mm")
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-warning">No marcó</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (asistencia.hora_entrada.HasValue && asistencia.hora_salida.HasValue)
+                                                        {
+                                                            @((asistencia.hora_salida.Value - asistencia.hora_entrada.Value).ToString(@"hh\:mm"))
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">--</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (asistencia.es_feriado == true)
+                                                        {
+                                                            <span class="label label-warning">Feriado</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">--</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">No hay registros de asistencia recientes.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

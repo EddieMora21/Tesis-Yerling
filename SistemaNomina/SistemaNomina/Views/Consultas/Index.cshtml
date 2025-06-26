@@ -1,0 +1,126 @@
+@{
+    ViewBag.Title = "Módulo de Consultas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h2><i class="fa fa-search"></i> Módulo de Consultas</h2>
+                <p class="text-muted">Consulte información detallada de empleados y histórico de planillas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Consultar por Colaborador -->
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-user"></i> Consultar por Colaborador
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <p>Busque y consulte información detallada de cualquier colaborador de la empresa.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-check text-success"></i> Información personal y laboral</li>
+                        <li><i class="fa fa-check text-success"></i> Historial de nóminas</li>
+                        <li><i class="fa fa-check text-success"></i> Estado de vacaciones</li>
+                        <li><i class="fa fa-check text-success"></i> Horas extras y asistencia</li>
+                        <li><i class="fa fa-check text-success"></i> Incapacidades registradas</li>
+                    </ul>
+                </div>
+                <div class="panel-footer text-center">
+                    @Html.ActionLink("Consultar Colaborador", "ConsultarPorColaborador", null,
+                        new { @class = "btn btn-primary btn-lg" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Histórico de Planillas -->
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-history"></i> Histórico de Planillas
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <p>Consulte el historial completo de planillas generadas en el sistema.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-check text-success"></i> Filtros por mes y año</li>
+                        <li><i class="fa fa-check text-success"></i> Búsqueda por empleado</li>
+                        <li><i class="fa fa-check text-success"></i> Filtro por departamento</li>
+                        <li><i class="fa fa-check text-success"></i> Estadísticas resumidas</li>
+                        <li><i class="fa fa-check text-success"></i> Exportación de resultados</li>
+                    </ul>
+                </div>
+                <div class="panel-footer text-center">
+                    @Html.ActionLink("Ver Histórico", "HistoricoPlanillas", null,
+                        new { @class = "btn btn-info btn-lg" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Estadísticas Rápidas</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-box text-center">
+                                <h3 class="text-primary">@ViewBag.TotalEmpleados</h3>
+                                <p>Empleados Activos</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-box text-center">
+                                <h3 class="text-success">@ViewBag.PlanillasGeneradas</h3>
+                                <p>Planillas Generadas</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-box text-center">
+                                <h3 class="text-warning">@ViewBag.VacacionesPendientes</h3>
+                                <p>Solicitudes Pendientes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-box text-center">
+                                <h3 class="text-info">@ViewBag.HorasExtrasDelMes</h3>
+                                <p>Horas Extras del Mes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-box {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+        .stat-box h3 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .stat-box p {
+            margin: 10px 0 0 0;
+            color: #666;
+        }
+</style>

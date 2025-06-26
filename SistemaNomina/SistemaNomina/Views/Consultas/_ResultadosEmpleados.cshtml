@@ -1,0 +1,73 @@
+﻿@model IEnumerable<SistemaNomina.Models.Empleados>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table-striped table-hover table">
+            <thead>
+                <tr class="bg-primary">
+                    <th>C�dula</th>
+                    <th>Nombre Completo</th>
+                    <th>Puesto</th>
+                    <th>Departamento</th>
+                    <th>Estado</th>
+                    <th>Fecha Ingreso</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var empleado in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@empleado.cedula</strong>
+                        </td>
+                        <td>
+                            @empleado.nombre1 @empleado.nombre2 @empleado.apellido1 @empleado.apellido2
+                        </td>
+                        <td>
+                            @(empleado.Puestos?.nombre_puesto ?? "No asignado")
+                        </td>
+                        <td>
+                            @(empleado.Puestos?.Departamentos?.nombre ?? "No asignado")
+                        </td>
+                        <td>
+                            @if (empleado.estado == "Activo")
+                            {
+                                <span class="label label-success">@empleado.estado</span>
+                            }
+                            else
+                            {
+                                <span class="label label-default">@empleado.estado</span>
+                            }
+                        </td>
+                        <td>
+                            @empleado.fecha_ingreso.ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="text-center">
+                            @Html.ActionLink("Ver Detalle", "DetalleColaborador",
+                                new { id = empleado.id_empleado },
+                                new
+                                     {
+                                         @class = "btn btn-info btn-sm",
+                                      @title = "Ver informaci�n completa"
+                                     })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i>
+        Se encontraron <strong>@Model.Count()</strong> colaborador(es) con los criterios especificados.
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="fa fa-exclamation-triangle"></i>
+        No se encontraron colaboradores con los criterios especificados.
+    </div>
+}
