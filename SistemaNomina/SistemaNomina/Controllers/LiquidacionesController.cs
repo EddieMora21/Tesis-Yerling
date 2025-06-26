@@ -10,6 +10,7 @@ using SistemaNomina.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
+using System.Diagnostics;
 
 namespace SistemaNomina.Controllers
 {
@@ -22,15 +23,22 @@ namespace SistemaNomina.Controllers
         {
             try
             {
+                Debug.WriteLine("=== INICIO Index Liquidaciones ===");
+
                 var liquidaciones = db.Liquidaciones
                     .Include(l => l.Empleados)
                     .Include(l => l.TipoLiquidacion)
                     .OrderByDescending(l => l.fecha_creacion)
                     .ToList();
+
+                Debug.WriteLine($"Liquidaciones encontradas: {liquidaciones.Count}");
+
                 return View(liquidaciones);
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR en Index: {ex.Message}");
+                Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 TempData["Error"] = "Error al cargar liquidaciones: " + ex.Message;
                 return View(new List<Liquidaciones>());
             }
@@ -57,6 +65,7 @@ namespace SistemaNomina.Controllers
                     TempData["Error"] = "Liquidación no encontrada";
                     return RedirectToAction("Index");
                 }
+
                 return View(liquidacion);
             }
             catch (Exception ex)
@@ -71,6 +80,8 @@ namespace SistemaNomina.Controllers
         {
             try
             {
+                Debug.WriteLine("=== INICIO CalcularLiquidacion GET ===");
+
                 var empleadosActivos = db.Empleados
                     .Where(e => e.estado == "Activo")
                     .Select(e => new {
@@ -78,6 +89,8 @@ namespace SistemaNomina.Controllers
                         display = e.cedula + " - " + e.nombre1 + " " + e.apellido1
                     })
                     .ToList();
+
+                Debug.WriteLine($"Empleados activos encontrados: {empleadosActivos.Count}");
 
                 if (!empleadosActivos.Any())
                 {
@@ -90,6 +103,8 @@ namespace SistemaNomina.Controllers
                 }
 
                 var tiposLiquidacion = db.TipoLiquidacion.ToList();
+                Debug.WriteLine($"Tipos de liquidación encontrados: {tiposLiquidacion.Count}");
+
                 if (!tiposLiquidacion.Any())
                 {
                     ViewBag.Error = "No hay tipos de liquidación configurados. Contacte al administrador.";
@@ -104,6 +119,7 @@ namespace SistemaNomina.Controllers
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR en CalcularLiquidacion GET: {ex.Message}");
                 ViewBag.Error = "Error al cargar datos: " + ex.Message;
                 ViewBag.IdEmpleado = new SelectList(new List<object>(), "id_empleado", "display");
                 ViewBag.IdTipo = new SelectList(new List<object>(), "id_tipo", "nombre");
@@ -116,29 +132,36 @@ namespace SistemaNomina.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CalcularLiquidacion(int? idEmpleado, int? idTipo, DateTime? fechaSalida)
         {
+            Debug.WriteLine("=== INICIO CalcularLiquidacion POST ===");
+            Debug.WriteLine($"Parámetros recibidos - IdEmpleado: {idEmpleado}, IdTipo: {idTipo}, FechaSalida: {fechaSalida}");
+
             try
             {
                 // Validar parámetros de entrada
                 if (!idEmpleado.HasValue || idEmpleado.Value <= 0)
                 {
+                    Debug.WriteLine("ERROR: ID Empleado inválido");
                     ViewBag.Error = "Por favor seleccione un empleado válido";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
                 if (!idTipo.HasValue || idTipo.Value <= 0)
                 {
+                    Debug.WriteLine("ERROR: ID Tipo inválido");
                     ViewBag.Error = "Por favor seleccione un tipo de liquidación válido";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
                 if (!fechaSalida.HasValue)
                 {
+                    Debug.WriteLine("ERROR: Fecha salida inválida");
                     ViewBag.Error = "Por favor ingrese una fecha de salida válida";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
                 if (fechaSalida.Value > DateTime.Now)
                 {
+                    Debug.WriteLine("ERROR: Fecha salida futura");
                     ViewBag.Error = "La fecha de salida no puede ser mayor a la fecha actual";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
@@ -148,14 +171,18 @@ namespace SistemaNomina.Controllers
                     .Include(e => e.Puestos)
                     .FirstOrDefault(e => e.id_empleado == idEmpleado.Value);
 
+                Debug.WriteLine($"Empleado encontrado: {empleado?.nombre1} {empleado?.apellido1}");
+
                 if (empleado == null)
                 {
+                    Debug.WriteLine("ERROR: Empleado no encontrado");
                     ViewBag.Error = "Empleado no encontrado";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
                 if (empleado.estado != "Activo")
                 {
+                    Debug.WriteLine("ERROR: Empleado no activo");
                     ViewBag.Error = "El empleado seleccionado no está activo";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
@@ -163,20 +190,26 @@ namespace SistemaNomina.Controllers
                 // Validar fecha de salida vs fecha de ingreso
                 if (fechaSalida.Value < empleado.fecha_ingreso)
                 {
+                    Debug.WriteLine("ERROR: Fecha salida anterior a ingreso");
                     ViewBag.Error = "La fecha de salida no puede ser anterior a la fecha de ingreso del empleado";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
                 // Buscar tipo de liquidación
                 var tipoLiquidacion = db.TipoLiquidacion.Find(idTipo.Value);
+                Debug.WriteLine($"Tipo liquidación encontrado: {tipoLiquidacion?.nombre}");
+
                 if (tipoLiquidacion == null)
                 {
+                    Debug.WriteLine("ERROR: Tipo liquidación no encontrado");
                     ViewBag.Error = "Tipo de liquidación no encontrado";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
                 // Calcular liquidación
+                Debug.WriteLine("Iniciando cálculo de liquidación...");
                 var calculo = CalcularLiquidacionEmpleado(empleado, tipoLiquidacion, fechaSalida.Value);
+                Debug.WriteLine($"Cálculo completado - Total: {calculo.TotalLiquidacion}");
 
                 var viewModel = new CalculoLiquidacionViewModel
                 {
@@ -188,6 +221,8 @@ namespace SistemaNomina.Controllers
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR en CalcularLiquidacion POST: {ex.Message}");
+                Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 ViewBag.Error = "Error al calcular liquidación: " + ex.Message;
                 return CargarDatosCalculadora(idEmpleado, idTipo);
             }
@@ -196,6 +231,8 @@ namespace SistemaNomina.Controllers
         // Método auxiliar para cargar datos de la calculadora
         private ActionResult CargarDatosCalculadora(int? idEmpleado = null, int? idTipo = null, CalculoLiquidacionViewModel viewModel = null)
         {
+            Debug.WriteLine("=== CargarDatosCalculadora ===");
+
             try
             {
                 var empleadosActivos = db.Empleados
@@ -213,6 +250,7 @@ namespace SistemaNomina.Controllers
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR en CargarDatosCalculadora: {ex.Message}");
                 ViewBag.Error = "Error al cargar datos: " + ex.Message;
                 ViewBag.IdEmpleado = new SelectList(new List<object>(), "id_empleado", "display");
                 ViewBag.IdTipo = new SelectList(new List<object>(), "id_tipo", "nombre");
@@ -223,68 +261,84 @@ namespace SistemaNomina.Controllers
         // POST: Liquidaciones/GuardarLiquidacion
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GuardarLiquidacion(LiquidacionViewModel modelo)
+        public ActionResult GuardarLiquidacion(CalculoLiquidacionViewModel modelo)
         {
+            Debug.WriteLine("=== INICIO GuardarLiquidacion ===");
+
             try
             {
-                // Validar modelo
-                if (modelo == null)
+                Debug.WriteLine($"Modelo recibido - Es null: {modelo == null}");
+                Debug.WriteLine($"Calculo es null: {modelo?.Calculo == null}");
+
+                if (modelo?.Calculo == null)
                 {
+                    Debug.WriteLine("ERROR: Modelo o Calculo es null");
                     TempData["Error"] = "Datos de liquidación no válidos";
                     return RedirectToAction("CalcularLiquidacion");
                 }
 
-                if (modelo.IdEmpleado <= 0)
+                Debug.WriteLine($"IdEmpleado: {modelo.Calculo.IdEmpleado}");
+                Debug.WriteLine($"TotalLiquidacion: {modelo.Calculo.TotalLiquidacion}");
+
+                if (modelo.Calculo.IdEmpleado <= 0)
                 {
+                    Debug.WriteLine("ERROR: ID empleado inválido");
                     TempData["Error"] = "ID de empleado no válido";
                     return RedirectToAction("CalcularLiquidacion");
                 }
 
-                if (modelo.TotalLiquidacion <= 0)
+                if (modelo.Calculo.TotalLiquidacion <= 0)
                 {
+                    Debug.WriteLine("ERROR: Total liquidación inválido");
                     TempData["Error"] = "El total de liquidación debe ser mayor a cero";
                     return RedirectToAction("CalcularLiquidacion");
                 }
 
                 // Verificar que el empleado existe y está activo
-                var empleado = db.Empleados.Find(modelo.IdEmpleado);
+                var empleado = db.Empleados.Find(modelo.Calculo.IdEmpleado);
+                Debug.WriteLine($"Empleado encontrado: {empleado?.nombre1} - Estado: {empleado?.estado}");
+
                 if (empleado == null)
                 {
+                    Debug.WriteLine("ERROR: Empleado no encontrado");
                     TempData["Error"] = "Empleado no encontrado";
                     return RedirectToAction("CalcularLiquidacion");
                 }
 
                 if (empleado.estado != "Activo")
                 {
+                    Debug.WriteLine("ERROR: Empleado no activo");
                     TempData["Error"] = "El empleado ya fue liquidado anteriormente";
                     return RedirectToAction("Index");
                 }
 
                 // Verificar que no exista ya una liquidación para este empleado
                 var liquidacionExistente = db.Liquidaciones
-                    .FirstOrDefault(l => l.id_empleado == modelo.IdEmpleado);
+                    .FirstOrDefault(l => l.id_empleado == modelo.Calculo.IdEmpleado);
 
                 if (liquidacionExistente != null)
                 {
+                    Debug.WriteLine("ERROR: Liquidación ya existe");
                     TempData["Error"] = "Ya existe una liquidación para este empleado";
                     return RedirectToAction("Index");
                 }
 
                 // Crear nueva liquidación
+                Debug.WriteLine("Creando nueva liquidación...");
                 var liquidacion = new Liquidaciones
                 {
-                    id_empleado = modelo.IdEmpleado,
-                    id_tipo = modelo.IdTipo,
-                    fecha_salida = modelo.FechaSalida,
-                    preaviso = modelo.Preaviso,
-                    cesantia = modelo.Cesantia,
-                    vacaciones_pendientes = modelo.VacacionesPendientes,
-                    dias_vacaciones_pendientes = modelo.DiasVacacionesPendientes,
-                    aguinaldo_proporcional = modelo.AguinaldoProporcional,
-                    total_liquidacion = modelo.TotalLiquidacion,
-                    isr_liquidacion = modelo.ISR,
-                    css_liquidacion = modelo.CCSS,
-                    ivm_liquidacion = modelo.IVM,
+                    id_empleado = modelo.Calculo.IdEmpleado,
+                    id_tipo = modelo.Calculo.IdTipo,
+                    fecha_salida = modelo.Calculo.FechaSalida,
+                    preaviso = modelo.Calculo.Preaviso,
+                    cesantia = modelo.Calculo.Cesantia,
+                    vacaciones_pendientes = modelo.Calculo.VacacionesPendientes,
+                    dias_vacaciones_pendientes = modelo.Calculo.DiasVacacionesPendientes,
+                    aguinaldo_proporcional = modelo.Calculo.AguinaldoProporcional,
+                    total_liquidacion = modelo.Calculo.TotalLiquidacion,
+                    isr_liquidacion = modelo.Calculo.ISR,
+                    css_liquidacion = modelo.Calculo.CCSS,
+                    ivm_liquidacion = modelo.Calculo.IVM,
                     fecha_creacion = DateTime.Now,
                     fecha_actualizacion = DateTime.Now
                 };
@@ -296,26 +350,34 @@ namespace SistemaNomina.Controllers
                 empleado.fecha_actualizacion = DateTime.Now;
 
                 // Guardar cambios en una transacción
+                Debug.WriteLine("Guardando cambios en base de datos...");
                 db.SaveChanges();
+                Debug.WriteLine("Cambios guardados exitosamente");
 
                 TempData["Success"] = $"Liquidación guardada exitosamente para {empleado.nombre1} {empleado.apellido1}";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR en GuardarLiquidacion: {ex.Message}");
+                Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 TempData["Error"] = "Error al guardar liquidación: " + ex.Message;
-                return RedirectToAction("CalcularLiquidacion");
+                return RedirectToAction("Index");
             }
         }
 
-        // Método para calcular liquidación (con manejo de errores)
+        // Método para calcular liquidación
         private LiquidacionViewModel CalcularLiquidacionEmpleado(Empleados empleado, TipoLiquidacion tipo, DateTime fechaSalida)
         {
+            Debug.WriteLine("=== CalcularLiquidacionEmpleado ===");
+
             try
             {
                 var fechaIngreso = empleado.fecha_ingreso;
                 var aniosLaborados = CalcularAniosLaborados(fechaIngreso, fechaSalida);
                 var salarioBase = empleado.Puestos?.salario_base ?? 0;
+
+                Debug.WriteLine($"Salario base: {salarioBase}");
 
                 if (salarioBase <= 0)
                 {
@@ -385,6 +447,8 @@ namespace SistemaNomina.Controllers
                 var totalDeducciones = ccss + ivm + isr;
                 var totalLiquidacion = salarioBruto - totalDeducciones;
 
+                Debug.WriteLine($"Totales calculados - Bruto: {salarioBruto}, Deducciones: {totalDeducciones}, Neto: {totalLiquidacion}");
+
                 return new LiquidacionViewModel
                 {
                     IdEmpleado = empleado.id_empleado,
@@ -411,6 +475,7 @@ namespace SistemaNomina.Controllers
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR en CalcularLiquidacionEmpleado: {ex.Message}");
                 throw new Exception($"Error en cálculo de liquidación: {ex.Message}");
             }
         }
@@ -434,7 +499,7 @@ namespace SistemaNomina.Controllers
                     .Select(n => n.salario_bruto)
                     .ToList();
 
-                decimal salarioDiario; // ← DECLARAR UNA SOLA VEZ
+                decimal salarioDiario;
 
                 if (!ultimosSalarios.Any())
                 {
@@ -442,14 +507,14 @@ namespace SistemaNomina.Controllers
                     var empleado = db.Empleados.Include(e => e.Puestos).FirstOrDefault(e => e.id_empleado == idEmpleado);
                     if (empleado?.Puestos?.salario_base > 0)
                     {
-                        salarioDiario = empleado.Puestos.salario_base / 30; // ← ASIGNAR, NO DECLARAR
+                        salarioDiario = empleado.Puestos.salario_base / 30;
                         return salarioDiario * diasPendientes;
                     }
                     return 0;
                 }
 
                 var promedioMensual = ultimosSalarios.Average();
-                salarioDiario = promedioMensual / 30; // ← ASIGNAR, NO DECLARAR
+                salarioDiario = promedioMensual / 30;
 
                 return salarioDiario * diasPendientes;
             }
@@ -520,10 +585,14 @@ namespace SistemaNomina.Controllers
         }
 
         // GET: Liquidaciones/GenerarPDF/5
+        [HttpGet]
         public ActionResult GenerarPDF(int? id)
         {
+            Debug.WriteLine($"=== INICIO GenerarPDF - ID: {id} ===");
+
             if (id == null)
             {
+                Debug.WriteLine("ERROR: ID de liquidación es null");
                 TempData["Error"] = "ID de liquidación no válido";
                 return RedirectToAction("Index");
             }
@@ -537,155 +606,155 @@ namespace SistemaNomina.Controllers
 
                 if (liquidacion == null)
                 {
+                    Debug.WriteLine("ERROR: Liquidación no encontrada");
                     TempData["Error"] = "Liquidación no encontrada";
                     return RedirectToAction("Index");
                 }
 
+                Debug.WriteLine($"Generando PDF para: {liquidacion.Empleados.nombre1} {liquidacion.Empleados.apellido1}");
+
                 var pdfBytes = GenerarPDFLiquidacion(liquidacion);
                 var fileName = $"Liquidacion_{liquidacion.Empleados.cedula}_{DateTime.Now:yyyyMMdd}.pdf";
+
+                Debug.WriteLine($"PDF generado exitosamente: {fileName}");
 
                 return File(pdfBytes, "application/pdf", fileName);
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ERROR al generar PDF: {ex.Message}");
+                Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 TempData["Error"] = "Error al generar PDF: " + ex.Message;
-                return RedirectToAction("Details", new { id });
+                return RedirectToAction("Index");
             }
         }
 
         private byte[] GenerarPDFLiquidacion(Liquidaciones liquidacion)
         {
-            using (var memoryStream = new MemoryStream())
+            Debug.WriteLine("=== INICIO GenerarPDFLiquidacion ===");
+
+            try
             {
-                var document = new Document(PageSize.A4, 50, 50, 50, 50);
-                var writer = PdfWriter.GetInstance(document, memoryStream);
-
-                document.Open();
-
-                // Encabezado
-                var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
-                var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-                var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-
-                var title = new Paragraph("LIQUIDACIÓN LABORAL", titleFont);
-                title.Alignment = Element.ALIGN_CENTER;
-                title.SpacingAfter = 20;
-                document.Add(title);
-
-                // Información de la empresa
-                document.Add(new Paragraph("Smart Building Solutions", headerFont));
-                document.Add(new Paragraph("Santa Ana, Costa Rica", normalFont));
-                document.Add(new Paragraph($"Fecha: {DateTime.Now:dd/MM/yyyy}", normalFont));
-                document.Add(new Paragraph(" ")); // Espacio
-
-                // Información del empleado
-                document.Add(new Paragraph("DATOS DEL EMPLEADO", headerFont));
-                document.Add(new Paragraph($"Nombre: {liquidacion.Empleados.nombre1} {liquidacion.Empleados.nombre2} {liquidacion.Empleados.apellido1} {liquidacion.Empleados.apellido2}", normalFont));
-                document.Add(new Paragraph($"Cédula: {liquidacion.Empleados.cedula}", normalFont));
-                document.Add(new Paragraph($"Fecha de Ingreso: {liquidacion.Empleados.fecha_ingreso:dd/MM/yyyy}", normalFont));
-                document.Add(new Paragraph($"Fecha de Salida: {liquidacion.fecha_salida:dd/MM/yyyy}", normalFont));
-                document.Add(new Paragraph($"Tipo de Liquidación: {liquidacion.TipoLiquidacion.nombre}", normalFont));
-                document.Add(new Paragraph(" ")); // Espacio
-
-                // Tabla de conceptos
-                var table = new PdfPTable(2);
-                table.WidthPercentage = 100;
-                table.SetWidths(new float[] { 70f, 30f });
-
-                // Encabezado de tabla
-                var headerCell1 = new PdfPCell(new Phrase("CONCEPTO", headerFont));
-                headerCell1.BackgroundColor = BaseColor.LIGHT_GRAY;
-                headerCell1.HorizontalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(headerCell1);
-
-                var headerCell2 = new PdfPCell(new Phrase("MONTO", headerFont));
-                headerCell2.BackgroundColor = BaseColor.LIGHT_GRAY;
-                headerCell2.HorizontalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(headerCell2);
-
-                // Conceptos positivos
-                if (liquidacion.preaviso > 0)
+                using (var memoryStream = new MemoryStream())
                 {
-                    table.AddCell(new Phrase("Preaviso", normalFont));
-                    table.AddCell(new Phrase($"₡{liquidacion.preaviso:N2}", normalFont));
+                    var document = new Document(PageSize.A4, 50, 50, 50, 50);
+                    var writer = PdfWriter.GetInstance(document, memoryStream);
+
+                    document.Open();
+
+                    // Fonts
+                    var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
+                    var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+                    var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+
+                    // Título
+                    var title = new Paragraph("LIQUIDACIÓN LABORAL", titleFont);
+                    title.Alignment = Element.ALIGN_CENTER;
+                    title.SpacingAfter = 20;
+                    document.Add(title);
+
+                    // Información de la empresa
+                    document.Add(new Paragraph("Smart Building Solutions", headerFont));
+                    document.Add(new Paragraph("Santa Ana, Costa Rica", normalFont));
+                    document.Add(new Paragraph($"Fecha: {DateTime.Now:dd/MM/yyyy}", normalFont));
+                    document.Add(new Paragraph(" "));
+
+                    // Información del empleado
+                    document.Add(new Paragraph("DATOS DEL EMPLEADO", headerFont));
+                    document.Add(new Paragraph($"Nombre: {liquidacion.Empleados.nombre1} {liquidacion.Empleados.nombre2} {liquidacion.Empleados.apellido1} {liquidacion.Empleados.apellido2}".Trim(), normalFont));
+                    document.Add(new Paragraph($"Cédula: {liquidacion.Empleados.cedula}", normalFont));
+                    document.Add(new Paragraph($"Fecha de Ingreso: {liquidacion.Empleados.fecha_ingreso:dd/MM/yyyy}", normalFont));
+                    document.Add(new Paragraph($"Fecha de Salida: {liquidacion.fecha_salida:dd/MM/yyyy}", normalFont));
+                    document.Add(new Paragraph($"Tipo de Liquidación: {liquidacion.TipoLiquidacion.nombre}", normalFont));
+                    document.Add(new Paragraph(" "));
+
+                    // Tabla de conceptos
+                    var table = new PdfPTable(2);
+                    table.WidthPercentage = 100;
+                    table.SetWidths(new float[] { 70f, 30f });
+
+                    // Encabezados
+                    table.AddCell(new PdfPCell(new Phrase("CONCEPTO", headerFont)) { BackgroundColor = BaseColor.LIGHT_GRAY });
+                    table.AddCell(new PdfPCell(new Phrase("MONTO", headerFont)) { BackgroundColor = BaseColor.LIGHT_GRAY });
+
+                    // Conceptos
+                    if (liquidacion.preaviso > 0)
+                    {
+                        table.AddCell(new Phrase("Preaviso", normalFont));
+                        table.AddCell(new Phrase($"₡{liquidacion.preaviso:N2}", normalFont));
+                    }
+
+                    if (liquidacion.cesantia > 0)
+                    {
+                        table.AddCell(new Phrase("Cesantía", normalFont));
+                        table.AddCell(new Phrase($"₡{liquidacion.cesantia:N2}", normalFont));
+                    }
+
+                    if (liquidacion.vacaciones_pendientes > 0)
+                    {
+                        table.AddCell(new Phrase($"Vacaciones ({liquidacion.dias_vacaciones_pendientes} días)", normalFont));
+                        table.AddCell(new Phrase($"₡{liquidacion.vacaciones_pendientes:N2}", normalFont));
+                    }
+
+                    if (liquidacion.aguinaldo_proporcional > 0)
+                    {
+                        table.AddCell(new Phrase("Aguinaldo Proporcional", normalFont));
+                        table.AddCell(new Phrase($"₡{liquidacion.aguinaldo_proporcional:N2}", normalFont));
+                    }
+
+                    // Subtotal
+                    var subtotal = (liquidacion.preaviso ?? 0) + (liquidacion.cesantia ?? 0) +
+                                  (liquidacion.vacaciones_pendientes ?? 0) + (liquidacion.aguinaldo_proporcional ?? 0);
+
+                    table.AddCell(new PdfPCell(new Phrase("SUBTOTAL", headerFont)) { BackgroundColor = BaseColor.LIGHT_GRAY });
+                    table.AddCell(new PdfPCell(new Phrase($"₡{subtotal:N2}", headerFont)) { BackgroundColor = BaseColor.LIGHT_GRAY });
+
+                    // Deducciones
+                    if (liquidacion.css_liquidacion > 0)
+                    {
+                        table.AddCell(new Phrase("CCSS (9.34%)", normalFont));
+                        table.AddCell(new Phrase($"-₡{liquidacion.css_liquidacion:N2}", normalFont));
+                    }
+
+                    if (liquidacion.ivm_liquidacion > 0)
+                    {
+                        table.AddCell(new Phrase("IVM (2.75%)", normalFont));
+                        table.AddCell(new Phrase($"-₡{liquidacion.ivm_liquidacion:N2}", normalFont));
+                    }
+
+                    if (liquidacion.isr_liquidacion > 0)
+                    {
+                        table.AddCell(new Phrase("Impuesto sobre la Renta", normalFont));
+                        table.AddCell(new Phrase($"-₡{liquidacion.isr_liquidacion:N2}", normalFont));
+                    }
+
+                    // Total
+                    table.AddCell(new PdfPCell(new Phrase("TOTAL A PAGAR", titleFont)) { BackgroundColor = BaseColor.DARK_GRAY });
+                    table.AddCell(new PdfPCell(new Phrase($"₡{liquidacion.total_liquidacion:N2}", titleFont)) { BackgroundColor = BaseColor.DARK_GRAY });
+
+                    document.Add(table);
+
+                    // Firmas
+                    document.Add(new Paragraph(" "));
+                    document.Add(new Paragraph("_________________________", normalFont));
+                    document.Add(new Paragraph("Firma del Empleado", normalFont));
+                    document.Add(new Paragraph(" "));
+                    document.Add(new Paragraph("_________________________", normalFont));
+                    document.Add(new Paragraph("Firma del Empleador", normalFont));
+
+                    document.Close();
+                    Debug.WriteLine("PDF generado correctamente");
+                    return memoryStream.ToArray();
                 }
-
-                if (liquidacion.cesantia > 0)
-                {
-                    table.AddCell(new Phrase("Cesantía", normalFont));
-                    table.AddCell(new Phrase($"₡{liquidacion.cesantia:N2}", normalFont));
-                }
-
-                if (liquidacion.vacaciones_pendientes > 0)
-                {
-                    table.AddCell(new Phrase($"Vacaciones Pendientes ({liquidacion.dias_vacaciones_pendientes} días)", normalFont));
-                    table.AddCell(new Phrase($"₡{liquidacion.vacaciones_pendientes:N2}", normalFont));
-                }
-
-                if (liquidacion.aguinaldo_proporcional > 0)
-                {
-                    table.AddCell(new Phrase("Aguinaldo Proporcional", normalFont));
-                    table.AddCell(new Phrase($"₡{liquidacion.aguinaldo_proporcional:N2}", normalFont));
-                }
-
-                // Subtotal
-                var subtotal = (liquidacion.preaviso ?? 0) + (liquidacion.cesantia ?? 0) +
-                              (liquidacion.vacaciones_pendientes ?? 0) + (liquidacion.aguinaldo_proporcional ?? 0);
-
-                var subtotalCell1 = new PdfPCell(new Phrase("SUBTOTAL", headerFont));
-                subtotalCell1.BackgroundColor = BaseColor.LIGHT_GRAY;
-                table.AddCell(subtotalCell1);
-
-                var subtotalCell2 = new PdfPCell(new Phrase($"₡{subtotal:N2}", headerFont));
-                subtotalCell2.BackgroundColor = BaseColor.LIGHT_GRAY;
-                table.AddCell(subtotalCell2);
-
-                // Deducciones
-                if (liquidacion.css_liquidacion > 0)
-                {
-                    table.AddCell(new Phrase("CCSS (9.34%)", normalFont));
-                    table.AddCell(new Phrase($"-₡{liquidacion.css_liquidacion:N2}", normalFont));
-                }
-
-                if (liquidacion.ivm_liquidacion > 0)
-                {
-                    table.AddCell(new Phrase("IVM (2.75%)", normalFont));
-                    table.AddCell(new Phrase($"-₡{liquidacion.ivm_liquidacion:N2}", normalFont));
-                }
-
-                if (liquidacion.isr_liquidacion > 0)
-                {
-                    table.AddCell(new Phrase("Impuesto sobre la Renta", normalFont));
-                    table.AddCell(new Phrase($"-₡{liquidacion.isr_liquidacion:N2}", normalFont));
-                }
-
-                // Total final
-                var totalCell1 = new PdfPCell(new Phrase("TOTAL A PAGAR", titleFont));
-                totalCell1.BackgroundColor = BaseColor.DARK_GRAY;
-                totalCell1.HorizontalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(totalCell1);
-
-                var totalCell2 = new PdfPCell(new Phrase($"₡{liquidacion.total_liquidacion:N2}", titleFont));
-                totalCell2.BackgroundColor = BaseColor.DARK_GRAY;
-                totalCell2.HorizontalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(totalCell2);
-
-                document.Add(table);
-
-                // Pie de página
-                document.Add(new Paragraph(" "));
-                document.Add(new Paragraph("_________________________", normalFont));
-                document.Add(new Paragraph("Firma del Empleado", normalFont));
-                document.Add(new Paragraph(" "));
-                document.Add(new Paragraph("_________________________", normalFont));
-                document.Add(new Paragraph("Firma del Empleador", normalFont));
-
-                document.Close();
-                return memoryStream.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"ERROR en GenerarPDFLiquidacion: {ex.Message}");
+                throw new Exception($"Error generando PDF: {ex.Message}", ex);
             }
         }
 
-        // Mantener métodos básicos de edición y eliminación
+        // GET: Liquidaciones/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -714,6 +783,7 @@ namespace SistemaNomina.Controllers
             }
         }
 
+        // POST: Liquidaciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id_liquidacion,id_empleado,id_tipo,fecha_salida,preaviso,cesantia,vacaciones_pendientes,dias_vacaciones_pendientes,aguinaldo_proporcional,total_liquidacion,isr_liquidacion,css_liquidacion,ivm_liquidacion,fecha_creacion,fecha_actualizacion")] Liquidaciones liquidaciones)
@@ -742,6 +812,7 @@ namespace SistemaNomina.Controllers
             }
         }
 
+        // GET: Liquidaciones/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -771,6 +842,7 @@ namespace SistemaNomina.Controllers
             }
         }
 
+        // POST: Liquidaciones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

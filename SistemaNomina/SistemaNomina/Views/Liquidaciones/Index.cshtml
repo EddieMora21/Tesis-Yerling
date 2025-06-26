@@ -244,13 +244,17 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#liquidacionesTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
-                },
-                "order": [[5, "desc"]], // Ordenar por fecha de creación descendente
-                "pageLength": 25,
-                "responsive": true
+            // Funcionalidad básica para la tabla
+            console.log('Liquidaciones cargadas');
+
+            // Ocultar alertas automáticamente después de 5 segundos
+            $('.alert').delay(5000).fadeOut();
+
+            // Confirmar eliminación
+            $('a[href*="Delete"]').click(function (e) {
+                if (!confirm('¿Está seguro de eliminar esta liquidación?')) {
+                    e.preventDefault();
+                }
             });
         });
     </script>
