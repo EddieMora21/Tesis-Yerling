@@ -147,60 +147,8 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        // 📊 Inicializar DataTable si hay datos
-        @if (Model != null && Model.Any())
-        {
-            @:// Pasar estadísticas al scope global
-            @:window.estadisticasData = @Html.Raw(Json.Encode(ViewBag.Estadisticas));
-
-            @:// Inicializar DataTable con opciones avanzadas
-            @:$('#tablaPlanillas').DataTable({
-                @:language: {
-                    @:"url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json"
-                @:},
-                @:responsive: true,
-                @:pageLength: 25,
-                @:lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
-                @:dom: 'Bfrtip',
-                @:buttons: [
-                    @:{
-                        @:extend: 'copy',
-                        @:text: '<i class="fas fa-copy"></i> Copiar',
-                        @:className: 'btn btn-outline-secondary btn-sm'
-                    @:},
-                    @:{
-                        @:extend: 'excel',
-                        @:text: '<i class="fas fa-file-excel"></i> Excel',
-                        @:className: 'btn btn-outline-success btn-sm',
-                        @:filename: 'Planillas_' + new Date().toISOString().slice(0,10)
-                    @:},
-                    @:{
-                        @:extend: 'pdf',
-                        @:text: '<i class="fas fa-file-pdf"></i> PDF',
-                        @:className: 'btn btn-outline-danger btn-sm',
-                        @:filename: 'Planillas_' + new Date().toISOString().slice(0,10),
-                        @:orientation: 'landscape',
-                        @:pageSize: 'A4'
-                    @:},
-                    @:{
-                        @:extend: 'print',
-                        @:text: '<i class="fas fa-print"></i> Imprimir',
-                        @:className: 'btn btn-outline-primary btn-sm'
-                    @:}
-                @:],
-                @:order: [[0, 'desc']], // Ordenar por período descendente
-                @:columnDefs: [
-                    @:{ targets: [5,6,7,8,9], className: 'text-end' }, // Columnas numéricas alineadas a la derecha
-                    @:{ targets: [10], orderable: false } // Columna de acciones no ordenable
-                @:]
-            @:});
-        }
-    });
-
     // 🔍 VER DETALLE DE PLANILLA
     function verDetallePlanilla(idNomina) {
-        // Aquí implementarías la carga del detalle específico de la planilla
         $('#detalleContenido').html(`
             <div class="py-4 text-center">
                 <div class="spinner-border text-primary" role="status">
@@ -212,8 +160,7 @@
 
         $('#modalDetallePlanilla').modal('show');
 
-        // Simular carga de datos (implementar según necesidades)
-        setTimeout(function() {
+        setTimeout(function () {
             $('#detalleContenido').html(`
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>

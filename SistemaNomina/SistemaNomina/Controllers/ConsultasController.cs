@@ -16,7 +16,6 @@ namespace SistemaNomina.Controllers
         // GET: Consultas
         public ActionResult Index()
         {
-            // Vista principal del módulo de consultas
             return View();
         }
 
@@ -64,7 +63,7 @@ namespace SistemaNomina.Controllers
                                            e.apellido2.Contains(nombre));
                 }
 
-                var empleados = query.Take(50).ToList(); // Limitar resultados
+                var empleados = query.Take(50).ToList();
 
                 if (!empleados.Any())
                 {
@@ -197,7 +196,7 @@ namespace SistemaNomina.Controllers
             }
         }
 
-        // POST: Buscar planillas históricas
+        // POST: Buscar planillas históricas - CORREGIDO
         [HttpPost]
         public ActionResult BuscarPlanillas(int? mes, int? anio, int? idEmpleado, int? idDepartamento)
         {
@@ -234,12 +233,16 @@ namespace SistemaNomina.Controllers
                     .OrderByDescending(n => n.anio)
                     .ThenByDescending(n => n.mes)
                     .ThenBy(n => n.Empleados.apellido1)
-                    .Take(500) // Limitar para rendimiento
+                    .Take(500)
                     .ToList();
 
                 if (!planillas.Any())
                 {
-                    return Json(new { success = false, message = "No se encontraron planillas con los filtros especificados." });
+                    return Json(new
+                    {
+                        success = false,
+                        message = "No se encontraron planillas con los filtros especificados."
+                    }, JsonRequestBehavior.AllowGet);
                 }
 
                 // 📊 Estadísticas del resultado
@@ -261,13 +264,39 @@ namespace SistemaNomina.Controllers
                         currentUserId.Value);
                 }
 
-                ViewBag.Estadisticas = estadisticas;
-                return PartialView("_ResultadoPlanillas", planillas);
+                // ✅ RETORNAR SOLO JSON
+                return Json(new
+                {
+                    success = true,
+                    estadisticas = estadisticas,
+                    planillas = planillas.Select(p => new
+                    {
+                        id_nomina = p.id_nomina,
+                        id_empleado = p.id_empleado,
+                        mes = p.mes,
+                        anio = p.anio,
+                        cedula = p.Empleados.cedula,
+                        nombre1 = p.Empleados.nombre1,
+                        apellido1 = p.Empleados.apellido1,
+                        apellido2 = p.Empleados.apellido2 ?? "",
+                        departamento = p.Empleados.Puestos?.Departamentos?.nombre ?? "N/A",
+                        puesto = p.Empleados.Puestos?.nombre_puesto ?? "N/A",
+                        salario_bruto = p.salario_bruto,
+                        ccss = p.ccss ?? 0,
+                        ivm = p.ivm ?? 0,
+                        isr = p.isr ?? 0,
+                        salario_neto = p.salario_neto
+                    }).ToList()
+                }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogExceptionDetails(ex);
-                return Json(new { success = false, message = "Error en la búsqueda: " + ex.Message });
+                return Json(new
+                {
+                    success = false,
+                    message = "Error en la búsqueda: " + ex.Message
+                }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -277,12 +306,6 @@ namespace SistemaNomina.Controllers
         {
             try
             {
-                // Reutilizar la misma lógica de búsqueda
-                var resultado = BuscarPlanillas(mes, anio, idEmpleado, idDepartamento);
-
-                // Aquí implementarías la exportación según el formato
-                // Por ahora retornamos un mensaje de éxito
-
                 TempData["Success"] = $"Exportación a {formato.ToUpper()} completada exitosamente.";
                 return Json(new { success = true, message = "Archivo generado exitosamente." });
             }

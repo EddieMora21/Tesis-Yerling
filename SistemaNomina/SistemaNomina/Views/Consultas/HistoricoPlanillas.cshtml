@@ -23,28 +23,28 @@
                                 <label class="form-label">
                                     <i class="fas fa-calendar-alt"></i> Mes
                                 </label>
-                                @Html.DropDownList("mes", ViewBag.Meses as SelectList, "-- Todos los meses --", new { @class = "form-select" })
+                                @Html.DropDownList("mes", ViewBag.Meses as SelectList, "-- Todos los meses --", new { @class = "form-control" })
                             </div>
 
                             <div class="col-md-3">
                                 <label class="form-label">
                                     <i class="fas fa-calendar"></i> Año
                                 </label>
-                                @Html.DropDownList("anio", ViewBag.Anios as SelectList, "-- Todos los años --", new { @class = "form-select" })
+                                @Html.DropDownList("anio", ViewBag.Anios as SelectList, "-- Todos los años --", new { @class = "form-control" })
                             </div>
 
                             <div class="col-md-3">
                                 <label class="form-label">
                                     <i class="fas fa-user"></i> Empleado
                                 </label>
-                                @Html.DropDownList("idEmpleado", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select select2" })
+                                @Html.DropDownList("idEmpleado", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-control" })
                             </div>
 
                             <div class="col-md-3">
                                 <label class="form-label">
                                     <i class="fas fa-building"></i> Departamento
                                 </label>
-                                @Html.DropDownList("idDepartamento", ViewBag.Departamentos as SelectList, "-- Todos los departamentos --", new { @class = "form-select" })
+                                @Html.DropDownList("idDepartamento", ViewBag.Departamentos as SelectList, "-- Todos los departamentos --", new { @class = "form-control" })
                             </div>
                         </div>
 
@@ -142,66 +142,56 @@
     </div>
 </div>
 
-<!-- 🔄 LOADING MODAL -->
-<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Buscando...</span>
-                </div>
-                <p class="mt-2 mb-0">Buscando planillas...</p>
-            </div>
+<!-- 🔄 LOADING OVERLAY -->
+<div id="loadingOverlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
+        <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Cargando...</span>
         </div>
+        <p class="mt-3">Buscando planillas...</p>
     </div>
 </div>
 
 @section Scripts {
     <script>
     $(document).ready(function() {
-        // Inicializar Select2 para búsqueda de empleados
-        $('.select2').select2({
-            placeholder: '-- Buscar empleado --',
-            allowClear: true,
-            language: "es"
-        });
+        console.log('Página de histórico cargada');
     });
 
     // 🔍 BUSCAR PLANILLAS VIA AJAX
     $('#formBuscarPlanillas').on('submit', function(e) {
         e.preventDefault();
+        console.log('Iniciando búsqueda...');
 
         var formData = $(this).serialize();
+        console.log('Datos del formulario:', formData);
 
         // Mostrar loading
-        $('#loadingModal').modal('show');
+        $('#loadingOverlay').show();
 
         $.ajax({
             url: '@Url.Action("BuscarPlanillas", "Consultas")',
             type: 'POST',
             data: formData,
+            dataType: 'json',
             success: function(response) {
-                $('#loadingModal').modal('hide');
+                console.log('Respuesta recibida:', response);
+                $('#loadingOverlay').hide();
 
                 if (response.success === false) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Sin resultados',
-                        text: response.message,
-                        confirmButtonColor: '#3085d6'
-                    });
-
+                    alert('Sin resultados: ' + response.message);
                     $('#resultadosContainer').hide();
                     $('#estadisticasContainer').hide();
                     $('#btnExportarExcel, #btnExportarPdf').hide();
                 } else {
-                    // Mostrar resultados
-                    $('#resultadosPlanillas').html(response);
+                    // Construir HTML desde JSON
+                    var html = construirTablaHTML(response.planillas);
+                    $('#resultadosPlanillas').html(html);
                     $('#resultadosContainer').show();
 
-                    // Mostrar estadísticas si están disponibles
-                    if (window.estadisticasData) {
-                        mostrarEstadisticas(window.estadisticasData);
+                    // Mostrar estadísticas
+                    if (response.estadisticas) {
+                        mostrarEstadisticas(response.estadisticas);
                         $('#estadisticasContainer').show();
                     }
 
@@ -215,23 +205,98 @@
                 }
             },
             error: function(xhr, status, error) {
-                $('#loadingModal').modal('hide');
-                console.error('Error en la búsqueda:', error);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error al realizar la búsqueda. Intente nuevamente.',
-                    confirmButtonColor: '#d33'
+                console.error('Error completo:', {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText
                 });
+                $('#loadingOverlay').hide();
+                alert('Error en la búsqueda: ' + error + '\nDetalles: ' + xhr.responseText);
             }
         });
     });
 
+    // ✅ FUNCIÓN: Construir HTML de la tabla
+    function construirTablaHTML(planillas) {
+        var html = `
+            <div class="table-responsive">
+                <table class="table-striped table-hover table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Período</th>
+                            <th>Cédula</th>
+                            <th>Empleado</th>
+                            <th>Departamento</th>
+                            <th>Puesto</th>
+                            <th class="text-end">Salario Bruto</th>
+                            <th class="text-end">CCSS</th>
+                            <th class="text-end">IVM</th>
+                            <th class="text-end">ISR</th>
+                            <th class="text-end">Salario Neto</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        planillas.forEach(function(planilla) {
+            var fecha = new Date(planilla.anio, planilla.mes - 1);
+            var periodo = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+
+            html += `
+                <tr>
+                    <td><span class="badge bg-primary">${periodo}</span></td>
+                    <td><strong>${planilla.cedula}</strong></td>
+                    <td>
+                        <div>
+                            <strong>${planilla.nombre1} ${planilla.apellido1}</strong>
+                            ${planilla.apellido2 ? '<br><small class="text-muted">' + planilla.apellido2 + '</small>' : ''}
+                        </div>
+                    </td>
+                    <td><span class="badge bg-info">${planilla.departamento}</span></td>
+                    <td><small>${planilla.puesto}</small></td>
+                    <td class="text-end"><strong class="text-success">₡${planilla.salario_bruto.toLocaleString('es-CR', {minimumFractionDigits: 2})}</strong></td>
+                    <td class="text-end"><span class="text-danger">₡${planilla.ccss.toLocaleString('es-CR', {minimumFractionDigits: 2})}</span></td>
+                    <td class="text-end"><span class="text-danger">₡${planilla.ivm.toLocaleString('es-CR', {minimumFractionDigits: 2})}</span></td>
+                    <td class="text-end"><span class="text-danger">₡${planilla.isr.toLocaleString('es-CR', {minimumFractionDigits: 2})}</span></td>
+                    <td class="text-end"><strong class="text-primary">₡${planilla.salario_neto.toLocaleString('es-CR', {minimumFractionDigits: 2})}</strong></td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a href="@Url.Action("DetalleColaborador", "Consultas")/${planilla.id_empleado}" class="btn btn-sm btn-outline-primary" title="Ver detalle del empleado">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="verDetallePlanilla(${planilla.id_nomina})" title="Ver detalle de planilla">
+                                <i class="fas fa-receipt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle"></i>
+                        Mostrando <strong>${planillas.length}</strong> registros encontrados
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small class="text-muted">
+                        <i class="fas fa-clock"></i>
+                        Consultado el ${new Date().toLocaleDateString('es-ES')}
+                    </small>
+                </div>
+            </div>`;
+
+        return html;
+    }
+
     // 🧹 LIMPIAR FILTROS
     function limpiarFiltros() {
         $('#formBuscarPlanillas')[0].reset();
-        $('.select2').val(null).trigger('change');
         $('#resultadosContainer').hide();
         $('#estadisticasContainer').hide();
         $('#btnExportarExcel, #btnExportarPdf').hide();
@@ -256,31 +321,21 @@
             data: formData,
             success: function(response) {
                 if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Exportación exitosa',
-                        text: response.message,
-                        confirmButtonColor: '#28a745'
-                    });
+                    alert('Exportación exitosa: ' + response.message);
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error en exportación',
-                        text: response.message,
-                        confirmButtonColor: '#d33'
-                    });
+                    alert('Error en exportación: ' + response.message);
                 }
             },
             error: function(xhr, status, error) {
                 console.error('Error en la exportación:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error al exportar. Intente nuevamente.',
-                    confirmButtonColor: '#d33'
-                });
+                alert('Error al exportar. Intente nuevamente.');
             }
         });
+    }
+
+    // 🔍 VER DETALLE DE PLANILLA
+    function verDetallePlanilla(idNomina) {
+        alert('Funcionalidad en desarrollo - ID: ' + idNomina);
     }
     </script>
 }
