@@ -1,123 +1,476 @@
 ﻿@model SistemaNomina.Models.ISR
-
 @{
-    // Título que se mostrará en la pestaña del navegador
-    ViewBag.Title = "Details";
-    // Vista
+    ViewBag.Title = "Detalles del Tramo ISR";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>  <!-- Título principal de la página -->
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+    }
 
-<div>
-    <h4>ISR</h4>  <!-- Título detalle -->
-    <hr />
-    <dl class="dl-horizontal">
-        <!-- Lista de definición para mostrar etiquetas y valores o -->
-        <dt>
-            <!-- Etiqueta para el campo 'anio' -->
-            @Html.DisplayNameFor(model => model.anio)
-        </dt>
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'anio' -->
-            @Html.DisplayFor(model => model.anio)
-        </dd>
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'limite_inferior' -->
-            @Html.DisplayNameFor(model => model.limite_inferior)
-        </dt>
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e7e8eb;
+        transition: all 0.3s ease;
+    }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'limite_inferior' -->
-            @Html.DisplayFor(model => model.limite_inferior)
-        </dd>
+        .detail-row:last-child {
+            border-bottom: none;
+        }
 
-        <dt>
-            <!-- Etiqueta para el campo 'limite_superior' -->
-            @Html.DisplayNameFor(model => model.limite_superior)
-        </dt>
+        .detail-row:hover {
+            background: rgba(23, 136, 202, 0.03);
+            border-radius: 8px;
+            margin: 0 -1rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'limite_superior' -->
-            @Html.DisplayFor(model => model.limite_superior)
-        </dd>
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        min-width: 220px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.5rem;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'porcentaje' -->
-            @Html.DisplayNameFor(model => model.porcentaje)
-        </dt>
+    .detail-value {
+        flex: 1;
+        color: #495057;
+        font-size: 1.1rem;
+    }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'porcentaje' -->
-            @Html.DisplayFor(model => model.porcentaje)
-        </dd>
+        .detail-value strong {
+            color: #221d42;
+        }
 
-        <dt>
-            <!-- Etiqueta para el campo 'exceso' -->
-            @Html.DisplayNameFor(model => model.exceso)
-        </dt>
+    .badge-year {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'exceso' -->
-            @Html.DisplayFor(model => model.exceso)
-        </dd>
+    .badge-percentage {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'credito_hijo' -->
-            @Html.DisplayNameFor(model => model.credito_hijo)
-        </dt>
+    .currency-highlight {
+        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+        color: #1788ca;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: 2px solid #1788ca;
+        display: inline-block;
+    }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'credito_hijo' -->
-            @Html.DisplayFor(model => model.credito_hijo)
-        </dd>
+    .date-badge {
+        background: linear-gradient(135deg, #e7e8eb 0%, #e7e8eb 100%);
+        color: #6c757d;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-block;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'credito_conyuge' -->
-            @Html.DisplayNameFor(model => model.credito_conyuge)
-        </dt>
+    .description-box {
+        background: #f8f9fa;
+        border-left: 4px solid #1788ca;
+        padding: 1.5rem;
+        border-radius: 8px;
+        font-style: italic;
+        line-height: 1.6;
+    }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'credito_conyuge' -->
-            @Html.DisplayFor(model => model.credito_conyuge)
-        </dd>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-right: 1rem;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'descripcion' -->
-            @Html.DisplayNameFor(model => model.descripcion)
-        </dt>
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'descripcion' -->
-            @Html.DisplayFor(model => model.descripcion)
-        </dd>
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'fecha_creacion' -->
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'fecha_creacion' -->
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+    .stats-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid #e7e8eb;
+        margin-bottom: 1rem;
+    }
 
-        <dt>
-            <!-- Etiqueta para el campo 'fecha_actualizacion' -->
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </dt>
+    .stats-icon {
+        font-size: 2.5rem;
+        color: #fab61b;
+        margin-bottom: 1rem;
+    }
 
-        <dd>
-            <!-- Valor correspondiente al campo 'fecha_actualizacion' -->
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-        </dd>
+    .stats-title {
+        font-size: 0.875rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
 
-    </dl>
+    .stats-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #221d42;
+    }
+
+    .calculation-example {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid #fab61b;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+            .page-header-custom h1 {
+                font-size: 1.5rem;
+            }
+
+        .card-custom {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            min-width: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            justify-content: center;
+            margin-right: 0;
+        }
+
+        .stats-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Header de la página -->
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>
+                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                    Detalles del Tramo ISR
+                </h1>
+                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
+                    Información completa del tramo fiscal seleccionado
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_isr }) |  <!-- Enlace para editar este registro, pasando el id -->
-    @Html.ActionLink("Back to List", "Index")  <!-- Enlace para regresar a la lista general -->
-</p>
+<!-- Contenido principal -->
+<div class="container" style="max-width: 1200px;">
+    <div class="row">
+        <!-- Información principal -->
+        <div class="col-lg-8">
+            <div class="card-custom">
+                <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                    <i class="fas fa-clipboard-list"></i>
+                    Información del Tramo Fiscal
+                </h4>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        @Html.DisplayNameFor(model => model.anio)
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge-year">
+                            <i class="fas fa-calendar"></i>
+                            @Html.DisplayFor(model => model.anio)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-arrows-alt-h"></i>
+                        Rango Salarial
+                    </div>
+                    <div class="detail-value">
+                        <span class="currency-highlight">
+                            ¢@Html.DisplayFor(model => model.limite_inferior) - ¢@Html.DisplayFor(model => model.limite_superior)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-percentage"></i>
+                        @Html.DisplayNameFor(model => model.porcentaje)
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge-percentage">
+                            <i class="fas fa-calculator"></i>
+                            @Html.DisplayFor(model => model.porcentaje)%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-plus-circle"></i>
+                        @Html.DisplayNameFor(model => model.exceso)
+                    </div>
+                    <div class="detail-value">
+                        <span class="currency-highlight">
+                            ¢@Html.DisplayFor(model => model.exceso)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-child"></i>
+                        Crédito por Hijo
+                    </div>
+                    <div class="detail-value">
+                        <span class="currency-highlight">
+                            ¢@Html.DisplayFor(model => model.credito_hijo)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-heart"></i>
+                        Crédito por Cónyuge
+                    </div>
+                    <div class="detail-value">
+                        <span class="currency-highlight">
+                            ¢@Html.DisplayFor(model => model.credito_conyuge)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        @Html.DisplayNameFor(model => model.fecha_creacion)
+                    </div>
+                    <div class="detail-value">
+                        <span class="date-badge">
+                            @Html.DisplayFor(model => model.fecha_creacion)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-edit"></i>
+                        @Html.DisplayNameFor(model => model.fecha_actualizacion)
+                    </div>
+                    <div class="detail-value">
+                        <span class="date-badge">
+                            @Html.DisplayFor(model => model.fecha_actualizacion)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.descripcion))
+            {
+                <div class="card-custom">
+                    <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                        <i class="fas fa-align-left"></i>
+                        Descripción
+                    </h4>
+                    <div class="description-box">
+                        @Html.DisplayFor(model => model.descripcion)
+                    </div>
+                </div>
+            }
+
+            <!-- Ejemplo de cálculo -->
+            <div class="card-custom">
+                <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                    <i class="fas fa-calculator"></i>
+                    Ejemplo de Cálculo
+                </h4>
+                <div class="calculation-example">
+                    <h6 style="color: #221d42; margin-bottom: 1rem;">
+                        <i class="fas fa-lightbulb" style="color: #fab61b;"></i>
+                        Fórmula de cálculo para este tramo:
+                    </h6>
+                    <div style="font-family: monospace; background: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>ISR = ((Salario - @Html.DisplayFor(model => model.limite_inferior)) × @Html.DisplayFor(model => model.porcentaje)%) + @Html.DisplayFor(model => model.exceso)</strong>
+                    </div>
+                    <p class="mb-0" style="font-size: 0.9rem; color: #6c757d;">
+                        <strong>Nota:</strong> Los créditos por hijo (¢@Html.DisplayFor(model => model.credito_hijo)) y cónyuge (¢@Html.DisplayFor(model => model.credito_conyuge)) se restan del ISR calculado.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel lateral con estadísticas -->
+        <div class="col-lg-4">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stats-title">Rango del Tramo</div>
+                <div class="stats-value" style="font-size: 1.2rem;">
+                    ¢@((Model.limite_superior - Model.limite_inferior).ToString("N0"))
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Amplitud salarial
+                </small>
+            </div>
+
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-family"></i>
+                </div>
+                <div class="stats-title">Créditos Familiares</div>
+                <div class="stats-value" style="font-size: 1.2rem;">
+                    ¢@((Model.credito_hijo + Model.credito_conyuge).Value.ToString("N0"))
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Máxima reducción mensual
+                </small>
+            </div>
+
+            <div class="card-custom" style="padding: 1.5rem;">
+                <h6 style="color: #221d42; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle text-info"></i>
+                    Información del Sistema
+                </h6>
+                <small class="text-muted">
+                    <strong>ID del Registro:</strong> @Model.id_isr<br>
+                    <strong>Estado:</strong> <span class="text-success">Activo</span><br>
+                    <strong>Categoría:</strong> Tramo ISR<br>
+                    <strong>Año Fiscal:</strong> @Model.anio
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <hr style="margin: 2rem 0; border-color: #e7e8eb;">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.id_isr }, new
+            {
+                @class = "btn btn-primary-custom"
+            })
+            @Html.ActionLink("Volver al Listado", "Index", null, new
+            {
+                @class = "btn btn-secondary-custom"
+            })
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="mt-4 p-3" style="background: #e7f3ff; border-radius: 10px; border-left: 4px solid #1788ca;">
+        <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+            <i class="fas fa-lightbulb text-info"></i>
+            Información sobre el ISR
+        </h6>
+        <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+            <li>Este tramo aplica a salarios entre ¢@Html.DisplayFor(model => model.limite_inferior) y ¢@Html.DisplayFor(model => model.limite_superior)</li>
+            <li>Se aplica un @Html.DisplayFor(model => model.porcentaje)% sobre el excedente del límite inferior</li>
+            <li>Los créditos familiares reducen el impuesto final calculado</li>
+            <li>Este tramo es válido para el año fiscal @Html.DisplayFor(model => model.anio)</li>
+        </ul>
+    </div>
+</div>

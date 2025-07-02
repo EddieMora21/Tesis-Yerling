@@ -1,102 +1,315 @@
 ﻿@model SistemaNomina.Models.Horarios
 
 @{
-    ViewBag.Title = "Edit";
-    // Establece el título de la página como "Edit"
+    ViewBag.Title = "Editar Horario";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // plantilla
 }
 
-<h2>Edit</h2>
-@* Título vista*@
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    // seguridad
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    <div class="form-horizontal">
-        <h4>Horarios</h4>
-        @*Subtítulo que indica la entidad relacionada*@
-        <hr />
-        @*Línea horizontal para separar visualmente*@
+    .form-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34,29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @*Muestra un resumen de errores de validación, si los hay*@
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        @Html.HiddenFor(model => model.id_horario)
-        @*Campo oculto para almacenar el id del horario que se está editando*@
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
-            @*Etiqueta para el campo 'nombre'*@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @* Control para editar el valor de 'nombre'*@
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
-                @*Mensaje de validación para el campo 'nombre'*@
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.hora_entrada, htmlAttributes: new { @class = "control-label col-md-2" })
+        .form-control-custom:focus {
+            border-color: #fab61b;
+            box-shadow: 0 0 0 0.2rem rgba(250, 182, 27, 0.25);
+            outline: none;
+        }
 
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.hora_entrada, new { htmlAttributes = new { @class = "form-control" } })
+    .form-control-readonly {
+        background-color: #f8f9fa;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: #6c757d;
+        cursor: not-allowed;
+        width: 100%;
+    }
 
-                @Html.ValidationMessageFor(model => model.hora_entrada, "", new { @class = "text-danger" })
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-            </div>
-        </div>
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: white;
+        }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.hora_salida, htmlAttributes: new { @class = "control-label col-md-2" })
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.hora_salida, new { htmlAttributes = new { @class = "form-control" } })
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
 
-                @Html.ValidationMessageFor(model => model.hora_salida, "", new { @class = "text-danger" })
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-            </div>
-        </div>
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
+    .edit-info {
+        background: rgba(250, 182, 27, 0.1);
+        border-left: 4px solid #fab61b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
 
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
+        .edit-info h5 {
+            color: #221d42;
+            margin-bottom: 0.5rem;
+        }
 
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+        .edit-info p {
+            margin: 0;
+            color: #6c757d;
+        }
 
-            </div>
-        </div>
+    .readonly-info {
+        background: rgba(23, 136, 202, 0.1);
+        border-left: 4px solid #1788ca;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
+        .readonly-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
+    .time-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
 
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+    @@media (max-width: 768px) {
+        .time-group {
+            grid-template-columns: 1fr;
+        }
 
-            </div>
-        </div>
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-                @*Botón para enviar el formulario y guardar los cambios*@
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-edit"></i> Editar Horario</h1>
+                <p class="mb-0">Modifica la información del horario seleccionado</p>
             </div>
         </div>
     </div>
-}
+</div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-    @*Enlace para regresar a la lista principal de horarios*@
+<div class="container" style="max-width: 800px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="edit-info">
+                <h5><i class="fas fa-clock"></i> Editando: @Model.nombre</h5>
+                <p>Modifica los campos necesarios y guarda los cambios. Asegúrate de que las horas sean válidas y coherentes.</p>
+            </div>
+
+            <div class="form-card-custom">
+                <div class="card-body p-4">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.id_horario)
+                        @Html.HiddenFor(model => model.fecha_creacion)
+
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.nombre, "Nombre del Horario *", new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control-custom", @placeholder = "Ej: Turno Matutino, Turno Vespertino, Horario Administrativo..." } })
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-info-circle"></i>
+                                El nombre debe ser descriptivo y único en el sistema
+                            </div>
+                        </div>
+
+                        <div class="time-group">
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.hora_entrada, "Hora de Entrada *", new { @class = "form-label-custom" })
+                                @Html.EditorFor(model => model.hora_entrada, new { htmlAttributes = new { @class = "form-control-custom", @type = "time" } })
+                                @Html.ValidationMessageFor(model => model.hora_entrada, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    Hora de inicio de la jornada laboral
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.hora_salida, "Hora de Salida *", new { @class = "form-label-custom" })
+                                @Html.EditorFor(model => model.hora_salida, new { htmlAttributes = new { @class = "form-control-custom", @type = "time" } })
+                                @Html.ValidationMessageFor(model => model.hora_salida, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Hora de finalización de la jornada laboral
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.fecha_creacion, "Fecha de Creación", new { @class = "form-label-custom" })
+                            @Html.TextBoxFor(model => model.fecha_creacion, new { @class = "form-control-readonly", @readonly = "readonly" })
+                            <div class="readonly-info">
+                                <p>
+                                    <i class="fas fa-lock"></i>
+                                    La fecha de creación no puede modificarse. Se mantiene como registro histórico.
+                                </p>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    @*validación*@
+    <script>
+        $(document).ready(function() {
+            // Auto-actualizar solo la fecha de modificación al enviar el formulario
+            $('form').on('submit', function() {
+                var now = new Date();
+                var timestamp = now.toISOString().slice(0, 19);
+                $('#fecha_actualizacion').val(timestamp);
+            });
+
+            // Formatear la fecha de creación para mejor legibilidad
+            var fechaCreacion = $('#fecha_creacion');
+            if (fechaCreacion.val()) {
+                var fecha = new Date(fechaCreacion.val());
+                var opciones = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                fechaCreacion.val(fecha.toLocaleDateString('es-ES', opciones));
+            }
+
+            // Validación personalizada de horarios
+            $('#hora_salida').on('change', function() {
+                var horaEntrada = $('#hora_entrada').val();
+                var horaSalida = $(this).val();
+
+                if (horaEntrada && horaSalida) {
+                    if (horaSalida <= horaEntrada) {
+                        alert('La hora de salida debe ser posterior a la hora de entrada.');
+                        $(this).focus();
+                    }
+                }
+            });
+        });
+    </script>
 }

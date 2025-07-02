@@ -1,95 +1,366 @@
 ﻿@model SistemaNomina.Models.Horarios
 
 @{
-    ViewBag.Title = "Delete";
-    // Establece el título de la página como "Delete"
+    ViewBag.Title = "Eliminar Horario";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // plantilla
 }
 
-<h2>Delete</h2>
-@*Título pagina*@
-
-<h3>Are you sure you want to delete this?</h3>
-@*Mensaje de confirmación*@
-
-<div>
-    <h4>Horarios</h4>
-    @* Subtítulo que indica la entidad relacionada*@
-    <hr />
-    @*Línea horizontal para separar visualmente*@
-
-<dl class="dl-horizontal">
-    @*detalles del registro*@
-
-    <dt>
-        @Html.DisplayNameFor(model => model.nombre)
-        @*Etiqueta que muestra el nombre del campo 'nombre'*@
-    </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.nombre)
-        @*Muestra el valor del campo 'nombre'*@
-    </dd>
-
-    <dt>
-        @Html.DisplayNameFor(model => model.hora_entrada)
-        
-    </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.hora_entrada)
-        
-    </dd>
-
-    <dt>
-        @Html.DisplayNameFor(model => model.hora_salida)
-       
-    </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.hora_salida)
-       
-    </dd>
-
-    <dt>
-        @Html.DisplayNameFor(model => model.fecha_creacion)
-        
-    </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.fecha_creacion)
-        
-    </dd>
-
-    <dt>
-        @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        
-    </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.fecha_actualizacion)
-        
-    </dd>
-
-</dl>
-
-    @using (Html.BeginForm())
-    {
-        // Inicia un formulario para confirmar la eliminación
-
-        @Html.AntiForgeryToken()
-        // seguridad
-
-<div class="form-actions no-color">
-    @*acciones del formulario*@
-
-    <input type="submit" value="Delete" class="btn btn-default" />
-    @*Botón para confirmar la eliminación*@
-
-    |
-    @Html.ActionLink("Back to List", "Index")
-    @* Enlace para regresar a la lista principal sin eliminar nada*@
-</div>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
     }
+
+    .page-header-custom h1 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .delete-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
+
+    .warning-alert {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+    }
+
+    .warning-alert h4 {
+        color: #dc3545;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .warning-alert p {
+        margin: 0;
+        color: #721c24;
+        line-height: 1.5;
+    }
+
+    .schedule-preview {
+        background: rgba(220, 53, 69, 0.05);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .schedule-icon-danger {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .detail-row {
+        display: flex;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e7e8eb;
+        background: #f8f9fa;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        flex: 0 0 200px;
+        font-weight: 600;
+        color: #221d42;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .detail-value {
+        flex: 1;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .badge-primary {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+    .time-display-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 15px;
+        font-family: 'Courier New', monospace;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-danger-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    @@media (max-width: 768px) {
+        .detail-row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            flex: none;
+        }
+
+        .btn-danger-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .schedule-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-trash-alt"></i> Eliminar Horario</h1>
+                <p class="mb-0">Confirma la eliminación del horario seleccionado</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="container" style="max-width: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="warning-alert">
+                <h4><i class="fas fa-exclamation-triangle"></i> ¿Estás seguro de que deseas eliminar este horario?</h4>
+                <p><strong>Esta acción no se puede deshacer.</strong> El horario será eliminado permanentemente del sistema. Asegúrate de que no existan empleados asignados a este horario antes de continuar.</p>
+            </div>
+
+            <div class="schedule-preview">
+                <div class="schedule-icon-danger">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h4 style="color: #dc3545; margin-bottom: 0.5rem;">@Html.DisplayFor(model => model.nombre)</h4>
+                    <p style="color: #6c757d; margin: 0;">Horario que será eliminado</p>
+                </div>
+            </div>
+
+            <div class="delete-card-custom">
+                <div class="card-header bg-light p-4">
+                    <h4 class="mb-0" style="color: #221d42; font-weight: 600;">
+                        <i class="fas fa-info-circle"></i>
+                        Información del horario a eliminar
+                    </h4>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-tag"></i>
+                        Nombre del Horario
+                    </div>
+                    <div class="detail-value">
+                        <strong>@Html.DisplayFor(model => model.nombre)</strong>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-hashtag"></i>
+                        ID del Horario
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge-custom badge-primary">
+                            <i class="fas fa-id-badge"></i>
+                            @Html.DisplayFor(model => model.id_horario)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-clock"></i>
+                        Horario de Trabajo
+                    </div>
+                    <div class="detail-value">
+                        <div class="time-display-danger">
+                            <i class="fas fa-sign-in-alt"></i>
+                            @{
+                                string horaEntrada = Model.hora_entrada.ToString(@"hh\:mm");
+                                string horaSalida = Model.hora_salida.ToString(@"hh\:mm");
+                            }
+                            @horaEntrada
+                            <i class="fas fa-arrow-right"></i>
+                            @horaSalida
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-stopwatch"></i>
+                        Duración Total
+                    </div>
+                    <div class="detail-value">
+                        @{
+                            var duration = Model.hora_salida.Subtract(Model.hora_entrada);
+                            var hours = (int)duration.TotalHours;
+                            var minutes = duration.Minutes;
+                        }
+                        <strong>@hours horas @minutes minutos</strong>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        Fecha de Creación
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.fecha_creacion.HasValue)
+                        {
+                            <div>
+                                <i class="fas fa-clock"></i>
+                                @Model.fecha_creacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm", new System.Globalization.CultureInfo("es-ES"))
+                            </div>
+                        }
+                        else
+                        {
+                            <span style="color: #6c757d; font-style: italic;">No registrada</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-history"></i>
+                        Última Actualización
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.fecha_actualizacion.HasValue)
+                        {
+                            <div>
+                                <i class="fas fa-sync-alt"></i>
+                                @Model.fecha_actualizacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm", new System.Globalization.CultureInfo("es-ES"))
+                            </div>
+                        }
+                        else
+                        {
+                            <span style="color: #6c757d; font-style: italic;">No registrada</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                    <button type="submit" class="btn-danger-custom" onclick="return confirm('⚠️ CONFIRMACIÓN FINAL\n\n¿Estás completamente seguro de eliminar el horario \" @Html.DisplayFor(model => model.nombre) \"?\n\nEsta acción es irreversible.');">
+                        <i class="fas fa-trash-alt"></i> Eliminar Definitivamente
+                    </button>
+                    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Agregar confirmación adicional
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                var nombreHorario = '@Html.Raw(Html.DisplayFor(model => model.nombre).ToString().Replace("'", "\\'"))';
+                if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN\n\n¿Realmente deseas eliminar el horario "' + nombreHorario + '"?\n\nEsta acción es irreversible y puede afectar a empleados asociados.')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

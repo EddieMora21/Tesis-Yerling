@@ -4,64 +4,264 @@
     ViewBag.Title = "Lista de Empleados";
 }
 
-<h2>Lista de Empleados</h2>
+<style>
+    .header-empleados {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-<p>
-    @Html.ActionLink("Nuevo Empleado", "Create", null, new { @class = "btn btn-primary" })
-</p>
+    .main-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-<table class="table-striped table-hover table">
-    <thead>
-        <tr>
-            <th>Nombre Completo</th>
-            <th>Cédula</th>
-            <th>Puesto</th>
-            <th>Teléfono</th>
-            <th>Estado</th>
-            <th>Vacaciones</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.apellido1) @Html.DisplayFor(modelItem => item.apellido2),
-                    @Html.DisplayFor(modelItem => item.nombre1) @Html.DisplayFor(modelItem => item.nombre2)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.cedula)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Puestos.nombre_puesto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.telefono)
-                </td>
-                <td>
-                    <span class="label @(item.estado == "ACTIVO" ? "label-success" : "label-danger")">
-                        @Html.DisplayFor(modelItem => item.estado)
-                    </span>
-                </td>
-                <td>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-                    <a href="@Url.Action("DetalleVacaciones", "Empleados", new { id_empleado = item.id_empleado })"
-                       class="btn btn-outline-secondary btn-sm mt-1">
-                        Detalle de vacaciones
-                    </a>
-
-                </td>
-                <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = item.id_empleado }, new { @class = "btn btn-xs btn-warning" })
-                    @Html.ActionLink("Detalles", "Details", new { id = item.id_empleado }, new { @class = "btn btn-xs btn-info" })
-
-                    @if (item.estado == "ACTIVO")
-                    {
-                        @Html.ActionLink("Desactivar", "Delete", new { id = item.id_empleado }, new { @class = "btn btn-xs btn-danger" })
-                    }
-                </td>
-            </tr>
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+            color: white;
         }
-    </tbody>
-</table>
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        color: white;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-warning-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: white;
+        }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        color: white;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-info-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: white;
+        }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        color: white;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+    .btn-outline-secondary-custom {
+        border: 2px solid #e7e8eb;
+        background: white;
+        border-radius: 6px;
+        padding: 4px 8px;
+        color: #221d42;
+        font-size: 11px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-secondary-custom:hover {
+            background: #f8f9fa;
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-1px);
+        }
+
+    .table-custom {
+        border-radius: 0;
+        margin-bottom: 0;
+    }
+
+        .table-custom thead th {
+            background: #221d42;
+            color: white;
+            border: none;
+            padding: 15px 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #e7e8eb;
+        }
+
+            .table-custom tbody tr:hover {
+                background: rgba(23, 136, 202, 0.05);
+            }
+
+        .table-custom tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            border-top: none;
+        }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    @@media (max-width: 768px) {
+        .header-empleados {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+            .header-empleados h2 {
+                font-size: 1.5rem;
+            }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .table-responsive {
+            border-radius: 15px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 1200px;">
+    <div class="header-empleados">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-users" style="font-size: 2rem; margin-right: 15px;"></i>
+                Gestión de Empleados
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Administra la información del personal de la empresa</p>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <div style="padding: 25px 25px 15px 25px;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 style="color: #221d42; font-weight: 600; margin: 0;">
+                    <i class="fa fa-list" style="margin-right: 10px; color: #1788ca;"></i>
+                    Lista de Empleados
+                </h4>
+                @Html.ActionLink("Nuevo Empleado", "Create", null, new { @class = "btn-primary-custom", style = "text-decoration: none;" })
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-custom table">
+                <thead>
+                    <tr>
+                        <th><i class="fa fa-user" style="margin-right: 8px;"></i>Nombre Completo</th>
+                        <th><i class="fa fa-id-card" style="margin-right: 8px;"></i>Cédula</th>
+                        <th><i class="fa fa-briefcase" style="margin-right: 8px;"></i>Puesto</th>
+                        <th><i class="fa fa-phone" style="margin-right: 8px;"></i>Teléfono</th>
+                        <th><i class="fa fa-toggle-on" style="margin-right: 8px;"></i>Estado</th>
+                        <th><i class="fa fa-calendar-check" style="margin-right: 8px;"></i>Vacaciones</th>
+                        <th><i class="fa fa-cogs" style="margin-right: 8px;"></i>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="font-weight: 500; color: #221d42;">
+                                @Html.DisplayFor(modelItem => item.apellido1) @Html.DisplayFor(modelItem => item.apellido2),
+                                @Html.DisplayFor(modelItem => item.nombre1) @Html.DisplayFor(modelItem => item.nombre2)
+                            </td>
+                            <td style="font-family: monospace; color: #495057;">
+                                @Html.DisplayFor(modelItem => item.cedula)
+                            </td>
+                            <td style="color: #495057;">
+                                @Html.DisplayFor(modelItem => item.Puestos.nombre_puesto)
+                            </td>
+                            <td style="color: #495057;">
+                                @Html.DisplayFor(modelItem => item.telefono)
+                            </td>
+                            <td>
+                                <span class="status-badge @(item.estado == "ACTIVO" ? "status-active" : "status-inactive")">
+                                    @Html.DisplayFor(modelItem => item.estado)
+                                </span>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("DetalleVacaciones", "Empleados", new { id_empleado = item.id_empleado })"
+                                   class="btn-outline-secondary-custom" style="text-decoration: none;">
+                                    <i class="fa fa-info-circle" style="margin-right: 4px;"></i>
+                                    Ver Detalle
+                                </a>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    @Html.ActionLink("Editar", "Edit", new { id = item.id_empleado }, new { @class = "btn-warning-custom", style = "text-decoration: none;" })
+                                    @Html.ActionLink("Detalles", "Details", new { id = item.id_empleado }, new { @class = "btn-info-custom", style = "text-decoration: none;" })
+                                    @if (item.estado == "ACTIVO")
+                                    {
+                                        @Html.ActionLink("Desactivar", "Delete", new { id = item.id_empleado }, new { @class = "btn-danger-custom", style = "text-decoration: none;" })
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div style="padding: 15px 25px;">
+            <p style="color: #6c757d; font-style: italic; margin: 0; font-size: 14px;">
+                <i class="fa fa-info-circle" style="margin-right: 5px;"></i>
+                Total de empleados: @Model.Count()
+            </p>
+        </div>
+    </div>
+</div>

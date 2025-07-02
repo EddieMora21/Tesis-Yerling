@@ -1,0 +1,271 @@
+﻿@model IEnumerable<SistemaNomina.Models.Incapacidades>
+
+@{
+    ViewBag.Title = "Reporte de Incapacidades";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-secondary text-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">
+                                <i class="fas fa-user-injured me-3"></i>Reporte de Incapacidades
+                            </h3>
+                            <p class="mb-0 opacity-75">Del @ViewBag.FechaInicio al @ViewBag.FechaFin - Empleado: @ViewBag.EmpleadoSeleccionado - Tipo: @ViewBag.TipoSeleccionado</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-2"></i>Volver
+                            </a>
+                            <button onclick="window.print()" class="btn btn-warning ms-2">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model != null && Model.Any())
+                    {
+                        <!-- Resumen General -->
+                        <div class="row g-0 bg-light p-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-list fa-2x mb-2"></i>
+                                        <h4>@Model.Count()</h4>
+                                        <p class="mb-0">Total Registros</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                                        <h4>@Model.Sum(i => i.dias_incapacidad ?? 0)</h4>
+                                        <p class="mb-0">Total Dias</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                        <h4>@Model.Count(i => i.Estados.nombre == "Aprobado")</h4>
+                                        <p class="mb-0">Aprobadas</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <h4>@Model.GroupBy(i => i.id_empleado).Count()</h4>
+                                        <p class="mb-0">Empleados Afectados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Detalles -->
+                        <div class="table-responsive">
+                            <table class="table-striped table-hover mb-0 table" id="reporteTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th><i class="fas fa-calendar me-2"></i>Fecha Inicio</th>
+                                        <th><i class="fas fa-calendar me-2"></i>Fecha Fin</th>
+                                        <th><i class="fas fa-user me-2"></i>Empleado</th>
+                                        <th><i class="fas fa-building me-2"></i>Departamento</th>
+                                        <th><i class="fas fa-tag me-2"></i>Tipo</th>
+                                        <th><i class="fas fa-file-medical me-2"></i>N� Boleta</th>
+                                        <th class="text-center"><i class="fas fa-calendar-times me-2"></i>Dias</th>
+                                        <th class="text-center"><i class="fas fa-info-circle me-2"></i>Estado</th>
+                                        <th><i class="fas fa-comment me-2"></i>Descripcion</th>
+                                        <th class="text-center"><i class="fas fa-calendar me-2"></i>Registro</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var incapacidad in Model.OrderBy(i => i.fecha_inicio).ThenBy(i => i.Empleados.apellido1))
+                                    {
+                                        var diasIncapacidad = incapacidad.dias_incapacidad ??
+                                            (incapacidad.fecha_fin - incapacidad.fecha_inicio).Days + 1;
+
+                                        string estadoClase;
+                                        switch (incapacidad.Estados.nombre)
+                                        {
+                                            case "Aprobado":
+                                                estadoClase = "badge bg-success";
+                                                break;
+                                            case "Pendiente":
+                                                estadoClase = "badge bg-warning";
+                                                break;
+                                            case "Rechazado":
+                                                estadoClase = "badge bg-danger";
+                                                break;
+                                            default:
+                                                estadoClase = "badge bg-secondary";
+                                                break;
+                                        }
+
+                                        <tr>
+                                            <td>
+                                                <strong>@incapacidad.fecha_inicio.ToString("dd/MM/yyyy")</strong>
+                                                <br><small class="text-muted">@incapacidad.fecha_inicio.ToString("dddd", new System.Globalization.CultureInfo("es-ES"))</small>
+                                            </td>
+                                            <td>
+                                                <strong>@incapacidad.fecha_fin.ToString("dd/MM/yyyy")</strong>
+                                                <br><small class="text-muted">@incapacidad.fecha_fin.ToString("dddd", new System.Globalization.CultureInfo("es-ES"))</small>
+                                            </td>
+                                            <td>
+                                                <strong>@incapacidad.Empleados.nombre1 @incapacidad.Empleados.apellido1</strong>
+                                                <br><small class="text-muted">@incapacidad.Empleados.cedula</small>
+                                            </td>
+                                            <td><span class="badge bg-primary">@incapacidad.Empleados.Puestos.Departamentos.nombre</span></td>
+                                            <td>
+                                                @if (incapacidad.TipoIncapacidades != null)
+                                                {
+                                                    <span class="badge bg-info">@incapacidad.TipoIncapacidades.nombre</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Sin especificar</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(incapacidad.numero_boleta))
+                                                {
+                                                    <span class="badge bg-secondary">@incapacidad.numero_boleta</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="fw-bold">@diasIncapacidad dias</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="@estadoClase">@incapacidad.Estados.nombre</span>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(incapacidad.descripcion))
+                                                {
+                                                    <small>@incapacidad.descripcion</small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Sin descripcion</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (incapacidad.fecha_registro.HasValue)
+                                                {
+                                                    <small>@incapacidad.fecha_registro.Value.ToString("dd/MM/yyyy")</small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="table-dark">
+                                    <tr>
+                                        <th colspan="6" class="text-end">TOTALES:</th>
+                                        <th class="text-center">@Model.Sum(i => i.dias_incapacidad ?? ((i.fecha_fin - i.fecha_inicio).Days + 1)) dias</th>
+                                        <th colspan="3"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Estadisticas por Tipo -->
+                        if (Model.Any(i => i.TipoIncapacidades != null))
+                        {
+                            <div class="card mt-4 border-0">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Estadisticas por Tipo de Incapacidad</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        @foreach (var grupo in Model.Where(i => i.TipoIncapacidades != null).GroupBy(i => i.TipoIncapacidades.nombre))
+                                        {
+                                            var totalDias = grupo.Sum(i => i.dias_incapacidad ?? ((i.fecha_fin - i.fecha_inicio).Days + 1));
+                                            var totalCasos = grupo.Count();
+
+                                            <div class="col-md-4 mb-3">
+                                                <div class="card border-info h-100">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="card-title text-info">@grupo.Key</h6>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <h4 class="text-primary">@totalCasos</h4>
+                                                                <small class="text-muted">Casos</small>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h4 class="text-warning">@totalDias</h4>
+                                                                <small class="text-muted">Dias</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="py-5 text-center">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No se encontraron registros</h4>
+                            <p class="text-muted">No hay datos de incapacidades para los filtros seleccionados.</p>
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn, .card-header .col-auto {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .table {
+            font-size: 11px;
+        }
+    }
+
+    .badge {
+        font-size: 0.8em;
+    }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

@@ -1,78 +1,270 @@
 ﻿@model SistemaNomina.Models.Asistencia
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Eliminar Asistencia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
-
-@* Mensaje para confirmar la acción de eliminar el registro *@
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Asistencia</h4>
-    <hr />
-    @* Lista detallada con los datos del registro de asistencia que se va a eliminar *@
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.hora_entrada)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.hora_entrada)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.hora_salida)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.hora_salida)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.es_feriado)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.es_feriado)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_registro)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_registro)
-        </dd>
-
-        @* Mostrar la cédula del empleado asociado a esta asistencia *@
-        <dt>
-            @Html.DisplayNameFor(model => model.Empleados.cedula)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula)
-        </dd>
-
-        @* Mostrar el nombre del feriado asociado, si existe *@
-        <dt>
-            @Html.DisplayNameFor(model => model.Feriados.nombre)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Feriados.nombre)
-        </dd>
-    </dl>
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        @* Botón para confirmar eliminación y enlace para regresar a la lista *@
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
+<style>
+    .header-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
+
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 30px;
+    }
+
+    .warning-section {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid #ffc107;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    .asistencia-summary {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        width: 150px;
+        flex-shrink: 0;
+    }
+
+    .detail-value {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .detail-icon {
+        margin-right: 8px;
+        color: #dc3545;
+        width: 20px;
+        text-align: center;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+    .btn-default-custom {
+        background: white;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: #221d42;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-default-custom:hover {
+            background: #f8f9fa;
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+    .time-display {
+        font-family: 'Courier New', monospace;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1788ca;
+    }
+
+    @@media (max-width: 768px) {
+        .delete-card {
+            padding: 20px 15px;
+        }
+
+        .header-delete {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 800px;">
+    <div class="header-delete">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-trash" style="font-size: 2rem; margin-right: 15px;"></i>
+                Eliminar Asistencia
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Confirma la eliminación del registro de asistencia</p>
+        </div>
+    </div>
+
+    <div class="delete-card">
+        <div class="warning-section">
+            <h4 style="color: #856404; margin-bottom: 15px;">
+                <i class="fa fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                ¡Atención!
+            </h4>
+            <p style="color: #856404; margin-bottom: 10px;">
+                ¿Está seguro que desea eliminar este registro de asistencia?
+            </p>
+            <p style="color: #856404; margin: 0; font-size: 14px;">
+                <i class="fa fa-info-circle" style="margin-right: 5px;"></i>
+                Esta acción no se puede deshacer. El registro será eliminado permanentemente del sistema.
+            </p>
+        </div>
+
+        <div class="asistencia-summary">
+            <h4 style="color: #221d42; margin-bottom: 20px;">
+                <i class="fa fa-clock" style="margin-right: 10px; color: #dc3545;"></i>
+                Información del Registro
+            </h4>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-calendar detail-icon"></i>
+                    Fecha:
+                </div>
+                <div class="detail-value" style="font-weight: 600; font-size: 16px;">
+                    @Model.fecha.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-user detail-icon"></i>
+                    Empleado:
+                </div>
+                <div class="detail-value" style="font-weight: 600; font-size: 16px;">
+                    @if (Model.Empleados != null)
+                    {
+                        <text>@Model.Empleados.nombre1 @Model.Empleados.apellido1</text>
+                        <br><small style="color: #6c757d;">@Model.Empleados.cedula</small>
+                    }
+                    else
+                    {
+                        <span style="color: #6c757d; font-style: italic;">Empleado no disponible</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-sign-in detail-icon"></i>
+                    Hora de Entrada:
+                </div>
+                <div class="detail-value">
+                    @if (Model.hora_entrada.HasValue)
+                    {
+                        <span class="time-display">@Model.hora_entrada.Value.ToString(@"hh\:mm")</span>
+                    }
+                    else
+                    {
+                        <span style="color: #6c757d; font-style: italic;">Sin registrar</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-sign-out detail-icon"></i>
+                    Hora de Salida:
+                </div>
+                <div class="detail-value">
+                    @if (Model.hora_salida.HasValue)
+                    {
+                        <span class="time-display">@Model.hora_salida.Value.ToString(@"hh\:mm")</span>
+                    }
+                    else
+                    {
+                        <span style="color: #6c757d; font-style: italic;">Sin registrar</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-calendar-check detail-icon"></i>
+                    Día Feriado:
+                </div>
+                <div class="detail-value">
+                    @if (Model.es_feriado == true)
+                    {
+                        <span style="color: #17a2b8; font-weight: 600;">
+                            Sí - @(Model.Feriados != null ? Model.Feriados.nombre : "Feriado")
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="color: #6c757d;">No</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-calendar-plus detail-icon"></i>
+                    Fecha de Registro:
+                </div>
+                <div class="detail-value">@Model.fecha_registro.Value.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="text-center" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e7e8eb;">
+                <button type="submit" class="btn-danger-custom" style="margin-right: 15px;">
+                    <i class="fa fa-trash" style="margin-right: 8px;"></i>
+                    Confirmar Eliminación
+                </button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-default-custom" })
+            </div>
+        }
+    </div>
 </div>

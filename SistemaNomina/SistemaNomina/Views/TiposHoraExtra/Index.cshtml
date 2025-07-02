@@ -1,62 +1,332 @@
-﻿@model IEnumerable<SistemaNomina.TiposHoraExtra> 
-
+﻿@model IEnumerable<SistemaNomina.Models.TiposHoraExtra>
 @{
-    ViewBag.Title = "Index"; @*  título navegador *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+    ViewBag.Title = "Gestión de Tipos de Hora Extra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>  @* Título página *@
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+    }
 
-<p>
-    @Html.ActionLink("Create New", "Create")  @*  nuevo registro *@
-</p>
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.nombre)  @* Muestra el encabezado de la columna 'nombre'  *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.recargo)  @* Encabezado para la columna 'recargo' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.descripcion)  @* Encabezado para la columna 'descripcion' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Encabezado para la columna 'fecha_creacion' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Encabezado para la columna 'fecha_actualizacion' *@
-        </th>
-        <th></th>  @* Columna vacía para los botones de acción (Edit, Details, Delete) *@
-    </tr>
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-    @foreach (var item in Model)
-    {@* Recorre lista de TiposHoraExtra *@
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.nombre)  @* Muestra el valor de 'nombre' para cada registro *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.recargo)  @* Muestra el valor de 'recargo' *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.descripcion)  @* Muestra el valor de 'descripcion' *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_creacion)  @* Muestra la fecha de creación *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_actualizacion)  @* Muestra la fecha de última actualización *@
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo })  @* Enlace para editar el registro actual *@
-            |
-            @Html.ActionLink("Details", "Details", new { id = item.id_tipo })  @* Enlace para ver detalles del registro *@
-            |
-            @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo })  @* Enlace para eliminar el registro *@
-        </td>
-    </tr>
-}
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-</table>  @* Fin de la tabla que contiene todos los registros *@
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+        .btn-info-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+    .table-custom {
+        margin: 0;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+        .table-custom thead th {
+            background: #221d42;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: none;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e7e8eb;
+        }
+
+            .table-custom tbody tr:hover {
+                background: rgba(23, 136, 202, 0.05);
+                transform: translateY(-1px);
+            }
+
+        .table-custom tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+            color: #495057;
+        }
+
+    .badge-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e7e8eb;
+            margin-bottom: 1rem;
+        }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+            .page-header-custom h1 {
+                font-size: 1.5rem;
+            }
+
+        .btn-primary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+        }
+
+        .table-responsive {
+            border-radius: 15px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .btn-primary-custom {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Header de la página -->
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>
+                    <i class="fas fa-clock" style="font-size: 2rem; margin-right: 15px;"></i>
+                    Gestión de Tipos de Hora Extra
+                </h1>
+                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
+                    Administra los diferentes tipos de horas extra y sus recargos
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="container" style="max-width: 1200px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <!-- Botón de crear nuevo -->
+            <div class="mb-4 text-right">
+                @Html.ActionLink("Crear Nuevo Tipo", "Create", null, new
+                {
+                    @class = "btn btn-primary-custom",
+                    title = "Agregar un nuevo tipo de hora extra"
+                })
+            </div>
+
+            <!-- Card principal con la tabla -->
+            <div class="card-custom">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table-custom table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <i class="fas fa-tag mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.nombre)
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-percentage mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.recargo)
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-align-left mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.descripcion)
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-calendar mr-2"></i>
+                                        Fecha Creación
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-edit mr-2"></i>
+                                        Última Actualización
+                                    </th>
+                                    <th class="text-center">
+                                        <i class="fas fa-cogs mr-2"></i>
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@Html.DisplayFor(modelItem => item.nombre)</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge-custom">
+                                                @Html.DisplayFor(modelItem => item.recargo)%
+                                            </span>
+                                        </td>
+                                        <td style="max-width: 200px;">
+                                            @if (!string.IsNullOrEmpty(item.descripcion))
+                                            {
+                                                @(item.descripcion.Length > 50 ? item.descripcion.Substring(0, 50) + "..." : item.descripcion)
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Sin descripción</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                @Html.DisplayFor(modelItem => item.fecha_creacion)
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
+                                            </small>
+                                        </td>
+                                        <td class="text-center">
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo }, new
+                                            {
+                                                @class = "btn btn-secondary-custom",
+                                                title = "Editar tipo de hora extra"
+                                            })
+                                            @Html.ActionLink("Details", "Details", new { id = item.id_tipo }, new
+                                            {
+                                                @class = "btn btn-info-custom",
+                                                title = "Ver detalles"
+                                            })
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo }, new
+                                            {
+                                                @class = "btn btn-danger-custom",
+                                                title = "Eliminar tipo de hora extra",
+                                                onclick = "return confirm('¿Está seguro de que desea eliminar este tipo de hora extra?');"
+                                            })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h4>No hay tipos de hora extra registrados</h4>
+                        <p class="text-muted">Comience agregando un nuevo tipo de hora extra para gestionar los recargos salariales.</p>
+                        @Html.ActionLink("Crear Primer Tipo", "Create", null, new
+                        {
+                            @class = "btn btn-primary-custom mt-3"
+                        })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Los tooltips se pueden activar si tienes Bootstrap JS cargado
+        // $('[title]').tooltip();
+    });
+</script>

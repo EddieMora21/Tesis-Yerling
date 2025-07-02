@@ -1,102 +1,303 @@
 ﻿@model SistemaNomina.Models.Asistencia
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Nueva Asistencia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<style>
+    .header-create {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 30px;
+    }
 
-    <div class="form-horizontal">
-        <h4>Asistencia</h4>
-        <hr />
-        @* Muestra resumen de errores de validación con estilo para mensajes de error *@
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
 
-        @* Selección del empleado al que se asignará la asistencia *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
 
-        @* Campo para seleccionar la fecha de la asistencia *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .control-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
 
-        @* Campo para ingresar la hora de entrada del empleado *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.hora_entrada, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.hora_entrada, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.hora_entrada, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-success-custom {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-        @* Campo para ingresar la hora de salida del empleado *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.hora_salida, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.hora_salida, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.hora_salida, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
 
-        @* Checkbox para indicar si el día es feriado *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.es_feriado, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.es_feriado)
-                    @Html.ValidationMessageFor(model => model.es_feriado, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
+    .btn-default-custom {
+        background: white;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: #221d42;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-        @* Campo para la fecha en que se registra la asistencia *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_registro, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_registro, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_registro, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .btn-default-custom:hover {
+            background: #f8f9fa;
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
 
-        @* Selección del feriado asociado, si aplica *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.id_feriado, "id_feriado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("id_feriado", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.id_feriado, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .section-title {
+        color: #221d42;
+        font-weight: 600;
+        border-bottom: 2px solid #1788ca;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
 
-        @* Botón para enviar el formulario y crear el registro *@
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+    .help-text {
+        color: #6c757d;
+        font-style: italic;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid #1788ca;
+    }
+
+    .checkbox-custom {
+        position: relative;
+        display: inline-block;
+        padding-left: 30px;
+        margin-bottom: 0;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        .checkbox-custom input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #e7e8eb;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-custom:hover input ~ .checkmark {
+        background-color: #1788ca;
+    }
+
+    .checkbox-custom input:checked ~ .checkmark {
+        background-color: #1788ca;
+    }
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    .checkbox-custom input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    .checkbox-custom .checkmark:after {
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+    }
+
+    @@media (max-width: 768px) {
+        .form-card {
+            padding: 20px 15px;
+        }
+
+        .header-create {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 900px;">
+    <div class="header-create">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-plus-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                Nueva Asistencia
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Registra manualmente una nueva asistencia</p>
         </div>
     </div>
-}
 
-@* Enlace para regresar a la lista de asistencias *@
-<div>
-    @Html.ActionLink("Back to List", "Index")
+    <div class="form-card">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="fa fa-user" style="margin-right: 10px; color: #1788ca;"></i>
+                    Información del Empleado
+                </h4>
+
+                <div class="form-group">
+                    <label class="control-label-custom">
+                        <i class="fa fa-user" style="margin-right: 5px;"></i>
+                        Empleado
+                    </label>
+                    @Html.DropDownList("id_empleado", null, "-- Seleccione un empleado --", htmlAttributes: new { @class = "form-control form-control-custom", @required = "required" })
+                    @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+                    <small class="help-text">Seleccione el empleado para registrar su asistencia</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="fa fa-clock" style="margin-right: 10px; color: #1788ca;"></i>
+                    Información de Tiempo
+                </h4>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label-custom">
+                                <i class="fa fa-calendar" style="margin-right: 5px;"></i>
+                                Fecha
+                            </label>
+                            @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "date", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label-custom">
+                                <i class="fa fa-sign-in" style="margin-right: 5px;"></i>
+                                Hora de Entrada
+                            </label>
+                            @Html.EditorFor(model => model.hora_entrada, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "time" } })
+                            @Html.ValidationMessageFor(model => model.hora_entrada, "", new { @class = "text-danger" })
+                            <small class="help-text">Formato 24 horas</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label-custom">
+                                <i class="fa fa-sign-out" style="margin-right: 5px;"></i>
+                                Hora de Salida
+                            </label>
+                            @Html.EditorFor(model => model.hora_salida, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "time" } })
+                            @Html.ValidationMessageFor(model => model.hora_salida, "", new { @class = "text-danger" })
+                            <small class="help-text">Opcional - puede registrarse después</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label-custom">
+                                <i class="fa fa-calendar-plus" style="margin-right: 5px;"></i>
+                                Fecha de Registro
+                            </label>
+                            @Html.EditorFor(model => model.fecha_registro, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "datetime-local", value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm") } })
+                            @Html.ValidationMessageFor(model => model.fecha_registro, "", new { @class = "text-danger" })
+                            <small class="help-text">Fecha y hora en que se registra en el sistema</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label-custom">
+                                <i class="fa fa-calendar-check" style="margin-right: 5px;"></i>
+                                Feriado Asociado
+                            </label>
+                            @Html.DropDownList("id_feriado", null, "-- No aplica --", htmlAttributes: new { @class = "form-control form-control-custom" })
+                            @Html.ValidationMessageFor(model => model.id_feriado, "", new { @class = "text-danger" })
+                            <small class="help-text">Solo si aplica para este día</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-custom">
+                        @Html.EditorFor(model => model.es_feriado)
+                        <span class="checkmark"></span>
+                        <strong style="margin-left: 10px;">
+                            <i class="fa fa-calendar" style="margin-right: 5px; color: #1788ca;"></i>
+                            Marcar como día feriado
+                        </strong>
+                    </label>
+                    @Html.ValidationMessageFor(model => model.es_feriado, "", new { @class = "text-danger" })
+                    <div style="margin-left: 30px;">
+                        <small class="help-text">Activa esta opción si la asistencia corresponde a un día feriado</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: 30px;">
+                <button type="submit" class="btn-success-custom" style="margin-right: 15px;">
+                    <i class="fa fa-save" style="margin-right: 8px;"></i>
+                    Guardar Asistencia
+                </button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-default-custom" })
+            </div>
+        }
+    </div>
 </div>
 
 @section Scripts {
-    @* Scripts para validación jQuery *@
     @Scripts.Render("~/bundles/jqueryval")
 }

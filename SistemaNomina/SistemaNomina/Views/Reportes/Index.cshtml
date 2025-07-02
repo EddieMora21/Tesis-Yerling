@@ -1,0 +1,274 @@
+﻿@{
+    ViewBag.Title = "Modulo de Reportes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">
+                                <i class="fas fa-chart-bar me-3"></i>Modulo de Reportes
+                            </h3>
+                            <p class="mb-0 opacity-75">Genere reportes detallados del sistema</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <!-- Pestanas de Reportes -->
+                    <ul class="nav nav-tabs nav-fill mb-4" id="reportesTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="nomina-tab" data-bs-toggle="tab" data-bs-target="#nomina" type="button" role="tab">
+                                <i class="fas fa-money-bill-wave me-2"></i>Nomina
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="asistencia-tab" data-bs-toggle="tab" data-bs-target="#asistencia" type="button" role="tab">
+                                <i class="fas fa-clock me-2"></i>Asistencia
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="vacaciones-tab" data-bs-toggle="tab" data-bs-target="#vacaciones" type="button" role="tab">
+                                <i class="fas fa-umbrella-beach me-2"></i>Vacaciones
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="horas-extras-tab" data-bs-toggle="tab" data-bs-target="#horas-extras" type="button" role="tab">
+                                <i class="fas fa-clock me-2"></i>Horas Extras
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="incapacidades-tab" data-bs-toggle="tab" data-bs-target="#incapacidades" type="button" role="tab">
+                                <i class="fas fa-user-injured me-2"></i>Incapacidades
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="reportesTabContent">
+                        <!-- Reporte de Nomina -->
+                        <div class="tab-pane fade show active" id="nomina" role="tabpanel">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Reporte de Nomina</h5>
+                                </div>
+                                <div class="card-body">
+                                    @using (Html.BeginForm("ReporteNomina", "Reportes", FormMethod.Post, new { @class = "row g-3" }))
+                                    {
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Empleado:</label>
+                                            @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Departamento:</label>
+                                            @Html.DropDownList("departamentoId", ViewBag.Departamentos as SelectList, "-- Todos los departamentos --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label fw-bold">Mes:</label>
+                                            @Html.DropDownList("mes", ViewBag.Meses as IEnumerable<SelectListItem>, new { @class = "form-select", required = "required" })
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label fw-bold">Ano:</label>
+                                            @Html.DropDownList("anio", ViewBag.Anios as IEnumerable<SelectListItem>, new { @class = "form-select", required = "required" })
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-info btn-lg">
+                                                <i class="fas fa-file-pdf me-2"></i>Generar Reporte
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reporte de Asistencia -->
+                        <div class="tab-pane fade" id="asistencia" role="tabpanel">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Reporte de Asistencia</h5>
+                                </div>
+                                <div class="card-body">
+                                    @using (Html.BeginForm("ReporteAsistencia", "Reportes", FormMethod.Post, new { @class = "row g-3" }))
+                                    {
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Empleado:</label>
+                                            @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Fecha Inicio:</label>
+                                            <input type="date" name="fechaInicio" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Fecha Fin:</label>
+                                            <input type="date" name="fechaFin" class="form-control" required />
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-success btn-lg">
+                                                <i class="fas fa-file-pdf me-2"></i>Generar Reporte
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reporte de Vacaciones -->
+                        <div class="tab-pane fade" id="vacaciones" role="tabpanel">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0"><i class="fas fa-umbrella-beach me-2"></i>Reporte de Vacaciones</h5>
+                                </div>
+                                <div class="card-body">
+                                    @using (Html.BeginForm("ReporteVacaciones", "Reportes", FormMethod.Post, new { @class = "row g-3" }))
+                                    {
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Empleado:</label>
+                                            @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Departamento:</label>
+                                            @Html.DropDownList("departamentoId", ViewBag.Departamentos as SelectList, "-- Todos los departamentos --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Periodo:</label>
+                                            <input type="text" name="periodo" class="form-control" placeholder="Ej: 2025" />
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-warning btn-lg">
+                                                <i class="fas fa-file-pdf me-2"></i>Generar Reporte
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reporte de Horas Extras -->
+                        <div class="tab-pane fade" id="horas-extras" role="tabpanel">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Reporte de Horas Extras</h5>
+                                </div>
+                                <div class="card-body">
+                                    @using (Html.BeginForm("ReporteHorasExtras", "Reportes", FormMethod.Post, new { @class = "row g-3" }))
+                                    {
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Empleado:</label>
+                                            @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Fecha Inicio:</label>
+                                            <input type="date" name="fechaInicio" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Fecha Fin:</label>
+                                            <input type="date" name="fechaFin" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tipo:</label>
+                                            <select name="tipoHoraExtra" class="form-select">
+                                                <option value="">-- Todos los tipos --</option>
+                                                @if (ViewBag.TiposHoraExtra != null)
+                                                {
+                                                    foreach (var tipo in (SelectList)ViewBag.TiposHoraExtra)
+                                                    {
+                                                        <option value="@tipo.Value">@tipo.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-danger btn-lg">
+                                                <i class="fas fa-file-pdf me-2"></i>Generar Reporte
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reporte de Incapacidades -->
+                        <div class="tab-pane fade" id="incapacidades" role="tabpanel">
+                            <div class="card border-secondary">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="mb-0"><i class="fas fa-user-injured me-2"></i>Reporte de Incapacidades</h5>
+                                </div>
+                                <div class="card-body">
+                                    @using (Html.BeginForm("ReporteIncapacidades", "Reportes", FormMethod.Post, new { @class = "row g-3" }))
+                                    {
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Empleado:</label>
+                                            @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-select" })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Fecha Inicio:</label>
+                                            <input type="date" name="fechaInicio" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Fecha Fin:</label>
+                                            <input type="date" name="fechaFin" class="form-control" required />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tipo:</label>
+                                            <select name="tipoIncapacidad" class="form-select">
+                                                <option value="">-- Todos los tipos --</option>
+                                                @if (ViewBag.TiposIncapacidad != null)
+                                                {
+                                                    foreach (var tipo in (SelectList)ViewBag.TiposIncapacidad)
+                                                    {
+                                                        <option value="@tipo.Value">@tipo.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-secondary btn-lg">
+                                                <i class="fas fa-file-pdf me-2"></i>Generar Reporte
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        border-radius: 10px 10px 0 0;
+        transition: all 0.3s ease;
+    }
+
+        .nav-tabs .nav-link:hover {
+            background-color: rgba(0,123,255,0.1);
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white !important;
+            border-color: #007bff;
+        }
+
+    .card {
+        border-radius: 15px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+</style>

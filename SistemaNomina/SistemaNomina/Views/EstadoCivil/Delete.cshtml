@@ -1,43 +1,328 @@
 ﻿@model SistemaNomina.Models.EstadoCivil
 
 @{
-    // Define el título de la página
-    ViewBag.Title = "Delete";
-
-    // plantilla que se usará para esta vista
+    ViewBag.Title = "Eliminar Estado Civil";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3> <!-- Confirmación para eliminar -->
-
-<div>
-    <h4>EstadoCivil</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            <!-- Muestra el nombre del campo para 'nombre' -->
-            @Html.DisplayNameFor(model => model.nombre)
-        </dt>
-
-        <dd>
-            <!-- Muestra el valor del campo 'nombre' -->
-            @Html.DisplayFor(model => model.nombre)
-        </dd>
-    </dl>
-
-    @using (Html.BeginForm())
-    {
-        // seg
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <!-- Botón para confirmar la eliminación -->
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-
-            <!-- Enlace para regresar a la lista sin eliminar -->
-            @Html.ActionLink("Back to List", "Index")
-        </div>
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
     }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(220, 53, 69, 0.15);
+        overflow: hidden;
+        border: 1px solid #f8d7da;
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+        .delete-header h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+    .warning-message {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #ffeaa7;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        color: #856404;
+        font-weight: 500;
+        text-align: center;
+    }
+
+        .warning-message i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+    .delete-body {
+        padding: 2rem;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 1rem;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        font-size: 1rem;
+        min-width: 120px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-value {
+        font-size: 1.1rem;
+        color: #495057;
+        margin-left: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .estado-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .icon-soltero {
+        background: linear-gradient(135deg, #1788ca, #0f6da3);
+    }
+
+    .icon-casado {
+        background: linear-gradient(135deg, #fab61b, #e09f15);
+    }
+
+    .icon-divorciado {
+        background: linear-gradient(135deg, #221d42, #1a1536);
+    }
+
+    .icon-viudo {
+        background: linear-gradient(135deg, #6c757d, #495057);
+    }
+
+    .icon-default {
+        background: linear-gradient(135deg, #e7e8eb, #d6d8db);
+        color: #221d42;
+    }
+
+    .estado-name-display {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #221d42;
+        background: linear-gradient(135deg, #e7e8eb, #f8f9fa);
+        padding: 12px 16px;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e7e8eb;
+        justify-content: center;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-danger-custom:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: #e7e8eb;
+        border: 2px solid #e7e8eb;
+        color: #221d42;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #d6d8db;
+            border-color: #d6d8db;
+            color: #221d42;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+        }
+
+        .delete-body {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            min-width: auto;
+        }
+
+        .detail-value {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-danger-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .estado-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-trash-alt me-3"></i>
+            Eliminar Estado Civil
+        </h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="delete-card">
+                <div class="delete-header">
+                    <h4>
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirmar Eliminación
+                    </h4>
+                </div>
+
+                <div class="delete-body">
+                    <div class="warning-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>¿Está seguro que desea eliminar este estado civil?</strong>
+                        <br>
+                        Esta acción no se puede deshacer y puede afectar a los empleados registrados.
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-heart"></i>
+                            Estado Civil:
+                        </div>
+                        <div class="detail-value">
+                            @{
+                                var iconClass = "icon-default";
+                                var iconText = "EC";
+
+                                switch (Model.nombre.ToLower())
+                                {
+                                    case "soltero":
+                                    case "soltera":
+                                        iconClass = "icon-soltero";
+                                        iconText = "S";
+                                        break;
+                                    case "casado":
+                                    case "casada":
+                                        iconClass = "icon-casado";
+                                        iconText = "C";
+                                        break;
+                                    case "divorciado":
+                                    case "divorciada":
+                                        iconClass = "icon-divorciado";
+                                        iconText = "D";
+                                        break;
+                                    case "viudo":
+                                    case "viuda":
+                                        iconClass = "icon-viudo";
+                                        iconText = "V";
+                                        break;
+                                }
+                            }
+                            <div class="estado-icon @iconClass">
+                                @iconText
+                            </div>
+                            <div class="estado-name-display">@Model.nombre</div>
+                        </div>
+                    </div>
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-danger-custom">
+                                <i class="fas fa-trash"></i>
+                                Sí, Eliminar
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

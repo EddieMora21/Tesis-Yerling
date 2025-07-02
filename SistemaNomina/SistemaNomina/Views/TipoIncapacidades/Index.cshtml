@@ -1,70 +1,293 @@
-﻿@model IEnumerable<SistemaNomina.TipoIncapacidades>
+﻿@model IEnumerable<SistemaNomina.Models.TipoIncapacidades>
 
 @{
-    ViewBag.Title = "Index"; //  título de la página
-    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+    ViewBag.Title = "Tipos de Incapacidades";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2> @* Título vista *@
-
-<p>
-    @*  nuevo registro de tipo de incapacidad *@
-    @Html.ActionLink("Create New", "Create")
-</p>
-
-@* lista de registros existentes *@
-<table class="table">
-    <tr>
-        @* Encabezados de la tabla *@
-        <th>
-            @Html.DisplayNameFor(model => model.nombre)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.dias_maximos)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.pago_planilla)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.descripcion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </th>
-        <th></th> @* Columna vacía para los botones de acción *@
-    </tr>
-
-    @* Recorre cada registro y lo muestra en fila *@
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.dias_maximos)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.pago_planilla)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_creacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
-            </td>
-            <td>
-                @* Enlaces para editar, ver detalles o eliminar el registro actual *@
-                @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo }) |
-                @Html.ActionLink("Details", "Details", new { id = item.id_tipo }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo })
-            </td>
-        </tr>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
     }
-</table>
+
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-action-custom {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0 2px;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+    }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-details {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+        .btn-details:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+    }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .table-custom {
+        margin: 0;
+    }
+
+        .table-custom thead {
+            background: #221d42;
+            color: white;
+        }
+
+            .table-custom thead th {
+                border: none;
+                padding: 1rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.5px;
+            }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .table-custom tbody tr:hover {
+                background-color: rgba(23, 136, 202, 0.05);
+            }
+
+        .table-custom td {
+            padding: 1rem;
+            border-color: #e7e8eb;
+            vertical-align: middle;
+        }
+
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #e7e8eb;
+        }
+
+    @@media (max-width: 768px) {
+        .btn-primary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+        }
+
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .btn-action-custom {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+
+        .table-responsive {
+            border-radius: 15px;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-medical"></i> Tipos de Incapacidades</h1>
+                <p class="mb-0">Gestión de tipos de incapacidades médicas del sistema</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="max-width: 1200px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card-custom">
+                <div class="card-body p-0">
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom" style="border-color: #e7e8eb !important;">
+                        <h4 class="mb-0" style="color: #221d42; font-weight: 600;">
+                            <i class="fas fa-list-alt"></i> Lista de Tipos de Incapacidades
+                        </h4>
+                        @Html.ActionLink("Crear Nuevo Tipo", "Create", null, new { @class = "btn-primary-custom" })
+                    </div>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table-custom table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-tag"></i> Nombre</th>
+                                        <th><i class="fas fa-calendar-alt"></i> Días Máximos</th>
+                                        <th><i class="fas fa-money-bill-wave"></i> Pago en Planilla</th>
+                                        <th><i class="fas fa-align-left"></i> Descripción</th>
+                                        <th><i class="fas fa-clock"></i> Fecha Creación</th>
+                                        <th><i class="fas fa-edit"></i> Última Actualización</th>
+                                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td style="font-weight: 600; color: #221d42;">@Html.DisplayFor(modelItem => item.nombre)</td>
+                                            <td>
+                                                <span class="badge badge-primary" style="background: #1788ca; color: white; padding: 0.4rem 0.8rem; border-radius: 15px;">
+                                                    @Html.DisplayFor(modelItem => item.dias_maximos) días
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (item.pago_planilla)
+                                                {
+                                                    <span class="badge-custom badge-success">
+                                                        <i class="fas fa-check-circle"></i> Sí se paga
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge-custom badge-danger">
+                                                        <i class="fas fa-times-circle"></i> No se paga
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td style="max-width: 250px;">
+                                                @if (!string.IsNullOrEmpty(item.descripcion))
+                                                {
+                                                    <span title="@item.descripcion">
+                                                        @(item.descripcion.Length > 50 ? item.descripcion.Substring(0, 50) + "..." : item.descripcion)
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color: #6c757d; font-style: italic;">Sin descripción</span>
+                                                }
+                                            </td>
+                                            <td style="color: #6c757d;">
+                                                <i class="fas fa-calendar"></i>
+                                                @Html.DisplayFor(modelItem => item.fecha_creacion)
+                                            </td>
+                                            <td style="color: #6c757d;">
+                                                <i class="fas fa-history"></i>
+                                                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-wrap">
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo }, new { @class = "btn-action-custom btn-edit", title = "Editar", @html = "<i class='fas fa-edit'></i>" })
+                                                    @Html.ActionLink("Details", "Details", new { id = item.id_tipo }, new { @class = "btn-action-custom btn-details", title = "Ver Detalles", @html = "<i class='fas fa-eye'></i>" })
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo }, new { @class = "btn-action-custom btn-delete", title = "Eliminar", @html = "<i class='fas fa-trash'></i>" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-medical"></i>
+                            <h5 style="color: #221d42; margin-bottom: 1rem;">No hay tipos de incapacidades registrados</h5>
+                            <p style="margin-bottom: 2rem;">Comienza creando el primer tipo de incapacidad para el sistema.</p>
+                            @Html.ActionLink("Crear Primer Tipo", "Create", null, new { @class = "btn-primary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

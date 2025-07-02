@@ -1,74 +1,343 @@
-﻿@model SistemaNomina.Models.TiposHoraExtra  
+﻿@model SistemaNomina.Models.TiposHoraExtra
 @{
-    ViewBag.Title = "Create";  // Título navegador
-    Layout = "~/Views/Shared/_Layout.cshtml";  // vista
+    ViewBag.Title = "Crear Tipo de Hora Extra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>  // Título página
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+    }
 
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-@using (Html.BeginForm())  // formulario 
-{
-    @Html.AntiForgeryToken()  // seguridad 
-    
-    <div class="form-horizontal"> 
-        <h4>TiposHoraExtra</h4>  // Subtítulo formulario
-        <hr /> 
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+    }
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  // Muestra errores de validación en rojo
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="form-group">  // Grupo para el campo "nombre"
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })  // Etiqueta con estilos
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })  // Campo para ingresar "nombre" 
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })  // Mensaje de error para "nombre"
-            </div>
-        </div>
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-        <div class="form-group">  // Grupo para el campo "recargo"
-            @Html.LabelFor(model => model.recargo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.recargo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.recargo, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
 
-        <div class="form-group">  // Grupo para el campo "descripcion"
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
 
-        <div class="form-group">  // Grupo para el campo "fecha_creacion"
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-success-custom {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <div class="form-group">  // Grupo para el campo "fecha_actualizacion"
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
 
-        <div class="form-group">  // Grupo para el botón de enviar formulario
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />  // Botón para enviar el formulario
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .help-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
+
+    .validation-summary-custom {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border-left: 4px solid #dc3545;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+    }
+
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+    }
+
+    .date-info-card {
+        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+        border-left: 4px solid #1788ca;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+            .page-header-custom h1 {
+                font-size: 1.5rem;
+            }
+
+        .card-custom {
+            padding: 1.5rem;
+        }
+
+        .btn-success-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Header de la página -->
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>
+                    <i class="fas fa-plus-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                    Crear Tipo de Hora Extra
+                </h1>
+                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
+                    Defina un nuevo tipo de hora extra con su recargo correspondiente
+                </p>
             </div>
         </div>
     </div>
-}
+</div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")  // Enlace para volver a la lista de registros
+<!-- Contenido principal -->
+<div class="container" style="max-width: 800px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card-custom">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "validation-summary-custom" })
+
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.nombre, new { @class = "form-label-custom required-field" })
+                        @Html.EditorFor(model => model.nombre, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control form-control-custom",
+                           placeholder = "Ej: Horas Nocturnas, Feriados, Fines de Semana",
+                           maxlength = "100"
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Ingrese un nombre descriptivo para identificar el tipo de hora extra
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.recargo, new { @class = "form-label-custom required-field" })
+                        @Html.EditorFor(model => model.recargo, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control form-control-custom",
+                           placeholder = "Ej: 50.00 (para 50%)",
+                           type = "number",
+                           step = "0.01",
+                           min = "0",
+                           max = "500"
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.recargo, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Porcentaje de recargo sobre el salario base (ej: 50 = 50% adicional)
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.descripcion, new { @class = "form-label-custom" })
+                        @Html.TextAreaFor(model => model.descripcion, new
+                        {
+                            @class = "form-control form-control-custom",
+                            rows = "4",
+                            placeholder = "Descripción detallada del tipo de hora extra, cuándo aplica y condiciones especiales...",
+                            maxlength = "500"
+                        })
+                        @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Descripción opcional con detalles adicionales sobre este tipo de hora extra
+                        </div>
+                    </div>
+
+                    <!-- Campo de fecha de creación EDITABLE -->
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.fecha_creacion, new { @class = "form-label-custom required-field" })
+                        @Html.EditorFor(model => model.fecha_creacion, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control form-control-custom",
+                           type = "datetime-local",
+                           value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm")
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-calendar-plus"></i>
+                            Fecha y hora de creación del registro (por defecto: fecha actual)
+                        </div>
+                    </div>
+
+                    <!-- Campo de fecha de actualización oculto -->
+                    @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                    <div class="form-group-custom text-center">
+                        <hr style="margin: 2rem 0; border-color: #e7e8eb;">
+                        <button type="submit" class="btn btn-success-custom mr-3">
+                            <i class="fas fa-save"></i>
+                            Crear Tipo de Hora Extra
+                        </button>
+                        @Html.ActionLink("Cancelar", "Index", null, new
+                        {
+                            @class = "btn btn-secondary-custom"
+                        })
+                    </div>
+                }
+            </div>
+
+            <!-- Información adicional -->
+            <div class="date-info-card">
+                <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+                    <i class="fas fa-calendar-alt text-info"></i>
+                    Información sobre las fechas
+                </h6>
+                <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+                    <li><strong>Fecha de creación:</strong> Puede establecer cuándo se considera creado este registro</li>
+                    <li><strong>Fecha de actualización:</strong> Se establecerá automáticamente al crear el registro</li>
+                    <li>Ambas fechas quedarán registradas para auditoría del sistema</li>
+                </ul>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="mt-4 p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid #1788ca;">
+                <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+                    <i class="fas fa-lightbulb text-warning"></i>
+                    Información importante
+                </h6>
+                <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+                    <li>El recargo se expresa como porcentaje adicional al salario base</li>
+                    <li>Por ejemplo: 50% significa que se paga 1.5 veces el valor de la hora normal</li>
+                    <li>Una vez creado, la fecha de creación no podrá modificarse</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")  // validación
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function() {
+            // Validación adicional para el campo recargo
+            $('#recargo').on('input', function() {
+                var value = parseFloat($(this).val());
+                if (value < 0) {
+                    $(this).val(0);
+                }
+                if (value > 500) {
+                    $(this).val(500);
+                }
+            });
+
+            // Contador de caracteres para descripción
+            var maxLength = 500;
+            $('#descripcion').on('input', function() {
+                var currentLength = $(this).val().length;
+                var remaining = maxLength - currentLength;
+
+                if (!$('#char-counter').length) {
+                    $(this).after('<div id="char-counter" class="help-text mt-1"></div>');
+                }
+
+                $('#char-counter').text(remaining + ' caracteres restantes')
+                    .removeClass('text-danger')
+                    .addClass(remaining < 50 ? 'text-danger' : '');
+            });
+
+            // Validación de fecha de creación
+            $('#fecha_creacion').on('change', function() {
+                var selectedDate = new Date($(this).val());
+                var now = new Date();
+
+                if (selectedDate > now) {
+                    alert('La fecha de creación no puede ser futura');
+                    $(this).val('@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")');
+                }
+            });
+        });
+    </script>
 }

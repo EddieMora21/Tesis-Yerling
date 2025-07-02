@@ -1,34 +1,294 @@
 ﻿@model SistemaNomina.Models.EstadoCivil
 
 @{
-    // Define el título de la página
-    ViewBag.Title = "Details";
-
-    //  plantilla que se usará para esta vista
+    ViewBag.Title = "Detalles del Estado Civil";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+    }
 
-<div>
-    <h4>EstadoCivil</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            <!-- Muestra el nombre del campo 'nombre' -->
-            @Html.DisplayNameFor(model => model.nombre)
-        </dt>
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-        <dd>
-            <!-- Muestra el valor del campo 'nombre' -->
-            @Html.DisplayFor(model => model.nombre)
-        </dd>
-    </dl>
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        overflow: hidden;
+        border: 1px solid #e7e8eb;
+    }
+
+    .details-header {
+        background: linear-gradient(135deg, #1788ca 0%, #0f6da3 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid #e7e8eb;
+        color: white;
+    }
+
+        .details-header h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+    .details-body {
+        padding: 2rem;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        font-size: 1rem;
+        min-width: 120px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-value {
+        font-size: 1.1rem;
+        color: #495057;
+        margin-left: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .estado-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .icon-soltero {
+        background: linear-gradient(135deg, #1788ca, #0f6da3);
+    }
+
+    .icon-casado {
+        background: linear-gradient(135deg, #fab61b, #e09f15);
+    }
+
+    .icon-divorciado {
+        background: linear-gradient(135deg, #221d42, #1a1536);
+    }
+
+    .icon-viudo {
+        background: linear-gradient(135deg, #6c757d, #495057);
+    }
+
+    .icon-default {
+        background: linear-gradient(135deg, #e7e8eb, #d6d8db);
+        color: #221d42;
+    }
+
+    .estado-name-display {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #221d42;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e7e8eb;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #e09f15 100%);
+        border: none;
+        color: #221d42;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #e09f15 0%, #c8890f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: #221d42;
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: #e7e8eb;
+        border: 2px solid #e7e8eb;
+        color: #221d42;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #d6d8db;
+            border-color: #d6d8db;
+            color: #221d42;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+        }
+
+        .details-body {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            min-width: auto;
+        }
+
+        .detail-value {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .estado-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-eye me-3"></i>
+            Detalles del Estado Civil
+        </h1>
+    </div>
 </div>
-<p>
-    <!-- Enlace para editar el registro actual, pasando el id -->
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_estado_civil }) |
 
-    <!-- Enlace para regresar a la lista de estados civiles -->
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="details-card">
+                <div class="details-header">
+                    <h4>
+                        <i class="fas fa-info-circle me-2"></i>
+                        Información del Estado Civil
+                    </h4>
+                </div>
+
+                <div class="details-body">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-heart"></i>
+                            Estado Civil:
+                        </div>
+                        <div class="detail-value">
+                            @{
+                                var iconClass = "icon-default";
+                                var iconText = "EC";
+
+                                switch (Model.nombre.ToLower())
+                                {
+                                    case "soltero":
+                                    case "soltera":
+                                        iconClass = "icon-soltero";
+                                        iconText = "S";
+                                        break;
+                                    case "casado":
+                                    case "casada":
+                                        iconClass = "icon-casado";
+                                        iconText = "C";
+                                        break;
+                                    case "divorciado":
+                                    case "divorciada":
+                                        iconClass = "icon-divorciado";
+                                        iconText = "D";
+                                        break;
+                                    case "viudo":
+                                    case "viuda":
+                                        iconClass = "icon-viudo";
+                                        iconText = "V";
+                                        break;
+                                }
+                            }
+                            <div class="estado-icon @iconClass">
+                                @iconText
+                            </div>
+                            <div class="estado-name-display">@Model.nombre</div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <a href="@Url.Action("Edit", new { id = Model.id_estado_civil })" class="btn-primary-custom">
+                            <i class="fas fa-edit"></i>
+                            Editar Estado Civil
+                        </a>
+                        <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                            <i class="fas fa-arrow-left"></i>
+                            Volver al Listado
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

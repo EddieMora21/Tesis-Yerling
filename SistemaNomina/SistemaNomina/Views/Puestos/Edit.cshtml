@@ -1,119 +1,444 @@
-﻿@model SistemaNomina.Models.Puestos  
+﻿@model SistemaNomina.Models.Puestos
 
 @{
-    ViewBag.Title = "Edit"; @* Título  *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @*  vista *@
+    ViewBag.Title = "Editar Puesto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>  @* Título  página *@
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken() @* Seguridad *@
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    <div class="form-horizontal">
-     
-        <h4>Puestos</h4>  @* Subtítulo formulario *@
-        <hr /> 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  @* Muestra errores generales del formulario *@
-        @Html.HiddenFor(model => model.id_puesto)  @* Campo oculto para enviar el id del puesto *@
+    .form-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-        <div class="form-group">
-            @* Grupo para el campo nombre_puesto *@
-            @Html.LabelFor(model => model.nombre_puesto, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para nombre_puesto *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre_puesto, new { htmlAttributes = new { @class = "form-control" } })  @* Campo de texto para editar nombre_puesto *@
-                @Html.ValidationMessageFor(model => model.nombre_puesto, "", new { @class = "text-danger" })  @* Mensajes de error específicos para este campo *@
-            </div>
-        </div>
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="form-group">
-            @* Grupo para seleccionar departamento *@
-            @Html.LabelFor(model => model.id_departamento, "id_departamento", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para id_departamento *@
-            <div class="col-md-10">
-                @Html.DropDownList("id_departamento", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar departamento *@
-                @Html.ValidationMessageFor(model => model.id_departamento, "", new { @class = "text-danger" })  @* Mensajes de error para departamento *@
-            </div>
-        </div>
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-        <div class="form-group">
-            @* Grupo para salario_base *@
-            @Html.LabelFor(model => model.salario_base, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para salario_base *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.salario_base, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar salario_base *@
-                @Html.ValidationMessageFor(model => model.salario_base, "", new { @class = "text-danger" })  @* Mensajes de error para salario_base *@
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
 
-        <div class="form-group">
-            @* Grupo para descripcion *@
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para descripcion *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar descripcion *@
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })  @* Mensajes de error para descripcion *@
-            </div>
-        </div>
+        .form-control-custom:focus {
+            border-color: #fab61b;
+            box-shadow: 0 0 0 0.2rem rgba(250, 182, 27, 0.25);
+            outline: none;
+        }
 
-        <div class="form-group">
-            @* Grupo para horas_jornada *@
-            @Html.LabelFor(model => model.horas_jornada, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para horas_jornada *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.horas_jornada, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar horas_jornada *@
-                @Html.ValidationMessageFor(model => model.horas_jornada, "", new { @class = "text-danger" })  @* Mensajes de error para horas_jornada *@
-            </div>
-        </div>
+    .form-control-readonly {
+        background-color: #f8f9fa;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: #6c757d;
+        cursor: not-allowed;
+        width: 100%;
+    }
 
-        <div class="form-group">
-            @* Grupo para campo es_jefe  *@
-            @Html.LabelFor(model => model.es_jefe, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para es_jefe *@
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.es_jefe)  @*  indicar si es jefe *@
-                    @Html.ValidationMessageFor(model => model.es_jefe, "", new { @class = "text-danger" })  @* Mensajes de error para es_jefe *@
-                </div>
-            </div>
-        </div>
+    .fecha-display {
+        background-color: #f8f9fa;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: #6c757d;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-        <div class="form-group">
-            @* Grupo para seleccionar horario *@
-            @Html.LabelFor(model => model.id_horario, "id_horario", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para id_horario *@
-            <div class="col-md-10">
-                @Html.DropDownList("id_horario", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar horario *@
-                @Html.ValidationMessageFor(model => model.id_horario, "", new { @class = "text-danger" })  @* Mensajes de error para id_horario *@
-            </div>
-        </div>
+    .checkbox-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
 
-        <div class="form-group">
-            @* Grupo para fecha_creacion *@
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para fecha_creacion *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha_creacion *@
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })  @* Mensajes de error para fecha_creacion *@
-            </div>
-        </div>
+        .checkbox-custom:hover {
+            border-color: #fab61b;
+            background: rgba(250, 182, 27, 0.05);
+        }
 
-        <div class="form-group">
-            @* Grupo para fecha_actualizacion *@
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta para fecha_actualizacion *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha_actualizacion *@
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })  @* Mensajes de error para fecha_actualizacion *@
-            </div>
-        </div>
+        .checkbox-custom input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #fab61b;
+        }
 
-        <div class="form-group">
-            @* Grupo para el botón guardar *@
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />  @* Botón para enviar el formulario *@
+        .checkbox-custom label {
+            margin: 0;
+            font-weight: 500;
+            color: #221d42;
+            cursor: pointer;
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .edit-info {
+        background: rgba(250, 182, 27, 0.1);
+        border-left: 4px solid #fab61b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+        .edit-info h5 {
+            color: #221d42;
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-info p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .readonly-info {
+        background: rgba(23, 136, 202, 0.1);
+        border-left: 4px solid #1788ca;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+        .readonly-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    .alert {
+        border-radius: 8px;
+        border: none;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-warning {
+        background: rgba(255, 193, 7, 0.1);
+        border-left: 4px solid #ffc107;
+        color: #856404;
+    }
+
+    .alert-danger {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-edit"></i> Editar Puesto</h1>
+                <p class="mb-0">Modifica la información del puesto seleccionado</p>
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista de puestos *@
 </div>
 
-@section Scripts {  @*  cargar scripts necesarios *@
-@Scripts.Render("~/bundles/jqueryval")  @* Validación *@
+<div class="container" style="max-width: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="edit-info">
+                <h5><i class="fas fa-briefcase"></i> Editando: @Model.nombre_puesto</h5>
+                <p>Modifica los campos necesarios y guarda los cambios. Los campos marcados con * son obligatorios.</p>
+            </div>
+
+            <div class="form-card-custom">
+                <div class="card-body p-4">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.id_puesto)
+
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.nombre_puesto, "Nombre del Puesto *", new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.nombre_puesto, new { htmlAttributes = new { @class = "form-control-custom", @placeholder = "Ej: Desarrollador Senior, Analista de Sistemas..." } })
+                            @Html.ValidationMessageFor(model => model.nombre_puesto, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-info-circle"></i>
+                                El nombre debe ser descriptivo y específico
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.id_departamento, "Departamento *", new { @class = "form-label-custom" })
+                            @Html.DropDownList("id_departamento", null, new { @class = "form-control-custom", id = "departamentoSelect" })
+                            @Html.ValidationMessageFor(model => model.id_departamento, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-building"></i>
+                                Departamento al que pertenece este puesto
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.salario_base, "Salario Base *", new { @class = "form-label-custom" })
+                                @Html.EditorFor(model => model.salario_base, new { htmlAttributes = new { @class = "form-control-custom", @type = "number", @step = "0.01", @min = "0", id = "salario_base" } })
+                                @Html.ValidationMessageFor(model => model.salario_base, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Salario base mensual en colones
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.horas_jornada, "Horas de Jornada *", new { @class = "form-label-custom" })
+                                @Html.EditorFor(model => model.horas_jornada, new { htmlAttributes = new { @class = "form-control-custom", @type = "number", @min = "1", @max = "24", id = "horas_jornada" } })
+                                @Html.ValidationMessageFor(model => model.horas_jornada, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-clock"></i>
+                                    Horas diarias de trabajo
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.descripcion, "Descripción del Puesto", new { @class = "form-label-custom" })
+                            @Html.TextAreaFor(model => model.descripcion, new { @class = "form-control-custom", @rows = "4", @placeholder = "Describe las responsabilidades y funciones del puesto..." })
+                            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-align-left"></i>
+                                Detalla las responsabilidades principales
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.es_jefe, "Configuración de Jefatura", new { @class = "form-label-custom" })
+                            <div class="checkbox-custom">
+                                @Html.EditorFor(model => model.es_jefe, new { htmlAttributes = new { id = "esJefeCheckbox" } })
+                                <label for="esJefeCheckbox">¿Este puesto tiene funciones de jefatura?</label>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.es_jefe, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-crown"></i>
+                                Solo puede haber un jefe por departamento
+                            </div>
+
+                            <div id="jefeExistenteAlert" class="alert alert-warning" style="display:none;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Advertencia:</strong> Este departamento ya tiene un jefe asignado (<span id="nombreJefeActual"></span>).
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.id_horario, "Horario de Trabajo", new { @class = "form-label-custom" })
+                            @Html.DropDownList("id_horario", null, new { @class = "form-control-custom" })
+                            @Html.ValidationMessageFor(model => model.id_horario, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-schedule"></i>
+                                Horario específico para este puesto
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.fecha_creacion, "Fecha de Creación", new { @class = "form-label-custom" })
+                            <div class="fecha-display" id="fechaCreacionDisplay">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span id="fechaCreacionTexto">@Model.fecha_creacion.Value.ToString("dd 'de' MMMM 'de' yyyy 'a las' HH:mm", new System.Globalization.CultureInfo("es-ES"))</span>
+                            </div>
+                            @Html.HiddenFor(model => model.fecha_creacion)
+                            <div class="readonly-info">
+                                <p>
+                                    <i class="fas fa-lock"></i>
+                                    La fecha de creación no puede modificarse. Se mantiene como registro histórico.
+                                </p>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                            <button type="submit" class="btn-primary-custom" id="submitButton">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function() {
+            // Validaciones de entrada
+            $('#salario_base').on('input', function() {
+                this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+            });
+
+            $('#horas_jornada').on('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (parseInt(this.value) > 24) this.value = '24';
+            });
+
+            // Verificación de jefatura
+            $('#departamentoSelect, #esJefeCheckbox').change(function() {
+                verificarJefatura();
+            });
+
+            function verificarJefatura() {
+                var departamentoId = $('#departamentoSelect').val();
+                var esJefe = $('#esJefeCheckbox').is(':checked');
+                var puestoActualId = '@Model.id_puesto';
+
+                if (esJefe && departamentoId) {
+                    $.get('@Url.Action("CheckJefeDepartamento", "Puestos")', {
+                        departamentoId: departamentoId,
+                        excludePuestoId: puestoActualId
+                    }, function(data) {
+                        if (data.existe) {
+                            $('#jefeExistenteAlert').show();
+                            $('#nombreJefeActual').text(data.nombreJefe);
+                            $('#esJefeCheckbox').prop('checked', false);
+                        } else {
+                            $('#jefeExistenteAlert').hide();
+                        }
+                    }).fail(function() {
+                        $('#jefeExistenteAlert').hide();
+                    });
+                } else {
+                    $('#jefeExistenteAlert').hide();
+                }
+            }
+
+            // Actualizar fecha antes de enviar
+            $('form').submit(function() {
+                var now = new Date();
+                var timestamp = now.toISOString().slice(0, 19);
+                $('#fecha_actualizacion').val(timestamp);
+
+                // No modificar fecha_creacion, mantener valor original
+                return true;
+            });
+        });
+    </script>
 }

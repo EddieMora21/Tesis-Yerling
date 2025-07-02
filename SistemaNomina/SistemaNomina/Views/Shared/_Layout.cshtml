@@ -168,6 +168,15 @@
             border-left: 3px solid var(--azul-oscuro);
         }
 
+        /* Estilos adicionales para Reportes */
+        .sidebar .menu-reportes {
+            border-left: 3px solid var(--amarillo);
+        }
+
+        .sidebar .menu-reportes:hover {
+            border-left: 3px solid var(--azul-oscuro);
+        }
+
         /* Responsive */
         @@media (max-width: 768px) {
             .wrapper {
@@ -302,7 +311,7 @@
                     </div>
                 }
 
-                <!-- 🔍 CONSULTAS - NUEVO MÓDULO -->
+                <!-- 🔍 CONSULTAS - MÓDULO -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor"))
                 {
                     <a data-bs-toggle="collapse" href="#consultasMenu" role="button" class="d-flex justify-content-between align-items-center menu-consultas" aria-expanded="false" aria-controls="consultasMenu">
@@ -315,6 +324,20 @@
                         </a>
                         <a href="/Consultas/HistoricoPlanillas">
                             <i class="fas fa-table me-2"></i>Histórico de Planillas
+                        </a>
+                    </div>
+                }
+
+                <!-- 📊 REPORTES - NUEVO MÓDULO -->
+                @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor"))
+                {
+                    <a data-bs-toggle="collapse" href="#reportesMenu" role="button" class="d-flex justify-content-between align-items-center menu-reportes" aria-expanded="false" aria-controls="reportesMenu">
+                        <span><i class="fas fa-chart-bar"></i> Reportes</span>
+                        <i class="bi bi-chevron-down me-2"></i>
+                    </a>
+                    <div class="collapse" id="reportesMenu">
+                        <a href="/Reportes">
+                            <i class="fas fa-file-pdf me-2"></i>Generar Reportes
                         </a>
                     </div>
                 }

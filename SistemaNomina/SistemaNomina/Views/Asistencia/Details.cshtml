@@ -1,71 +1,371 @@
 ﻿@model SistemaNomina.Models.Asistencia
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalles de Asistencia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    .header-details {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-<div>
-    <h4>Asistencia</h4>
-    <hr />
-    @* Mostrar los detalles del registro de asistencia seleccionado *@
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha)
-        </dd>
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 30px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.hora_entrada)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.hora_entrada)
-        </dd>
+    .asistencia-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.hora_salida)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.hora_salida)
-        </dd>
+    .section-title {
+        color: #221d42;
+        font-weight: 600;
+        border-bottom: 2px solid #1788ca;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.es_feriado)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.es_feriado)
-        </dd>
+    .info-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid #1788ca;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_registro)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_registro)
-        </dd>
+    .detail-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
 
-        @* Mostrar la cédula del empleado asociado a esta asistencia *@
-        <dt>
-            @Html.DisplayNameFor(model => model.Empleados.cedula)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula)
-        </dd>
+        .detail-item:last-child {
+            border-bottom: none;
+        }
 
-        @* Mostrar el nombre del feriado asociado, si existe *@
-        <dt>
-            @Html.DisplayNameFor(model => model.Feriados.nombre)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Feriados.nombre)
-        </dd>
-    </dl>
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        width: 180px;
+        flex-shrink: 0;
+    }
+
+    .detail-value {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .detail-icon {
+        margin-right: 8px;
+        color: #1788ca;
+        width: 20px;
+        text-align: center;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-default-custom {
+        background: white;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: #221d42;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-default-custom:hover {
+            background: #f8f9fa;
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-completo {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+    }
+
+    .status-incompleto {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+    }
+
+    .status-feriado {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        color: #0c5460;
+    }
+
+    .time-display {
+        font-family: 'Courier New', monospace;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1788ca;
+    }
+
+    .calculated-info {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        border-left: 4px solid #17a2b8;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    @@media (max-width: 768px) {
+        .details-card {
+            padding: 20px 15px;
+        }
+
+        .header-details {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 900px;">
+    <div class="header-details">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-info-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                Detalles de Asistencia
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Información completa del registro de asistencia</p>
+        </div>
+    </div>
+
+    <div class="details-card">
+        <div class="asistencia-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3 class="mb-1">
+                        <i class="fa fa-clock" style="margin-right: 15px; font-size: 2rem;"></i>
+                        Asistencia - @Model.fecha.ToString("dd/MM/yyyy")
+                    </h3>
+                    <p class="mb-0" style="font-size: 18px; opacity: 0.9;">
+                        <i class="fa fa-user" style="margin-right: 8px;"></i>
+                        @Model.Empleados.nombre1 @Model.Empleados.apellido1
+                    </p>
+                </div>
+                <div class="col-md-4 text-center">
+                    @if (Model.hora_entrada.HasValue && Model.hora_salida.HasValue)
+                    {
+                        <div class="status-badge status-completo">Completo</div>
+                    }
+                    else
+                    {
+                        <div class="status-badge status-incompleto">Incompleto</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-section">
+                    <h4 class="section-title">
+                        <i class="fa fa-user" style="margin-right: 10px; color: #1788ca;"></i>
+                        Información del Empleado
+                    </h4>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-user detail-icon"></i>
+                            Nombre Completo:
+                        </div>
+                        <div class="detail-value">@Model.Empleados.nombre1 @Model.Empleados.nombre2 @Model.Empleados.apellido1 @Model.Empleados.apellido2</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-id-card detail-icon"></i>
+                            Cédula:
+                        </div>
+                        <div class="detail-value time-display">@Model.Empleados.cedula</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-briefcase detail-icon"></i>
+                            Puesto:
+                        </div>
+                        <div class="detail-value">@Model.Empleados.Puestos.nombre_puesto</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-building detail-icon"></i>
+                            Departamento:
+                        </div>
+                        <div class="detail-value">@Model.Empleados.Puestos.Departamentos.nombre</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-section">
+                    <h4 class="section-title">
+                        <i class="fa fa-clock" style="margin-right: 10px; color: #1788ca;"></i>
+                        Información de Tiempo
+                    </h4>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-calendar detail-icon"></i>
+                            Fecha:
+                        </div>
+                        <div class="detail-value">@Model.fecha.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-sign-in detail-icon"></i>
+                            Hora de Entrada:
+                        </div>
+                        <div class="detail-value">
+                            @if (Model.hora_entrada.HasValue)
+                            {
+                                <span class="time-display">@Model.hora_entrada.Value.ToString(@"hh\:mm")</span>
+                            }
+                            else
+                            {
+                                <span style="color: #6c757d; font-style: italic;">Sin registrar</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-sign-out detail-icon"></i>
+                            Hora de Salida:
+                        </div>
+                        <div class="detail-value">
+                            @if (Model.hora_salida.HasValue)
+                            {
+                                <span class="time-display">@Model.hora_salida.Value.ToString(@"hh\:mm")</span>
+                            }
+                            else
+                            {
+                                <span style="color: #6c757d; font-style: italic;">Sin registrar</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-calendar-plus detail-icon"></i>
+                            Fecha de Registro:
+                        </div>
+                        <div class="detail-value">@Model.fecha_registro.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-calendar-check detail-icon"></i>
+                            Día Feriado:
+                        </div>
+                        <div class="detail-value">
+                            @if (Model.es_feriado == true)
+                            {
+                                <span class="status-badge status-feriado">
+                                    Sí - @(Model.Feriados != null ? Model.Feriados.nombre : "Feriado")
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="color: #6c757d;">No</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.hora_entrada.HasValue && Model.hora_salida.HasValue)
+        {
+            var horasTrabajadas = (Model.hora_salida.Value - Model.hora_entrada.Value).TotalHours;
+            <div class="calculated-info">
+                <h5 style="color: #0c5460; font-weight: 600; margin-bottom: 15px;">
+                    <i class="fa fa-calculator" style="margin-right: 10px;"></i>
+                    Información Calculada
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p style="color: #0c5460; margin: 0;">
+                            <strong>Horas Trabajadas:</strong>
+                            <span class="time-display">@Math.Round(horasTrabajadas, 2) horas</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p style="color: #0c5460; margin: 0;">
+                            <strong>Jornada:</strong>
+                            @if (horasTrabajadas >= 8)
+                            {
+                                <span style="color: #28a745; font-weight: 600;">Completa</span>
+                            }
+                            else
+                            {
+                                <span style="color: #ffc107; font-weight: 600;">Parcial</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="text-center" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e7e8eb;">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.id_asistencia }, new { @class = "btn-primary-custom", style = "margin-right: 15px;" })
+            @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn-default-custom" })
+        </div>
+    </div>
 </div>
-<p>
-    @* Enlaces para editar el registro actual o regresar a la lista general *@
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_asistencia }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

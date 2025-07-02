@@ -1,68 +1,235 @@
 ﻿@model SistemaNomina.Models.Estados
 
 @{
-    // Define el título de la página
     ViewBag.Title = "Crear Nuevo Estado";
-
-    // plantilla uso
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Crear Nuevo Estado</h2>
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+    }
 
-@using (Html.BeginForm())
-{
-    // seguridad
-    @Html.AntiForgeryToken()
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-<div class="form-horizontal">
-    <h4>Estados</h4>
-    <hr />
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        overflow: hidden;
+        border: 1px solid #e7e8eb;
+    }
 
-    @*Muestra un resumen de validación si hay errores*@
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    .form-header {
+        background: linear-gradient(135deg, #e7e8eb 0%, #d6d8db 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid #e7e8eb;
+    }
 
-<div class="form-group">
-    @*Etiqueta para el campo 'nombre'*@
-    @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+        .form-header h4 {
+            color: #221d42;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
 
-    <div class="col-md-10">
-        @*Campo de texto para ingresar el nombre del estado*@
-        @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+    .form-body {
+        padding: 2rem;
+    }
 
-        @*Muestra mensaje de error si hay problemas con la validación del nombre*@
-        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+            background: white;
+        }
+
+    .form-select-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") right 0.75rem center/16px 12px no-repeat;
+        appearance: none;
+    }
+
+        .form-select-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #0f6da3 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #0f6da3 0%, #0a5d91 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: #e7e8eb;
+        border: 2px solid #e7e8eb;
+        color: #221d42;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #d6d8db;
+            border-color: #d6d8db;
+            color: #221d42;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .text-danger-custom {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e7e8eb;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+        }
+
+        .form-body {
+            padding: 1.5rem;
+        }
+
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-plus-circle me-3"></i>
+            Crear Nuevo Estado
+        </h1>
     </div>
 </div>
 
-<div class="form-group">
-    @*Etiqueta para el campo 'modulo'*@
-    @Html.LabelFor(model => model.modulo, htmlAttributes: new { @class = "control-label col-md-2" })
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="form-card">
+                <div class="form-header">
+                    <h4>
+                        <i class="fas fa-toggle-on me-2"></i>
+                        Información del Estado
+                    </h4>
+                </div>
 
-    <div class="col-md-10">
-        @*Lista desplegable para seleccionar el módulo relacionado al estado*@
-        @Html.DropDownListFor(model => model.modulo, new SelectList(ViewBag.Modulos), "Seleccione módulo", new { @class = "form-control" })
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
 
-        @*Muestra mensaje de error si hay problemas con la validación del módulo*@
-        @Html.ValidationMessageFor(model => model.modulo, "", new { @class = "text-danger" })
+                    <div class="form-body">
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.nombre, "Nombre del Estado", new { @class = "form-label" })
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Ingrese el nombre del estado" } })
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger-custom" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.modulo, "Módulo", new { @class = "form-label" })
+                            @Html.DropDownListFor(model => model.modulo, new SelectList(ViewBag.Modulos), "Seleccione un módulo", new { @class = "form-control form-select-custom" })
+                            @Html.ValidationMessageFor(model => model.modulo, "", new { @class = "text-danger-custom" })
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fas fa-save"></i>
+                                Crear Estado
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                                <i class="fas fa-arrow-left"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="form-group">
-    @*Botón para enviar el formulario*@
-    <div class="col-md-offset-2 col-md-10">
-        <input type="submit" value="Crear" class="btn btn-primary" />
-    </div>
-</div>
-</div>
-}
-
-<div>
-    @*Enlace para regresar a la vista de lista (Index)*@
-    @Html.ActionLink("Regresar", "Index")
 </div>
 
 @section Scripts {
-    // validación
     @Scripts.Render("~/bundles/jqueryval")
 }

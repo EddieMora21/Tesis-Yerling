@@ -1,0 +1,238 @@
+﻿@model IEnumerable<SistemaNomina.Models.Asistencia>
+
+@{
+    ViewBag.Title = "Reporte de Asistencia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Ordenar la coleccion aqui en lugar de en el foreach
+    var asistenciasOrdenadas = Model?.OrderBy(a => a.fecha).ThenBy(a => a.Empleados.apellido1).ToList() ?? new List<SistemaNomina.Models.Asistencia>();
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-success text-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">
+                                <i class="fas fa-clock me-3"></i>Reporte de Asistencia
+                            </h3>
+                            <p class="mb-0 opacity-75">Del @ViewBag.FechaInicio al @ViewBag.FechaFin - Empleado: @ViewBag.EmpleadoSeleccionado</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-2"></i>Volver
+                            </a>
+                            <button onclick="window.print()" class="btn btn-warning ms-2">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (asistenciasOrdenadas != null && asistenciasOrdenadas.Any())
+                    {
+                        <!-- Resumen General -->
+                        <div class="row g-0 bg-light p-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-calendar-day fa-2x mb-2"></i>
+                                        <h4>@asistenciasOrdenadas.Count()</h4>
+                                        <p class="mb-0">Total Registros</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                        <h4>@asistenciasOrdenadas.Count(a => a.hora_entrada.HasValue && a.hora_salida.HasValue)</h4>
+                                        <p class="mb-0">Dias Completos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                                        <h4>@asistenciasOrdenadas.Count(a => !a.hora_entrada.HasValue || !a.hora_salida.HasValue)</h4>
+                                        <p class="mb-0">Dias Incompletos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-gift fa-2x mb-2"></i>
+                                        <h4>@asistenciasOrdenadas.Count(a => a.es_feriado == true)</h4>
+                                        <p class="mb-0">Dias Feriados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Detalles -->
+                        <div class="table-responsive">
+                            <table class="table-striped table-hover mb-0 table" id="reporteTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th><i class="fas fa-calendar me-2"></i>Fecha</th>
+                                        <th><i class="fas fa-user me-2"></i>Empleado</th>
+                                        <th><i class="fas fa-building me-2"></i>Departamento</th>
+                                        <th class="text-center"><i class="fas fa-sign-in-alt me-2"></i>Hora Entrada</th>
+                                        <th class="text-center"><i class="fas fa-sign-out-alt me-2"></i>Hora Salida</th>
+                                        <th class="text-center"><i class="fas fa-clock me-2"></i>Horas Trabajadas</th>
+                                        <th class="text-center"><i class="fas fa-gift me-2"></i>Feriado</th>
+                                        <th class="text-center"><i class="fas fa-info-circle me-2"></i>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var asistencia in asistenciasOrdenadas)
+                                    {
+                                        var horasEntrada = asistencia.hora_entrada?.Hours ?? 0;
+                                        var minutosEntrada = asistencia.hora_entrada?.Minutes ?? 0;
+                                        var horasSalida = asistencia.hora_salida?.Hours ?? 0;
+                                        var minutosSalida = asistencia.hora_salida?.Minutes ?? 0;
+
+                                        var horasTrabajadas = "";
+                                        var estadoAsistencia = "";
+                                        var claseEstado = "";
+
+                                        if (asistencia.hora_entrada.HasValue && asistencia.hora_salida.HasValue)
+                                        {
+                                            var totalMinutos = (horasSalida * 60 + minutosSalida) - (horasEntrada * 60 + minutosEntrada);
+                                            if (totalMinutos > 0)
+                                            {
+                                                var horas = totalMinutos / 60;
+                                                var minutos = totalMinutos % 60;
+                                                horasTrabajadas = horas.ToString() + "h " + minutos.ToString() + "m";
+                                            }
+                                            estadoAsistencia = "Completo";
+                                            claseEstado = "badge bg-success";
+                                        }
+                                        else if (asistencia.hora_entrada.HasValue)
+                                        {
+                                            estadoAsistencia = "Sin Salida";
+                                            claseEstado = "badge bg-warning";
+                                        }
+                                        else if (asistencia.hora_salida.HasValue)
+                                        {
+                                            estadoAsistencia = "Sin Entrada";
+                                            claseEstado = "badge bg-warning";
+                                        }
+                                        else
+                                        {
+                                            estadoAsistencia = "Ausente";
+                                            claseEstado = "badge bg-danger";
+                                        }
+
+                                        <tr>
+                                            <td>
+                                                <strong>@asistencia.fecha.ToString("dd/MM/yyyy")</strong>
+                                                <br><small class="text-muted">@asistencia.fecha.ToString("dddd", new System.Globalization.CultureInfo("es-ES"))</small>
+                                            </td>
+                                            <td>
+                                                <strong>@asistencia.Empleados.nombre1 @asistencia.Empleados.apellido1</strong>
+                                                <br><small class="text-muted">@asistencia.Empleados.cedula</small>
+                                            </td>
+                                            <td><span class="badge bg-primary">@asistencia.Empleados.Puestos.Departamentos.nombre</span></td>
+                                            <td class="text-center">
+                                                @if (asistencia.hora_entrada.HasValue)
+                                                {
+                                                    <span class="fw-bold">@asistencia.hora_entrada.Value.ToString(@"hh\:mm")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (asistencia.hora_salida.HasValue)
+                                                {
+                                                    <span class="fw-bold">@asistencia.hora_salida.Value.ToString(@"hh\:mm")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (!string.IsNullOrEmpty(horasTrabajadas))
+                                                {
+                                                    <span class="fw-bold">@horasTrabajadas</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (asistencia.es_feriado == true)
+                                                {
+                                                    <span class="badge bg-warning"><i class="fas fa-gift me-1"></i>Si</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="@claseEstado">@estadoAsistencia</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="py-5 text-center">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No se encontraron registros</h4>
+                            <p class="text-muted">No hay datos de asistencia para los filtros seleccionados.</p>
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn, .card-header .col-auto {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .table {
+            font-size: 11px;
+        }
+    }
+
+    .badge {
+        font-size: 0.8em;
+    }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

@@ -1,65 +1,303 @@
 ﻿@model SistemaNomina.Models.TipoIncapacidades
 
 @{
-    ViewBag.Title = "Details"; //  título navegador
-    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+    ViewBag.Title = "Detalles del Tipo de Incapacidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2> @* Título página *@
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.2);
+    }
 
-<div>
-    <h4>TipoIncapacidades</h4> @* Nombre modulo *@
-    <hr />
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.nombre) @* Etiqueta del campo 'nombre' *@
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.nombre) @* Valor del campo 'nombre' *@
-        </dd>
+    .details-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.dias_maximos)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.dias_maximos)
-        </dd>
+    .detail-row {
+        display: flex;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e7e8eb;
+        transition: all 0.3s ease;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.pago_planilla)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.pago_planilla)
-        </dd>
+        .detail-row:last-child {
+            border-bottom: none;
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.descripcion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.descripcion)
-        </dd>
+        .detail-row:hover {
+            background-color: rgba(23, 136, 202, 0.02);
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+    .detail-label {
+        flex: 0 0 200px;
+        font-weight: 600;
+        color: #221d42;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-        </dd>
-    </dl>
+    .detail-value {
+        flex: 1;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .info-header {
+        background: rgba(23, 136, 202, 0.1);
+        border-left: 4px solid #1788ca;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+    }
+
+        .info-header h4 {
+            color: #221d42;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .info-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .description-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        border-left: 4px solid #1788ca;
+        font-style: italic;
+        line-height: 1.6;
+    }
+
+    .empty-description {
+        color: #6c757d;
+        font-style: italic;
+        opacity: 0.7;
+    }
+
+    @@media (max-width: 768px) {
+        .detail-row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            flex: none;
+        }
+
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-eye"></i> Detalles del Tipo de Incapacidad</h1>
+                <p class="mb-0">Información completa del tipo de incapacidad seleccionado</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<p>
-    @* Enlace para ir a la vista de edición del registro actual *@
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_tipo }) |
+<div class="container" style="max-width: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="info-header">
+                <h4><i class="fas fa-medical"></i> @Model.nombre</h4>
+                <p>Visualiza toda la información registrada para este tipo de incapacidad</p>
+            </div>
 
-    @* Enlace para regresar a la lista de registros *@
-    @Html.ActionLink("Back to List", "Index")
-</p>
+            <div class="details-card-custom">
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-tag"></i>
+                        Nombre del Tipo
+                    </div>
+                    <div class="detail-value">
+                        <strong>@Html.DisplayFor(model => model.nombre)</strong>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        Días Máximos
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge-custom badge-info">
+                            <i class="fas fa-clock"></i>
+                            @Html.DisplayFor(model => model.dias_maximos) días máximo
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Pago en Planilla
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.pago_planilla)
+                        {
+                            <span class="badge-custom badge-success">
+                                <i class="fas fa-check-circle"></i>
+                                Sí se paga en planilla
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-custom badge-danger">
+                                <i class="fas fa-times-circle"></i>
+                                No se paga en planilla
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-align-left"></i>
+                        Descripción
+                    </div>
+                    <div class="detail-value">
+                        @if (!string.IsNullOrEmpty(Model.descripcion))
+                        {
+                            <div class="description-box">
+                                @Html.DisplayFor(model => model.descripcion)
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="empty-description">Sin descripción proporcionada</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        Fecha de Creación
+                    </div>
+                    <div class="detail-value">
+                        <i class="fas fa-clock"></i>
+                        @Html.DisplayFor(model => model.fecha_creacion)
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-history"></i>
+                        Última Actualización
+                    </div>
+                    <div class="detail-value">
+                        <i class="fas fa-sync-alt"></i>
+                        @Html.DisplayFor(model => model.fecha_actualizacion)
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                @Html.ActionLink("Editar", "Edit", new { id = Model.id_tipo }, new { @class = "btn-primary-custom" })
+                @Html.ActionLink("Volver a la Lista", "Index", null, new { @class = "btn-secondary-custom" })
+            </div>
+        </div>
+    </div>
+</div>

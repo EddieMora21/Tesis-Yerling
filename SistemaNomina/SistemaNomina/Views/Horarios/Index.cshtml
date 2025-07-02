@@ -6,374 +6,525 @@
 }
 
 <style>
-    /* === RESET Y BASE === */
-    * {
-        box-sizing: border-box;
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
     }
 
-    .horarios-container {
-        padding: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    /* === CARD PRINCIPAL === */
-    .card-horarios {
+    .card-custom {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
         overflow: hidden;
     }
 
-    /* === HEADER === */
-    .header-horarios {
-        background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
-        color: white;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .titulo-horarios {
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .btn-nuevo {
-        background: #28a745;
-        color: white;
-        text-decoration: none;
-        padding: 10px 20px;
+    .alert-success {
+        background: rgba(40, 167, 69, 0.1);
+        border-left: 4px solid #28a745;
+        color: #155724;
+        padding: 1rem;
         border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .alert-error {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
         font-weight: 500;
+        color: white;
         transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .search-container {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .search-input:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .counter-badge {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .btn-action-custom {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0 2px;
         border: none;
         cursor: pointer;
     }
 
-        .btn-nuevo:hover {
-            background: #1e7e34;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
-        }
-
-    /* === ALERTAS === */
-    .alerta {
-        margin: 20px;
-        padding: 15px;
-        border-radius: 8px;
-        position: relative;
+    .btn-edit {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
     }
 
-    .alerta-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .alerta-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    /* === TABLA === */
-    .tabla-container {
-        overflow-x: auto;
-        margin: 20px;
-    }
-
-    .tabla-horarios {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-    }
-
-        .tabla-horarios th {
-            background: #343a40;
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(250, 182, 27, 0.4);
             color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            border: none;
+            text-decoration: none;
         }
 
-            .tabla-horarios th.acciones-header {
-                text-align: center;
-                width: 200px;
+    .btn-details {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+        .btn-details:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+    }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .table-custom {
+        margin: 0;
+    }
+
+        .table-custom thead {
+            background: #221d42;
+            color: white;
+        }
+
+            .table-custom thead th {
+                border: none;
+                padding: 1rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.5px;
             }
 
-            .tabla-horarios th.horario-header {
-                text-align: center;
-                width: 150px;
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .table-custom tbody tr:hover {
+                background-color: rgba(23, 136, 202, 0.05);
             }
 
-        .tabla-horarios td {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
+        .table-custom td {
+            padding: 1rem;
+            border-color: #e7e8eb;
             vertical-align: middle;
         }
 
-        .tabla-horarios tr:hover {
-            background: #f8f9fa;
-        }
-
-    .nombre-horario {
-        font-weight: 600;
-        color: #495057;
-        font-size: 1rem;
+    .schedule-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
-    .tiempo-horario {
-        background: #e9ecef;
-        padding: 6px 12px;
+    .schedule-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .schedule-details h6 {
+        margin: 0;
+        font-weight: 600;
+        color: #221d42;
+    }
+
+    .schedule-id {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .time-badge {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+        padding: 0.5rem 1rem;
         border-radius: 20px;
         font-family: 'Courier New', monospace;
         font-weight: 600;
-        color: #495057;
-        display: inline-block;
-        font-size: 0.9rem;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    /* === BOTONES DE ACCIÓN === */
-    .acciones-container {
+    .duration-info {
         display: flex;
-        gap: 8px;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .duration-badge {
+        background: rgba(23, 136, 202, 0.1);
+        color: #1788ca;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #e7e8eb;
+        }
+
+    .actions-group {
+        display: flex;
+        gap: 0.25rem;
         justify-content: center;
         flex-wrap: wrap;
     }
 
-    .btn-accion {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 80px;
-        justify-content: center;
-    }
-
-    .btn-ver {
-        background: #17a2b8;
-        color: white;
-    }
-
-        .btn-ver:hover {
-            background: #138496;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(23,162,184,0.3);
-        }
-
-    .btn-editar {
-        background: #ffc107;
-        color: #212529;
-    }
-
-        .btn-editar:hover {
-            background: #e0a800;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(255,193,7,0.3);
-        }
-
-    .btn-eliminar {
-        background: #dc3545;
-        color: white;
-    }
-
-        .btn-eliminar:hover {
-            background: #c82333;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(220,53,69,0.3);
-        }
-
-    /* === ESTADO VACÍO === */
-    .estado-vacio {
-        text-align: center;
-        padding: 60px 20px;
-        color: #6c757d;
-    }
-
-        .estado-vacio h4 {
-            margin-bottom: 10px;
-            color: #495057;
-        }
-
-        .estado-vacio p {
-            margin-bottom: 20px;
-        }
-
-    /* === RESPONSIVE === */
     @@media (max-width: 768px) {
-        .horarios-container {
-            padding: 10px;
-        }
-
-        .header-horarios {
-            flex-direction: column;
-            gap: 15px;
-            text-align: center;
-        }
-
-        .titulo-horarios {
-            font-size: 1.5rem;
-        }
-
-        .btn-nuevo {
-            width: 100%;
-        }
-
-        .tabla-horarios th,
-        .tabla-horarios td {
-            padding: 10px 8px;
+        .btn-primary-custom {
+            padding: 10px 20px;
             font-size: 0.875rem;
         }
 
-        .acciones-container {
-            flex-direction: column;
-            gap: 4px;
+        .page-header-custom {
+            padding: 1.5rem 0;
         }
 
-        .btn-accion {
-            width: 100%;
-            padding: 6px 12px;
-            font-size: 0.8rem;
+        .search-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
             min-width: auto;
         }
 
-        .tabla-horarios th.acciones-header {
-            width: 120px;
+        .btn-action-custom {
+            padding: 4px 8px;
+            font-size: 0.75rem;
         }
 
-        .tiempo-horario {
-            font-size: 0.8rem;
-            padding: 4px 8px;
+        .schedule-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .actions-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-action-custom {
+            width: 100%;
+            justify-content: center;
         }
     }
 
     @@media (max-width: 576px) {
-        .header-horarios {
-            padding: 15px;
-        }
-
-        .titulo-horarios {
-            font-size: 1.3rem;
-        }
-
-        .tabla-horarios {
-            font-size: 0.8rem;
-        }
-
-            .tabla-horarios th,
-            .tabla-horarios td {
-                padding: 8px 6px;
-            }
-
-        .btn-accion {
-            padding: 4px 8px;
-            font-size: 0.75rem;
-        }
-
-        .nombre-horario {
-            font-size: 0.9rem;
-        }
-
-        .tiempo-horario {
-            font-size: 0.75rem;
-            padding: 3px 6px;
+        .hidden-mobile {
+            display: none;
         }
     }
 </style>
 
-<div class="horarios-container">
-    <div class="card-horarios">
-        <!-- Header -->
-        <div class="header-horarios">
-            <h1 class="titulo-horarios">⏰ Horarios de Trabajo</h1>
-            <a href="@Url.Action("Create")" class="btn-nuevo">
-                ➕ Nuevo Horario
-            </a>
+<!-- Mensajes de alerta -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert-success">
+        <i class="fas fa-check-circle"></i>
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        @TempData["Error"]
+    </div>
+}
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-clock"></i> Gestión de Horarios</h1>
+                <p class="mb-0">Administra los horarios de trabajo de la organización</p>
+            </div>
         </div>
-
-        <!-- Alertas -->
-        @if (TempData["Success"] != null)
-        {
-            <div class="alerta alerta-success">
-                ✅ @TempData["Success"]
-            </div>
-        }
-
-        @if (TempData["Error"] != null)
-        {
-            <div class="alerta alerta-error">
-                ❌ @TempData["Error"]
-            </div>
-        }
-
-        <!-- Tabla -->
-        <div class="tabla-container">
-            <table class="tabla-horarios">
-                <thead>
-                    <tr>
-                        <th>📋 Nombre</th>
-                        <th class="horario-header">🕐 Horario</th>
-                        <th class="acciones-header">⚙️ Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                <div class="nombre-horario">@item.nombre</div>
-                            </td>
-                            <td class="text-center">
-                                <div class="tiempo-horario">
-                                    @item.hora_entrada.ToString(@"hh\:mm") - @item.hora_salida.ToString(@"hh\:mm")
-                                </div>
-                            </td>
-                            <td>
-                                <div class="acciones-container">
-                                    <a href="@Url.Action("Details", new { id = item.id_horario })"
-                                       class="btn-accion btn-ver"
-                                       title="Ver detalles">
-                                        👁️ Ver
-                                    </a>
-                                    <a href="@Url.Action("Edit", new { id = item.id_horario })"
-                                       class="btn-accion btn-editar"
-                                       title="Editar">
-                                        ✏️ Editar
-                                    </a>
-                                    <a href="@Url.Action("Delete", new { id = item.id_horario })"
-                                       class="btn-accion btn-eliminar"
-                                       title="Eliminar">
-                                        🗑️ Eliminar
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Estado vacío -->
-        @if (!Model.Any())
-        {
-            <div class="estado-vacio">
-                <h4>⏰ No hay horarios registrados</h4>
-                <p>Comienza creando el primer horario de trabajo para el sistema.</p>
-                <a href="@Url.Action("Create")" class="btn-nuevo">
-                    ➕ Crear el primero
-                </a>
-            </div>
-        }
     </div>
 </div>
+
+<div class="container" style="max-width: 1200px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <!-- Barra de búsqueda y acciones -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar horarios por nombre...">
+                </div>
+                <div class="counter-badge">
+                    <i class="fas fa-hashtag"></i>
+                    Total: <span id="totalCount">@(Model?.Count() ?? 0)</span>
+                </div>
+                @Html.ActionLink("Nuevo Horario", "Create", null, new { @class = "btn-primary-custom" })
+            </div>
+
+            <div class="card-custom">
+                <div class="card-body p-0">
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom" style="border-color: #e7e8eb !important;">
+                        <h4 class="mb-0" style="color: #221d42; font-weight: 600;">
+                            <i class="fas fa-list-alt"></i> Lista de Horarios
+                        </h4>
+                    </div>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table-custom table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-clock"></i> Horario</th>
+                                        <th><i class="fas fa-time"></i> Horario de Trabajo</th>
+                                        <th class="hidden-mobile"><i class="fas fa-stopwatch"></i> Duración</th>
+                                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="horariosTableBody">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="horario-row">
+                                            <td>
+                                                <div class="schedule-info">
+                                                    <div class="schedule-icon">
+                                                        <i class="fas fa-clock"></i>
+                                                    </div>
+                                                    <div class="schedule-details">
+                                                        <h6 class="schedule-name">@Html.DisplayFor(modelItem => item.nombre)</h6>
+                                                        <p class="schedule-id">ID: @Html.DisplayFor(modelItem => item.id_horario)</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="time-badge">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                    @item.hora_entrada.ToString(@"hh\:mm") - @item.hora_salida.ToString(@"hh\:mm")
+                                                </div>
+                                            </td>
+                                            <td class="hidden-mobile">
+                                                <div class="duration-info">
+                                                    @{
+                                                        var duration = item.hora_salida.Subtract(item.hora_entrada);
+                                                        var hours = (int)duration.TotalHours;
+                                                        var minutes = duration.Minutes;
+                                                    }
+                                                    <div class="duration-badge">
+                                                        <i class="fas fa-stopwatch"></i>
+                                                        @hours h @minutes min
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="actions-group">
+                                                    @Html.ActionLink("Details", "Details", new { id = item.id_horario }, new { @class = "btn-action-custom btn-details", title = "Ver Detalles" }) 
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.id_horario }, new { @class = "btn-action-custom btn-edit", title = "Editar" }) 
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.id_horario }, new { @class = "btn-action-custom btn-delete", title = "Eliminar" }) 
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-clock"></i>
+                            <h5 style="color: #221d42; margin-bottom: 1rem;">No hay horarios registrados</h5>
+                            <p style="margin-bottom: 2rem;">Comienza creando el primer horario de trabajo para la organización.</p>
+                            @Html.ActionLink("Crear Primer Horario", "Create", null, new { @class = "btn-primary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Búsqueda en tiempo real
+            $('#searchInput').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                var visibleCount = 0;
+
+                $('.horario-row').each(function() {
+                    var scheduleName = $(this).find('.schedule-name').text().toLowerCase();
+                    var scheduleId = $(this).find('.schedule-id').text().toLowerCase();
+
+                    if (scheduleName.includes(searchTerm) || scheduleId.includes(searchTerm)) {
+                        $(this).show();
+                        visibleCount++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Actualizar contador
+                $('#totalCount').text(visibleCount);
+
+                // Mostrar mensaje si no hay resultados
+                if (visibleCount === 0 && searchTerm !== '') {
+                    if ($('#noResults').length === 0) {
+                        $('#horariosTableBody').append(`
+                            <tr id="noResults">
+                                <td colspan="4" class="empty-state">
+                                    <i class="fas fa-search"></i>
+                                    <h5 style="color: #221d42; margin-bottom: 1rem;">No se encontraron resultados</h5>
+                                    <p>Intenta con otro término de búsqueda</p>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                } else {
+                    $('#noResults').remove();
+                }
+            });
+
+            // Animación de entrada para las filas
+            $('.horario-row').each(function(index) {
+                $(this).css({
+                    'opacity': '0',
+                    'transform': 'translateY(20px)'
+                });
+
+                setTimeout(() => {
+                    $(this).css({
+                        'transition': 'all 0.3s ease',
+                        'opacity': '1',
+                        'transform': 'translateY(0)'
+                    });
+                }, index * 100);
+            });
+
+            // Confirmación para eliminar
+            $('.btn-delete').on('click', function(e) {
+                var scheduleName = $(this).closest('tr').find('.schedule-name').text();
+                if (!confirm(`¿Estás seguro de que deseas eliminar el horario "${scheduleName}"?\n\nEsta acción no se puede deshacer.`)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

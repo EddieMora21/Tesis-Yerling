@@ -1,98 +1,446 @@
 ﻿@model SistemaNomina.Models.Feriados
-
 @{
-    ViewBag.Title = "Details";
-    // Establece el título de la página como "Details"
+    ViewBag.Title = "Detalles del Feriado";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // plantilla
 }
 
-<h2>Details</h2>
-@*Título visible en la página para indicar que se muestran los detalles*@
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+    }
 
-<div>
-    <h4>Feriados</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        @*Lista de definición*@
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.nombre)
-            @*Muestra la etiqueta del campo 'nombre'*@
-        </dt>
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.nombre)
-            @*Muestra el valor de 'nombre'*@
-        </dd>
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e7e8eb;
+        transition: all 0.3s ease;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha)
-            
-        </dt>
+        .detail-row:last-child {
+            border-bottom: none;
+        }
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha)
-            
-        </dd>
+        .detail-row:hover {
+            background: rgba(23, 136, 202, 0.03);
+            border-radius: 8px;
+            margin: 0 -1rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.pago_obligatorio)
-            
-        </dt>
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.5rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.pago_obligatorio)
-            
-        </dd>
+    .detail-value {
+        flex: 1;
+        color: #495057;
+        font-size: 1.1rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.recargo)
-            
-        </dt>
+        .detail-value strong {
+            color: #221d42;
+        }
 
-        <dd>
-            @Html.DisplayFor(model => model.recargo)
-            
-        </dd>
+    .badge-obligatorio {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.descripcion)
-            
-        </dt>
+    .badge-no-obligatorio {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.descripcion)
-            
-        </dd>
+    .badge-recargo {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-            
-        </dt>
+    .date-badge {
+        background: linear-gradient(135deg, #e7e8eb 0%, #e7e8eb 100%);
+        color: #6c757d;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-block;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-            
-        </dd>
+    .fecha-highlight {
+        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+        color: #1788ca;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid #1788ca;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-            
-        </dt>
+    .description-box {
+        background: #f8f9fa;
+        border-left: 4px solid #1788ca;
+        padding: 1.5rem;
+        border-radius: 8px;
+        font-style: italic;
+        line-height: 1.6;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-            
-        </dd>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-right: 1rem;
+    }
 
-    </dl>
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .stats-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid #e7e8eb;
+    }
+
+    .stats-icon {
+        font-size: 2.5rem;
+        color: #fab61b;
+        margin-bottom: 1rem;
+    }
+
+    .stats-title {
+        font-size: 0.875rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #221d42;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+            .page-header-custom h1 {
+                font-size: 1.5rem;
+            }
+
+        .card-custom {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            min-width: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            justify-content: center;
+            margin-right: 0;
+        }
+
+        .stats-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Header de la página -->
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>
+                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                    Detalles del Feriado
+                </h1>
+                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
+                    Información completa del día feriado seleccionado
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_feriado }) |
-    @*Enlace para editar el registro actual, pasando el id correspondiente*@
+<!-- Contenido principal -->
+<div class="container" style="max-width: 1000px;">
+    <div class="row">
+        <!-- Información principal -->
+        <div class="col-lg-8">
+            <div class="card-custom">
+                <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                    <i class="fas fa-clipboard-list"></i>
+                    Información General
+                </h4>
 
-    @Html.ActionLink("Back to List", "Index")
-    @*Enlace para regresar a la lista principal de feriados*@
-</p>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-tag"></i>
+                        @Html.DisplayNameFor(model => model.nombre)
+                    </div>
+                    <div class="detail-value">
+                        <strong>@Html.DisplayFor(model => model.nombre)</strong>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-day"></i>
+                        @Html.DisplayNameFor(model => model.fecha)
+                    </div>
+                    <div class="detail-value">
+                        <span class="fecha-highlight">
+                            <i class="fas fa-calendar-alt"></i>
+                            @Html.DisplayFor(model => model.fecha)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-check-circle"></i>
+                        Pago Obligatorio
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.pago_obligatorio == true)
+                        {
+                            <span class="badge-obligatorio">
+                                <i class="fas fa-check"></i>
+                                Obligatorio
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-no-obligatorio">
+                                <i class="fas fa-times"></i>
+                                No Obligatorio
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-percentage"></i>
+                        @Html.DisplayNameFor(model => model.recargo)
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge-recargo">
+                            <i class="fas fa-plus"></i>
+                            @Html.DisplayFor(model => model.recargo)%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        @Html.DisplayNameFor(model => model.fecha_creacion)
+                    </div>
+                    <div class="detail-value">
+                        <span class="date-badge">
+                            @Html.DisplayFor(model => model.fecha_creacion)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-edit"></i>
+                        @Html.DisplayNameFor(model => model.fecha_actualizacion)
+                    </div>
+                    <div class="detail-value">
+                        <span class="date-badge">
+                            @Html.DisplayFor(model => model.fecha_actualizacion)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.descripcion))
+            {
+                <div class="card-custom">
+                    <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                        <i class="fas fa-align-left"></i>
+                        Descripción
+                    </h4>
+                    <div class="description-box">
+                        @Html.DisplayFor(model => model.descripcion)
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Panel lateral con estadísticas -->
+        <div class="col-lg-4">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="stats-title">Factor de Pago</div>
+                <div class="stats-value">
+                    @(1 + (Model.recargo / 100))x
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Multiplicador del salario base
+                </small>
+            </div>
+
+            <div class="stats-card mt-3">
+                <div class="stats-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stats-title">Ejemplo de Cálculo</div>
+                <div class="stats-value" style="font-size: 1.2rem;">
+                    ¢1,000 → ¢@((1000 * (1 + (Model.recargo / 100))).Value.ToString("N0"))
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Hora normal → Hora en feriado
+                </small>
+            </div>
+
+            <div class="card-custom mt-3" style="padding: 1.5rem;">
+                <h6 style="color: #221d42; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle text-info"></i>
+                    Información del Sistema
+                </h6>
+                <small class="text-muted">
+                    <strong>ID del Registro:</strong> @Model.id_feriado<br>
+                    <strong>Estado:</strong> <span class="text-success">Activo</span><br>
+                    <strong>Categoría:</strong> Día Feriado<br>
+                    <strong>Tipo:</strong> @(Model.pago_obligatorio == true ? "Obligatorio" : "No Obligatorio")
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <hr style="margin: 2rem 0; border-color: #e7e8eb;">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.id_feriado }, new
+            {
+                @class = "btn btn-primary-custom"
+            })
+            @Html.ActionLink("Volver al Listado", "Index", null, new
+            {
+                @class = "btn btn-secondary-custom"
+            })
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="mt-4 p-3" style="background: #e7f3ff; border-radius: 10px; border-left: 4px solid #1788ca;">
+        <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+            <i class="fas fa-lightbulb text-info"></i>
+            Información sobre feriados
+        </h6>
+        <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+            <li>Los recargos se aplican cuando los empleados trabajan en días feriados</li>
+            <li>Un recargo del @Html.DisplayFor(model => model.recargo)% significa que se paga @(1 + (Model.recargo / 100)) veces el valor normal</li>
+            <li>Los feriados obligatorios deben pagarse aunque el empleado no trabaje</li>
+            <li>Los feriados no obligatorios solo se pagan si el empleado trabaja</li>
+        </ul>
+    </div>
+</div>

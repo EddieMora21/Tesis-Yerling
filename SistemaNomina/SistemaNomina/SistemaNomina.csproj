@@ -280,6 +280,7 @@
     <Compile Include="Controllers\NominasController.cs" />
     <Compile Include="Controllers\PermisosController.cs" />
     <Compile Include="Controllers\PuestosController.cs" />
+    <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SolicitudesVacacionesController.cs" />
     <Compile Include="Controllers\TipoIncapacidadesController.cs" />
@@ -553,6 +554,12 @@
     <Content Include="Views\Consultas\DetalleColaborador.cshtml" />
     <Content Include="Views\Consultas\HistoricoPlanillas.cshtml" />
     <Content Include="Views\Consultas\_ResultadoPlanillas.cshtml" />
+    <Content Include="Views\Reportes\Index.cshtml" />
+    <Content Include="Views\Reportes\ReporteNomina.cshtml" />
+    <Content Include="Views\Reportes\ReporteAsistencia.cshtml" />
+    <Content Include="Views\Reportes\ReporteVacaciones.cshtml" />
+    <Content Include="Views\Reportes\ReporteHorasExtras.cshtml" />
+    <Content Include="Views\Reportes\ReporteIncapacidades.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

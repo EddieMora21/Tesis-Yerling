@@ -6,385 +6,342 @@
 }
 
 <style>
-    /* === RESET Y BASE === */
-    * {
-        box-sizing: border-box;
-    }
-
-    .estados-container {
-        padding: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    /* === CARD PRINCIPAL === */
-    .card-estados {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    /* === HEADER === */
-    .header-estados {
-        background: linear-gradient(135deg, #fd7e14 0%, #dc6002 100%);
+    .page-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
         color: white;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
     }
 
-    .titulo-estados {
-        font-size: 1.8rem;
+    .page-title {
+        font-size: 2.2rem;
         font-weight: 600;
         margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .btn-nuevo {
-        background: #28a745;
-        color: white;
-        text-decoration: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s ease;
+    .btn-create {
+        background: #fab61b;
         border: none;
-        cursor: pointer;
+        color: #221d42;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-        .btn-nuevo:hover {
-            background: #1e7e34;
+        .btn-create:hover {
+            background: #e09f15;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: #221d42;
+            text-decoration: none;
         }
 
-    /* === ALERTAS === */
-    .alerta {
-        margin: 20px;
-        padding: 15px;
-        border-radius: 8px;
-        position: relative;
+    .estados-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        overflow: hidden;
+        border: 1px solid #e7e8eb;
     }
 
-    .alerta-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
+    .table-responsive {
+        border-radius: 15px;
     }
 
-    .alerta-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    /* === TABLA === */
-    .tabla-container {
-        overflow-x: auto;
-        margin: 20px;
-    }
-
-    .tabla-estados {
-        width: 100%;
-        border-collapse: collapse;
+    .custom-table {
+        margin: 0;
         background: white;
     }
 
-        .tabla-estados th {
-            background: #343a40;
+        .custom-table thead th {
+            background: #221d42;
             color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
             border: none;
+            padding: 1.2rem 1rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-            .tabla-estados th.acciones-header {
-                text-align: center;
-                width: 200px;
-            }
-
-            .tabla-estados th.modulo-header {
-                text-align: center;
-                width: 120px;
-            }
-
-        .tabla-estados td {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
+        .custom-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #e7e8eb;
             vertical-align: middle;
         }
 
-        .tabla-estados tr:hover {
-            background: #f8f9fa;
+        .custom-table tbody tr:hover {
+            background: rgba(23, 136, 202, 0.05);
         }
 
-    .nombre-estado {
+        .custom-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .estado-name {
         font-weight: 600;
-        color: #495057;
+        color: #221d42;
         font-size: 1rem;
     }
 
     .badge-modulo {
-        padding: 6px 12px;
+        padding: 8px 16px;
         border-radius: 20px;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         font-weight: 600;
         display: inline-block;
+        min-width: 80px;
         text-align: center;
     }
 
-    .modulo-permisos {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-
     .modulo-vacaciones {
-        background: #d4edda;
-        color: #155724;
+        background: linear-gradient(135deg, #1788ca, #0f6da3);
+        color: white;
     }
 
-    .modulo-asistencias {
-        background: #fff3cd;
-        color: #856404;
+    .modulo-permisos {
+        background: linear-gradient(135deg, #fab61b, #e09f15);
+        color: #221d42;
     }
 
-    /* === BOTONES DE ACCIÓN === */
-    .acciones-container {
+    .modulo-asistencia {
+        background: linear-gradient(135deg, #221d42, #1a1536);
+        color: white;
+    }
+
+    .action-buttons {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         justify-content: center;
         flex-wrap: wrap;
     }
 
-    .btn-accion {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+    .btn-action {
         padding: 8px 16px;
         border-radius: 6px;
         text-decoration: none;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
         font-weight: 500;
         border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 80px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 70px;
         justify-content: center;
     }
 
-    .btn-ver {
-        background: #17a2b8;
+    .btn-view {
+        background: #1788ca;
         color: white;
     }
 
-        .btn-ver:hover {
-            background: #138496;
+        .btn-view:hover {
+            background: #0f6da3;
+            color: white;
+            text-decoration: none;
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(23,162,184,0.3);
         }
 
-    .btn-editar {
-        background: #ffc107;
-        color: #212529;
+    .btn-edit {
+        background: #fab61b;
+        color: #221d42;
     }
 
-        .btn-editar:hover {
-            background: #e0a800;
+        .btn-edit:hover {
+            background: #e09f15;
+            color: #221d42;
+            text-decoration: none;
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(255,193,7,0.3);
         }
 
-    .btn-eliminar {
+    .btn-delete {
         background: #dc3545;
         color: white;
     }
 
-        .btn-eliminar:hover {
+        .btn-delete:hover {
             background: #c82333;
+            color: white;
+            text-decoration: none;
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(220,53,69,0.3);
         }
 
-    /* === ESTADO VACÍO === */
-    .estado-vacio {
+    .alert-custom {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-error-custom {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .empty-state {
         text-align: center;
-        padding: 60px 20px;
+        padding: 4rem 2rem;
         color: #6c757d;
     }
 
-        .estado-vacio h4 {
-            margin-bottom: 10px;
-            color: #495057;
+        .empty-state i {
+            font-size: 4rem;
+            color: #e7e8eb;
+            margin-bottom: 1rem;
         }
 
-        .estado-vacio p {
-            margin-bottom: 20px;
+        .empty-state h4 {
+            color: #221d42;
+            margin-bottom: 1rem;
         }
 
-    /* === RESPONSIVE === */
     @@media (max-width: 768px) {
-        .estados-container {
-            padding: 10px;
+        .page-header {
+            padding: 1.5rem 0;
         }
 
-        .header-estados {
-            flex-direction: column;
-            gap: 15px;
-            text-align: center;
+        .page-title {
+            font-size: 1.8rem;
         }
 
-        .titulo-estados {
-            font-size: 1.5rem;
-        }
-
-        .btn-nuevo {
-            width: 100%;
-        }
-
-        .tabla-estados th,
-        .tabla-estados td {
-            padding: 10px 8px;
-            font-size: 0.875rem;
-        }
-
-        .acciones-container {
+        .action-buttons {
             flex-direction: column;
             gap: 4px;
         }
 
-        .btn-accion {
+        .btn-action {
             width: 100%;
             padding: 6px 12px;
-            font-size: 0.8rem;
-            min-width: auto;
         }
 
-        .tabla-estados th.acciones-header {
-            width: 120px;
+        .custom-table thead th {
+            padding: 0.8rem 0.5rem;
+            font-size: 0.85rem;
         }
 
-        .badge-modulo {
-            font-size: 0.7rem;
-            padding: 4px 8px;
-        }
-    }
-
-    @@media (max-width: 576px) {
-        .header-estados {
-            padding: 15px;
-        }
-
-        .titulo-estados {
-            font-size: 1.3rem;
-        }
-
-        .tabla-estados {
-            font-size: 0.8rem;
-        }
-
-            .tabla-estados th,
-            .tabla-estados td {
-                padding: 8px 6px;
-            }
-
-        .btn-accion {
-            padding: 4px 8px;
-            font-size: 0.75rem;
-        }
-
-        .nombre-estado {
-            font-size: 0.9rem;
-        }
-
-        .badge-modulo {
-            font-size: 0.65rem;
-            padding: 3px 6px;
+        .custom-table tbody td {
+            padding: 0.8rem 0.5rem;
         }
     }
 </style>
 
-<div class="estados-container">
-    <div class="card-estados">
-        <!-- Header -->
-        <div class="header-estados">
-            <h1 class="titulo-estados">📊 Estados del Sistema</h1>
-            <a href="@Url.Action("Create")" class="btn-nuevo">
-                ➕ Nuevo Estado
-            </a>
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-toggle-on me-3"></i>
+                    Gestión de Estados
+                </h1>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("Create")" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Nuevo Estado
+                </a>
+            </div>
         </div>
+    </div>
+</div>
 
-        <!-- Alertas -->
-        @if (TempData["Success"] != null)
+<div class="container">
+    <!-- Alertas -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Contenido principal -->
+    <div class="estados-card">
+        @if (Model.Any())
         {
-            <div class="alerta alerta-success">
-                ✅ @TempData["Success"]
-            </div>
-        }
-
-        @if (TempData["Error"] != null)
-        {
-            <div class="alerta alerta-error">
-                ❌ @TempData["Error"]
-            </div>
-        }
-
-        <!-- Tabla -->
-        <div class="tabla-container">
-            <table class="tabla-estados">
-                <thead>
-                    <tr>
-                        <th>📋 Nombre</th>
-                        <th class="modulo-header">🔧 Módulo</th>
-                        <th class="acciones-header">⚙️ Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <div class="table-responsive">
+                <table class="custom-table table">
+                    <thead>
                         <tr>
-                            <td>
-                                <div class="nombre-estado">@item.nombre</div>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge-modulo modulo-@item.modulo.ToLower()">
-                                    @item.modulo
-                                </span>
-                            </td>
-                            <td>
-                                <div class="acciones-container">
-                                    <a href="@Url.Action("Details", new { id = item.id_estado })"
-                                       class="btn-accion btn-ver"
-                                       title="Ver detalles">
-                                        👁️ Ver
-                                    </a>
-                                    <a href="@Url.Action("Edit", new { id = item.id_estado })"
-                                       class="btn-accion btn-editar"
-                                       title="Editar">
-                                        ✏️ Editar
-                                    </a>
-                                    <a href="@Url.Action("Delete", new { id = item.id_estado })"
-                                       class="btn-accion btn-eliminar"
-                                       title="Eliminar">
-                                        🗑️ Eliminar
-                                    </a>
-                                </div>
-                            </td>
+                            <th><i class="fas fa-tag me-2"></i>Nombre</th>
+                            <th class="text-center"><i class="fas fa-cube me-2"></i>Módulo</th>
+                            <th class="text-center"><i class="fas fa-cogs me-2"></i>Acciones</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Estado vacío -->
-        @if (!Model.Any())
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="estado-name">@item.nombre</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge-modulo modulo-@item.modulo.ToLower().Replace(" ", "")">
+                                        @item.modulo
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("Details", new { id = item.id_estado })"
+                                           class="btn-action btn-view"
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                            Ver
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = item.id_estado })"
+                                           class="btn-action btn-edit"
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                            Editar
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.id_estado })"
+                                           class="btn-action btn-delete"
+                                           title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
         {
-            <div class="estado-vacio">
-                <h4>📊 No hay estados registrados</h4>
-                <p>Comienza creando el primer estado para los módulos del sistema.</p>
-                <a href="@Url.Action("Create")" class="btn-nuevo">
-                    ➕ Crear el primero
+            <div class="empty-state">
+                <i class="fas fa-toggle-on"></i>
+                <h4>No hay estados registrados</h4>
+                <p class="mb-3">Comienza creando el primer estado para los módulos del sistema.</p>
+                <a href="@Url.Action("Create")" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Crear primer estado
                 </a>
             </div>
         }

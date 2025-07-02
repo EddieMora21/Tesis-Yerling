@@ -1,63 +1,418 @@
-﻿@model IEnumerable<SistemaNomina.TiposPermiso> 
+﻿@model IEnumerable<SistemaNomina.Models.TiposPermiso>
 
 @{
-    ViewBag.Title = "Index"; @* Título navegador *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+    ViewBag.Title = "Tipos de Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>  @* Título página *@
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+    }
 
-<p>
-    @Html.ActionLink("Create New", "Create")  @* nuevo registro *@
-</p>
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-<table class="table">
-    @*  tabla muestra datos *@
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.nombre)  @* Nombre de la columna "nombre" *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.con_goce)  @* Nombre de la columna "con_goce" *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.descripcion)  @* Nombre de la columna "descripcion" *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Nombre de la columna "fecha_creacion" *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Nombre de la columna "fecha_actualizacion" *@
-        </th>
-        <th></th>  @* Columna vacía para los botones de acción (Edit, Details, Delete) *@
-    </tr>
+    .btn-create {
+        background: #fab61b;
+        border: none;
+        color: #221d42;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-    @foreach (var item in Model)
-    {@* Recorre lista de TiposPermiso *@
-    <tr>
-        @* Fila mostrar datos de cada objeto *@
-        <td>
-            @Html.DisplayFor(modelItem => item.nombre)  @* Muestra el valor de "nombre"  *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.con_goce)  @* Muestra el valor de "con_goce"  *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.descripcion)  @* Muestra la descripción del tipo de permiso *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_creacion)  @* Muestra la fecha de creación del permiso *@
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_actualizacion)  @* Muestra la fecha de la última actualización *@
-        </td>
-        <td>
-            @* Sección con enlaces de acción para cada fila *@
-            @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo_permiso }) |  @* Enlace para editar este permiso *@
-            @Html.ActionLink("Details", "Details", new { id = item.id_tipo_permiso }) |  @* Enlace para ver los detalles *@
-            @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo_permiso })  @* Enlace para eliminar este permiso *@
-        </td>
-    </tr>
-}
+        .btn-create:hover {
+            background: #e09f15;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: #221d42;
+            text-decoration: none;
+        }
 
-</table>
+    .tipos-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        overflow: hidden;
+        border: 1px solid #e7e8eb;
+    }
+
+    .table-responsive {
+        border-radius: 15px;
+    }
+
+    .custom-table {
+        margin: 0;
+        background: white;
+    }
+
+        .custom-table thead th {
+            background: #221d42;
+            color: white;
+            border: none;
+            padding: 1.2rem 1rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #e7e8eb;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr:hover {
+            background: rgba(23, 136, 202, 0.05);
+        }
+
+        .custom-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .permiso-name {
+        font-weight: 600;
+        color: #221d42;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .permiso-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .icon-con-goce {
+        background: linear-gradient(135deg, #28a745, #20a53a);
+    }
+
+    .icon-sin-goce {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    .badge-goce {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .goce-si {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+
+    .goce-no {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+    }
+
+    .descripcion-text {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #495057;
+    }
+
+    .fecha-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 70px;
+        justify-content: center;
+    }
+
+    .btn-view {
+        background: #1788ca;
+        color: white;
+    }
+
+        .btn-view:hover {
+            background: #0f6da3;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .btn-edit {
+        background: #fab61b;
+        color: #221d42;
+    }
+
+        .btn-edit:hover {
+            background: #e09f15;
+            color: #221d42;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+
+        .btn-delete:hover {
+            background: #c82333;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .alert-custom {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-error-custom {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e7e8eb;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            color: #221d42;
+            margin-bottom: 1rem;
+        }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 6px 12px;
+        }
+
+        .custom-table thead th {
+            padding: 0.8rem 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .custom-table tbody td {
+            padding: 0.8rem 0.5rem;
+        }
+
+        .permiso-name {
+            font-size: 0.9rem;
+        }
+
+        .permiso-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 1rem;
+        }
+
+        .descripcion-text {
+            max-width: 150px;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-clipboard-list me-3"></i>
+                    Tipos de Permiso
+                </h1>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("Create")" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Nuevo Tipo de Permiso
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Alertas -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Contenido principal -->
+    <div class="tipos-card">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="custom-table table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tag me-2"></i>Nombre</th>
+                            <th class="text-center"><i class="fas fa-money-bill me-2"></i>Con Goce</th>
+                            <th><i class="fas fa-align-left me-2"></i>Descripción</th>
+                            <th class="text-center"><i class="fas fa-calendar me-2"></i>Creado</th>
+                            <th class="text-center"><i class="fas fa-edit me-2"></i>Actualizado</th>
+                            <th class="text-center"><i class="fas fa-cogs me-2"></i>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="permiso-name">
+                                        <div class="permiso-icon @(item.con_goce ? "icon-con-goce" : "icon-sin-goce")">
+                                            @(item.con_goce ? "CG" : "SG")
+                                        </div>
+                                        @item.nombre
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge-goce @(item.con_goce ? "goce-si" : "goce-no")">
+                                        @(item.con_goce ? "Con Goce" : "Sin Goce")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="descripcion-text" title="@item.descripcion">
+                                        @item.descripcion
+                                    </div>
+                                </td>
+                                <!-- DESPUÉS (CORRECTO) -->
+                                <td class="text-center">
+                                    <div class="fecha-text">
+                                        @(item.fecha_creacion?.ToString("dd/MM/yyyy") ?? "No registrada")
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="fecha-text">
+                                        @(item.fecha_actualizacion?.ToString("dd/MM/yyyy") ?? "No registrada")
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("Details", new { id = item.id_tipo_permiso })"
+                                           class="btn-action btn-view"
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                            Ver
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = item.id_tipo_permiso })"
+                                           class="btn-action btn-edit"
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                            Editar
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.id_tipo_permiso })"
+                                           class="btn-action btn-delete"
+                                           title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h4>No hay tipos de permiso registrados</h4>
+                <p class="mb-3">Comienza creando el primer tipo de permiso para el sistema.</p>
+                <a href="@Url.Action("Create")" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Crear primer tipo de permiso
+                </a>
+            </div>
+        }
+    </div>
+</div>

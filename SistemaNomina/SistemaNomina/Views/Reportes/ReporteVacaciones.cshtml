@@ -1,0 +1,213 @@
+﻿@model IEnumerable<SistemaNomina.Models.Vacaciones>
+
+@{
+    ViewBag.Title = "Reporte de Vacaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">
+                                <i class="fas fa-umbrella-beach me-3"></i>Reporte de Vacaciones
+                            </h3>
+                            <p class="mb-0 opacity-75">Periodo: @ViewBag.Periodo - Empleado: @ViewBag.EmpleadoSeleccionado - Departamento: @ViewBag.DepartamentoSeleccionado</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-2"></i>Volver
+                            </a>
+                            <button onclick="window.print()" class="btn btn-info ms-2">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model != null && Model.Any())
+                    {
+                        <!-- Resumen General -->
+                        <div class="row g-0 bg-light p-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <h4>@Model.Count()</h4>
+                                        <p class="mb-0">Empleados</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-calendar-plus fa-2x mb-2"></i>
+                                        <h4>@Model.Sum(v => v.dias_disponibles)</h4>
+                                        <p class="mb-0">Total Disponibles</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                                        <h4>@Model.Sum(v => v.dias_disfrutados ?? 0)</h4>
+                                        <p class="mb-0">Total Disfrutados</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-calendar-minus fa-2x mb-2"></i>
+                                        <h4>@Model.Sum(v => v.dias_disponibles - (v.dias_disfrutados ?? 0))</h4>
+                                        <p class="mb-0">Total Pendientes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Detalles -->
+                        <div class="table-responsive">
+                            <table class="table-striped table-hover mb-0 table" id="reporteTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th><i class="fas fa-id-card me-2"></i>Cedula</th>
+                                        <th><i class="fas fa-user me-2"></i>Empleado</th>
+                                        <th><i class="fas fa-building me-2"></i>Departamento</th>
+                                        <th><i class="fas fa-briefcase me-2"></i>Puesto</th>
+                                        <th class="text-center"><i class="fas fa-calendar me-2"></i>Periodo</th>
+                                        <th class="text-center"><i class="fas fa-calendar-plus me-2"></i>Disponibles</th>
+                                        <th class="text-center"><i class="fas fa-calendar-check me-2"></i>Disfrutados</th>
+                                        <th class="text-center"><i class="fas fa-calendar-minus me-2"></i>Pendientes</th>
+                                        <th class="text-center"><i class="fas fa-percentage me-2"></i>% Utilizado</th>
+                                        <th class="text-center"><i class="fas fa-list me-2"></i>Solicitudes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var vacacion in Model.OrderBy(v => v.Empleados.apellido1))
+                                    {
+                                        var diasPendientes = vacacion.dias_disponibles - (vacacion.dias_disfrutados ?? 0);
+                                        var porcentajeUtilizado = vacacion.dias_disponibles > 0 ?
+                                            Math.Round(((decimal)(vacacion.dias_disfrutados ?? 0) / vacacion.dias_disponibles) * 100, 1) : 0;
+                                        var solicitudesPendientes = vacacion.SolicitudesVacaciones.Count(s => s.Estados.nombre == "Pendiente");
+                                        var solicitudesAprobadas = vacacion.SolicitudesVacaciones.Count(s => s.Estados.nombre == "Aprobado");
+                                        var solicitudesRechazadas = vacacion.SolicitudesVacaciones.Count(s => s.Estados.nombre == "Rechazado");
+
+                                        <tr>
+                                            <td><span class="badge bg-secondary">@vacacion.Empleados.cedula</span></td>
+                                            <td>
+                                                <strong>@vacacion.Empleados.nombre1 @vacacion.Empleados.apellido1</strong>
+                                                <br><small class="text-muted">@vacacion.Empleados.nombre2 @vacacion.Empleados.apellido2</small>
+                                            </td>
+                                            <td><span class="badge bg-primary">@vacacion.Empleados.Puestos.Departamentos.nombre</span></td>
+                                            <td>@vacacion.Empleados.Puestos.nombre_puesto</td>
+                                            <td class="text-center"><span class="badge bg-info">@vacacion.periodo</span></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success fs-6">@vacacion.dias_disponibles dias</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-warning fs-6">@(vacacion.dias_disfrutados ?? 0) dias</span>
+                                            </td>
+                                            <td class="text-center">
+                                                @if (diasPendientes > 0)
+                                                {
+                                                    <span class="badge bg-danger fs-6">@diasPendientes dias</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success fs-6">0 dias</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (porcentajeUtilizado <= 25)
+                                                {
+                                                    <span class="badge bg-danger">@porcentajeUtilizado%</span>
+                                                }
+                                                else if (porcentajeUtilizado <= 75)
+                                                {
+                                                    <span class="badge bg-warning">@porcentajeUtilizado%</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">@porcentajeUtilizado%</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex flex-column gap-1">
+                                                    @if (solicitudesPendientes > 0)
+                                                    {
+                                                        <small class="badge bg-warning">@solicitudesPendientes Pendientes</small>
+                                                    }
+                                                    @if (solicitudesAprobadas > 0)
+                                                    {
+                                                        <small class="badge bg-success">@solicitudesAprobadas Aprobadas</small>
+                                                    }
+                                                    @if (solicitudesRechazadas > 0)
+                                                    {
+                                                        <small class="badge bg-danger">@solicitudesRechazadas Rechazadas</small>
+                                                    }
+                                                    @if (solicitudesPendientes == 0 && solicitudesAprobadas == 0 && solicitudesRechazadas == 0)
+                                                    {
+                                                        <small class="text-muted">Sin solicitudes</small>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="py-5 text-center">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No se encontraron registros</h4>
+                            <p class="text-muted">No hay datos de vacaciones para los filtros seleccionados.</p>
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn, .card-header .col-auto {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .table {
+            font-size: 11px;
+        }
+    }
+
+    .badge {
+        font-size: 0.8em;
+    }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

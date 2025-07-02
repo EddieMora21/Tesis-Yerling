@@ -3,82 +3,380 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2><i class="fa fa-chart-bar"></i> Reportes de Asistencia</h2>
-<hr />
+<style>
+    .header-reportes {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4><i class="fa fa-filter"></i> Filtros de Busqueda</h4>
-    </div>
-    <div class="panel-body">
-        @using (Html.BeginForm("GenerarReporte", "Asistencia", FormMethod.Post, new { @id = "formReporte" }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Empleado</label>
-                        @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos --", new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Departamento</label>
-                        @Html.DropDownList("departamentoId", ViewBag.Departamentos as SelectList, "-- Todos --", new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Fecha Inicio</label>
-                        <input type="date" name="fechaInicio" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Fecha Fin</label>
-                        <input type="date" name="fechaFin" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>&nbsp;</label><br />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-search"></i> Generar
-                        </button>
-                    </div>
-                </div>
-            </div>
+    .main-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
+
+    .filters-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border-left: 4px solid #1788ca;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
         }
-    </div>
-</div>
 
-<div id="resultadoReporte">
-    <div class="text-muted text-center">
-        <i class="fa fa-info-circle"></i> Seleccione los filtros y haga clic en "Generar" para ver el reporte.
+    .control-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+            color: white;
+        }
+
+    .section-title {
+        color: #221d42;
+        font-weight: 600;
+        border-bottom: 2px solid #1788ca;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+
+    .help-text {
+        color: #6c757d;
+        font-style: italic;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .results-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        margin-top: 25px;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #6c757d;
+        padding: 40px 20px;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e7e8eb;
+        }
+
+    .loading-state {
+        text-align: center;
+        color: #1788ca;
+        padding: 40px 20px;
+        display: none;
+    }
+
+    .loading-spinner {
+        border: 4px solid #e7e8eb;
+        border-top: 4px solid #1788ca;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px auto;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .filter-icon {
+        margin-right: 8px;
+        color: #1788ca;
+    }
+
+    .quick-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .quick-filter-btn {
+        background: white;
+        border: 2px solid #e7e8eb;
+        border-radius: 20px;
+        padding: 8px 16px;
+        color: #221d42;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .quick-filter-btn:hover {
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-1px);
+        }
+
+        .quick-filter-btn.active {
+            background: #1788ca;
+            border-color: #1788ca;
+            color: white;
+        }
+
+    @@media (max-width: 768px) {
+        .header-reportes {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+        .filters-card {
+            padding: 20px 15px;
+        }
+
+        .quick-filters {
+            justify-content: center;
+        }
+
+        .quick-filter-btn {
+            flex: 1;
+            text-align: center;
+            min-width: 80px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 1200px;">
+    <div class="header-reportes">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-chart-bar" style="font-size: 2rem; margin-right: 15px;"></i>
+                Reportes de Asistencia
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Genera informes detallados de asistencia y puntualidad</p>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <div style="padding: 25px;">
+            <h4 class="section-title">
+                <i class="fa fa-filter" style="margin-right: 10px; color: #1788ca;"></i>
+                Filtros de Búsqueda
+            </h4>
+
+            <div class="quick-filters">
+                <button type="button" class="quick-filter-btn" onclick="setQuickFilter('hoy')">
+                    <i class="fa fa-calendar-day" style="margin-right: 5px;"></i>
+                    Hoy
+                </button>
+                <button type="button" class="quick-filter-btn" onclick="setQuickFilter('semana')">
+                    <i class="fa fa-calendar-week" style="margin-right: 5px;"></i>
+                    Esta Semana
+                </button>
+                <button type="button" class="quick-filter-btn" onclick="setQuickFilter('mes')">
+                    <i class="fa fa-calendar-alt" style="margin-right: 5px;"></i>
+                    Este Mes
+                </button>
+                <button type="button" class="quick-filter-btn" onclick="clearFilters()">
+                    <i class="fa fa-eraser" style="margin-right: 5px;"></i>
+                    Limpiar
+                </button>
+            </div>
+
+            <div class="filters-card">
+                @using (Html.BeginForm("GenerarReporte", "Asistencia", FormMethod.Post, new { @id = "formReporte" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label-custom">
+                                    <i class="filter-icon fa fa-user"></i>
+                                    Empleado
+                                </label>
+                                @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-control form-control-custom" })
+                                <small class="help-text">Selecciona un empleado específico o deja en blanco para todos</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label-custom">
+                                    <i class="filter-icon fa fa-building"></i>
+                                    Departamento
+                                </label>
+                                @Html.DropDownList("departamentoId", ViewBag.Departamentos as SelectList, "-- Todos los departamentos --", new { @class = "form-control form-control-custom" })
+                                <small class="help-text">Filtra por departamento específico</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label-custom">
+                                    <i class="filter-icon fa fa-calendar"></i>
+                                    Fecha Inicio
+                                </label>
+                                <input type="date" name="fechaInicio" id="fechaInicio" class="form-control form-control-custom" />
+                                <small class="help-text">Fecha de inicio del período</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label-custom">
+                                    <i class="filter-icon fa fa-calendar"></i>
+                                    Fecha Fin
+                                </label>
+                                <input type="date" name="fechaFin" id="fechaFin" class="form-control form-control-custom" />
+                                <small class="help-text">Fecha de fin del período</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn-primary-custom">
+                                    <i class="fa fa-search" style="margin-right: 8px;"></i>
+                                    Generar Reporte
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="results-container" id="resultadoReporte">
+        <div class="empty-state">
+            <i class="fa fa-chart-bar"></i>
+            <h5 style="color: #221d42; margin-bottom: 10px;">Reportes de Asistencia</h5>
+            <p style="margin: 0;">Selecciona los filtros deseados y haz clic en "Generar Reporte" para visualizar los datos de asistencia.</p>
+        </div>
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <h5 style="margin-bottom: 10px;">Generando Reporte</h5>
+            <p style="margin: 0;">Procesando datos de asistencia...</p>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-    $(document).ready(function () {
-        $('#formReporte').submit(function (e) {
-            e.preventDefault();
+        $(document).ready(function () {
+            $('#formReporte').submit(function (e) {
+                e.preventDefault();
 
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                beforeSend: function () {
-                    $('#resultadoReporte').html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-2x"></i><br/>Generando reporte...</div>');
-                },
-                success: function (response) {
-                    $('#resultadoReporte').html(response);
-                },
-                error: function () {
-                    $('#resultadoReporte').html('<div class="alert alert-danger">Error al generar el reporte</div>');
-                }
+                // Mostrar estado de carga
+                $('.empty-state').hide();
+                $('#loadingState').show();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#loadingState').hide();
+                        $('#resultadoReporte').html(response);
+                    },
+                    error: function () {
+                        $('#loadingState').hide();
+                        $('#resultadoReporte').html(
+                            '<div style="text-align: center; padding: 40px; color: #dc3545;">' +
+                            '<i class="fa fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>' +
+                            '<h5>Error al generar el reporte</h5>' +
+                            '<p>Ha ocurrido un error al procesar la solicitud. Por favor, inténtalo de nuevo.</p>' +
+                            '</div>'
+                        );
+                    }
+                });
             });
         });
-    });
+
+        function setQuickFilter(periodo) {
+            // Limpiar filtros activos
+            $('.quick-filter-btn').removeClass('active');
+
+            var hoy = new Date();
+            var fechaInicio, fechaFin;
+
+            switch (periodo) {
+                case 'hoy':
+                    fechaInicio = fechaFin = hoy.toISOString().split('T')[0];
+                    $('button[onclick="setQuickFilter(\'hoy\')"]').addClass('active');
+                    break;
+                case 'semana':
+                    var primerDia = new Date(hoy.setDate(hoy.getDate() - hoy.getDay()));
+                    var ultimoDia = new Date(hoy.setDate(hoy.getDate() - hoy.getDay() + 6));
+                    fechaInicio = primerDia.toISOString().split('T')[0];
+                    fechaFin = ultimoDia.toISOString().split('T')[0];
+                    $('button[onclick="setQuickFilter(\'semana\')"]').addClass('active');
+                    break;
+                case 'mes':
+                    var primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+                    var ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+                    fechaInicio = primerDiaMes.toISOString().split('T')[0];
+                    fechaFin = ultimoDiaMes.toISOString().split('T')[0];
+                    $('button[onclick="setQuickFilter(\'mes\')"]').addClass('active');
+                    break;
+            }
+
+            $('#fechaInicio').val(fechaInicio);
+            $('#fechaFin').val(fechaFin);
+        }
+
+        function clearFilters() {
+            $('.quick-filter-btn').removeClass('active');
+            $('button[onclick="clearFilters()"]').addClass('active');
+            $('#fechaInicio').val('');
+            $('#fechaFin').val('');
+            $('select[name="empleadoId"]').val('');
+            $('select[name="departamentoId"]').val('');
+        }
+
+
     </script>
 }

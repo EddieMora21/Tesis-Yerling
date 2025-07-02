@@ -1,82 +1,287 @@
-﻿@model SistemaNomina.Models.TiposPermiso 
+﻿@model SistemaNomina.Models.TiposPermiso
 
 @{
-    ViewBag.Title = "Create"; @* Título navegador *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+    ViewBag.Title = "Crear Tipo de Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>  @* Título  página *@
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken() @* seguridad *@
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-    <div class="form-horizontal">
-        <h4>TiposPermiso</h4>  @* Subtítulo formulario *@
-        <hr /> 
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        overflow: hidden;
+        border: 1px solid #e7e8eb;
+    }
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  @* Muestra errores de validación generales *@
+    .form-header {
+        background: linear-gradient(135deg, #e7e8eb 0%, #d6d8db 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid #e7e8eb;
+    }
 
-        <div class="form-group">
-            @* Grupo de campos para el nombre del permiso *@
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta del campo 'nombre' *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })  @* Campo de texto para ingresar el nombre *@
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })  @* Mensaje de error si el campo 'nombre' no es válido *@
-            </div>
-        </div>
+        .form-header h4 {
+            color: #221d42;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
 
-        <div class="form-group">
-            @* Grupo de campos para el valor booleano 'con_goce'  *@
-            @Html.LabelFor(model => model.con_goce, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta del campo *@
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.con_goce)  @* Casilla de verificación *@
-                    @Html.ValidationMessageFor(model => model.con_goce, "", new { @class = "text-danger" })  @* Mensaje de error si el valor no es válido *@
+    .form-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+            background: white;
+        }
+
+    .checkbox-custom {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.75rem 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 2px solid #e7e8eb;
+        transition: all 0.3s ease;
+    }
+
+        .checkbox-custom:hover {
+            border-color: #1788ca;
+        }
+
+        .checkbox-custom input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #1788ca;
+        }
+
+    .checkbox-label {
+        color: #221d42;
+        font-weight: 500;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #0f6da3 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #0f6da3 0%, #0a5d91 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: #e7e8eb;
+        border: 2px solid #e7e8eb;
+        color: #221d42;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #d6d8db;
+            border-color: #d6d8db;
+            color: #221d42;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .text-danger-custom {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e7e8eb;
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+        }
+
+        .form-body {
+            padding: 1.5rem;
+        }
+
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-plus-circle me-3"></i>
+            Crear Tipo de Permiso
+        </h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="form-card">
+                <div class="form-header">
+                    <h4>
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Nuevo Tipo de Permiso
+                    </h4>
                 </div>
-            </div>
-        </div>
 
-        <div class="form-group">
-            @* Grupo de campos para la descripción del permiso *@
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta del campo *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo de texto para ingresar una descripción *@
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })  @* Mensaje de error de validación *@
-            </div>
-        </div>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            @* Campo para ingresar la fecha de creación *@
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                    <div class="form-body">
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-        <div class="form-group">
-            @* Campo para ingresar la fecha de actualización *@
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.nombre, "Nombre del Tipo de Permiso", new { @class = "form-label" })
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Ej: Permiso médico, Permiso personal, etc." } })
+                            <div class="help-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Ingrese un nombre descriptivo para el tipo de permiso
+                            </div>
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger-custom" })
+                        </div>
 
-        <div class="form-group">
-            @* Botón para enviar el formulario y crear el nuevo registro *@
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" /> 
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.con_goce, "Configuración de Goce Salarial", new { @class = "form-label" })
+                            <div class="checkbox-custom">
+                                @Html.EditorFor(model => model.con_goce)
+                                <label class="checkbox-label" for="con_goce">
+                                    Con goce de salario
+                                </label>
+                            </div>
+                            <div class="help-text">
+                                <i class="fas fa-money-bill me-1"></i>
+                                Marque si este tipo de permiso incluye goce de salario
+                            </div>
+                            @Html.ValidationMessageFor(model => model.con_goce, "", new { @class = "text-danger-custom" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.descripcion, "Descripción", new { @class = "form-label" })
+                            @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Describa las características y condiciones de este tipo de permiso", rows = 3 } })
+                            <div class="help-text">
+                                <i class="fas fa-align-left me-1"></i>
+                                Proporcione detalles adicionales sobre este tipo de permiso
+                            </div>
+                            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger-custom" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.fecha_creacion, "Fecha de Registro", new { @class = "form-label" })
+                            @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "datetime-local", value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm") } })
+                            <div class="help-text">
+                                <i class="fas fa-calendar-plus me-1"></i>
+                                Fecha y hora de registro del tipo de permiso
+                            </div>
+                            @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger-custom" })
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fas fa-save"></i>
+                                Crear Tipo de Permiso
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                                <i class="fas fa-arrow-left"></i>
+                                Regresar
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista de registros *@
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")  @* validación *@
+    @Scripts.Render("~/bundles/jqueryval")
 }

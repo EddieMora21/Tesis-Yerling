@@ -1,127 +1,523 @@
 ﻿@model SistemaNomina.Models.ISR
-
 @{
-    // Título de la página que aparecerá en la pestaña del navegador
-    ViewBag.Title = "Create";
-    //  vista
+    ViewBag.Title = "Crear Tramo ISR";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+    }
 
-@using (Html.BeginForm())
-{
-    // seguridad
-    @Html.AntiForgeryToken()
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    <div class="form-horizontal">
-        <h4>ISR</h4>
-        <hr />
-        // Muestra un resumen de errores de validación, si los hay
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+    }
 
-        // etiqueta, el campo de entrada y mensaje de validación
+    .form-row-custom {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="form-group">
-            // Etiqueta para el campo 'anio' (año)
-            @Html.LabelFor(model => model.anio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                // Campo editable para 'anio' 
-                @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control" } })
-                // Mensaje de validación para el campo 'anio'
-                @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+        flex: 1;
+    }
 
-        <!-- Bloques similares para cada propiedad  -->
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.limite_inferior, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.limite_inferior, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.limite_inferior, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        width: 100%;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.limite_superior, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.limite_superior, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.limite_superior, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.porcentaje, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.porcentaje, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.porcentaje, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .input-group-custom {
+        position: relative;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.exceso, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.exceso, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.exceso, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .input-prefix {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-weight: 600;
+        z-index: 5;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.credito_hijo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.credito_hijo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.credito_hijo, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .input-suffix {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-weight: 600;
+        z-index: 5;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.credito_conyuge, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.credito_conyuge, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-with-prefix {
+        padding-left: 2.5rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-with-suffix {
+        padding-right: 2.5rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-success-custom {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                // Botón para enviar el formulario y crear el nuevo registro
-                <input type="submit" value="Create" class="btn btn-default" />
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .help-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
+
+    .validation-summary-custom {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border-left: 4px solid #dc3545;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+    }
+
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+        border-left: 4px solid #1788ca;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+            .page-header-custom h1 {
+                font-size: 1.5rem;
+            }
+
+        .card-custom {
+            padding: 1.5rem;
+        }
+
+        .form-row-custom {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .btn-success-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Header de la página -->
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>
+                    <i class="fas fa-plus-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                    Crear Tramo ISR
+                </h1>
+                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
+                    Configure un nuevo tramo de Impuesto Sobre la Renta
+                </p>
             </div>
         </div>
     </div>
-}
+</div>
 
-<div>
-    // Enlace para regresar a la lista principal (Index)
-    @Html.ActionLink("Back to List", "Index")
+<!-- Contenido principal -->
+<div class="container" style="max-width: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card-custom">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "validation-summary-custom" })
+
+                    <!-- Año fiscal -->
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.anio, new { @class = "form-label-custom required-field" })
+                        @Html.EditorFor(model => model.anio, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control form-control-custom",
+                           placeholder = "Ej: 2025",
+                           type = "number",
+                           min = "2020",
+                           max = "2050",
+                           value = DateTime.Now.Year
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-calendar-alt"></i>
+                            Año fiscal al que aplica este tramo de ISR
+                        </div>
+                    </div>
+
+                    <!-- Límites del tramo -->
+                    <div class="form-row-custom">
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.limite_inferior, new { @class = "form-label-custom required-field" })
+                            <div class="input-group-custom">
+                                <span class="input-prefix">¢</span>
+                                @Html.EditorFor(model => model.limite_inferior, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control form-control-custom form-control-with-prefix",
+                                   placeholder = "0.00",
+                                   type = "number",
+                                   step = "0.01",
+                                   min = "0"
+                               }
+                           })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.limite_inferior, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-arrow-down"></i>
+                                Salario mínimo del tramo
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.limite_superior, new { @class = "form-label-custom required-field" })
+                            <div class="input-group-custom">
+                                <span class="input-prefix">¢</span>
+                                @Html.EditorFor(model => model.limite_superior, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control form-control-custom form-control-with-prefix",
+                                   placeholder = "999999.99",
+                                   type = "number",
+                                   step = "0.01",
+                                   min = "0"
+                               }
+                           })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.limite_superior, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-arrow-up"></i>
+                                Salario máximo del tramo
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Porcentaje y exceso -->
+                    <div class="form-row-custom">
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.porcentaje, new { @class = "form-label-custom required-field" })
+                            <div class="input-group-custom">
+                                @Html.EditorFor(model => model.porcentaje, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control form-control-custom form-control-with-suffix",
+                                   placeholder = "15.00",
+                                   type = "number",
+                                   step = "0.01",
+                                   min = "0",
+                                   max = "100"
+                               }
+                           })
+                                <span class="input-suffix">%</span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.porcentaje, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-percentage"></i>
+                                % de impuesto sobre el excedente
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.exceso, new { @class = "form-label-custom required-field" })
+                            <div class="input-group-custom">
+                                <span class="input-prefix">¢</span>
+                                @Html.EditorFor(model => model.exceso, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control form-control-custom form-control-with-prefix",
+                                   placeholder = "0.00",
+                                   type = "number",
+                                   step = "0.01",
+                                   min = "0"
+                               }
+                           })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.exceso, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-plus-circle"></i>
+                                Monto base para el cálculo
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Créditos fiscales -->
+                    <div class="form-row-custom">
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.credito_hijo, new { @class = "form-label-custom" })
+                            <div class="input-group-custom">
+                                <span class="input-prefix">¢</span>
+                                @Html.EditorFor(model => model.credito_hijo, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control form-control-custom form-control-with-prefix",
+                                   placeholder = "1720.00",
+                                   type = "number",
+                                   step = "0.01",
+                                   min = "0",
+                                   value = "1720.00"
+                               }
+                           })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.credito_hijo, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-child"></i>
+                                Reducción mensual por hijo
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.credito_conyuge, new { @class = "form-label-custom" })
+                            <div class="input-group-custom">
+                                <span class="input-prefix">¢</span>
+                                @Html.EditorFor(model => model.credito_conyuge, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control form-control-custom form-control-with-prefix",
+                                   placeholder = "2600.00",
+                                   type = "number",
+                                   step = "0.01",
+                                   min = "0",
+                                   value = "2600.00"
+                               }
+                           })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-heart"></i>
+                                Reducción mensual por cónyuge
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.descripcion, new { @class = "form-label-custom" })
+                        @Html.TextAreaFor(model => model.descripcion, new
+                        {
+                            @class = "form-control form-control-custom",
+                            rows = "3",
+                            placeholder = "Descripción opcional del tramo fiscal, cambios legales, notas especiales...",
+                            maxlength = "500"
+                        })
+                        @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Descripción opcional con detalles legales o cambios fiscales
+                        </div>
+                    </div>
+
+                    <!-- Fecha de creación EDITABLE -->
+                    <div class="form-group-custom">
+                        @Html.LabelFor(model => model.fecha_creacion, new { @class = "form-label-custom required-field" })
+                        @Html.EditorFor(model => model.fecha_creacion, new
+                        {
+                            htmlAttributes = new
+                            {
+                            @class = "form-control form-control-custom",
+                           type = "datetime-local",
+                           value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm")
+                       }
+                        })
+                        @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+                        <div class="help-text">
+                            <i class="fas fa-calendar-plus"></i>
+                            Fecha y hora de creación del registro
+                        </div>
+                    </div>
+
+                    <!-- Campo de fecha de actualización oculto -->
+                    @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                    <div class="form-group-custom text-center">
+                        <hr style="margin: 2rem 0; border-color: #e7e8eb;">
+                        <button type="submit" class="btn btn-success-custom mr-3">
+                            <i class="fas fa-save"></i>
+                            Crear Tramo ISR
+                        </button>
+                        @Html.ActionLink("Cancelar", "Index", null, new
+                        {
+                            @class = "btn btn-secondary-custom"
+                        })
+                    </div>
+                }
+            </div>
+
+            <!-- Información sobre ISR -->
+            <div class="info-card">
+                <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+                    <i class="fas fa-calculator text-info"></i>
+                    Información sobre el cálculo de ISR
+                </h6>
+                <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+                    <li><strong>Tramos progresivos:</strong> A mayor salario, mayor porcentaje de impuesto</li>
+                    <li><strong>Límites:</strong> Definen el rango salarial al que aplica cada porcentaje</li>
+                    <li><strong>Exceso:</strong> Monto fijo que se suma al cálculo porcentual</li>
+                    <li><strong>Créditos:</strong> Reducciones por carga familiar (hijo/cónyuge)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    // validación
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+       $(document).ready(function() {
+           // Validación de límites
+           $('#limite_superior').on('blur', function() {
+               var inferior = parseFloat($('#limite_inferior').val()) || 0;
+               var superior = parseFloat($(this).val()) || 0;
+
+               if (superior <= inferior && superior > 0) {
+                   alert('El límite superior debe ser mayor al límite inferior');
+                   $(this).focus();
+               }
+           });
+
+           // Validación de porcentaje
+           $('#porcentaje').on('input', function() {
+               var value = parseFloat($(this).val());
+               if (value < 0) {
+                   $(this).val(0);
+               }
+               if (value > 100) {
+                   $(this).val(100);
+               }
+           });
+
+           // Contador de caracteres para descripción
+           var maxLength = 500;
+           $('#descripcion').on('input', function() {
+               var currentLength = $(this).val().length;
+               var remaining = maxLength - currentLength;
+
+               if (!$('#char-counter').length) {
+                   $(this).after('<div id="char-counter" class="help-text mt-1"></div>');
+               }
+
+               $('#char-counter').text(remaining + ' caracteres restantes')
+                   .removeClass('text-danger')
+                   .addClass(remaining < 50 ? 'text-danger' : '');
+           });
+
+           // Validación de año
+           $('#anio').on('input', function() {
+               var year = parseInt($(this).val());
+               var currentYear = new Date().getFullYear();
+
+               if (year < 2020) {
+                   $(this).val(2020);
+               }
+               if (year > currentYear + 5) {
+                   $(this).val(currentYear + 5);
+               }
+           });
+       });
+    </script>
 }

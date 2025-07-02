@@ -1,59 +1,270 @@
 ﻿@model SistemaNomina.Models.Departamentos
 
 @{
-    ViewBag.Title = "Edit"; // Título de la vista que aparecerá en la pestaña del navegador
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Layout general que se usa para esta vista
+    ViewBag.Title = "Editar Departamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+    }
 
-@using (Html.BeginForm()) // Formulario para enviar datos al servidor
-{
-    @Html.AntiForgeryToken() // Seguridad
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    <div class="form-horizontal">
-        <h4>Departamentos</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" }) @*Muestra resumen de errores de validación*@
+    .form-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-        @Html.HiddenFor(model => model.id_departamento) @* Campo oculto para enviar el id del departamento*@
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" }) @*Etiqueta para el campo nombre*@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } }) @*Campo de entrada editable para nombre*@
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" }) @* Mensaje de error para nombre*@
-            </div>
-        </div>
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" }) @*Etiqueta para fecha de creación*@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } }) @*Campo editable para fecha de creación*@
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" }) @*Mensaje de error para fecha de creación*@
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .form-control-custom:focus {
+            border-color: #fab61b;
+            box-shadow: 0 0 0 0.2rem rgba(250, 182, 27, 0.25);
+            outline: none;
+        }
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" /> <!-- Botón para enviar el formulario -->
+    .form-control-readonly {
+        background-color: #f8f9fa;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: #6c757d;
+        cursor: not-allowed;
+        width: 100%;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .edit-info {
+        background: rgba(250, 182, 27, 0.1);
+        border-left: 4px solid #fab61b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+        .edit-info h5 {
+            color: #221d42;
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-info p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .readonly-info {
+        background: rgba(23, 136, 202, 0.1);
+        border-left: 4px solid #1788ca;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+        .readonly-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-edit"></i> Editar Departamento</h1>
+                <p class="mb-0">Modifica la información del departamento seleccionado</p>
             </div>
         </div>
     </div>
-}
+</div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index") @*Enlace para volver a la lista de departamentos*@
+<div class="container" style="max-width: 800px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="edit-info">
+                <h5><i class="fas fa-building"></i> Editando: @Model.nombre</h5>
+                <p>Modifica los campos necesarios y guarda los cambios. El nombre del departamento debe ser único en el sistema.</p>
+            </div>
+
+            <div class="form-card-custom">
+                <div class="card-body p-4">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.id_departamento)
+                        @Html.HiddenFor(model => model.fecha_creacion)
+
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.nombre, "Nombre del Departamento *", new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control-custom", @placeholder = "Ej: Recursos Humanos, Tecnología, Contabilidad..." } })
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-info-circle"></i>
+                                El nombre debe ser descriptivo y único en el sistema
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.fecha_creacion, "Fecha de Creación", new { @class = "form-label-custom" })
+                            @Html.TextBoxFor(model => model.fecha_creacion, new { @class = "form-control-readonly", @readonly = "readonly" })
+                            <div class="readonly-info">
+                                <p>
+                                    <i class="fas fa-lock"></i>
+                                    La fecha de creación no puede modificarse. Se mantiene como registro histórico.
+                                </p>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval") @*Validación*@
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            // Auto-actualizar solo la fecha de modificación al enviar el formulario
+            $('form').on('submit', function() {
+                var now = new Date();
+                var timestamp = now.toISOString().slice(0, 19);
+                $('#fecha_actualizacion').val(timestamp);
+            });
+
+            // Formatear la fecha de creación para mejor legibilidad
+            var fechaCreacion = $('#fecha_creacion');
+            if (fechaCreacion.val()) {
+                var fecha = new Date(fechaCreacion.val());
+                var opciones = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                fechaCreacion.val(fecha.toLocaleDateString('es-ES', opciones));
+            }
+        });
+    </script>
 }

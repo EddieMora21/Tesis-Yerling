@@ -1,64 +1,237 @@
 ﻿@model SistemaNomina.Models.Empleados
 
 @{
-    // Define el título de la vista para mostrar en la pestaña o navegador
     ViewBag.Title = "Desactivar Empleado";
 }
 
-<h2>Desactivar Empleado</h2>
-
-<h3>¿Está seguro que desea desactivar este empleado?</h3>
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @*Muestra la etiqueta para la cédula del empleado*@
-            @Html.DisplayNameFor(model => model.cedula)
-        </dt>
-        <dd>
-            @*Muestra el valor de la cédula del empleado*@
-            @Html.DisplayFor(model => model.cedula)
-        </dd>
-
-        <dt>
-            Nombre Completo
-        </dt>
-        <dd>
-            @*Muestra los apellidos y nombres del empleado concatenados*@
-            @Html.DisplayFor(model => model.apellido1) @Html.DisplayFor(model => model.apellido2),
-            @Html.DisplayFor(model => model.nombre1) @Html.DisplayFor(model => model.nombre2)
-        </dd>
-
-        <dt>
-            Puesto
-        </dt>
-        <dd>
-            @*Muestra el nombre del puesto relacionado al empleado *@
-            @Html.DisplayFor(model => model.Puestos.nombre_puesto)
-        </dd>
-
-        <dt>
-            Estado Actual
-        </dt>
-        <dd>
-            @*Muestra el estado actual del empleado con una etiqueta de color:*@
-            @*verde si está ACTIVO, rojo si no lo está*@
-            <span class="label @(Model.estado == "ACTIVO" ? "label-success" : "label-danger")">
-                @Html.DisplayFor(model => model.estado)
-            </span>
-        </dd>
-    </dl>
-
-    @using (Html.BeginForm())
-    {
-        // Seguridad
-        @Html.AntiForgeryToken()
-
-<div class="form-actions no-color">
-    @*Botón para enviar el formulario y desactivar el empleado*@
-    <input type="submit" value="Desactivar" class="btn btn-danger" />
-    @*Enlace para cancelar y regresar a la lista de empleados*@
-    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
-</div>
+<style>
+    .header-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
+
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 30px;
+    }
+
+    .warning-section {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid #ffc107;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    .employee-summary {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        width: 150px;
+        flex-shrink: 0
+    }
+
+    .detail-value {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .detail-icon {
+        margin-right: 8px;
+        color: #dc3545;
+        width: 20px;
+        text-align: center;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+    .btn-default-custom {
+        background: white;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: #221d42;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-default-custom:hover {
+            background: #f8f9fa;
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+    }
+
+    @@media (max-width: 768px) {
+        .delete-card {
+            padding: 20px 15px;
+        }
+
+        .header-delete {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 800px;">
+    <div class="header-delete">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-user-times" style="font-size: 2rem; margin-right: 15px;"></i>
+                Desactivar Empleado
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Confirma la desactivación del colaborador</p>
+        </div>
+    </div>
+
+    <div class="delete-card">
+        <div class="warning-section">
+            <h4 style="color: #856404; margin-bottom: 15px;">
+                <i class="fa fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                ¡Atención!
+            </h4>
+            <p style="color: #856404; margin-bottom: 10px;">
+                ¿Está seguro que desea desactivar este empleado?
+            </p>
+            <p style="color: #856404; margin: 0; font-size: 14px;">
+                <i class="fa fa-info-circle" style="margin-right: 5px;"></i>
+                Esta acción cambiará el estado del empleado a INACTIVO. Los datos se conservarán en el sistema.
+            </p>
+        </div>
+
+        <div class="employee-summary">
+            <h4 style="color: #221d42; margin-bottom: 20px;">
+                <i class="fa fa-user-circle" style="margin-right: 10px; color: #dc3545;"></i>
+                Información del Empleado
+            </h4>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-id-card detail-icon"></i>
+                    Cédula:
+                </div>
+                <div class="detail-value" style="font-family: monospace; font-size: 16px;">@Model.cedula</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-user detail-icon"></i>
+                    Nombre Completo:
+                </div>
+                <div class="detail-value" style="font-weight: 600; font-size: 16px;">
+                    @Model.apellido1 @Model.apellido2, @Model.nombre1 @Model.nombre2
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-briefcase detail-icon"></i>
+                    Puesto:
+                </div>
+                <div class="detail-value">@Model.Puestos.nombre_puesto</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-calendar-check detail-icon"></i>
+                    Fecha de Ingreso:
+                </div>
+                <div class="detail-value">@Model.fecha_ingreso.ToString("dd/MM/yyyy")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fa fa-toggle-on detail-icon"></i>
+                    Estado Actual:
+                </div>
+                <div class="detail-value">
+                    <span class="status-badge @(Model.estado == "ACTIVO" ? "status-active" : "status-inactive")">
+                        @Model.estado
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="text-center" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e7e8eb;">
+                <button type="submit" class="btn-danger-custom" style="margin-right: 15px;">
+                    <i class="fa fa-user-times" style="margin-right: 8px;"></i>
+                    Confirmar Desactivación
+                </button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-default-custom" })
+            </div>
+        }
+    </div>
 </div>

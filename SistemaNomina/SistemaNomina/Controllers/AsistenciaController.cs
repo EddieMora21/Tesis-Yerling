@@ -7,6 +7,9 @@ using System.Web.Mvc;
 using SistemaNomina.Models;
 using SistemaNomina.Filters;
 using SistemaNomina.Helpers;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
 
 namespace SistemaNomina.Controllers
 {
@@ -24,6 +27,8 @@ namespace SistemaNomina.Controllers
                                         .ThenByDescending(a => a.fecha_registro);
             return View(asistencia.ToList());
         }
+
+
 
         // 🔥 NUEVA: Vista para marcar entrada/salida
         public ActionResult Marcar()

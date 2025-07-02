@@ -1,113 +1,411 @@
-﻿@model IEnumerable<SistemaNomina.ISR>
-
+﻿@model IEnumerable<SistemaNomina.Models.ISR>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Gestión de ISR";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    @* Establece el título y  vista *@
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-    @*  nuevo registro ISR *@
-</p>
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.anio)
-            @* Encabezado para el campo 'anio' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.limite_inferior)
-            @* Encabezado para 'límite inferior' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.limite_superior)
-            @* Encabezado para 'límite superior' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.porcentaje)
-            @* Encabezado para 'porcentaje' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.exceso)
-            @* Encabezado para 'exceso' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.credito_hijo)
-            @* Encabezado para 'crédito por hijo' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.credito_conyuge)
-            @* Encabezado para 'crédito por cónyuge' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.descripcion)
-            @* Encabezado para 'descripción' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-            @* Encabezado para 'fecha de creación' *@
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-            @* Encabezado para 'fecha de actualización' *@
-        </th>
-        <th></th> 
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        @* Recorre cada registro ISR y lo muestra en una fila *@
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.anio)
-                @* Muestra el año del registro *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.limite_inferior)
-                @* Muestra el límite inferior *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.limite_superior)
-                @* Muestra el límite superior *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.porcentaje)
-                @* Muestra el porcentaje aplicado *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.exceso)
-                @* Muestra el exceso aplicado *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.credito_hijo)
-                @* Muestra el crédito por hijo *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.credito_conyuge)
-                @* Muestra el crédito por cónyuge *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.descripcion)
-                @* Muestra la descripción del registro *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_creacion)
-                @* Muestra la fecha de creación *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
-                @* Muestra la fecha de última actualización *@
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.id_isr }) |
-                @Html.ActionLink("Details", "Details", new { id = item.id_isr }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id_isr })
-                @* Acciones disponibles: Editar, Detallar, Eliminar *@
-            </td>
-        </tr>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
     }
-</table>
+
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+        .btn-info-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0 2px;
+    }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+    .table-custom {
+        margin: 0;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+        .table-custom thead th {
+            background: #221d42;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: none;
+            font-size: 0.875rem;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e7e8eb;
+        }
+
+            .table-custom tbody tr:hover {
+                background: rgba(23, 136, 202, 0.05);
+                transform: translateY(-1px);
+            }
+
+        .table-custom tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+            color: #495057;
+            font-size: 0.875rem;
+        }
+
+    .badge-year {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-percentage {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .currency {
+        color: #1788ca;
+        font-weight: 600;
+    }
+
+    .range-display {
+        background: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border-left: 3px solid #1788ca;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e7e8eb;
+            margin-bottom: 1rem;
+        }
+
+    @@media (max-width: 1200px) {
+        .table-custom {
+            font-size: 0.8rem;
+        }
+
+            .table-custom thead th {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .table-custom tbody td {
+                padding: 0.75rem 0.5rem;
+            }
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+            .page-header-custom h1 {
+                font-size: 1.5rem;
+            }
+
+        .btn-primary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+        }
+
+        .table-responsive {
+            border-radius: 15px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .btn-primary-custom {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Header de la página -->
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>
+                    <i class="fas fa-calculator" style="font-size: 2rem; margin-right: 15px;"></i>
+                    Gestión de ISR (Impuesto Sobre la Renta)
+                </h1>
+                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
+                    Administra las tablas de tramos impositivos y deducciones fiscales
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="container-fluid" style="max-width: 1600px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <!-- Botón de crear nuevo -->
+            <div class="mb-4 text-right">
+                @Html.ActionLink("Crear Nueva Tabla ISR", "Create", null, new
+                {
+                    @class = "btn btn-primary-custom",
+                    title = "Agregar un nuevo tramo de ISR"
+                })
+            </div>
+
+            <!-- Card principal con la tabla -->
+            <div class="card-custom">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table-custom table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <i class="fas fa-calendar-alt mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.anio)
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-arrow-down mr-2"></i>
+                                        Límite Inferior
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-arrow-up mr-2"></i>
+                                        Límite Superior
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-percentage mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.porcentaje)
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-plus-circle mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.exceso)
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-child mr-2"></i>
+                                        Crédito Hijo
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-heart mr-2"></i>
+                                        Crédito Cónyuge
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-align-left mr-2"></i>
+                                        @Html.DisplayNameFor(model => model.descripcion)
+                                    </th>
+                                    <th class="text-center">
+                                        <i class="fas fa-cogs mr-2"></i>
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="badge-year">
+                                                <i class="fas fa-calendar"></i>
+                                                @Html.DisplayFor(modelItem => item.anio)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="currency">
+                                                ¢@Html.DisplayFor(modelItem => item.limite_inferior)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="currency">
+                                                ¢@Html.DisplayFor(modelItem => item.limite_superior)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge-percentage">
+                                                @Html.DisplayFor(modelItem => item.porcentaje)%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="currency">
+                                                ¢@Html.DisplayFor(modelItem => item.exceso)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="currency">
+                                                ¢@Html.DisplayFor(modelItem => item.credito_hijo)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="currency">
+                                                ¢@Html.DisplayFor(modelItem => item.credito_conyuge)
+                                            </span>
+                                        </td>
+                                        <td style="max-width: 150px;">
+                                            @if (!string.IsNullOrEmpty(item.descripcion))
+                                            {
+                                                @(item.descripcion.Length > 30 ? item.descripcion.Substring(0, 30) + "..." : item.descripcion)
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Sin descripción</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.id_isr }, new
+                                            {
+                                                @class = "btn btn-secondary-custom",
+                                                title = "Editar tramo ISR"
+                                            })
+                                            @Html.ActionLink("Details", "Details", new { id = item.id_isr }, new
+                                            {
+                                                @class = "btn btn-info-custom",
+                                                title = "Ver detalles"
+                                            })
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.id_isr }, new
+                                            {
+                                                @class = "btn btn-danger-custom",
+                                                title = "Eliminar tramo ISR",
+                                                onclick = "return confirm('¿Está seguro de que desea eliminar este tramo de ISR?');"
+                                            })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-calculator"></i>
+                        <h4>No hay tramos de ISR registrados</h4>
+                        <p class="text-muted">Comience agregando los tramos de impuesto sobre la renta para los cálculos de nómina.</p>
+                        @Html.ActionLink("Crear Primera Tabla", "Create", null, new
+                        {
+                            @class = "btn btn-primary-custom mt-3"
+                        })
+                    </div>
+                }
+            </div>
+
+            <!-- Información adicional -->
+            <div class="mt-4 p-3" style="background: #e7f3ff; border-radius: 10px; border-left: 4px solid #1788ca;">
+                <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+                    <i class="fas fa-info-circle text-info"></i>
+                    Información sobre el ISR
+                </h6>
+                <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+                    <li>Los tramos de ISR definen cómo se calcula el impuesto según el nivel salarial</li>
+                    <li>Los créditos por hijo y cónyuge reducen el monto del impuesto a pagar</li>
+                    <li>Cada año fiscal puede tener diferentes tramos y porcentajes</li>
+                    <li>Asegúrese de mantener actualizadas las tablas según las regulaciones fiscales</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

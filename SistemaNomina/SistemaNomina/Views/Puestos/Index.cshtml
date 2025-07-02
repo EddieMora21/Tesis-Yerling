@@ -1,92 +1,576 @@
-﻿@model IEnumerable<SistemaNomina.Models.Puestos> 
+﻿@model IEnumerable<SistemaNomina.Models.Puestos>
 
 @{
-    ViewBag.Title = "Index"; <!-- Título de la página -->
-    Layout = "~/Views/Shared/_Layout.cshtml"; <!-- vista -->
+    ViewBag.Title = "Puestos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")  <!--  nuevo puesto -->
-</p>
-
-<table class="table">
-    <!-- Tabla lista de puestos -->
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.nombre_puesto)
-            <!-- Muestra el nombre campo 'nombre_puesto' -->
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.salario_base)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.descripcion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.horas_jornada)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.es_jefe)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Departamentos.nombre)
-            <!-- Muestra el nombre del departamento  -->
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Horarios.nombre)
-            <!-- Muestra el nombre del horario  -->
-        </th>
-        <th></th> <!-- Columna vacía para las acciones -->
-    </tr>
-
-    @foreach (var item in Model)
-    {<!--  puesto en el modelo -->
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nombre_puesto)
-                <!-- Muestra el valor del nombre del puesto -->
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.salario_base)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.horas_jornada)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.es_jefe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_creacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Departamentos.nombre)
-                <!-- Muestra el nombre del departamento al que pertenece el puesto -->
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Horarios.nombre)
-                <!-- Muestra el nombre del horario -->
-            </td>
-            <td>
-                <!-- Enlaces para acciones Editar, Ver Detalles y Eliminar, pasando el id del puesto -->
-                @Html.ActionLink("Edit", "Edit", new { id = item.id_puesto }) |
-                @Html.ActionLink("Details", "Details", new { id = item.id_puesto }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id_puesto })
-            </td>
-        </tr>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
     }
 
-</table>
+    .page-header-custom h1 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
+
+    .alert-success {
+        background: rgba(40, 167, 69, 0.1);
+        border-left: 4px solid #28a745;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .alert-error {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .search-container {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        border-color: #1788ca;
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .counter-badge {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .btn-action-custom {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0 2px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(250, 182, 27, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-details {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+    .btn-details:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(23, 136, 202, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-custom {
+        margin: 0;
+    }
+
+    .table-custom thead {
+        background: #221d42;
+        color: white;
+    }
+
+    .table-custom thead th {
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: rgba(23, 136, 202, 0.05);
+    }
+
+    .table-custom td {
+        padding: 1rem;
+        border-color: #e7e8eb;
+        vertical-align: middle;
+    }
+
+    .job-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .job-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .job-details h6 {
+        margin: 0;
+        font-weight: 600;
+        color: #221d42;
+    }
+
+    .job-dept {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .salary-badge {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hours-badge {
+        background: rgba(23, 136, 202, 0.1);
+        color: #1788ca;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .boss-badge {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .employee-badge {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #e7e8eb;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 0.25rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    @@media (max-width: 768px) {
+        .btn-primary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+        }
+
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .search-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            min-width: auto;
+        }
+
+        .btn-action-custom {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+
+        .job-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .actions-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-action-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .hidden-mobile {
+            display: none;
+        }
+    }
+</style>
+
+<!-- Mensajes de alerta -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert-success">
+        <i class="fas fa-check-circle"></i>
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        @TempData["Error"]
+    </div>
+}
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-briefcase"></i> Gestión de Puestos</h1>
+                <p class="mb-0">Administra los puestos de trabajo de la organización</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="max-width: 1400px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <!-- Barra de búsqueda y acciones -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar puestos por nombre, departamento o descripción...">
+                </div>
+                <div class="counter-badge">
+                    <i class="fas fa-hashtag"></i>
+                    Total: <span id="totalCount">@(Model?.Count() ?? 0)</span>
+                </div>
+                @Html.ActionLink("Nuevo Puesto", "Create", null, new { @class = "btn-primary-custom" })
+            </div>
+
+            <div class="card-custom">
+                <div class="card-body p-0">
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom" style="border-color: #e7e8eb !important;">
+                        <h4 class="mb-0" style="color: #221d42; font-weight: 600;">
+                            <i class="fas fa-list-alt"></i> Lista de Puestos
+                        </h4>
+                    </div>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table-custom table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-briefcase"></i> Puesto</th>
+                                        <th><i class="fas fa-dollar-sign"></i> Salario</th>
+                                        <th class="hidden-mobile"><i class="fas fa-align-left"></i> Descripción</th>
+                                        <th class="hidden-mobile"><i class="fas fa-clock"></i> Horas</th>
+                                        <th><i class="fas fa-crown"></i> Jefatura</th>
+                                        <th class="hidden-mobile"><i class="fas fa-schedule"></i> Horario</th>
+                                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="puestosTableBody">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="puesto-row">
+                                            <td>
+                                                <div class="job-info">
+                                                    <div class="job-avatar">
+                                                        <i class="fas fa-briefcase"></i>
+                                                    </div>
+                                                    <div class="job-details">
+                                                        <h6 class="job-name">@Html.DisplayFor(modelItem => item.nombre_puesto)</h6>
+                                                        <p class="job-dept">@Html.DisplayFor(modelItem => item.Departamentos.nombre)</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="salary-badge">
+                                                    <i class="fas fa-dollar-sign"></i>
+                                                    ₡@Html.DisplayFor(modelItem => item.salario_base)
+                                                </div>
+                                            </td>
+                                            <td class="hidden-mobile">
+                                                @if (!string.IsNullOrEmpty(item.descripcion))
+                                                {
+                                                    <span title="@item.descripcion">
+                                                        @(item.descripcion.Length > 50 ? item.descripcion.Substring(0, 50) + "..." : item.descripcion)
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color: #6c757d; font-style: italic;">Sin descripción</span>
+                                                }
+                                            </td>
+                                            <td class="hidden-mobile">
+                                                <div class="hours-badge">
+                                                    <i class="fas fa-clock"></i>
+                                                    @Html.DisplayFor(modelItem => item.horas_jornada) hrs
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (item.es_jefe == true)
+                                                {
+                                                <span class="boss-badge">
+                                                    <i class="fas fa-crown"></i> Jefe
+                                                </span>
+                                                }
+                                                else
+                                                {
+                                                <span class="employee-badge">
+                                                    <i class="fas fa-user"></i> Empleado
+                                                </span>
+                                                }
+                                            </td>
+                                            <td class="hidden-mobile">
+                                                @if (item.Horarios != null)
+                                                {
+                                                    <span>@Html.DisplayFor(modelItem => item.Horarios.nombre)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color: #6c757d; font-style: italic;">Sin horario asignado</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="actions-group">
+                                                    @Html.ActionLink("Details", "Details", new { id = item.id_puesto }, new { @class = "btn-action-custom btn-details", title = "Ver Detalles" }) 
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.id_puesto }, new { @class = "btn-action-custom btn-edit", title = "Editar" }) 
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.id_puesto }, new { @class = "btn-action-custom btn-delete", title = "Eliminar" }) 
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-briefcase"></i>
+                            <h5 style="color: #221d42; margin-bottom: 1rem;">No hay puestos registrados</h5>
+                            <p style="margin-bottom: 2rem;">Comienza creando el primer puesto de trabajo para la organización.</p>
+                            @Html.ActionLink("Crear Primer Puesto", "Create", null, new { @class = "btn-primary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Búsqueda en tiempo real
+            $('#searchInput').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                var visibleCount = 0;
+
+                $('.puesto-row').each(function() {
+                    var jobName = $(this).find('.job-name').text().toLowerCase();
+                    var deptName = $(this).find('.job-dept').text().toLowerCase();
+                    var description = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    if (jobName.includes(searchTerm) || deptName.includes(searchTerm) || description.includes(searchTerm)) {
+                        $(this).show();
+                        visibleCount++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Actualizar contador
+                $('#totalCount').text(visibleCount);
+
+                // Mostrar mensaje si no hay resultados
+                if (visibleCount === 0 && searchTerm !== '') {
+                    if ($('#noResults').length === 0) {
+                        $('#puestosTableBody').append(`
+                            <tr id="noResults">
+                                <td colspan="7" class="empty-state">
+                                    <i class="fas fa-search"></i>
+                                    <h5 style="color: #221d42; margin-bottom: 1rem;">No se encontraron resultados</h5>
+                                    <p>Intenta con otro término de búsqueda</p>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                } else {
+                    $('#noResults').remove();
+                }
+            });
+
+            // Animación de entrada para las filas
+            $('.puesto-row').each(function(index) {
+                $(this).css({
+                    'opacity': '0',
+                    'transform': 'translateY(20px)'
+                });
+
+                setTimeout(() => {
+                    $(this).css({
+                        'transition': 'all 0.3s ease',
+                        'opacity': '1',
+                        'transform': 'translateY(0)'
+                    });
+                }, index * 100);
+            });
+
+            // Confirmación para eliminar
+            $('.btn-delete').on('click', function(e) {
+                var jobName = $(this).closest('tr').find('.job-name').text();
+                if (!confirm(`¿Estás seguro de que deseas eliminar el puesto "${jobName}"?\n\nEsta acción no se puede deshacer.`)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

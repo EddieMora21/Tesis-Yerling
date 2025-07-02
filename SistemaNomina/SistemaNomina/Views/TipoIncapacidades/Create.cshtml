@@ -1,93 +1,268 @@
 ﻿@model SistemaNomina.Models.TipoIncapacidades
 
 @{
-    ViewBag.Title = "Create"; //  título de la página
-    Layout = "~/Views/Shared/_Layout.cshtml"; // vista 
+    ViewBag.Title = "Crear Tipo de Incapacidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken() // seguridad
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    <div class="form-horizontal">
-        <h4>TipoIncapacidades</h4>
-        <hr />
-        @*  validaciones si hay errores *@
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    .form-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-        @* Campo para el nombre del tipo de incapacidad *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        @* Campo para definir cuántos días máximos puede durar la incapacidad *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.dias_maximos, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.dias_maximos, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.dias_maximos, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-        @*  indicar si la incapacidad se paga en la planilla *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.pago_planilla, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.pago_planilla)
-                    @Html.ValidationMessageFor(model => model.pago_planilla, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
 
-        @*  descripción adicional  *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .form-control-custom:focus {
+            border-color: #1788ca;
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
 
-        @* registrar la fecha de creación del registro *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .checkbox-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
 
-        @*  registrar la fecha de última actualización del registro *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        .checkbox-custom:hover {
+            border-color: #1788ca;
+            background: rgba(23, 136, 202, 0.05);
+        }
 
-        @* Botón para enviar el formulario y crear el nuevo registro *@
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+        .checkbox-custom input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1788ca;
+        }
+
+        .checkbox-custom label {
+            margin: 0;
+            font-weight: 500;
+            color: #221d42;
+            cursor: pointer;
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-plus-circle"></i> Crear Tipo de Incapacidad</h1>
+                <p class="mb-0">Registra un nuevo tipo de incapacidad en el sistema</p>
             </div>
         </div>
     </div>
-}
+</div>
 
-@* Enlace para regresar a la lista de tipos de incapacidades *@
-<div>
-    @Html.ActionLink("Back to List", "Index")
+<div class="container" style="max-width: 800px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="form-card-custom">
+                <div class="card-body p-4">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.nombre, "Nombre del Tipo de Incapacidad", new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control-custom", @placeholder = "Ej: Incapacidad General, Maternidad, etc." } })
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-info-circle"></i>
+                                Ingresa un nombre descriptivo para el tipo de incapacidad
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.dias_maximos, "Días Máximos Permitidos", new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.dias_maximos, new { htmlAttributes = new { @class = "form-control-custom", @type = "number", @min = "1", @max = "365", @placeholder = "Ej: 30" } })
+                            @Html.ValidationMessageFor(model => model.dias_maximos, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-calendar-alt"></i>
+                                Cantidad máxima de días que puede durar este tipo de incapacidad
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.pago_planilla, "Configuración de Pago en Planilla", new { @class = "form-label-custom" })
+                            <div class="checkbox-custom">
+                                @Html.EditorFor(model => model.pago_planilla)
+                                <label for="pago_planilla">¿Este tipo de incapacidad se paga en la planilla?</label>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.pago_planilla, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-money-bill-wave"></i>
+                                Marca esta opción si la empresa debe pagar este tipo de incapacidad
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.descripcion, "Descripción Detallada", new { @class = "form-label-custom" })
+                            @Html.TextAreaFor(model => model.descripcion, new { @class = "form-control-custom", @rows = "4", @placeholder = "Describe las características, condiciones y normativas aplicables a este tipo de incapacidad..." })
+                            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-align-left"></i>
+                                Proporciona información adicional sobre este tipo de incapacidad
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom" style="display: none;">
+                            @Html.LabelFor(model => model.fecha_creacion, new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control-custom", @type = "datetime-local" } })
+                            @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group-custom" style="display: none;">
+                            @Html.LabelFor(model => model.fecha_actualizacion, new { @class = "form-label-custom" })
+                            @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control-custom", @type = "datetime-local" } })
+                            @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fas fa-save"></i> Crear Tipo de Incapacidad
+                            </button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    @* validación *@
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            // Auto-llenar fechas si están vacías
+            var now = new Date();
+            var timestamp = now.toISOString().slice(0, 16);
+
+            if (!$('#fecha_creacion').val()) {
+                $('#fecha_creacion').val(timestamp);
+            }
+            if (!$('#fecha_actualizacion').val()) {
+                $('#fecha_actualizacion').val(timestamp);
+            }
+        });
+    </script>
 }

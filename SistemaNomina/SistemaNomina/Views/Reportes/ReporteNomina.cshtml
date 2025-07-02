@@ -1,0 +1,175 @@
+﻿@model IEnumerable<SistemaNomina.Models.Nomina>
+
+@{
+    ViewBag.Title = "Reporte de Nomina";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-info text-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">
+                                <i class="fas fa-money-bill-wave me-3"></i>Reporte de Nomina
+                            </h3>
+                            <p class="mb-0 opacity-75">@ViewBag.NombreMes @ViewBag.Anio - Empleado: @ViewBag.EmpleadoSeleccionado - Departamento: @ViewBag.DepartamentoSeleccionado</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-2"></i>Volver
+                            </a>
+                            <button onclick="window.print()" class="btn btn-warning ms-2">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model != null && Model.Any())
+                    {
+                        <!-- Resumen General -->
+                        <div class="row g-0 bg-light p-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <h4>@Model.Count()</h4>
+                                        <p class="mb-0">Empleados</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                                        <h4>₡@String.Format("{0:N0}", Model.Sum(n => n.salario_bruto))</h4>
+                                        <p class="mb-0">Total Bruto</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-minus-circle fa-2x mb-2"></i>
+                                        <h4>₡@String.Format("{0:N0}", Model.Sum(n => (n.ccss ?? 0) + (n.ivm ?? 0) + (n.isr ?? 0)))</h4>
+                                        <p class="mb-0">Total Deducciones</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white h-100 border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
+                                        <h4>₡@String.Format("{0:N0}", Model.Sum(n => n.salario_neto))</h4>
+                                        <p class="mb-0">Total Neto</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Detalles -->
+                        <div class="table-responsive">
+                            <table class="table-striped table-hover mb-0 table" id="reporteTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th><i class="fas fa-id-card me-2"></i>Cedula</th>
+                                        <th><i class="fas fa-user me-2"></i>Empleado</th>
+                                        <th><i class="fas fa-building me-2"></i>Departamento</th>
+                                        <th><i class="fas fa-briefcase me-2"></i>Puesto</th>
+                                        <th class="text-end"><i class="fas fa-dollar-sign me-2"></i>Salario Bruto</th>
+                                        <th class="text-end"><i class="fas fa-clock me-2"></i>Horas Extras</th>
+                                        <th class="text-end"><i class="fas fa-calendar-day me-2"></i>Feriados</th>
+                                        <th class="text-end"><i class="fas fa-heart me-2"></i>CCSS</th>
+                                        <th class="text-end"><i class="fas fa-shield-alt me-2"></i>IVM</th>
+                                        <th class="text-end"><i class="fas fa-percentage me-2"></i>ISR</th>
+                                        <th class="text-end"><i class="fas fa-hand-holding-usd me-2"></i>Salario Neto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var nomina in Model.OrderBy(n => n.Empleados.apellido1))
+                                    {
+                                        <tr>
+                                            <td><span class="badge bg-secondary">@nomina.Empleados.cedula</span></td>
+                                            <td>
+                                                <strong>@nomina.Empleados.nombre1 @nomina.Empleados.apellido1</strong>
+                                                <br><small class="text-muted">@nomina.Empleados.nombre2 @nomina.Empleados.apellido2</small>
+                                            </td>
+                                            <td><span class="badge bg-primary">@nomina.Empleados.Puestos.Departamentos.nombre</span></td>
+                                            <td>@nomina.Empleados.Puestos.nombre_puesto</td>
+                                            <td class="fw-bold text-end">₡@String.Format("{0:N0}", nomina.salario_bruto)</td>
+                                            <td class="text-end">@((nomina.horas_extras ?? 0) > 0 ? "₡" + String.Format("{0:N0}", nomina.horas_extras) : "-")</td>
+                                            <td class="text-end">@((nomina.salario_dias_feriados ?? 0) > 0 ? "₡" + String.Format("{0:N0}", nomina.salario_dias_feriados) : "-")</td>
+                                            <td class="text-danger text-end">-₡@String.Format("{0:N0}", (nomina.ccss ?? 0))</td>
+                                            <td class="text-danger text-end">-₡@String.Format("{0:N0}", (nomina.ivm ?? 0))</td>
+                                            <td class="text-danger text-end">-₡@String.Format("{0:N0}", (nomina.isr ?? 0))</td>
+                                            <td class="fw-bold text-success text-end">₡@String.Format("{0:N0}", nomina.salario_neto)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="table-dark">
+                                    <tr>
+                                        <th colspan="4" class="text-end">TOTALES:</th>
+                                        <th class="text-end">₡@String.Format("{0:N0}", Model.Sum(n => n.salario_bruto))</th>
+                                        <th class="text-end">₡@String.Format("{0:N0}", Model.Sum(n => n.horas_extras ?? 0))</th>
+                                        <th class="text-end">₡@String.Format("{0:N0}", Model.Sum(n => n.salario_dias_feriados ?? 0))</th>
+                                        <th class="text-danger text-end">-₡@String.Format("{0:N0}", Model.Sum(n => n.ccss ?? 0))</th>
+                                        <th class="text-danger text-end">-₡@String.Format("{0:N0}", Model.Sum(n => n.ivm ?? 0))</th>
+                                        <th class="text-danger text-end">-₡@String.Format("{0:N0}", Model.Sum(n => n.isr ?? 0))</th>
+                                        <th class="text-success text-end">₡@String.Format("{0:N0}", Model.Sum(n => n.salario_neto))</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="py-5 text-center">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No se encontraron registros</h4>
+                            <p class="text-muted">No hay datos de nomina para los filtros seleccionados.</p>
+                            <a href="@Url.Action("Index", "Reportes")" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn, .card-header .col-auto {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .table {
+            font-size: 11px;
+        }
+    }
+
+    .badge {
+        font-size: 0.8em;
+    }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

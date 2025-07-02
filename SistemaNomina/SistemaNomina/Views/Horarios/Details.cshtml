@@ -1,80 +1,356 @@
 ﻿@model SistemaNomina.Models.Horarios
 
 @{
-    ViewBag.Title = "Details";
-    // Establece el título de la página como "Details"
+    ViewBag.Title = "Detalles del Horario";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // plantilla
 }
 
-<h2>Details</h2>
-@*Título pag*@
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.2);
+    }
 
-<div>
-    <h4>Horarios</h4>
-    @*Subtítulo que indica la entidad relacionada*@
-    <hr />
-    @* Línea horizontal para separar visualmente*@
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-<dl class="dl-horizontal">
-    @* Lista mostrar detalles del registro*@
+    .details-card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-    <dt>
-        @Html.DisplayNameFor(model => model.nombre)
-        @*Etiqueta que muestra el nombre del campo 'nombre'*@
-    </dt>
+    .detail-header {
+        background: rgba(23, 136, 202, 0.1);
+        border-left: 4px solid #1788ca;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-    <dd>
-        @Html.DisplayFor(model => model.nombre)
-        @*Muestra el valor del campo 'nombre'*@
-    </dd>
+    .schedule-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
 
-    <dt>
-        @Html.DisplayNameFor(model => model.hora_entrada)
-        
-    </dt>
+    .schedule-info h4 {
+        color: #221d42;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
 
-    <dd>
-        @Html.DisplayFor(model => model.hora_entrada)
-       
-    </dd>
+    .schedule-info p {
+        margin: 0;
+        color: #6c757d;
+    }
 
-    <dt>
-        @Html.DisplayNameFor(model => model.hora_salida)
-        
-    </dt>
+    .detail-row {
+        display: flex;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e7e8eb;
+        transition: all 0.3s ease;
+    }
 
-    <dd>
-        @Html.DisplayFor(model => model.hora_salida)
-        
-    </dd>
+        .detail-row:last-child {
+            border-bottom: none;
+        }
 
-    <dt>
-        @Html.DisplayNameFor(model => model.fecha_creacion)
-        
-    </dt>
+        .detail-row:hover {
+            background-color: rgba(23, 136, 202, 0.02);
+        }
 
-    <dd>
-        @Html.DisplayFor(model => model.fecha_creacion)
-        
-    </dd>
+    .detail-label {
+        flex: 0 0 200px;
+        font-weight: 600;
+        color: #221d42;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-    <dt>
-        @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        
-    </dt>
+    .detail-value {
+        flex: 1;
+        color: #495057;
+        font-size: 1.1rem;
+    }
 
-    <dd>
-        @Html.DisplayFor(model => model.fecha_actualizacion)
-        
-    </dd>
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-</dl>
+    .badge-primary {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+    }
+
+    .time-display {
+        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        font-family: 'Courier New', monospace;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .duration-info {
+        background: rgba(23, 136, 202, 0.1);
+        border: 1px solid rgba(23, 136, 202, 0.2);
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .duration-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1788ca;
+    }
+
+    .duration-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 768px) {
+        .detail-row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            flex: none;
+        }
+
+        .btn-primary-custom, .btn-secondary-custom {
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .detail-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .time-display {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-eye"></i> Detalles del Horario</h1>
+                <p class="mb-0">Información completa del horario seleccionado</p>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_horario }) |
-    @*Enlace para editar el registro actual, pasando el ID del horario*@
 
-    @Html.ActionLink("Back to List", "Index")
-    @*Enlace para regresar a la lista principal*@
-</p>
+<div class="container" style="max-width: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="detail-header">
+                <div class="schedule-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="schedule-info">
+                    <h4>@Model.nombre</h4>
+                    <p>Horario ID: @Model.id_horario</p>
+                </div>
+            </div>
+
+            <div class="details-card-custom">
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-tag"></i>
+                        Nombre del Horario
+                    </div>
+                    <div class="detail-value">
+                        <strong>@Html.DisplayFor(model => model.nombre)</strong>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-hashtag"></i>
+                        ID del Horario
+                    </div>
+                    <div class="detail-value">
+                        <span class="badge-custom badge-primary">
+                            <i class="fas fa-id-badge"></i>
+                            @Html.DisplayFor(model => model.id_horario)
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-clock"></i>
+                        Horario de Trabajo
+                    </div>
+                    <div class="time-display">
+                        <i class="fas fa-sign-in-alt"></i>
+                        @Model.hora_entrada.ToString(@"hh\:mm")
+                        <i class="fas fa-arrow-right"></i>
+                        @Model.hora_salida.ToString(@"hh\:mm")
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-stopwatch"></i>
+                        Duración Total
+                    </div>
+                    <div class="detail-value">
+                        @{
+                            var duration = Model.hora_salida.Subtract(Model.hora_entrada);
+                            var hours = (int)duration.TotalHours;
+                            var minutes = duration.Minutes;
+                        }
+                        <div class="duration-info">
+                            <div class="duration-number">@hours h @minutes min</div>
+                            <div class="duration-label">Jornada laboral diaria</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        Fecha de Creación
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.fecha_creacion.HasValue)
+                        {
+                            <div>
+                                <i class="fas fa-clock"></i>
+                                @Model.fecha_creacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm", new System.Globalization.CultureInfo("es-ES"))
+                            </div>
+                        }
+                        else
+                        {
+                            <span style="color: #6c757d; font-style: italic;">No registrada</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-history"></i>
+                        Última Actualización
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.fecha_actualizacion.HasValue)
+                        {
+                            <div>
+                                <i class="fas fa-sync-alt"></i>
+                                @Model.fecha_actualizacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm", new System.Globalization.CultureInfo("es-ES"))
+                            </div>
+                        }
+                        else
+                        {
+                            <span style="color: #6c757d; font-style: italic;">No registrada</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
+                @Html.ActionLink("Editar", "Edit", new { id = Model.id_horario }, new { @class = "btn-primary-custom" })
+                @Html.ActionLink("Volver a la Lista", "Index", null, new { @class = "btn-secondary-custom" })
+            </div>
+        </div>
+    </div>
+</div>
