@@ -40,7 +40,7 @@ namespace SistemaNomina.Controllers
                 .Include(h => h.Empleados)
                 .Include(h => h.Estados)
                 .Include(h => h.Usuarios)
-                 .Include(h => h.Usuarios.Empleados)
+                .Include(h => h.Usuarios.Empleados)
                 .Include(h => h.TiposHoraExtra)
                 .FirstOrDefault(h => h.id_hora_extra == id);
 
@@ -58,6 +58,7 @@ namespace SistemaNomina.Controllers
             return View(model);
         }
 
+        // POST: HorasExtras/Create
         // POST: HorasExtras/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,10 +82,12 @@ namespace SistemaNomina.Controllers
                     horasExtras.fecha_creacion = DateTime.Now;
                     horasExtras.fecha_actualizacion = DateTime.Now;
 
-                    // 📝 Estado inicial: Pendiente
-                    var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente" && e.modulo == "HorasExtras");
-                    if (estadoPendiente != null)
-                        horasExtras.id_estado = estadoPendiente.id_estado;
+                    // 📝 Estado inicial: Pendiente (ID 10 para HorasExtras)
+                    horasExtras.id_estado = 10; // ✅ Usar el ID correcto que vimos en la imagen
+
+                    // 🚫 ASEGURAR QUE ESTOS CAMPOS ESTÉN EN NULL PARA CREACIÓN
+                    horasExtras.aprobado_por = null;
+                    horasExtras.fecha_aprobacion = null;
 
                     db.HorasExtras.Add(horasExtras);
                     db.SaveChanges();
@@ -116,31 +119,25 @@ namespace SistemaNomina.Controllers
             CargarListasDesplegables(horasExtras);
             return View(horasExtras);
         }
-
-        // GET: HorasExtras/Edit/5
         // GET: HorasExtras/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            // ⭐ CARGAR TODAS LAS RELACIONES CORRECTAMENTE
             HorasExtras horasExtras = db.HorasExtras
                 .Include(h => h.Empleados)
                 .Include(h => h.Estados)
                 .Include(h => h.TiposHoraExtra)
-                .Include(h => h.Usuarios)
-                .Include(h => h.Usuarios.Empleados) // Para mostrar quién aprobó
                 .FirstOrDefault(h => h.id_hora_extra == id);
 
             if (horasExtras == null)
                 return HttpNotFound();
 
-            // 🔒 VALIDACIÓN: Solo se pueden editar horas extras pendientes
-            var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente");
-            if (horasExtras.id_estado != estadoPendiente?.id_estado)
+            // 🔒 VALIDACIÓN ESPECÍFICA CON LOS IDs EXACTOS
+            if (horasExtras.id_estado != 10) // ID 10 = Pendiente para HorasExtras
             {
-                TempData["Error"] = "Solo se pueden editar horas extras en estado Pendiente.";
+                TempData["Error"] = $"Solo se pueden editar horas extras en estado Pendiente. Estado actual: {horasExtras.Estados?.nombre}";
                 return RedirectToAction("Index");
             }
 
@@ -148,71 +145,211 @@ namespace SistemaNomina.Controllers
             return View(horasExtras);
         }
 
-        // POST: HorasExtras/Edit/5
+        // POST: HorasExtras/Edit/5 - VERSIÓN CORREGIDA SIN TOTAL
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id_hora_extra,id_empleado,id_tipo,fecha,hora_inicio,hora_fin,motivo,id_estado,fecha_creacion")] HorasExtras horasExtras)
+        public ActionResult Edit(int id)
         {
             try
             {
-                if (ModelState.IsValid)
+                // 📊 VERIFICAR QUE EL REGISTRO EXISTE Y ESTÁ EN ESTADO PENDIENTE
+                var registroActual = db.Database.SqlQuery<dynamic>(
+                    "SELECT id_hora_extra, id_estado, fecha_creacion FROM HorasExtras WHERE id_hora_extra = @p0 AND id_estado = 10",
+                    id).FirstOrDefault();
+
+                if (registroActual == null)
                 {
-                    // 🔍 VALIDACIONES DE NEGOCIO
-                    if (!ValidarHorasExtras(horasExtras))
+                    TempData["Error"] = "Registro no encontrado o ya no está en estado Pendiente.";
+                    return RedirectToAction("Index");
+                }
+
+                // 🔄 OBTENER VALORES DEL FORMULARIO
+                if (!int.TryParse(Request.Form["id_empleado"], out int idEmpleado))
+                {
+                    ModelState.AddModelError("id_empleado", "Empleado requerido.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                if (!int.TryParse(Request.Form["id_tipo"], out int idTipo))
+                {
+                    ModelState.AddModelError("id_tipo", "Tipo de hora extra requerido.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                if (!DateTime.TryParse(Request.Form["fecha"], out DateTime fecha))
+                {
+                    ModelState.AddModelError("fecha", "Fecha requerida.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                if (!TimeSpan.TryParse(Request.Form["hora_inicio"], out TimeSpan horaInicio))
+                {
+                    ModelState.AddModelError("hora_inicio", "Hora de inicio requerida.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                if (!TimeSpan.TryParse(Request.Form["hora_fin"], out TimeSpan horaFin))
+                {
+                    ModelState.AddModelError("hora_fin", "Hora de fin requerida.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                string motivo = Request.Form["motivo"] ?? "";
+
+                // 🔍 VALIDACIONES BÁSICAS (igual que antes)
+                if (horaInicio >= horaFin)
+                {
+                    ModelState.AddModelError("hora_fin", "La hora de fin debe ser posterior a la hora de inicio.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                if (fecha > DateTime.Today)
+                {
+                    ModelState.AddModelError("fecha", "La fecha no puede ser futura.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                if (fecha < DateTime.Today.AddDays(-30))
+                {
+                    ModelState.AddModelError("fecha", "No se pueden registrar horas extras de más de 30 días de antigüedad.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                var duracion = horaFin - horaInicio;
+                if (duracion.TotalHours > 12)
+                {
+                    ModelState.AddModelError("hora_fin", "No se pueden registrar más de 12 horas extras por día.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                // Validar duplicados
+                var yaExiste = db.HorasExtras.Any(h => h.id_empleado == idEmpleado
+                    && h.fecha == fecha
+                    && h.id_hora_extra != id);
+
+                if (yaExiste)
+                {
+                    ModelState.AddModelError("fecha", "Ya existe un registro de horas extras para este empleado en esta fecha.");
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+
+                // 📊 CALCULAR HORAS Y MONTOS
+                decimal horas = (decimal)duracion.TotalHours;
+                decimal valorHora = 0;
+                decimal recargo = 50; // Default
+
+                // Obtener salario del empleado
+                var empleado = db.Empleados.Include(e => e.Puestos)
+                    .FirstOrDefault(e => e.id_empleado == idEmpleado);
+
+                if (empleado?.Puestos != null)
+                {
+                    valorHora = empleado.Puestos.salario_base / 30 / 8;
+
+                    var tipoHoraExtra = db.TiposHoraExtra.Find(idTipo);
+                    if (tipoHoraExtra != null)
                     {
-                        CargarListasDesplegables(horasExtras);
-                        return View(horasExtras);
+                        recargo = tipoHoraExtra.recargo == 0 ? 50m : tipoHoraExtra.recargo;
                     }
+                }
 
-                    // 📊 RECALCULAR montos
-                    CalcularHorasYMonto(horasExtras);
+                // 🔧 ACTUALIZACIÓN CON SQL DIRECTO - SIN MODIFICAR "total"
+                var sqlUpdate = @"
+            UPDATE HorasExtras 
+            SET id_empleado = @p0,
+                id_tipo = @p1,
+                fecha = @p2,
+                hora_inicio = @p3,
+                hora_fin = @p4,
+                horas = @p5,
+                valor_hora = @p6,
+                recargo = @p7,
+                motivo = @p8,
+                fecha_actualizacion = @p9
+            WHERE id_hora_extra = @p10 AND id_estado = 10";
 
-                    // 📅 Actualizar fecha de modificación
-                    horasExtras.fecha_actualizacion = DateTime.Now;
+                var parametros = new object[] {
+            idEmpleado,         // @p0
+            idTipo,             // @p1
+            fecha,              // @p2
+            horaInicio,         // @p3
+            horaFin,            // @p4
+            horas,              // @p5
+            valorHora,          // @p6
+            recargo,            // @p7
+            motivo,             // @p8
+            DateTime.Now,       // @p9
+            id                  // @p10
+        };
 
-                    db.Entry(horasExtras).State = EntityState.Modified;
-                    db.SaveChanges();
+                var filasAfectadas = db.Database.ExecuteSqlCommand(sqlUpdate, parametros);
 
+                if (filasAfectadas > 0)
+                {
                     // 📋 LOG AUTOMÁTICO
                     var currentUserId = (int?)Session["UserId"];
                     if (currentUserId.HasValue)
                     {
-                        var empleado = db.Empleados.Find(horasExtras.id_empleado);
                         BitacoraHelper.RegistrarAccion("EDITAR_HORAS_EXTRAS",
-                            $"Editadas horas extras para {empleado?.nombre1} {empleado?.apellido1} (ID: {horasExtras.id_hora_extra})",
+                            $"Editadas horas extras para {empleado?.nombre1} {empleado?.apellido1} (ID: {id})",
                             currentUserId.Value);
                     }
 
                     TempData["Success"] = "Horas extras actualizadas exitosamente.";
                     return RedirectToAction("Index");
                 }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                ModelState.AddModelError("", "Otro usuario modificó este registro. Recarga la página.");
-            }
-            catch (DbUpdateException ex)
-            {
-                HandleDbUpdateException(ex);
+                else
+                {
+                    TempData["Error"] = "No se pudo actualizar el registro. Verifique que aún esté en estado Pendiente.";
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
-                LogExceptionDetails(ex);
-            }
+                TempData["Error"] = $"Error al actualizar: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"Error en Edit: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
 
-            CargarListasDesplegables(horasExtras);
-            return View(horasExtras);
+                // En caso de error, mostrar el formulario nuevamente
+                try
+                {
+                    var errorModel = db.HorasExtras.Find(id);
+                    CargarListasDesplegables(errorModel);
+                    return View(errorModel);
+                }
+                catch
+                {
+                    return RedirectToAction("Index");
+                }
+            }
         }
 
-        // GET: HorasExtras/Delete/5
         // GET: HorasExtras/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            // ⭐ CARGAR TODAS LAS RELACIONES CORRECTAMENTE
             HorasExtras horasExtras = db.HorasExtras
                 .Include(h => h.Empleados)
                 .Include(h => h.Estados)
@@ -224,9 +361,8 @@ namespace SistemaNomina.Controllers
             if (horasExtras == null)
                 return HttpNotFound();
 
-            // 🔍 VALIDACIÓN: Verificar si ya fue aprobada
-            var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado");
-            ViewBag.EsAprobada = horasExtras.id_estado == estadoAprobado?.id_estado;
+            // 🔍 VALIDACIÓN: Verificar si ya fue aprobada (ID 11 = Aprobado)
+            ViewBag.EsAprobada = horasExtras.id_estado == 11;
 
             return View(horasExtras);
         }
@@ -242,9 +378,8 @@ namespace SistemaNomina.Controllers
                 if (horasExtras == null)
                     return HttpNotFound();
 
-                // 🛡️ VALIDACIÓN: No eliminar si ya fue aprobada y pagada
-                var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado");
-                if (horasExtras.id_estado == estadoAprobado?.id_estado)
+                // 🛡️ VALIDACIÓN: No eliminar si ya fue aprobada (ID 11 = Aprobado)
+                if (horasExtras.id_estado == 11)
                 {
                     TempData["Error"] = "No se pueden eliminar horas extras ya aprobadas.";
                     return RedirectToAction("Index");
@@ -289,30 +424,25 @@ namespace SistemaNomina.Controllers
                 if (horasExtras == null)
                     return Json(new { success = false, message = "Registro no encontrado." });
 
-                var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado");
-                if (estadoAprobado != null)
+                // Cambiar de estado Pendiente (10) a Aprobado (11)
+                horasExtras.id_estado = 11; // ID 11 = Aprobado
+                horasExtras.aprobado_por = (int?)Session["UserId"];
+                horasExtras.fecha_aprobacion = DateTime.Now;
+                horasExtras.fecha_actualizacion = DateTime.Now;
+
+                db.SaveChanges();
+
+                // 📋 LOG
+                var currentUserId = (int?)Session["UserId"];
+                if (currentUserId.HasValue)
                 {
-                    horasExtras.id_estado = estadoAprobado.id_estado;
-                    horasExtras.aprobado_por = (int?)Session["UserId"];
-                    horasExtras.fecha_aprobacion = DateTime.Now;
-                    horasExtras.fecha_actualizacion = DateTime.Now;
-
-                    db.SaveChanges();
-
-                    // 📋 LOG
-                    var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
-                    {
-                        var empleado = db.Empleados.Find(horasExtras.id_empleado);
-                        BitacoraHelper.RegistrarAccion("APROBAR_HORAS_EXTRAS",
-                            $"Aprobadas {horasExtras.horas:F2} horas extras de {empleado?.nombre1} {empleado?.apellido1}",
-                            currentUserId.Value);
-                    }
-
-                    return Json(new { success = true, message = "Horas extras aprobadas exitosamente." });
+                    var empleado = db.Empleados.Find(horasExtras.id_empleado);
+                    BitacoraHelper.RegistrarAccion("APROBAR_HORAS_EXTRAS",
+                        $"Aprobadas {horasExtras.horas:F2} horas extras de {empleado?.nombre1} {empleado?.apellido1}",
+                        currentUserId.Value);
                 }
 
-                return Json(new { success = false, message = "No se pudo actualizar el estado." });
+                return Json(new { success = true, message = "Horas extras aprobadas exitosamente." });
             }
             catch (Exception ex)
             {
@@ -331,30 +461,25 @@ namespace SistemaNomina.Controllers
                 if (horasExtras == null)
                     return Json(new { success = false, message = "Registro no encontrado." });
 
-                var estadoRechazado = db.Estados.FirstOrDefault(e => e.nombre == "Rechazado");
-                if (estadoRechazado != null)
+                // Cambiar de estado Pendiente (10) a Rechazado (12)
+                horasExtras.id_estado = 12; // ID 12 = Rechazado
+                horasExtras.aprobado_por = (int?)Session["UserId"];
+                horasExtras.fecha_aprobacion = DateTime.Now;
+                horasExtras.fecha_actualizacion = DateTime.Now;
+
+                db.SaveChanges();
+
+                // 📋 LOG
+                var currentUserId = (int?)Session["UserId"];
+                if (currentUserId.HasValue)
                 {
-                    horasExtras.id_estado = estadoRechazado.id_estado;
-                    horasExtras.aprobado_por = (int?)Session["UserId"];
-                    horasExtras.fecha_aprobacion = DateTime.Now;
-                    horasExtras.fecha_actualizacion = DateTime.Now;
-
-                    db.SaveChanges();
-
-                    // 📋 LOG
-                    var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
-                    {
-                        var empleado = db.Empleados.Find(horasExtras.id_empleado);
-                        BitacoraHelper.RegistrarAccion("RECHAZAR_HORAS_EXTRAS",
-                            $"Rechazadas horas extras de {empleado?.nombre1} {empleado?.apellido1}",
-                            currentUserId.Value);
-                    }
-
-                    return Json(new { success = true, message = "Horas extras rechazadas." });
+                    var empleado = db.Empleados.Find(horasExtras.id_empleado);
+                    BitacoraHelper.RegistrarAccion("RECHAZAR_HORAS_EXTRAS",
+                        $"Rechazadas horas extras de {empleado?.nombre1} {empleado?.apellido1}",
+                        currentUserId.Value);
                 }
 
-                return Json(new { success = false, message = "No se pudo actualizar el estado." });
+                return Json(new { success = true, message = "Horas extras rechazadas." });
             }
             catch (Exception ex)
             {
@@ -376,8 +501,9 @@ namespace SistemaNomina.Controllers
                     .OrderBy(e => e.NombreCompleto),
                 "id_empleado", "NombreCompleto", horasExtras?.id_empleado);
 
+            // 🔧 SOLO CARGAR ESTADOS DE HORASEXTRAS
             ViewBag.id_estado = new SelectList(
-                db.Estados.Where(e => e.modulo == "HorasExtras" || e.modulo == null),
+                db.Estados.Where(e => e.modulo == "HorasExtras"),
                 "id_estado", "nombre", horasExtras?.id_estado);
 
             ViewBag.aprobado_por = new SelectList(
@@ -462,7 +588,6 @@ namespace SistemaNomina.Controllers
                 {
                     // Solo aplicar un valor por defecto si recargo == 0 (por precaución)
                     horasExtras.recargo = tipoHoraExtra.recargo == 0 ? 50m : tipoHoraExtra.recargo;
-
 
                     // 💵 Calcular total: (Valor Hora * (1 + Recargo/100)) * Horas
                     var factorRecargo = 1 + (horasExtras.recargo / 100);

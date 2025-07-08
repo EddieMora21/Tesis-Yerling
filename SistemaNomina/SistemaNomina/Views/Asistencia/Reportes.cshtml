@@ -336,6 +336,80 @@
             });
         });
 
+        function exportarPDF() {
+    showNotification('Generando reporte PDF...', 'info');
+
+    // Obtener los valores de los filtros del formulario principal
+    var formData = $('#formReporte').serialize();
+
+    // Crear formulario temporal para envío
+    var form = $('<form>', {
+        'method': 'POST',
+        'action': '@Url.Action("ExportarReportePDF", "Asistencia")',
+        'target': '_blank'
+    });
+
+    // Agregar token de verificación
+    form.append($('<input>', {
+        'type': 'hidden',
+        'name': '__RequestVerificationToken',
+        'value': $('input[name="__RequestVerificationToken"]').val()
+    }));
+
+    // Agregar parámetros de filtro
+    var params = new URLSearchParams(formData);
+    for (let [key, value] of params) {
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': key,
+            'value': value
+        }));
+    }
+
+    $('body').append(form);
+    form.submit();
+    form.remove();
+
+    showNotification('Descarga de PDF iniciada', 'success');
+}
+
+function exportarExcel() {
+    showNotification('Generando reporte Excel...', 'info');
+
+    // Obtener los valores de los filtros del formulario principal
+    var formData = $('#formReporte').serialize();
+
+    // Crear formulario temporal para envío
+    var form = $('<form>', {
+        'method': 'POST',
+        'action': '@Url.Action("ExportarReporteExcel", "Asistencia")',
+        'target': '_blank'
+    });
+
+    // Agregar token de verificación
+    form.append($('<input>', {
+        'type': 'hidden',
+        'name': '__RequestVerificationToken',
+        'value': $('input[name="__RequestVerificationToken"]').val()
+    }));
+
+    // Agregar parámetros de filtro
+    var params = new URLSearchParams(formData);
+    for (let [key, value] of params) {
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': key,
+            'value': value
+        }));
+    }
+
+    $('body').append(form);
+    form.submit();
+    form.remove();
+
+    showNotification('Descarga de Excel iniciada', 'success');
+}
+
         function setQuickFilter(periodo) {
             // Limpiar filtros activos
             $('.quick-filter-btn').removeClass('active');

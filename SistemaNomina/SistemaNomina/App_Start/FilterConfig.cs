@@ -1,15 +1,13 @@
-﻿using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using SistemaNomina.Filters;
 
-namespace SistemaNomina
+public class FilterConfig
 {
-    public class FilterConfig
+    public static void RegisterGlobalFilters(GlobalFilterCollection filters)
     {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            // Filtro para manejo de errores
-            filters.Add(new HandleErrorAttribute());
-        }
+        filters.Add(new HandleErrorAttribute());
+
+        // 🔧 AGREGAR VALIDACIÓN DE SESIÓN GLOBAL
+        filters.Add(new SessionValidationAttribute());
     }
 }

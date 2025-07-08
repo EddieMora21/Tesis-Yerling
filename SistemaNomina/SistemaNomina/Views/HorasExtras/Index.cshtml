@@ -6,177 +6,228 @@
 }
 
 <style>
+    /* === VARIABLES DE COLORES CORPORATIVOS === */
+    :root {
+        --color-primario: #221d42;
+        --color-secundario: #1788ca;
+        --color-acento: #fab61b;
+        --color-neutro: #e7e8eb;
+        --color-blanco: #ffffff;
+        --color-texto: #495057;
+        --color-texto-claro: #6c757d;
+    }
+
     /* === RESET Y BASE === */
     * {
         box-sizing: border-box;
     }
 
     .horas-extras-container {
-        padding: 20px;
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* === HEADER PRINCIPAL === */
+    .page-header {
+        background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+        color: var(--color-blanco);
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+        margin: 10px 0 0 0;
+        opacity: 0.9;
     }
 
     /* === CARD PRINCIPAL === */
-    .card-horas-extras {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    .main-card {
+        background: var(--color-blanco);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
         overflow: hidden;
+        border: 1px solid var(--color-neutro);
     }
 
-    /* === HEADER === */
-    .header-horas-extras {
-        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-        color: white;
+    /* === TOOLBAR === */
+    .toolbar {
+        background: var(--color-blanco);
         padding: 20px;
+        border-bottom: 2px solid var(--color-neutro);
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
     }
 
-    .titulo-horas-extras {
-        font-size: 1.8rem;
+    .toolbar-title {
+        font-size: 1.2rem;
         font-weight: 600;
+        color: var(--color-primario);
         margin: 0;
     }
 
-    .btn-nuevo {
-        background: #28a745;
-        color: white;
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--color-acento) 0%, #e09900 100%);
+        color: var(--color-primario);
         text-decoration: none;
-        padding: 10px 20px;
+        padding: 12px 24px;
         border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 1rem;
         border: none;
         cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .btn-nuevo:hover {
-        background: #1e7e34;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(40,167,69,0.3);
-        color: white;
-        text-decoration: none;
-    }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: var(--color-primario);
+            text-decoration: none;
+        }
 
     /* === ALERTAS === */
-    .alerta {
+    .alert-custom {
         margin: 20px;
-        padding: 15px;
+        padding: 15px 20px;
         border-radius: 8px;
+        border-left: 4px solid;
         position: relative;
+        font-weight: 500;
     }
 
-    .alerta-success {
-        background: #d4edda;
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         color: #155724;
-        border: 1px solid #c3e6cb;
+        border-left-color: #28a745;
     }
 
-    .alerta-error {
-        background: #f8d7da;
+    .alert-error {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
         color: #721c24;
-        border: 1px solid #f5c6cb;
+        border-left-color: #dc3545;
     }
 
     /* === TABLA === */
-    .tabla-container {
-        overflow-x: auto;
+    .table-container {
         margin: 20px;
+        overflow-x: auto;
     }
 
-    .tabla-horas-extras {
+    .table-custom {
         width: 100%;
         border-collapse: collapse;
-        background: white;
-    }
-
-    .tabla-horas-extras th {
-        background: #343a40;
-        color: white;
-        padding: 12px 8px;
-        text-align: left;
-        font-weight: 600;
-        border: none;
+        background: var(--color-blanco);
         font-size: 0.9rem;
     }
 
-    .tabla-horas-extras th.acciones-header {
-        text-align: center;
-        width: 180px;
+        .table-custom thead th {
+            background: var(--color-primario);
+            color: var(--color-blanco);
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .table-custom thead th.text-center {
+                text-align: center;
+            }
+
+        .table-custom tbody td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--color-neutro);
+            vertical-align: middle;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .table-custom tbody tr:hover {
+                background: rgba(23, 136, 202, 0.05);
+            }
+
+    /* === INFORMACIÓN DE EMPLEADO === */
+    .empleado-info {
+        font-weight: 600;
+        color: var(--color-texto);
+        margin-bottom: 4px;
     }
 
-    .tabla-horas-extras th.estado-header {
-        text-align: center;
-        width: 120px;
-    }
-
-    .tabla-horas-extras td {
-        padding: 12px 8px;
-        border-bottom: 1px solid #dee2e6;
-        vertical-align: middle;
+    .empleado-cedula {
+        color: var(--color-texto-claro);
         font-size: 0.85rem;
-    }
-
-    .tabla-horas-extras tr:hover {
-        background: #f8f9fa;
+        font-family: 'Courier New', monospace;
     }
 
     /* === BADGES DE ESTADO === */
-    .badge-estado {
-        padding: 4px 8px;
-        border-radius: 12px;
+    .estado-badge {
+        padding: 6px 12px;
+        border-radius: 15px;
         font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         display: inline-block;
+        border: 2px solid;
     }
 
-    .badge-pendiente {
-        background: #fff3cd;
+    .estado-pendiente {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
         color: #856404;
-        border: 1px solid #ffeaa7;
+        border-color: #ffeaa7;
     }
 
-    .badge-aprobado {
-        background: #d4edda;
+    .estado-aprobado {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         color: #155724;
-        border: 1px solid #c3e6cb;
+        border-color: #c3e6cb;
     }
 
-    .badge-rechazado {
-        background: #f8d7da;
+    .estado-rechazado {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
         color: #721c24;
-        border: 1px solid #f5c6cb;
+        border-color: #f5c6cb;
     }
 
-    /* === EMPLEADO INFO === */
-    .empleado-info {
-        font-weight: 600;
-        color: #495057;
-        font-size: 0.9rem;
-    }
-
-    .empleado-cedula {
-        color: #6c757d;
-        font-size: 0.8rem;
-        display: block;
-    }
-
-    /* === HORAS Y MONTOS === */
-    .horas-valor {
+    /* === VALORES Y MONTOS === */
+    .valor-horas {
         font-family: 'Courier New', monospace;
         font-weight: 600;
-        color: #495057;
+        color: var(--color-texto);
     }
 
-    .monto-total {
+    .valor-dinero {
         font-family: 'Courier New', monospace;
         font-weight: 700;
         color: #28a745;
-        font-size: 0.9rem;
+        font-size: 1rem;
+    }
+
+    .horario-texto {
+        font-family: 'Courier New', monospace;
+        color: var(--color-texto);
+        font-weight: 500;
     }
 
     /* === BOTONES DE ACCIÓN === */
@@ -192,86 +243,99 @@
         align-items: center;
         gap: 4px;
         padding: 6px 10px;
-        border-radius: 4px;
+        border-radius: 6px;
         text-decoration: none;
         font-size: 0.75rem;
         font-weight: 500;
         border: none;
         cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 60px;
+        transition: all 0.3s ease;
+        min-width: 65px;
         justify-content: center;
     }
 
     .btn-ver {
-        background: #17a2b8;
-        color: white;
+        background: linear-gradient(135deg, var(--color-secundario) 0%, #106fa8 100%);
+        color: var(--color-blanco);
     }
 
-    .btn-ver:hover {
-        background: #138496;
-        color: white;
-        text-decoration: none;
-    }
+        .btn-ver:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(23, 136, 202, 0.3);
+            color: var(--color-blanco);
+            text-decoration: none;
+        }
 
     .btn-editar {
-        background: #ffc107;
-        color: #212529;
+        background: linear-gradient(135deg, var(--color-acento) 0%, #e09900 100%);
+        color: var(--color-primario);
     }
 
-    .btn-editar:hover {
-        background: #e0a800;
-        color: #212529;
-        text-decoration: none;
-    }
+        .btn-editar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(250, 182, 27, 0.4);
+            color: var(--color-primario);
+            text-decoration: none;
+        }
 
     .btn-eliminar {
-        background: #dc3545;
-        color: white;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: var(--color-blanco);
     }
 
-    .btn-eliminar:hover {
-        background: #c82333;
-        color: white;
-        text-decoration: none;
-    }
+        .btn-eliminar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            color: var(--color-blanco);
+            text-decoration: none;
+        }
 
     .btn-aprobar {
-        background: #28a745;
-        color: white;
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: var(--color-blanco);
     }
 
-    .btn-aprobar:hover {
-        background: #1e7e34;
-        color: white;
-        text-decoration: none;
-    }
+        .btn-aprobar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            color: var(--color-blanco);
+            text-decoration: none;
+        }
 
     .btn-rechazar {
-        background: #6c757d;
-        color: white;
+        background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        color: var(--color-blanco);
     }
 
-    .btn-rechazar:hover {
-        background: #545b62;
-        color: white;
-        text-decoration: none;
-    }
+        .btn-rechazar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            color: var(--color-blanco);
+            text-decoration: none;
+        }
 
     /* === ESTADO VACÍO === */
-    .estado-vacio {
+    .empty-state {
         text-align: center;
         padding: 60px 20px;
-        color: #6c757d;
+        color: var(--color-texto-claro);
     }
 
-    .estado-vacio h4 {
-        margin-bottom: 10px;
-        color: #495057;
-    }
-
-    .estado-vacio p {
+    .empty-state-icon {
+        font-size: 4rem;
+        color: var(--color-neutro);
         margin-bottom: 20px;
+    }
+
+    .empty-state h4 {
+        margin-bottom: 15px;
+        color: var(--color-texto);
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        margin-bottom: 25px;
+        font-size: 1rem;
     }
 
     /* === RESPONSIVE === */
@@ -280,23 +344,27 @@
             padding: 10px;
         }
 
-        .header-horas-extras {
-            flex-direction: column;
-            gap: 15px;
-            text-align: center;
+        .page-header {
+            padding: 1.5rem 0;
+            margin-bottom: 20px;
         }
 
-        .titulo-horas-extras {
+        .page-title {
             font-size: 1.5rem;
         }
 
-        .btn-nuevo {
-            width: 100%;
+        .toolbar {
+            flex-direction: column;
+            text-align: center;
         }
 
-        .tabla-horas-extras th,
-        .tabla-horas-extras td {
-            padding: 8px 4px;
+        .table-container {
+            margin: 15px;
+        }
+
+        .table-custom thead th,
+        .table-custom tbody td {
+            padding: 10px 6px;
             font-size: 0.8rem;
         }
 
@@ -307,150 +375,214 @@
 
         .btn-accion {
             width: 100%;
-            padding: 4px 8px;
-            font-size: 0.7rem;
             min-width: auto;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .empleado-info {
+            font-size: 0.85rem;
+        }
+
+        .empleado-cedula {
+            font-size: 0.75rem;
+        }
+
+        .valor-dinero {
+            font-size: 0.9rem;
         }
     }
 </style>
 
 <div class="horas-extras-container">
-    <div class="card-horas-extras">
-        <!-- Header -->
-        <div class="header-horas-extras">
-            <h1 class="titulo-horas-extras">⏰ Gestión de Horas Extras</h1>
-            <a href="@Url.Action("Create")" class="btn-nuevo">
-                ➕ Registrar Horas Extras
+    <!-- Header Principal -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-clock" style="margin-right: 10px;"></i>
+            Gestión de Horas Extras
+        </h1>
+        <p class="page-subtitle">Control y administración de tiempo extra laborado</p>
+    </div>
+
+    <!-- Card Principal -->
+    <div class="main-card">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <h2 class="toolbar-title">
+                <i class="fas fa-list" style="margin-right: 8px; color: var(--color-secundario);"></i>
+                Listado de Horas Extras
+            </h2>
+            <a href="@Url.Action("Create")" class="btn-primary-custom">
+                <i class="fas fa-plus"></i>
+                Registrar Horas Extras
             </a>
         </div>
 
         <!-- Alertas -->
         @if (TempData["Success"] != null)
         {
-            <div class="alerta alerta-success">
-                ✅ @TempData["Success"]
+            <div class="alert-custom alert-success">
+                <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                @TempData["Success"]
             </div>
         }
 
         @if (TempData["Error"] != null)
         {
-            <div class="alerta alerta-error">
-                ❌ @TempData["Error"]
+            <div class="alert-custom alert-error">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                @TempData["Error"]
             </div>
         }
 
         <!-- Tabla -->
-        <div class="tabla-container">
-            <table class="tabla-horas-extras">
-                <thead>
-                    <tr>
-                        <th>👤 Empleado</th>
-                        <th>📅 Fecha</th>
-                        <th>🕐 Horario</th>
-                        <th>⏱️ Horas</th>
-                        <th>💰 Monto</th>
-                        <th class="estado-header">📊 Estado</th>
-                        <th class="acciones-header">⚙️ Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+        @if (Model.Any())
+        {
+            <div class="table-container">
+                <table class="table-custom">
+                    <thead>
                         <tr>
-                            <td>
-                                <div class="empleado-info">
-                                    @Html.DisplayFor(modelItem => item.Empleados.nombre1) @Html.DisplayFor(modelItem => item.Empleados.apellido1)
-                                </div>
-                                <span class="empleado-cedula">@Html.DisplayFor(modelItem => item.Empleados.cedula)</span>
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.fecha)
-                            </td>
-                            <td>
-                                <div class="horas-valor">
-                                    @item.hora_inicio.ToString(@"hh\:mm") - @item.hora_fin.ToString(@"hh\:mm")
-                                </div>
-                            </td>
-                            <td>
-                                <div class="horas-valor">
-                                    @Html.DisplayFor(modelItem => item.horas) hrs
-                                </div>
-                            </td>
-                            <td>
-                                <div class="monto-total">
-                                    ₡@((item.total ?? 0).ToString("N2"))
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                @{
-                                    var estadoClass = "badge-pendiente";
-                                    if (item.Estados != null)
-                                    {
-                                        switch (item.Estados.nombre.ToLower())
+                            <th>
+                                <i class="fas fa-user" style="margin-right: 5px;"></i>
+                                Empleado
+                            </th>
+                            <th>
+                                <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>
+                                Fecha
+                            </th>
+                            <th>
+                                <i class="fas fa-clock" style="margin-right: 5px;"></i>
+                                Horario
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-hourglass-half" style="margin-right: 5px;"></i>
+                                Horas
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-dollar-sign" style="margin-right: 5px;"></i>
+                                Monto
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+                                Estado
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-cogs" style="margin-right: 5px;"></i>
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="empleado-info">
+                                        @Html.DisplayFor(modelItem => item.Empleados.nombre1) @Html.DisplayFor(modelItem => item.Empleados.apellido1)
+                                    </div>
+                                    <div class="empleado-cedula">
+                                        @Html.DisplayFor(modelItem => item.Empleados.cedula)
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="valor-horas">
+                                        @item.fecha.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
+                                <td>
+                                   
+                                    <div class="horario-texto">
+                                        @item.hora_inicio.ToString(@"hh\:mm") - @item.hora_fin.ToString(@"hh\:mm")
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="valor-horas">
+                                        @Html.DisplayFor(modelItem => item.horas) hrs
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="valor-dinero">
+                                        ₡@((item.total ?? 0).ToString("N2"))
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    @{
+                                        var estadoClass = "estado-pendiente";
+                                        if (item.Estados != null)
                                         {
-                                            case "aprobado":
-                                                estadoClass = "badge-aprobado";
-                                                break;
-                                            case "rechazado":
-                                                estadoClass = "badge-rechazado";
-                                                break;
+                                            switch (item.Estados.nombre.ToLower())
+                                            {
+                                                case "aprobado":
+                                                    estadoClass = "estado-aprobado";
+                                                    break;
+                                                case "rechazado":
+                                                    estadoClass = "estado-rechazado";
+                                                    break;
+                                            }
                                         }
                                     }
-                                }
-                                <span class="badge-estado @estadoClass">
-                                    @Html.DisplayFor(modelItem => item.Estados.nombre)
-                                </span>
-                            </td>
-                            <td>
-                                <div class="acciones-container">
-                                    <a href="@Url.Action("Details", new { id = item.id_hora_extra })"
-                                       class="btn-accion btn-ver"
-                                       title="Ver detalles">
-                                        👁️ Ver
-                                    </a>
-
-                                    @if (item.Estados?.nombre == "Pendiente")
-                                    {
-                                        <a href="@Url.Action("Edit", new { id = item.id_hora_extra })"
-                                           class="btn-accion btn-editar"
-                                           title="Editar">
-                                            ✏️ Editar
+                                    <span class="estado-badge @estadoClass">
+                                        @Html.DisplayFor(modelItem => item.Estados.nombre)
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="acciones-container">
+                                        <a href="@Url.Action("Details", new { id = item.id_hora_extra })"
+                                           class="btn-accion btn-ver"
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                            Ver
                                         </a>
 
-                                        <button onclick="aprobarHorasExtras(@item.id_hora_extra)"
-                                                class="btn-accion btn-aprobar"
-                                                title="Aprobar">
-                                            ✅ Aprobar
-                                        </button>
+                                        @if (item.Estados?.nombre == "Pendiente")
+                                        {
+                                            <a href="@Url.Action("Edit", new { id = item.id_hora_extra })"
+                                               class="btn-accion btn-editar"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                                Editar
+                                            </a>
 
-                                        <button onclick="rechazarHorasExtras(@item.id_hora_extra)"
-                                                class="btn-accion btn-rechazar"
-                                                title="Rechazar">
-                                            ❌ Rechazar
-                                        </button>
+                                            <button onclick="aprobarHorasExtras(@item.id_hora_extra)"
+                                                    class="btn-accion btn-aprobar"
+                                                    title="Aprobar">
+                                                <i class="fas fa-check"></i>
+                                                Aprobar
+                                            </button>
 
-                                        <a href="@Url.Action("Delete", new { id = item.id_hora_extra })"
-                                           class="btn-accion btn-eliminar"
-                                           title="Eliminar">
-                                            🗑️ Eliminar
-                                        </a>
-                                    }
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                                            <button onclick="rechazarHorasExtras(@item.id_hora_extra)"
+                                                    class="btn-accion btn-rechazar"
+                                                    title="Rechazar">
+                                                <i class="fas fa-times"></i>
+                                                Rechazar
+                                            </button>
 
-        <!-- Estado vacío -->
-        @if (!Model.Any())
+                                            <a href="@Url.Action("Delete", new { id = item.id_hora_extra })"
+                                               class="btn-accion btn-eliminar"
+                                               title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                                Eliminar
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
         {
-            <div class="estado-vacio">
-                <h4>⏰ No hay horas extras registradas</h4>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h4>No hay horas extras registradas</h4>
                 <p>Comienza registrando las primeras horas extras del sistema.</p>
-                <a href="@Url.Action("Create")" class="btn-nuevo">
-                    ➕ Registrar las primeras
+                <a href="@Url.Action("Create")" class="btn-primary-custom">
+                    <i class="fas fa-plus"></i>
+                    Registrar las primeras
                 </a>
             </div>
         }
@@ -464,14 +596,14 @@
             $.post('@Url.Action("Aprobar")', { id: id })
                 .done(function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        location.reload();
+                        showAlert(response.message, 'success');
+                        setTimeout(() => location.reload(), 1500);
                     } else {
-                        alert('Error: ' + response.message);
+                        showAlert('Error: ' + response.message, 'error');
                     }
                 })
                 .fail(function() {
-                    alert('Error al comunicarse con el servidor.');
+                    showAlert('Error al comunicarse con el servidor.', 'error');
                 });
         }
     }
@@ -481,15 +613,36 @@
             $.post('@Url.Action("Rechazar")', { id: id })
                 .done(function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        location.reload();
+                        showAlert(response.message, 'success');
+                        setTimeout(() => location.reload(), 1500);
                     } else {
-                        alert('Error: ' + response.message);
+                        showAlert('Error: ' + response.message, 'error');
                     }
                 })
                 .fail(function() {
-                    alert('Error al comunicarse con el servidor.');
+                    showAlert('Error al comunicarse con el servidor.', 'error');
                 });
         }
+    }
+
+    function showAlert(message, type) {
+        // Crear alerta temporal
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert-custom alert-${type}`;
+        alertDiv.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}" style="margin-right: 8px;"></i>
+            ${message}
+        `;
+
+        // Insertar al inicio del contenedor
+        const container = document.querySelector('.main-card');
+        container.insertBefore(alertDiv, container.firstChild);
+
+        // Remover después de 3 segundos
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 3000);
     }
 </script>

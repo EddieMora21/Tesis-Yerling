@@ -6,60 +6,148 @@
 }
 
 <style>
-    .horas-extras-form-container {
-        max-width: 800px;
-        margin: 20px auto;
+    /* === VARIABLES DE COLORES CORPORATIVOS === */
+    :root {
+        --color-primario: #221d42;
+        --color-secundario: #1788ca;
+        --color-acento: #fab61b;
+        --color-neutro: #e7e8eb;
+        --color-blanco: #ffffff;
+        --color-texto: #495057;
+        --color-texto-claro: #6c757d;
+    }
+
+    /* === RESET Y BASE === */
+    * {
+        box-sizing: border-box;
+    }
+
+    .create-container {
+        max-width: 900px;
+        margin: 0 auto;
         padding: 20px;
     }
 
-    .form-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    .form-header {
-        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-        color: white;
-        padding: 20px;
+    /* === HEADER PRINCIPAL === */
+    .page-header {
+        background: linear-gradient(135deg, var(--color-secundario) 0%, #0f6b94 100%);
+        color: var(--color-blanco);
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 30px;
         text-align: center;
+        box-shadow: 0 8px 32px rgba(23, 136, 202, 0.1);
     }
 
-    .form-title {
-        font-size: 1.6rem;
+    .page-title {
+        font-size: 2rem;
         font-weight: 600;
         margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
+    .page-subtitle {
+        font-size: 1rem;
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+    }
+
+    /* === CARDS === */
+    .main-card {
+        background: var(--color-blanco);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        overflow: hidden;
+        border: 1px solid var(--color-neutro);
+        margin-bottom: 20px;
+    }
+
+    .help-card {
+        background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+        border: 1px solid #b3d7ff;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 4px solid var(--color-secundario);
+    }
+
+        .help-card h5 {
+            color: var(--color-secundario);
+            margin: 0 0 15px 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+    .help-list {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--color-texto);
+    }
+
+        .help-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+    /* === FORMULARIO === */
     .form-body {
         padding: 30px;
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
     .form-label {
         font-weight: 600;
-        color: #495057;
-        margin-bottom: 5px;
+        color: var(--color-primario);
+        margin-bottom: 8px;
         display: block;
+        font-size: 1rem;
     }
 
-    .form-control {
+    .form-control-custom {
         width: 100%;
-        padding: 12px;
-        border: 2px solid #e9ecef;
+        padding: 12px 16px;
+        border: 2px solid var(--color-neutro);
         border-radius: 8px;
         font-size: 1rem;
         transition: all 0.3s ease;
+        background: var(--color-blanco);
+        color: var(--color-texto);
     }
 
-    .form-control:focus {
-        border-color: #17a2b8;
-        box-shadow: 0 0 0 0.2rem rgba(23,162,184,0.25);
-        outline: none;
+        .form-control-custom:focus {
+            border-color: var(--color-secundario);
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
+
+        .form-control-custom:disabled {
+            background-color: #f8f9fa;
+            color: var(--color-texto-claro);
+            cursor: not-allowed;
+        }
+
+    /* === ALERTAS === */
+    .alert-custom {
+        padding: 15px 20px;
+        border-radius: 8px;
+        border-left: 4px solid;
+        margin-bottom: 25px;
+        font-weight: 500;
+    }
+
+    .alert-error {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left-color: #dc3545;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-left-color: #28a745;
     }
 
     .text-danger {
@@ -67,63 +155,66 @@
         font-size: 0.875rem;
         margin-top: 5px;
         display: block;
+        font-weight: 500;
     }
 
-    .btn-primary {
-        background: #17a2b8;
+    /* === BOTONES === */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--color-secundario) 0%, #0f6b94 100%);
+        color: var(--color-blanco);
         border: none;
-        color: white;
         padding: 12px 30px;
         border-radius: 8px;
         font-weight: 600;
         font-size: 1rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .btn-primary:hover {
-        background: #138496;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(23,162,184,0.3);
-    }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+            color: var(--color-blanco);
+            text-decoration: none;
+        }
 
-    .btn-secondary {
-        background: #6c757d;
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, var(--color-texto-claro) 0%, #545b62 100%);
+        color: var(--color-blanco);
         border: none;
-        color: white;
         padding: 12px 30px;
         border-radius: 8px;
         font-weight: 600;
         font-size: 1rem;
         text-decoration: none;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         transition: all 0.3s ease;
-        margin-left: 10px;
     }
 
-    .btn-secondary:hover {
-        background: #545b62;
-        color: white;
-        text-decoration: none;
-        transform: translateY(-2px);
-    }
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+            color: var(--color-blanco);
+            text-decoration: none;
+        }
 
+    /* === ACCIONES === */
     .form-actions {
-        text-align: center;
-        padding-top: 20px;
-        border-top: 1px solid #e9ecef;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        padding-top: 30px;
+        border-top: 2px solid var(--color-neutro);
         margin-top: 30px;
     }
 
-    .validation-summary {
-        background: #f8d7da;
-        color: #721c24;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        border: 1px solid #f5c6cb;
-    }
-
+    /* === GRID RESPONSIVE === */
     .row {
         display: flex;
         gap: 20px;
@@ -135,10 +226,66 @@
         min-width: 250px;
     }
 
+    /* === INFO ADICIONAL === */
+    .help-text {
+        color: var(--color-texto-claro);
+        font-size: 0.85rem;
+        font-style: italic;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .calculation-info {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .warning-info {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #856404;
+        border-left: 4px solid var(--color-acento);
+    }
+
+    .error-info {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    /* === RESPONSIVE === */
     @@media (max-width: 768px) {
-        .horas-extras-form-container {
-            margin: 10px;
+        .create-container {
             padding: 10px;
+        }
+
+        .page-header {
+            padding: 1.5rem 0;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
         }
 
         .form-body {
@@ -153,66 +300,141 @@
         .col-md-6 {
             min-width: auto;
         }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .help-list {
+            padding-left: 15px;
+        }
     }
 </style>
 
-<div class="horas-extras-form-container">
-    <div class="form-card">
-        <div class="form-header">
-            <h1 class="form-title">⏰ Registrar Horas Extras</h1>
-        </div>
+<div class="create-container">
+    <!-- Header Principal -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-clock" style="margin-right: 10px;"></i>
+            Registrar Horas Extras
+        </h1>
+        <p class="page-subtitle">Registrar tiempo adicional trabajado por los empleados</p>
+    </div>
 
+    <!-- Card de Ayuda -->
+    <div class="help-card">
+        <h5>
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+            Información Importante
+        </h5>
+        <ul class="help-list">
+            <li><strong>Límite diario:</strong> Máximo 12 horas extras por día</li>
+            <li><strong>Antigüedad:</strong> No se permiten registros de más de 30 días</li>
+            <li><strong>Estado inicial:</strong> Todas las horas extras inician en estado "Pendiente"</li>
+            <li><strong>Cálculo automático:</strong> El sistema calculará el monto según el tipo de hora extra</li>
+        </ul>
+    </div>
+
+    <!-- Card Principal -->
+    <div class="main-card">
         <div class="form-body">
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
 
-                @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+                @Html.ValidationSummary(true, "", new { @class = "alert-custom alert-error" })
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.id_empleado, "👤 Empleado:", new { @class = "form-label" })
-                    @Html.DropDownList("id_empleado", null, "-- Seleccionar Empleado --", new { @class = "form-control" })
+                    @Html.LabelFor(model => model.id_empleado, new { @class = "form-label" })
+                    <i class="fas fa-user" style="margin-right: 5px; color: var(--color-secundario);"></i>
+                    Empleado
+                    @Html.DropDownList("id_empleado", null, "-- Seleccionar Empleado --", new { @class = "form-control-custom" })
                     @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Selecciona el empleado que trabajó las horas extras
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.id_tipo, "🏷️ Tipo de Hora Extra:", new { @class = "form-label" })
-                    @Html.DropDownList("id_tipo", null, "-- Seleccionar Tipo --", new { @class = "form-control" })
+                    @Html.LabelFor(model => model.id_tipo, new { @class = "form-label" })
+                    <i class="fas fa-tags" style="margin-right: 5px; color: var(--color-secundario);"></i>
+                    Tipo de Hora Extra
+                    @Html.DropDownList("id_tipo", null, "-- Seleccionar Tipo --", new { @class = "form-control-custom" })
                     @Html.ValidationMessageFor(model => model.id_tipo, "", new { @class = "text-danger" })
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        El tipo determina el recargo aplicable (ordinaria, nocturna, feriado)
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.fecha, "📅 Fecha:", new { @class = "form-label" })
-                    @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control", @type = "date", @max = DateTime.Today.ToString("yyyy-MM-dd") } })
+                    @Html.LabelFor(model => model.fecha, new { @class = "form-label" })
+                    <i class="fas fa-calendar-alt" style="margin-right: 5px; color: var(--color-secundario);"></i>
+                    Fecha
+                    @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control-custom", @type = "date", @max = DateTime.Today.ToString("yyyy-MM-dd"), @value = DateTime.Today.ToString("yyyy-MM-dd") } })
                     @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        No se permiten fechas futuras ni mayores a 30 días de antigüedad
+                    </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            @Html.LabelFor(model => model.hora_inicio, "🕐 Hora de Inicio:", new { @class = "form-label" })
-                            @Html.EditorFor(model => model.hora_inicio, new { htmlAttributes = new { @class = "form-control", @type = "time" } })
+                            @Html.LabelFor(model => model.hora_inicio, new { @class = "form-label" })
+                            <i class="fas fa-clock" style="margin-right: 5px; color: var(--color-secundario);"></i>
+                            Hora de Inicio
+                            @Html.EditorFor(model => model.hora_inicio, new { htmlAttributes = new { @class = "form-control-custom", @type = "time" } })
                             @Html.ValidationMessageFor(model => model.hora_inicio, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            @Html.LabelFor(model => model.hora_fin, "🕐 Hora de Fin:", new { @class = "form-label" })
-                            @Html.EditorFor(model => model.hora_fin, new { htmlAttributes = new { @class = "form-control", @type = "time" } })
+                            @Html.LabelFor(model => model.hora_fin, new { @class = "form-label" })
+                            <i class="fas fa-clock" style="margin-right: 5px; color: var(--color-secundario);"></i>
+                            Hora de Fin
+                            @Html.EditorFor(model => model.hora_fin, new { htmlAttributes = new { @class = "form-control-custom", @type = "time" } })
                             @Html.ValidationMessageFor(model => model.hora_fin, "", new { @class = "text-danger" })
                         </div>
                     </div>
                 </div>
 
+                <div id="calculation-preview" style="display: none;">
+                    <!-- Aquí se mostrará el cálculo dinámico -->
+                </div>
+
                 <div class="form-group">
-                    @Html.LabelFor(model => model.motivo, "📝 Motivo/Justificación:", new { @class = "form-label" })
-                    @Html.TextAreaFor(model => model.motivo, new { @class = "form-control", @rows = "3", @placeholder = "Describe el motivo de las horas extras..." })
+                    @Html.LabelFor(model => model.motivo, new { @class = "form-label" })
+                    <i class="fas fa-comment-alt" style="margin-right: 5px; color: var(--color-secundario);"></i>
+                    Motivo/Justificación
+                    @Html.TextAreaFor(model => model.motivo, new { @class = "form-control-custom", @rows = "4", @placeholder = "Describe el motivo de las horas extras (trabajo urgente, proyecto especial, etc.)..." })
                     @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger" })
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Proporciona una justificación clara para el tiempo extra trabajado
+                    </div>
                 </div>
 
                 <div class="form-actions">
-                    <input type="submit" value="💾 Registrar Horas Extras" class="btn-primary" />
-                    <a href="@Url.Action("Index")" class="btn-secondary">↩️ Cancelar</a>
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fas fa-save"></i>
+                        Registrar Horas Extras
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
                 </div>
             }
         </div>
@@ -223,8 +445,35 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script>
-        // Calcular horas automáticamente
-        $('#hora_inicio, #hora_fin').on('change', function() {
+        $(document).ready(function() {
+            // Calcular horas automáticamente al cambiar horarios
+            $('#hora_inicio, #hora_fin').on('change', function() {
+                calcularHoras();
+            });
+
+            // Validar fecha no sea futura
+            $('#fecha').on('change', function() {
+                var fechaSeleccionada = new Date(this.value);
+                var hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+
+                if (fechaSeleccionada > hoy) {
+                    showAlert('No se pueden registrar horas extras para fechas futuras.', 'error');
+                    this.value = '@DateTime.Today.ToString("yyyy-MM-dd")';
+                }
+
+                var hace30Dias = new Date();
+                hace30Dias.setDate(hace30Dias.getDate() - 30);
+                hace30Dias.setHours(0, 0, 0, 0);
+
+                if (fechaSeleccionada < hace30Dias) {
+                    showAlert('No se pueden registrar horas extras de más de 30 días de antigüedad.', 'error');
+                    this.value = '@DateTime.Today.ToString("yyyy-MM-dd")';
+                }
+            });
+        });
+
+        function calcularHoras() {
             var inicio = $('#hora_inicio').val();
             var fin = $('#hora_fin').val();
 
@@ -234,8 +483,83 @@
 
                 if (finDate > inicioDate) {
                     var diff = (finDate - inicioDate) / (1000 * 60 * 60); // horas
-                    $('#info-horas').remove();
-                    $('#hora_fin').after('<small id="info-horas" style="color: #17a2b8; font-weight: 600;">⏱️ Total: ' + diff.toFixed(2) + ' horas</small>');
+
+                    if (diff > 12) {
+                        $('#calculation-preview').html(`
+                            <div class="error-info">
+                                <strong><i class="fas fa-exclamation-triangle"></i> Advertencia:</strong><br>
+                                ${diff.toFixed(2)} horas - ¡EXCEDE el límite de 12 horas por día!
+                            </div>
+                        `).show();
+                    } else if (diff > 8) {
+                        $('#calculation-preview').html(`
+                            <div class="warning-info">
+                                <strong><i class="fas fa-info-circle"></i> Atención:</strong><br>
+                                ${diff.toFixed(2)} horas extras calculadas (más de 8 horas)
+                            </div>
+                        `).show();
+                    } else {
+                        $('#calculation-preview').html(`
+                            <div class="calculation-info">
+                                <strong><i class="fas fa-check"></i> Cálculo:</strong><br>
+                                ${diff.toFixed(2)} horas extras calculadas
+                            </div>
+                        `).show();
+                    }
+                } else {
+                    $('#calculation-preview').html(`
+                        <div class="error-info">
+                            <strong><i class="fas fa-times"></i> Error:</strong><br>
+                            La hora de fin debe ser posterior a la hora de inicio
+                        </div>
+                    `).show();
+                }
+            } else {
+                $('#calculation-preview').hide();
+            }
+        }
+
+        function showAlert(message, type) {
+            var alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+            var icon = type === 'error' ? 'times-circle' : 'check-circle';
+
+            var alertDiv = $(`
+                <div class="alert-custom ${alertClass}" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
+                    <i class="fas fa-${icon}" style="margin-right: 8px;"></i>
+                    ${message}
+                </div>
+            `);
+
+            $('body').append(alertDiv);
+
+            setTimeout(function() {
+                alertDiv.fadeOut(300, function() {
+                    alertDiv.remove();
+                });
+            }, 4000);
+        }
+
+        // Validación antes del envío
+        $('form').on('submit', function(e) {
+            var inicio = $('#hora_inicio').val();
+            var fin = $('#hora_fin').val();
+
+            if (inicio && fin) {
+                var inicioDate = new Date('1970-01-01T' + inicio);
+                var finDate = new Date('1970-01-01T' + fin);
+                var diff = (finDate - inicioDate) / (1000 * 60 * 60);
+
+                if (diff > 12) {
+                    if (!confirm('¿Está seguro de registrar más de 12 horas extras? Esto excede el límite recomendado.')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+
+                if (finDate <= inicioDate) {
+                    showAlert('La hora de fin debe ser posterior a la hora de inicio.', 'error');
+                    e.preventDefault();
+                    return false;
                 }
             }
         });

@@ -18,7 +18,7 @@
                         </h2>
                         <p class="text-muted">Información completa del registro de incapacidad</p>
                     </div>
-                    <div class="page-actions">
+                    <div class="page-actions no-print">
                         @Html.ActionLink("Volver a Lista", "Index", null, new { @class = "btn btn-secondary btn-lg" })
                         @Html.ActionLink("Editar", "Edit", new { id = Model.id_incapacidad }, new { @class = "btn btn-warning btn-lg text-dark" })
                         @Html.ActionLink("Eliminar", "Delete", new { id = Model.id_incapacidad }, new { @class = "btn btn-danger btn-lg" })
@@ -283,7 +283,7 @@
                     </div>
 
                     <!-- Acciones rápidas -->
-                    <div class="card">
+                    <div class="card no-print">
                         <div class="card-header bg-dark text-white">
                             <h6 class="card-title mb-0">
                                 <i class="fas fa-tools"></i> Acciones Rápidas
@@ -292,12 +292,25 @@
                         <div class="card-body">
                             <div class="d-grid gap-2">
                                 @Html.ActionLink("✏️ Editar Incapacidad", "Edit", new { id = Model.id_incapacidad }, new { @class = "btn btn-warning" })
-                                @Html.ActionLink("📋 Imprimir Reporte", "#", new { @class = "btn btn-info", @onclick = "window.print(); return false;" })
-                                @Html.ActionLink("📧 Enviar por Email", "#", new { @class = "btn btn-secondary" })
+                                <button type="button" class="btn btn-info" onclick="imprimirReporte()">
+                                    📋 Imprimir Reporte
+                                </button>
                                 <hr>
                                 @Html.ActionLink("🗑️ Eliminar Registro", "Delete", new { id = Model.id_incapacidad }, new { @class = "btn btn-outline-danger", @onclick = "return confirm('¿Está seguro de eliminar esta incapacidad?')" })
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información solo visible en impresión -->
+            <div class="d-none print-only">
+                <hr style="margin-top: 2rem;">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="mb-1"><strong>Sistema de Gestión de Recursos Humanos</strong></p>
+                        <p class="mb-1">Smart Building Solutions - Santa Ana, Costa Rica</p>
+                        <p class="mb-0 text-muted">Reporte de Incapacidad - Generado automáticamente</p>
                     </div>
                 </div>
             </div>
@@ -396,6 +409,147 @@
             margin-bottom: 0.5rem;
         }
 
+        .print-only {
+            display: none;
+        }
+
+        /* Estilos específicos para impresión */
+        @@media print {
+            /* Ocultar elementos no necesarios */
+            .no-print,
+            .page-actions,
+            .btn,
+            nav,
+            .navbar,
+            .sidebar,
+            .footer {
+                display: none !important;
+            }
+
+            /* Mostrar elementos solo de impresión */
+            .print-only {
+                display: block !important;
+                font-size: 10pt;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #ddd;
+            }
+
+            /* Ajustar página */
+            @@page {
+                margin: 1.5cm;
+                size: A4;
+            }
+
+            body {
+                font-size: 12pt;
+                line-height: 1.4;
+                color: #000 !important;
+                background: white !important;
+            }
+
+            /* Header para impresión */
+            .page-header {
+                background: none !important;
+                color: #000 !important;
+                border-bottom: 2px solid #000;
+                padding: 1rem 0;
+                margin-bottom: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 18pt;
+                color: #000 !important;
+            }
+
+            /* Cards */
+            .card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                margin-bottom: 1rem;
+                page-break-inside: avoid;
+            }
+
+            .card-header {
+                background: #f8f9fa !important;
+                color: #000 !important;
+                border-bottom: 1px solid #ddd;
+                padding: 0.75rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            /* Secciones */
+            .section-title {
+                color: #000 !important;
+                border-bottom: 1px solid #000;
+                font-size: 14pt;
+                margin-bottom: 0.75rem;
+            }
+
+            .detail-label {
+                font-weight: bold;
+                color: #000 !important;
+                font-size: 10pt;
+            }
+
+            .detail-value {
+                color: #000 !important;
+                font-size: 11pt;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Badges */
+            .badge {
+                border: 1px solid #000 !important;
+                background: white !important;
+                color: #000 !important;
+                padding: 0.25rem 0.5rem;
+            }
+
+            /* Avatar */
+            .avatar-lg {
+                border: 2px solid #000;
+                background: white !important;
+                color: #000 !important;
+            }
+
+            /* Description box */
+            .description-box {
+                background: #f8f9fa !important;
+                border: 1px solid #ddd;
+                border-left: 4px solid #000;
+            }
+
+            /* Ocultar iconos de FontAwesome en impresión */
+            .fas, .far, .fab {
+                display: none;
+            }
+
+            /* Mejorar espaciado */
+            .row {
+                margin: 0;
+            }
+
+            .col-md-6, .col-md-3, .col-md-4, .col-md-8, .col-md-12 {
+                padding: 0.25rem;
+            }
+
+            /* Información de pie de página */
+            .print-footer {
+                position: fixed;
+                bottom: 1cm;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 10pt;
+                border-top: 1px solid #ddd;
+                padding-top: 0.5rem;
+            }
+        }
+
         /* Responsivo */
         @@media (max-width: 768px) {
             .page-header {
@@ -426,18 +580,6 @@
                 font-size: 0.9rem;
             }
         }
-
-        /* Impresión */
-        @@media print {
-            .page-actions, .card:last-child {
-                display: none;
-            }
-
-            .page-header {
-                background: none !important;
-                color: #000 !important;
-            }
-        }
     </style>
 
     <script>
@@ -448,5 +590,29 @@
             // Animaciones suaves
             $('.card').hide().fadeIn(500);
         });
+
+        // Función mejorada para imprimir
+        function imprimirReporte() {
+            // Añadir información adicional para la impresión
+            var fechaImpresion = new Date().toLocaleDateString('es-CR');
+            var horaImpresion = new Date().toLocaleTimeString('es-CR');
+
+            // Crear elemento temporal para información de impresión
+            var printInfo = $('<div class="print-footer">').html(
+                'Impreso el ' + fechaImpresion + ' a las ' + horaImpresion +
+                ' | Sistema de Gestión de RRHH - Smart Building Solutions'
+            );
+
+            // Añadir al body temporalmente
+            $('body').append(printInfo);
+
+            // Imprimir
+            window.print();
+
+            // Remover el elemento temporal después de imprimir
+            setTimeout(function () {
+                printInfo.remove();
+            }, 1000);
+        }
     </script>
 }

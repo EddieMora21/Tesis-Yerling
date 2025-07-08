@@ -1,117 +1,399 @@
 ﻿@model SistemaNomina.Models.Permisos
 
 @{
-    ViewBag.Title = "Edit"; @* Título de la página editar *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+    ViewBag.Title = "Editar Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>  @* Encabezado principal de la página *@
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken() @* seguridad *@
-
-    <div class="form-horizontal">
-        @*  formulario *@
-        <h4>Permisos</h4>  @* Subtítulo  *@
-        <hr /> 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  @* Muestra errores de validación generales *@
-        @Html.HiddenFor(model => model.id_permiso)  @* Campo oculto para guardar el id del permiso *@
-
-        <div class="form-group">
-            @* Grupo de controles para id_empleado *@
-            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta del campo *@
-            <div class="col-md-10">
-                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar empleado *@
-                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })  @* Mensaje de error para id_empleado *@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-primary mb-0">
+                        <i class="fas fa-edit"></i> Editar Permiso
+                    </h4>
+                    <small class="text-muted">Modificar información del permiso #@Model.id_permiso</small>
+                </div>
+                <div class="btn-group">
+                    <a href="@Url.Action("Details", new { id = Model.id_permiso })" class="btn btn-outline-info">
+                        <i class="fas fa-eye"></i> Ver Detalles
+                    </a>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @* Grupo para fecha *@
-            @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta fecha *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha *@
-                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })  @* Mensaje de error fecha *@
+            <!-- Estado Actual -->
+            <div class="alert alert-info d-flex align-items-center mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                <div>
+                    <strong>Estado actual:</strong>
+                    @{
+                        string estadoBadgeClass = "secondary"; // Por defecto
+                        string nombreEstado = "Sin estado";
+
+                        if (Model.Estados != null && !string.IsNullOrEmpty(Model.Estados.nombre))
+                        {
+                            nombreEstado = Model.Estados.nombre;
+                            switch (Model.Estados.nombre)
+                            {
+                                case "Pendiente":
+                                    estadoBadgeClass = "warning";
+                                    break;
+                                case "Aprobado":
+                                    estadoBadgeClass = "success";
+                                    break;
+                                case "Rechazado":
+                                    estadoBadgeClass = "danger";
+                                    break;
+                            }
+                        }
+                    }
+                    <span class="badge bg-@estadoBadgeClass ms-2">
+                        @nombreEstado
+                    </span>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @* Grupo para horas *@
-            @Html.LabelFor(model => model.horas, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta horas *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.horas, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar horas *@
-                @Html.ValidationMessageFor(model => model.horas, "", new { @class = "text-danger" })  @* Mensaje de error horas *@
+            <!-- Formulario -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-form"></i> Formulario de Edición
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    @using (Html.BeginForm("Edit", "Permisos", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                        @Html.HiddenFor(model => model.id_permiso)
+
+                        <!-- Información del Empleado (Solo lectura si está aprobado) -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-user text-primary"></i> Empleado *
+                                </label>
+                                @if (Model.Estados != null && Model.Estados.nombre == "Aprobado")
+                                {
+                                    @Html.DropDownList("id_empleado", null, new { @class = "form-select", disabled = "disabled" })
+                                    @Html.HiddenFor(model => model.id_empleado)
+                                    <small class="text-muted">No se puede cambiar el empleado en un permiso aprobado</small>
+                                }
+                                else
+                                {
+                                    @Html.DropDownList("id_empleado", null, "Seleccione un empleado...",
+                                        new { @class = "form-select", required = "required" })
+                                }
+                                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-tag text-primary"></i> Tipo de Permiso *
+                                </label>
+                                @Html.DropDownList("id_tipo_permiso", null, "Seleccione el tipo...",
+                                    new { @class = "form-select", required = "required", onchange = "actualizarInfoTipo()" })
+                                @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "text-danger small" })
+                                <div id="infoTipoPermiso" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar-day text-primary"></i> Fecha del Permiso *
+                                </label>
+                                @Html.EditorFor(model => model.fecha, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control",
+                                        @type = "date",
+                                        required = "required"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger small" })
+                                @if (Model.Estados != null && Model.Estados.nombre == "Aprobado")
+                                {
+                                    <small class="text-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        Cambiar la fecha de un permiso aprobado puede requerir nueva aprobación
+                                    </small>
+                                }
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-clock text-primary"></i> Horas Solicitadas
+                                </label>
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.horas, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control",
+                                            @type = "number",
+                                            step = "0.5",
+                                            min = "0.5",
+                                            max = "8"
+                                        }
+                                    })
+                                    <span class="input-group-text">horas</span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.horas, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <!-- Motivo -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-comment text-primary"></i> Motivo del Permiso *
+                            </label>
+                            @Html.TextAreaFor(model => model.motivo, new
+                            {
+                                @class = "form-control",
+                                rows = "3",
+                                required = "required",
+                                maxlength = "500"
+                            })
+                            @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger small" })
+                            <div class="form-text">
+                                <span id="contadorCaracteres">@(Model.motivo?.Length ?? 0)</span>/500 caracteres
+                            </div>
+                        </div>
+
+                        <!-- Estado y Aprobación (Solo para usuarios autorizados) -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-traffic-light text-primary"></i> Estado
+                                </label>
+                                @Html.DropDownList("id_estado", null, new { @class = "form-select", onchange = "cambioEstado()" })
+                                @Html.ValidationMessageFor(model => model.id_estado, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-user-check text-primary"></i> Aprobado por
+                                </label>
+                                @Html.DropDownList("aprobado_por", null, "Sin asignar", new { @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.aprobado_por, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <!-- Campos ocultos para fechas -->
+                        @Html.HiddenFor(model => model.fecha_creacion)
+                        @Html.EditorFor(model => model.fecha_actualizacion, new
+                        {
+                            htmlAttributes = new { @type = "hidden", @value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") }
+                        })
+
+                        <!-- Observaciones de cambios -->
+                        <div id="seccionObservaciones" class="mb-3" style="display: none;">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-sticky-note text-warning"></i> Observaciones del Cambio
+                            </label>
+                            <textarea class="form-control" name="observaciones_cambio" rows="2"
+                                      placeholder="Describa brevemente el motivo de este cambio..."></textarea>
+                            <small class="text-muted">Estas observaciones se guardarán en el historial</small>
+                        </div>
+
+                        <!-- Botones -->
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="@Url.Action("Details", new { id = Model.id_permiso })" class="btn btn-outline-info">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-warning" onclick="confirmarCambios()">
+                                    <i class="fas fa-save"></i> Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @* Grupo para tipo de permiso *@
-            @Html.LabelFor(model => model.id_tipo_permiso, "id_tipo_permiso", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta tipo permiso *@
-            <div class="col-md-10">
-                @Html.DropDownList("id_tipo_permiso", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar tipo permiso *@
-                @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "text-danger" })  @* Mensaje de error tipo permiso *@
-            </div>
-        </div>
-
-        <div class="form-group">
-            @* Grupo para motivo *@
-            @Html.LabelFor(model => model.motivo, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta motivo *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.motivo, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar motivo *@
-                @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger" })  @* Mensaje de error motivo *@
-            </div>
-        </div>
-
-        <div class="form-group">
-            @* Grupo para estado *@
-            @Html.LabelFor(model => model.id_estado, "id_estado", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta estado *@
-            <div class="col-md-10">
-                @Html.DropDownList("id_estado", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar estado *@
-                @Html.ValidationMessageFor(model => model.id_estado, "", new { @class = "text-danger" })  @* Mensaje de error estado *@
-            </div>
-        </div>
-
-        <div class="form-group">
-            @* Grupo para aprobado_por *@
-            @Html.LabelFor(model => model.aprobado_por, "aprobado_por", htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta aprobado por *@
-            <div class="col-md-10">
-                @Html.DropDownList("aprobado_por", null, htmlAttributes: new { @class = "form-control" })  @* Lista desplegable para seleccionar quién aprobó *@
-                @Html.ValidationMessageFor(model => model.aprobado_por, "", new { @class = "text-danger" })  @* Mensaje de error aprobado_por *@
-            </div>
-        </div>
-
-        <div class="form-group">
-            @* Grupo para fecha_creacion *@
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta fecha de creación *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha de creación *@
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })  @* Mensaje de error fecha_creacion *@
-            </div>
-        </div>
-
-        <div class="form-group">
-            @* Grupo para fecha_actualizacion *@
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })  @* Etiqueta fecha de actualización *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })  @* Campo para editar fecha de actualización *@
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })  @* Mensaje de error fecha_actualizacion *@
-            </div>
-        </div>
-
-        <div class="form-group">
-            @* Grupo para botón guardar *@
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />  @* Botón para guardar cambios *@
+            <!-- Log de cambios (simulado) -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0 text-info">
+                        <i class="fas fa-history"></i> Historial de Cambios
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <small class="text-muted">@Model.fecha_creacion.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                <p class="mb-0">Permiso creado</p>
+                            </div>
+                        </div>
+                        @if (Model.fecha_actualizacion != Model.fecha_creacion)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-warning"></div>
+                                <div class="timeline-content">
+                                    <small class="text-muted">@Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                    <p class="mb-0">Última modificación</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista de permisos *@
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")  @* validación *@
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function() {
+            // Contador de caracteres
+            $('#motivo').on('input', function() {
+                var length = $(this).val().length;
+                $('#contadorCaracteres').text(length);
+            });
+
+            // Verificar si hay cambios en el formulario
+            var formOriginal = $('form').serialize();
+
+            window.addEventListener('beforeunload', function (e) {
+                var formActual = $('form').serialize();
+                if (formOriginal !== formActual) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+
+            // Inicializar información del tipo
+            actualizarInfoTipo();
+        });
+
+        function actualizarInfoTipo() {
+            var selectTipo = $('#id_tipo_permiso');
+            var infoDiv = $('#infoTipoPermiso');
+
+            if (selectTipo.val()) {
+                var tipoTexto = selectTipo.find('option:selected').text();
+
+                if (tipoTexto.toLowerCase().includes('goce')) {
+                    infoDiv.html('<small class="text-success"><i class="fas fa-check-circle"></i> Este permiso no afecta el salario</small>');
+                } else {
+                    infoDiv.html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Este permiso puede afectar el salario</small>');
+                }
+            }
+        }
+
+        function cambioEstado() {
+            var estadoActual = $('#id_estado option:selected').text();
+            var seccionObs = $('#seccionObservaciones');
+            var estadoOriginal = '@(Model.Estados?.nombre ?? "")';
+
+            if (estadoActual !== estadoOriginal) {
+                seccionObs.show();
+                $('textarea[name="observaciones_cambio"]').attr('required', true);
+            } else {
+                seccionObs.hide();
+                $('textarea[name="observaciones_cambio"]').removeAttr('required');
+            }
+        }
+
+        function confirmarCambios() {
+            var estadoActual = $('#id_estado option:selected').text();
+            var estadoOriginal = '@(Model.Estados?.nombre ?? "")';
+
+            var mensaje = '¿Está seguro de guardar estos cambios?';
+            var icono = 'question';
+
+            if (estadoOriginal !== estadoActual) {
+                if (estadoActual === 'Aprobado') {
+                    mensaje = '¿Confirma la aprobación de este permiso?';
+                    icono = 'success';
+                } else if (estadoActual === 'Rechazado') {
+                    mensaje = '¿Confirma el rechazo de este permiso?';
+                    icono = 'warning';
+                }
+            }
+
+            Swal.fire({
+                title: 'Confirmar Cambios',
+                text: mensaje,
+                icon: icono,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('form').submit();
+                }
+            });
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+            .timeline::before {
+                content: '';
+                position: absolute;
+                left: 10px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: #dee2e6;
+            }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -25px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #007bff;
+        }
+
+        .form-label.fw-bold i {
+            width: 16px;
+            margin-right: 5px;
+        }
+
+        .alert.d-flex i {
+            margin-top: 2px;
+        }
+    </style>
 }

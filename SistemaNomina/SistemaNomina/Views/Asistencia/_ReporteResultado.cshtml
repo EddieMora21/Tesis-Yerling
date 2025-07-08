@@ -344,23 +344,129 @@ else
 
 <script>
     function exportarPDF() {
-        // Mostrar notificación temporal
-        showNotification('Preparando exportación a PDF...', 'info');
+        showNotification('Generando reporte PDF...', 'info');
 
-        // Aquí implementarías la lógica de exportación a PDF
-        setTimeout(function () {
-            showNotification('Funcionalidad de exportación a PDF pendiente de implementar', 'warning');
-        }, 1000);
+        // Obtener los valores de los filtros del formulario principal (desde la página padre)
+        var empleadoId = parent.$('select[name="empleadoId"]').val() || '';
+        var departamentoId = parent.$('select[name="departamentoId"]').val() || '';
+        var fechaInicio = parent.$('#fechaInicio').val() || '';
+        var fechaFin = parent.$('#fechaFin').val() || '';
+
+        // Crear formulario temporal para envío
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': '@Url.Action("ExportarReportePDF", "Asistencia")',
+            'target': '_blank'
+        });
+
+        // Agregar token de verificación
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': '__RequestVerificationToken',
+            'value': parent.$('input[name="__RequestVerificationToken"]').val()
+        }));
+
+        // Agregar parámetros de filtro
+        if (empleadoId) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'empleadoId',
+                'value': empleadoId
+            }));
+        }
+
+        if (departamentoId) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'departamentoId',
+                'value': departamentoId
+            }));
+        }
+
+        if (fechaInicio) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'fechaInicio',
+                'value': fechaInicio
+            }));
+        }
+
+        if (fechaFin) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'fechaFin',
+                'value': fechaFin
+            }));
+        }
+
+        $('body').append(form);
+        form.submit();
+        form.remove();
+
+        showNotification('Descarga de PDF iniciada', 'success');
     }
 
     function exportarExcel() {
-        // Mostrar notificación temporal
-        showNotification('Preparando exportación a Excel...', 'info');
+        showNotification('Generando reporte Excel...', 'info');
 
-        // Aquí implementarías la lógica de exportación a Excel
-        setTimeout(function () {
-            showNotification('Funcionalidad de exportación a Excel pendiente de implementar', 'warning');
-        }, 1000);
+        // Obtener los valores de los filtros del formulario principal (desde la página padre)
+        var empleadoId = parent.$('select[name="empleadoId"]').val() || '';
+        var departamentoId = parent.$('select[name="departamentoId"]').val() || '';
+        var fechaInicio = parent.$('#fechaInicio').val() || '';
+        var fechaFin = parent.$('#fechaFin').val() || '';
+
+        // Crear formulario temporal para envío
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': '@Url.Action("ExportarReporteExcel", "Asistencia")',
+            'target': '_blank'
+        });
+
+        // Agregar token de verificación
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': '__RequestVerificationToken',
+            'value': parent.$('input[name="__RequestVerificationToken"]').val()
+        }));
+
+        // Agregar parámetros de filtro
+        if (empleadoId) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'empleadoId',
+                'value': empleadoId
+            }));
+        }
+
+        if (departamentoId) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'departamentoId',
+                'value': departamentoId
+            }));
+        }
+
+        if (fechaInicio) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'fechaInicio',
+                'value': fechaInicio
+            }));
+        }
+
+        if (fechaFin) {
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'fechaFin',
+                'value': fechaFin
+            }));
+        }
+
+        $('body').append(form);
+        form.submit();
+        form.remove();
+
+        showNotification('Descarga de Excel iniciada', 'success');
     }
 
     function showNotification(message, type) {
@@ -380,5 +486,16 @@ else
         setTimeout(function () {
             $('.alert').alert('close');
         }, 3000);
+    }
+
+    // Alternativa más simple - si el método anterior no funciona, usa este:
+    function exportarPDFSimple() {
+        // Redirigir directamente al método sin filtros (para probar)
+        window.open('@Url.Action("ExportarReportePDF", "Asistencia")', '_blank');
+    }
+
+    function exportarExcelSimple() {
+        // Redirigir directamente al método sin filtros (para probar)
+        window.open('@Url.Action("ExportarReporteExcel", "Asistencia")', '_blank');
     }
 </script>

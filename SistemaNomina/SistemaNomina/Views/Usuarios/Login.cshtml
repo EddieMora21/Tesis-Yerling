@@ -1,30 +1,463 @@
 ﻿@model SistemaNomina.Models.Usuarios
 
-<h2 class="mb-4">Iniciar sesión</h2> @* Título página *@
-
-@using (Html.BeginForm("Login", "Usuarios", FormMethod.Post))
-{
-    @Html.AntiForgeryToken() @* seguridad *@
-
-    <div class="form-group">
-        <label for="usuario">Usuario:</label> @* campo usuario *@
-        <input type="text" name="usuario" id="usuario" class="form-control" required autofocus />
-        @* usuario, obligatorio, y autofocus para que el cursor se ponga aquí al cargar la página *@
-    </div>
-
-    <div class="form-group">
-        <label for="contrasena">Contraseña:</label> @* campo contraseña *@
-        <input type="password" name="contrasena" id="contrasena" class="form-control" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    @* Botón para enviar formulario y validar el login *@
+@{
+    ViewBag.Title = "Iniciar Sesión - Smart Building Solutions";
+    Layout = null;
 }
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger mt-2">
-        @* Muestra el mensaje de error recibido desde el controlador si el login falla *@
-        @ViewBag.Error
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Variables de Colores Corporativos */
+        :root {
+            --primary-color: #221d42;
+            --secondary-color: #1788ca;
+            --accent-color: #fab61b;
+            --neutral-color: #e7e8eb;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-muted: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --border-radius: 15px;
+            --border-radius-sm: 8px;
+            --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+            --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-main);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+            .company-logo i {
+                font-size: 2.5rem;
+                color: var(--white);
+            }
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .login-form {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--neutral-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+            .form-control-custom:focus {
+                outline: none;
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
+            }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+
+        .btn-primary-custom {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .btn-primary-custom:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-hover);
+            }
+
+            .btn-primary-custom:active {
+                transform: translateY(0);
+            }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+            .forgot-password a {
+                color: var(--secondary-color);
+                text-decoration: none;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+                .forgot-password a:hover {
+                    text-decoration: underline;
+                }
+
+        .system-info {
+            background: var(--neutral-color);
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--neutral-color);
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-container {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 576px) {
+            body {
+                padding: 1rem;
+            }
+
+            .login-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .login-form {
+                padding: 2rem 1.5rem;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+            }
+
+            .company-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+                .company-logo i {
+                    font-size: 2rem;
+                }
+        }
+
+        /* Accessibility */
+        .form-control-custom:focus {
+            outline: 2px solid var(--secondary-color);
+            outline-offset: 2px;
+        }
+
+        .btn-primary-custom:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <div class="login-header">
+            <div class="company-logo">
+                <i class="fas fa-building"></i>
+            </div>
+            <h1 class="login-title">Smart Building Solutions</h1>
+            <p class="login-subtitle">Sistema de Recursos Humanos</p>
+        </div>
+
+        <div class="login-form">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    @ViewBag.Error
+                </div>
+            }
+
+            @if (ViewBag.Success != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    @ViewBag.Success
+                </div>
+            }
+
+            @using (Html.BeginForm("Login", "Usuarios", FormMethod.Post, new { id = "loginForm" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label class="form-label" for="usuario">
+                        <i class="fas fa-user"></i>
+                        Usuario
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-user"></i>
+                        <input type="text"
+                               name="usuario"
+                               id="usuario"
+                               class="form-control-custom"
+                               placeholder="Ingrese su usuario"
+                               required
+                               autofocus
+                               autocomplete="username" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="contrasena">
+                        <i class="fas fa-lock"></i>
+                        Contraseña
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password"
+                               name="contrasena"
+                               id="contrasena"
+                               class="form-control-custom"
+                               placeholder="Ingrese su contraseña"
+                               required
+                               autocomplete="current-password" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-custom" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+            }
+
+            <div class="forgot-password">
+                <a href="#" onclick="showForgotPassword()">
+                    <i class="fas fa-question-circle"></i>
+                    ¿Olvidó su contraseña?
+                </a>
+            </div>
+        </div>
+
+        <div class="system-info">
+            <i class="fas fa-shield-alt"></i>
+            Sistema Seguro • Versión 1.0 • Smart Building Solutions © 2025
+        </div>
     </div>
-}
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Animación de inputs al hacer focus
+            $('.form-control-custom').on('focus', function() {
+                $(this).parent().find('.input-icon').css('color', '#1788ca');
+            });
+
+            $('.form-control-custom').on('blur', function() {
+                if (!$(this).val()) {
+                    $(this).parent().find('.input-icon').css('color', '#6c757d');
+                }
+            });
+
+            // Validación del formulario
+            $('#loginForm').on('submit', function(e) {
+                var usuario = $('#usuario').val().trim();
+                var contrasena = $('#contrasena').val().trim();
+
+                if (!usuario || !contrasena) {
+                    e.preventDefault();
+                    showAlert('Por favor complete todos los campos', 'danger');
+                    return false;
+                }
+
+                // Mostrar loading
+                $('#loadingOverlay').show();
+                $('#loginBtn').prop('disabled', true);
+
+                // Simular delay para mejor UX (opcional)
+                setTimeout(function() {
+                    // El formulario se enviará normalmente
+                }, 500);
+            });
+
+            // Efectos visuales adicionales
+            $('.form-control-custom').on('keypress', function(e) {
+                if (e.which === 13) { // Enter key
+                    if ($(this).attr('id') === 'usuario') {
+                        $('#contrasena').focus();
+                    } else {
+                        $('#loginForm').submit();
+                    }
+                }
+            });
+        });
+
+        function showAlert(message, type) {
+            var alertClass = type === 'danger' ? 'alert-danger' : 'alert-success';
+            var icon = type === 'danger' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+
+            var alertHtml = '<div class="alert '+ alertClass +'">' +
+                           '<i class="fas '+ icon +'"></i>' +
+                           message +
+                           '</div>';
+
+            $('.login-form').prepend(alertHtml);
+
+            setTimeout(function() {
+                $('.alert').fadeOut();
+            }, 5000);
+        }
+
+        function showForgotPassword() {
+            alert('Para recuperar su contraseña, contacte al administrador del sistema.\n\nTeléfono: +506 2222-3333\nEmail: admin@smartbuilding.cr');
+        }
+    </script>
+</body>
+</html>

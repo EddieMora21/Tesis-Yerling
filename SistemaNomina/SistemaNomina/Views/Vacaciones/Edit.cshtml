@@ -1,99 +1,581 @@
 ﻿@model SistemaNomina.Models.Vacaciones
 
 @{
-    // Título de la página
-    ViewBag.Title = "Edit";
-
-    // visita
+    ViewBag.Title = "Editar Registro de Vacaciones";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<!-- Header principal con gradiente corporativo -->
+<div class="page-header-gradient">
+    <div class="container">
+        <h1><i class="fa fa-edit"></i> Editar Registro de Vacaciones</h1>
+        <p class="header-subtitle">Modifica la información de vacaciones del empleado</p>
+    </div>
+</div>
 
-@using (Html.BeginForm())
-{
-    // seguridad
-    @Html.AntiForgeryToken()
+<div class="main-container container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Panel principal del formulario -->
+            <div class="form-card">
+                <div class="form-card-header edit-header">
+                    <h3><i class="fa fa-pencil"></i> Modificar Información</h3>
+                    <p class="form-subtitle">Empleado: <strong>@(Model.Empleados?.nombre1) @(Model.Empleados?.apellido1)</strong></p>
+                </div>
 
-    <div class="form-horizontal">
-        <h4>Vacaciones</h4>
-        <hr />
+                <div class="form-card-body">
+                    @using (Html.BeginForm("Edit", "Vacaciones", FormMethod.Post, new { @class = "form-modern" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.id_vacacion)
 
-        <!-- Muestra errores de validación generales -->
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <!-- Mensaje de errores generales -->
+                        if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert-custom alert-danger">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                <div class="alert-content">
+                                    <strong>¡Atención!</strong> Por favor corrige los errores señalados.
+                                    @Html.ValidationSummary(true, "", new { @class = "error-list" })
+                                </div>
+                            </div>
+                        }
 
-        <!-- Campo oculto para mantener el ID del registro que se está editando -->
-        @Html.HiddenFor(model => model.id_vacacion)
+                        <div class="form-section">
+                            <!-- Campo: Empleado -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fa fa-user"></i> Empleado *
+                                </label>
+                                @Html.DropDownList("id_empleado", null, "-- Selecciona un empleado --",
+                                    new { @class = "form-control-custom", @required = "required" })
+                                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "error-message" })
+                                <small class="help-text">
+                                    <i class="fa fa-info-circle"></i> Empleado asignado a este registro de vacaciones
+                                </small>
+                            </div>
 
-        <!-- Campo para seleccionar el empleado al que pertenece el registro de vacaciones -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            <!-- Campo: Período -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fa fa-calendar"></i> Período *
+                                </label>
+                                @Html.EditorFor(model => model.periodo, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control-custom",
+                                    @required = "required",
+                                    @placeholder = "Ej: 2025, 2025-2026",
+                                    @maxlength = "50"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.periodo, "", new { @class = "error-message" })
+                                <small class="help-text">
+                                    <i class="fa fa-info-circle"></i> Año o período al que corresponden las vacaciones
+                                </small>
+                            </div>
 
-        <!-- Campo para el período de vacaciones -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.periodo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.periodo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.periodo, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            <!-- Campos en fila -->
+                            <div class="form-row">
+                                <!-- Campo: Días disponibles -->
+                                <div class="form-group-custom col-md-6">
+                                    <label class="form-label-custom">
+                                        <i class="fa fa-calendar-plus-o"></i> Días Disponibles *
+                                    </label>
+                                    @Html.EditorFor(model => model.dias_disponibles, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control-custom",
+                                       @required = "required",
+                                       @type = "number",
+                                       @min = "0",
+                                       @max = "365",
+                                       @step = "1"
+                                   }
+                               })
+                                    @Html.ValidationMessageFor(model => model.dias_disponibles, "", new { @class = "error-message" })
+                                    <small class="help-text">
+                                        <i class="fa fa-info-circle"></i> Total de días que puede disfrutar
+                                    </small>
+                                </div>
 
-        <!-- Campo para los días disponibles -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.dias_disponibles, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.dias_disponibles, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.dias_disponibles, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                                <!-- Campo: Días disfrutados -->
+                                <div class="form-group-custom col-md-6">
+                                    <label class="form-label-custom">
+                                        <i class="fa fa-calendar-check-o"></i> Días Disfrutados
+                                    </label>
+                                    @Html.EditorFor(model => model.dias_disfrutados, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control-custom readonly-field",
+                                       @type = "number",
+                                       @min = "0",
+                                       @step = "1",
+                                       @readonly = "readonly"
+                                   }
+                               })
+                                    @Html.ValidationMessageFor(model => model.dias_disfrutados, "", new { @class = "error-message" })
+                                    <small class="help-text">
+                                        <i class="fa fa-lock"></i> Se actualiza automáticamente con las solicitudes aprobadas
+                                    </small>
+                                </div>
+                            </div>
 
-        <!-- Campo para los días disfrutados -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.dias_disfrutados, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.dias_disfrutados, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.dias_disfrutados, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            <!-- Información adicional -->
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <i class="fa fa-calculator"></i> Resumen Actual
+                                </div>
+                                <div class="info-body">
+                                    <div class="info-item">
+                                        <span class="info-label">Días Restantes:</span>
+                                        <span class="info-value" id="diasRestantes">
+                                            @((Model.dias_disponibles - (Model.dias_disfrutados ?? 0)) >= 0 ?
+                                              (Model.dias_disponibles - (Model.dias_disfrutados ?? 0)) : 0) días
+                                        </span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Última Actualización:</span>
+                                        <span class="info-value">
+                                            @(Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- Campo para la fecha de creación -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <!-- Campo para la fecha de actualización -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <!-- Botón para guardar los cambios -->
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                        <!-- Botones de acción -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fa fa-save"></i> Guardar Cambios
+                            </button>
+                            <a href="@Url.Action("Details", new { id = Model.id_vacacion })" class="btn-info-custom">
+                                <i class="fa fa-eye"></i> Ver Detalles
+                            </a>
+                            <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                                <i class="fa fa-arrow-left"></i> Volver a Lista
+                            </a>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
-}
-
-<!-- Enlace para regresar a la lista de registros -->
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
+<style>
+/* ESTILOS CSS EMBEBIDOS PARA ASEGURAR QUE SE APLIQUEN */
+
+/* Reset y base */
+* {
+    box-sizing: border-box;
+}
+
+/* Header con gradiente corporativo */
+.page-header-gradient {
+    background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 15px 15px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.page-header-gradient h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Contenedor principal */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Card del formulario */
+.form-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+    border: 1px solid #e7e8eb;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.form-card-header {
+    background: linear-gradient(135deg, #fab61b 0%, #e69500 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.edit-header {
+    background: linear-gradient(135deg, #fab61b 0%, #e69500 100%) !important;
+}
+
+.form-card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.form-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 300;
+}
+
+.form-card-body {
+    padding: 2rem;
+}
+
+/* Formulario moderno */
+.form-modern {
+    width: 100%;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+/* Grupos de formulario */
+.form-group-custom {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-custom {
+    display: block;
+    font-weight: 600;
+    color: #221d42;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e7e8eb;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.form-control-custom:focus {
+    outline: none;
+    border-color: #1788ca;
+    box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
+}
+
+.readonly-field {
+    background-color: #f8f9fa !important;
+    border-color: #e7e8eb !important;
+    color: #6c757d !important;
+}
+
+.help-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.error-message {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* Alertas personalizadas */
+.alert-custom {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-left-color: #dc3545;
+    color: #721c24;
+}
+
+.alert-custom i {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    margin-top: 0.1rem;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+.error-list {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1rem;
+}
+
+/* Filas de formulario */
+.form-row {
+    display: flex;
+    margin: 0 -0.5rem;
+    flex-wrap: wrap;
+}
+
+.form-row .form-group-custom {
+    padding: 0 0.5rem;
+}
+
+/* Información adicional */
+.info-card {
+    background: #f8f9fa;
+    border: 1px solid #e7e8eb;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    overflow: hidden;
+}
+
+.info-header {
+    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+    color: white;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.info-body {
+    padding: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #1788ca;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Acciones del formulario */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e7e8eb;
+    flex-wrap: wrap;
+}
+
+/* Botones personalizados */
+.btn-primary-custom {
+    background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 29, 66, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-info-custom {
+    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-info-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 136, 202, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-secondary-custom {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-secondary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .page-header-gradient {
+        padding: 1.5rem 0;
+    }
+
+    .page-header-gradient h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-subtitle {
+        font-size: 1rem;
+    }
+
+    .form-card-body {
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        margin: 0;
+    }
+
+    .form-row .form-group-custom {
+        padding: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-primary-custom,
+    .btn-info-custom,
+    .btn-secondary-custom {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-primary-custom:last-child,
+    .btn-info-custom:last-child,
+    .btn-secondary-custom:last-child {
+        margin-bottom: 0;
+    }
+}
+
+@@media (max-width: 576px) {
+    .main-container {
+        padding: 0 10px;
+    }
+
+    .form-card-header {
+        padding: 1rem;
+    }
+
+    .form-card-body {
+        padding: 1rem;
+    }
+}
+</style>
+
 @section Scripts {
-    // validación
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            // Actualizar días restantes en tiempo real
+            function actualizarDiasRestantes() {
+                var disponibles = parseInt($('#dias_disponibles').val()) || 0;
+                var disfrutados = parseInt($('#dias_disfrutados').val()) || 0;
+                var restantes = Math.max(0, disponibles - disfrutados);
+
+                $('#diasRestantes').text(restantes + ' días');
+
+                if (restantes < 0) {
+                    $('#diasRestantes').addClass('text-danger').removeClass('text-success');
+                } else {
+                    $('#diasRestantes').addClass('text-success').removeClass('text-danger');
+                }
+            }
+
+            $('#dias_disponibles').on('input', actualizarDiasRestantes);
+            $('#dias_disfrutados').on('input', actualizarDiasRestantes);
+
+            // Validación
+            $('#dias_disponibles').on('input', function () {
+                var valor = parseInt($(this).val());
+                var diasDisfrutados = parseInt($('#dias_disfrutados').val()) || 0;
+
+                if (valor < diasDisfrutados) {
+                    $(this).addClass('is-invalid');
+                    if (!$(this).next('.error-message').length) {
+                        $(this).after('<span class="error-message">Los días disponibles no pueden ser menores a los días disfrutados</span>');
+                    }
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.error-message').remove();
+                }
+            });
+        });
+    </script>
 }

@@ -5,426 +5,844 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Header de advertencia -->
-            <div class="page-header mb-4">
-                <div class="text-center">
-                    <h2 class="page-title">
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                        Confirmar Eliminación
-                    </h2>
-                    <p class="text-muted">Esta acción no se puede deshacer</p>
+<!-- Header principal -->
+<div class="page-header-gradient delete-header">
+    <div class="container">
+        <h1><i class="fa fa-trash"></i> Eliminar Incapacidad</h1>
+        <p class="header-subtitle">¿Está seguro que desea eliminar este registro de incapacidad?</p>
+    </div>
+</div>
+
+<div class="main-container container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <!-- Alerta de advertencia -->
+            <div class="alert-custom alert-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                <div class="alert-content">
+                    <strong>¡Advertencia!</strong>
+                    <p>Esta acción eliminará permanentemente el registro de incapacidad. Esta operación no se puede deshacer.</p>
                 </div>
             </div>
 
-            <!-- Alerta de confirmación -->
-            <div class="alert alert-danger alert-lg mb-4" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-trash-alt fa-3x me-3"></i>
-                    <div>
-                        <h4 class="alert-heading">¿Está seguro de eliminar esta incapacidad?</h4>
-                        <p class="mb-0">
-                            Una vez eliminada, toda la información se perderá permanentemente.
-                            Esta acción <strong>NO SE PUEDE REVERTIR</strong>.
-                        </p>
-                    </div>
+            <!-- Panel de confirmación -->
+            <div class="delete-card">
+                <div class="delete-card-header">
+                    <h3><i class="fa fa-user-injured"></i> Información de la Incapacidad a Eliminar</h3>
+                    <div class="record-id">ID: @Model.id_incapacidad</div>
                 </div>
-            </div>
 
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <!-- Información del registro a eliminar -->
-                    <div class="card border-danger">
-                        <div class="card-header bg-danger text-white">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-user-injured"></i>
-                                Datos del Registro a Eliminar
-                                <span class="badge bg-light text-dark ms-2">ID: @Model.id_incapacidad</span>
-                            </h5>
+                <div class="delete-card-body">
+                    <!-- Información del empleado -->
+                    <div class="employee-section">
+                        <h4><i class="fa fa-user"></i> Empleado Afectado</h4>
+                        <div class="employee-card">
+                            <div class="employee-avatar">
+                                @if (Model.Empleados != null && !string.IsNullOrEmpty(Model.Empleados.nombre1) && !string.IsNullOrEmpty(Model.Empleados.apellido1))
+                                {
+                                    @Model.Empleados.nombre1.Substring(0, 1)@Model.Empleados.apellido1.Substring(0, 1)
+                                }
+                                else
+                                {
+                                    <text>??</text>
+                                }
+                            </div>
+                            <div class="employee-info">
+                                <h5>
+                                    @if (Model.Empleados != null)
+                                    {
+                                        @(Model.Empleados.nombre1 ?? "Sin nombre") @(Model.Empleados.apellido1 ?? "Sin apellido")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin empleado asignado</span>
+                                    }
+                                </h5>
+                                <p><i class="fa fa-id-card"></i> Cédula: @(Model.Empleados?.cedula ?? "No disponible")</p>
+                                @if (Model.Empleados?.Puestos != null && !string.IsNullOrEmpty(Model.Empleados.Puestos.nombre_puesto))
+                                {
+                                    <p><i class="fa fa-briefcase"></i> @Model.Empleados.Puestos.nombre_puesto</p>
+                                }
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Información del empleado -->
-                                <div class="col-md-6">
-                                    <div class="info-section">
-                                        <h6 class="section-title">
-                                            <i class="fas fa-user text-primary"></i> Empleado Afectado
-                                        </h6>
-                                        <div class="employee-info">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <div class="avatar-lg bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                                                    @Model.Empleados.nombre1.Substring(0, 1)@Model.Empleados.apellido1.Substring(0, 1)
-                                                </div>
-                                                <div>
-                                                    <h5 class="mb-1 text-danger">@Model.Empleados.nombre1 @Model.Empleados.apellido1</h5>
-                                                    <p class="mb-0 text-muted">
-                                                        <i class="fas fa-id-card me-1"></i>
-                                                        <span class="font-monospace">@Model.Empleados.cedula</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    </div>
 
-                                <!-- Datos de la incapacidad -->
-                                <div class="col-md-6">
-                                    <div class="info-section">
-                                        <h6 class="section-title">
-                                            <i class="fas fa-clipboard-list text-warning"></i> Información de la Incapacidad
-                                        </h6>
-                                        <div class="info-grid">
-                                            <div class="info-item">
-                                                <span class="info-label">Tipo:</span>
-                                                <span class="info-value">
-                                                    @if (Model.TipoIncapacidades != null)
-                                                    {
-                                                        @Model.TipoIncapacidades.nombre
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="text-muted">No especificado</span>
-                                                    }
-                                                </span>
-                                            </div>
-                                            <div class="info-item">
-                                                <span class="info-label">Estado:</span>
-                                                <span class="info-value">
-                                                    @if (Model.Estados != null)
-                                                    {
-                                                        <span class="badge bg-secondary">@Model.Estados.nombre</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="text-muted">Sin estado</span>
-                                                    }
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Detalles de la incapacidad -->
+                    <div class="details-section">
+                        <h4><i class="fa fa-clipboard-list"></i> Detalles de la Incapacidad</h4>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fa fa-tag"></i> Tipo de Incapacidad
+                                </div>
+                                <div class="detail-value">
+                                    @if (Model.TipoIncapacidades != null && !string.IsNullOrEmpty(Model.TipoIncapacidades.nombre))
+                                    {
+                                        <span class="badge-info">@Model.TipoIncapacidades.nombre</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
                                 </div>
                             </div>
 
-                            <hr class="my-4">
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fa fa-flag"></i> Estado
+                                </div>
+                                <div class="detail-value">
+                                    @{
+                                        string badgeClass = "badge-secondary";
+                                        string estadoNombre = "Sin estado";
 
-                            <!-- Fechas y duración -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="info-section">
-                                        <h6 class="section-title">
-                                            <i class="fas fa-calendar-alt text-info"></i> Período y Duración
-                                        </h6>
-                                        <div class="row text-center">
-                                            <div class="col-md-3">
-                                                <div class="stat-card">
-                                                    <div class="stat-icon bg-success text-white">
-                                                        <i class="fas fa-calendar-plus"></i>
-                                                    </div>
-                                                    <div class="stat-label">Fecha Inicio</div>
-                                                    <div class="stat-value">@Model.fecha_inicio.ToString("dd/MM/yyyy")</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="stat-card">
-                                                    <div class="stat-icon bg-danger text-white">
-                                                        <i class="fas fa-calendar-minus"></i>
-                                                    </div>
-                                                    <div class="stat-label">Fecha Fin</div>
-                                                    <div class="stat-value">@Model.fecha_fin.ToString("dd/MM/yyyy")</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="stat-card">
-                                                    <div class="stat-icon bg-primary text-white">
-                                                        <i class="fas fa-hourglass-half"></i>
-                                                    </div>
-                                                    <div class="stat-label">Total Días</div>
-                                                    <div class="stat-value">@(Model.dias_incapacidad ?? 0) días</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="stat-card">
-                                                    <div class="stat-icon bg-warning text-white">
-                                                        <i class="fas fa-clock"></i>
-                                                    </div>
-                                                    <div class="stat-label">Registrado</div>
-                                                    <div class="stat-value">@Model.fecha_registro.Value.ToString("dd/MM/yy")</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        if (Model.Estados != null && !string.IsNullOrEmpty(Model.Estados.nombre))
+                                        {
+                                            estadoNombre = Model.Estados.nombre;
+                                            switch (Model.Estados.nombre.ToLower())
+                                            {
+                                                case "pendiente":
+                                                    badgeClass = "badge-warning";
+                                                    break;
+                                                case "aprobado":
+                                                    badgeClass = "badge-success";
+                                                    break;
+                                                case "rechazado":
+                                                    badgeClass = "badge-danger";
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    <span class="@badgeClass">@estadoNombre</span>
                                 </div>
                             </div>
 
-                            @if (!string.IsNullOrEmpty(Model.descripcion))
-                            {
-                                <hr class="my-4">
-                                <!-- Descripción -->
-                                <div class="info-section">
-                                    <h6 class="section-title">
-                                        <i class="fas fa-comment-medical text-info"></i> Descripción
-                                    </h6>
-                                    <div class="description-box bg-light p-3 rounded">
-                                        <em>"@Model.descripcion"</em>
-                                    </div>
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fa fa-calendar-plus"></i> Fecha de Inicio
                                 </div>
-                            }
+                                <div class="detail-value">
+                                    @Model.fecha_inicio.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fa fa-calendar-minus"></i> Fecha de Fin
+                                </div>
+                                <div class="detail-value">
+                                    @Model.fecha_fin.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fa fa-clock-o"></i> Duración
+                                </div>
+                                <div class="detail-value">
+                                    <span class="badge-primary">@(Model.dias_incapacidad ?? 0) días</span>
+                                </div>
+                            </div>
 
                             @if (!string.IsNullOrEmpty(Model.numero_boleta))
                             {
-                                <hr class="my-4">
-                                <!-- Número de boleta -->
-                                <div class="info-section">
-                                    <h6 class="section-title">
-                                        <i class="fas fa-file-medical text-secondary"></i> Documentación
-                                    </h6>
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">Número de Boleta:</span>
-                                        <span class="badge bg-secondary font-monospace fs-6">@Model.numero_boleta</span>
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fa fa-file-medical"></i> N° Boleta
+                                    </div>
+                                    <div class="detail-value">
+                                        <span class="badge-secondary">@Model.numero_boleta</span>
                                     </div>
                                 </div>
                             }
                         </div>
                     </div>
 
-                    <!-- Formulario de confirmación -->
-                    <div class="card mt-4 border-danger">
-                        <div class="card-body bg-light text-center">
-                            @using (Html.BeginForm("Delete", "Incapacidades", FormMethod.Post))
+                    @if (!string.IsNullOrEmpty(Model.descripcion))
+                    {
+                        <!-- Descripción -->
+                        <div class="description-section">
+                            <h4><i class="fa fa-comment-medical"></i> Descripción</h4>
+                            <div class="description-box">
+                                "@Model.descripcion"
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Consecuencias de la eliminación -->
+                    <div class="consequences-section">
+                        <h4><i class="fa fa-exclamation-triangle"></i> Consecuencias de la Eliminación</h4>
+                        <div class="consequences-list">
+                            <div class="consequence-item">
+                                <i class="fa fa-times-circle text-danger"></i>
+                                <span>Se eliminará permanentemente el registro de incapacidad</span>
+                            </div>
+                            <div class="consequence-item">
+                                <i class="fa fa-times-circle text-danger"></i>
+                                <span>Se perderá el historial médico asociado a este período</span>
+                            </div>
+                            <div class="consequence-item">
+                                <i class="fa fa-times-circle text-danger"></i>
+                                <span>Los cálculos de nómina podrían verse afectados</span>
+                            </div>
+                            @if ((Model.dias_incapacidad ?? 0) > 0)
                             {
-                                @Html.AntiForgeryToken()
-                                @Html.HiddenFor(model => model.id_incapacidad)
-
-                                <div class="confirmation-actions">
-                                    <h5 class="text-danger mb-4">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        Confirme que desea eliminar permanentemente este registro
-                                    </h5>
-
-                                    <div class="d-flex justify-content-center gap-3">
-                                        @Html.ActionLink("❌ Cancelar", "Index", null, new { @class = "btn btn-success btn-lg px-5" })
-
-                                        <button type="submit" class="btn btn-danger btn-lg px-5" id="btnEliminar">
-                                            <i class="fas fa-trash-alt"></i> Sí, Eliminar Definitivamente
-                                        </button>
-                                    </div>
-
-                                    <div class="mt-3">
-                                        <small class="text-muted">
-                                            O regrese a
-                                            @Html.ActionLink("ver detalles", "Details", new { id = Model.id_incapacidad }, new { @class = "text-info" })
-                                            sin eliminar
-                                        </small>
-                                    </div>
+                                <div class="consequence-item warning">
+                                    <i class="fa fa-exclamation-triangle text-warning"></i>
+                                    <span>La incapacidad tiene una duración de <strong>@Model.dias_incapacidad días</strong></span>
                                 </div>
                             }
                         </div>
                     </div>
+
+                    <!-- Formulario de confirmación CORREGIDO -->
+                    @using (Html.BeginForm("Delete", "Incapacidades", new { id = Model.id_incapacidad }, FormMethod.Post, new { @class = "delete-form", @id = "formEliminar" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Checkbox de confirmación -->
+                        <div class="confirmation-section">
+                            <div class="form-group-custom">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="confirmarEliminacion" name="confirmarEliminacion" required>
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        Confirmo que entiendo las consecuencias y deseo eliminar este registro de incapacidad permanentemente
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-danger-custom" id="btnEliminar" disabled>
+                                <i class="fa fa-trash"></i> Eliminar Definitivamente
+                            </button>
+                            <a href="@Url.Action("Details", new { id = Model.id_incapacidad })" class="btn-info-custom">
+                                <i class="fa fa-eye"></i> Ver Detalles
+                            </a>
+                            <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                                <i class="fa fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <style>
-        /* Estilos para Delete */
-        .page-header {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
-        }
+<style>
+/* ESTILOS CSS EMBEBIDOS - SIGUIENDO DISEÑO CORPORATIVO */
 
-        .page-title {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .alert-lg {
-            padding: 2rem;
-            font-size: 1.1rem;
-            border-radius: 0.75rem;
-        }
-
-        .card {
-            border-radius: 0.5rem;
-            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-        }
-
-        .info-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .section-title {
-            color: #495057;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .info-grid {
-            display: grid;
-            gap: 0.75rem;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .info-value {
-            font-weight: 500;
-            color: #212529;
-        }
-
-        .avatar-lg {
-            width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .stat-card {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e9ecef;
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: #6c757d;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #212529;
-            margin-top: 0.25rem;
-        }
-
-        .description-box {
-            border-left: 4px solid #17a2b8;
-            color: #495057;
-        }
-
-        .confirmation-actions {
-            padding: 2rem;
-        }
-
-        .btn-lg {
-            padding: 0.75rem 2rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-        }
-
-        .gap-3 {
-            gap: 1rem !important;
-        }
-
-        .font-monospace {
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Efectos hover */
-        .btn-danger:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
-        }
-
-        /* Responsivo */
-        @@media (max-width: 768px) {
-            .page-header {
-                padding: 1.5rem;
-            }
-
-            .page-title {
-                font-size: 1.5rem;
-            }
-
-            .alert-lg {
-                padding: 1.5rem;
-                font-size: 1rem;
-            }
-
-            .d-flex.gap-3 {
-                flex-direction: column;
-                gap: 0.5rem !important;
-            }
-
-            .btn-lg {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-
-            .stat-card {
-                margin-bottom: 0.5rem;
-            }
-
-            .avatar-lg {
-                width: 50px;
-                height: 50px;
-                font-size: 1.25rem;
-            }
-        }
-    </style>
-
-    <script>
-        $(document).ready(function() {
-            // Confirmación adicional para eliminar
-            $('#btnEliminar').on('click', function(e) {
-                if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN ⚠️\n\n¿Está COMPLETAMENTE SEGURO de eliminar esta incapacidad?\n\nEsta acción NO SE PUEDE REVERTIR.')) {
-                    e.preventDefault();
-                    return false;
-                }
-
-                // Cambiar texto del botón mientras procesa
-                $(this).html('<i class="fas fa-spinner fa-spin"></i> Eliminando...');
-                $(this).prop('disabled', true);
-            });
-
-            // Efecto de entrada
-            $('.card').hide().fadeIn(800);
-
-            // Focus en el botón cancelar por defecto
-            $('.btn-success').first().focus();
-        });
-    </script>
+/* Reset y base */
+* {
+    box-sizing: border-box;
 }
+
+/* Header de eliminación */
+.page-header-gradient {
+    background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 15px 15px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.delete-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+.page-header-gradient h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Contenedor principal */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Alertas personalizadas */
+.alert-custom {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    color: #856404;
+}
+
+.alert-custom i {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    margin-top: 0.1rem;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+/* Card de eliminación */
+.delete-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(220, 53, 69, 0.15);
+    border: 2px solid #f8d7da;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.delete-card-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.record-id {
+    background: rgba(255,255,255,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.delete-card-body {
+    padding: 2rem;
+}
+
+/* Secciones */
+.employee-section,
+.details-section,
+.description-section,
+.consequences-section {
+    margin-bottom: 2.5rem;
+}
+
+.employee-section h4,
+.details-section h4,
+.description-section h4,
+.consequences-section h4 {
+    color: #221d42;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e7e8eb;
+}
+
+/* Tarjeta del empleado */
+.employee-card {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #dc3545;
+}
+
+.employee-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.employee-info h5 {
+    color: #dc3545;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.employee-info p {
+    margin: 0.25rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Grid de detalles */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    background: #f8f9fa;
+    border: 1px solid #e7e8eb;
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #dc3545;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-value {
+    color: #221d42;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Badges personalizados */
+.badge-info {
+    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.badge-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, #fab61b 0%, #e69500 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.badge-primary {
+    background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.badge-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Caja de descripción */
+.description-box {
+    background: #f8f9fa;
+    border: 1px solid #e7e8eb;
+    border-left: 4px solid #1788ca;
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-style: italic;
+    color: #495057;
+    font-size: 1rem;
+}
+
+/* Sección de consecuencias */
+.consequences-section h4 {
+    color: #dc3545;
+    border-bottom-color: #f8d7da;
+}
+
+.consequences-list {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.consequence-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #dc3545;
+}
+
+.consequence-item:last-child {
+    margin-bottom: 0;
+}
+
+.consequence-item.warning {
+    border-left-color: #ffc107;
+    background: #fff3cd;
+}
+
+.consequence-item i {
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+}
+
+.consequence-item span {
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.4;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Sección de confirmación */
+.confirmation-section {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Checkbox personalizado */
+.checkbox-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #dc3545;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #f8f9fa;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-text {
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Acciones del formulario */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e7e8eb;
+    flex-wrap: wrap;
+}
+
+/* Botones personalizados */
+.btn-danger-custom {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 180px;
+    justify-content: center;
+}
+
+.btn-danger-custom:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-danger-custom:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-info-custom {
+    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-info-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 136, 202, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-secondary-custom {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-secondary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .page-header-gradient {
+        padding: 1.5rem 0;
+    }
+
+    .page-header-gradient h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-subtitle {
+        font-size: 1rem;
+    }
+
+    .main-container {
+        padding: 0 10px;
+    }
+
+    .delete-card-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .employee-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .employee-avatar {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-danger-custom,
+    .btn-info-custom,
+    .btn-secondary-custom {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 0.5rem;
+    }
+
+    .consequence-item {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .checkbox-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+@@media (max-width: 576px) {
+    .delete-card-body {
+        padding: 1.5rem;
+    }
+
+    .detail-item {
+        padding: 0.75rem;
+    }
+
+    .consequences-list {
+        padding: 1rem;
+    }
+
+    .consequence-item {
+        padding: 0.5rem;
+    }
+
+    .confirmation-section {
+        padding: 1rem;
+    }
+}
+</style>
+
+<script>
+    // JavaScript CORREGIDO - SIN CONFLICTOS
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('confirmarEliminacion');
+        const btnEliminar = document.getElementById('btnEliminar');
+        const formulario = document.getElementById('formEliminar');
+
+        // Habilitar/deshabilitar botón según checkbox
+        checkbox.addEventListener('change', function () {
+            btnEliminar.disabled = !this.checked;
+        });
+
+        // Manejar envío del formulario
+        formulario.addEventListener('submit', function (e) {
+            // Verificar checkbox
+            if (!checkbox.checked) {
+                e.preventDefault();
+                alert('❌ Debe confirmar que entiende las consecuencias antes de eliminar.');
+                return false;
+            }
+
+            // Confirmación final
+            const confirmacion = confirm(
+                '⚠️ CONFIRMACIÓN FINAL\n\n' +
+                'Está a punto de eliminar permanentemente este registro de incapacidad.\n\n' +
+                '¿Está completamente seguro de continuar?\n\n' +
+                'Esta acción NO se puede deshacer.'
+            );
+
+            if (!confirmacion) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Mostrar indicador de carga SOLO si se confirma
+            btnEliminar.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Eliminando...';
+            btnEliminar.disabled = true;
+
+            // Permitir que el formulario se envíe normalmente
+            return true;
+        });
+    });
+</script>

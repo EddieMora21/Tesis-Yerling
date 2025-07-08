@@ -1,51 +1,457 @@
 ﻿@{
     ViewBag.Title = "Cambiar Contraseña";
-    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <h2>Cambiar Contraseña</h2>
+<style>
+    .password-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        text-align: center;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 20px rgba(34, 29, 66, 0.2);
+    }
 
+    .password-header h2 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .password-header i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .password-header small {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .password-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .form-control-custom:focus {
+        border-color: #1788ca;
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-label-custom i {
+        color: #1788ca;
+        font-size: 1.1rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        background: linear-gradient(135deg, #0d6efd 0%, #1788ca 100%);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom:disabled {
+        opacity: 0.7;
+        transform: none;
+        cursor: not-allowed;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .alert-custom {
+        border-radius: 8px;
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: slideInDown 0.5s ease;
+    }
+
+    .alert-danger-custom {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-info-custom {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .help-text-custom {
+        color: #6c757d;
+        font-style: italic;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 6px;
+        background: #f8f9fa;
+        border-left: 3px solid #fab61b;
+    }
+
+    .strength-indicator {
+        height: 4px;
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+        background: #e9ecef;
+    }
+
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
+
+    .button-group-custom {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .match-indicator-success {
+        color: #28a745 !important;
+    }
+
+    .match-indicator-error {
+        color: #dc3545 !important;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(34, 29, 66, 0.8);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+    }
+
+    .loading-spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @@keyframes slideInDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .password-card {
+            padding: 1.5rem;
+            margin: 0 1rem 2rem 1rem;
+        }
+
+        .password-header {
+            margin: 0 -15px 2rem -15px;
+            padding: 1.5rem 1rem;
+        }
+
+        .password-header h2 {
+            font-size: 1.75rem;
+        }
+
+        .password-header i {
+            font-size: 1.5rem;
+        }
+
+        .button-group-custom {
+            flex-direction: column;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-custom {
+            margin-left: -1rem;
+            margin-right: -1rem;
+            border-radius: 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .password-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .password-header i {
+            font-size: 1.25rem;
+        }
+
+        .password-header {
+            padding: 1rem 0.5rem;
+        }
+
+        .form-label-custom {
+            font-size: 0.9rem;
+        }
+
+        .help-text-custom {
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Estados de enfoque */
+    .form-group-custom.focused .form-label-custom {
+        color: #1788ca;
+    }
+
+    .form-group-custom.focused .form-label-custom i {
+        transform: scale(1.1);
+    }
+
+    /* Efectos adicionales */
+    .password-card:hover {
+        box-shadow: 0 12px 40px rgba(34, 29, 66, 0.15);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .form-control-custom:valid {
+        border-color: #28a745;
+    }
+
+    .form-control-custom:invalid:not(:focus) {
+        border-color: #dc3545;
+    }
+</style>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <h4>Actualizando contraseña...</h4>
+    <p>Por favor espere un momento</p>
+</div>
+
+<div class="password-header">
+    <div class="container">
+        <i class="fas fa-key"></i>
+        <h2>Cambiar Contraseña</h2>
+        @if (ViewBag.usuario != null)
+        {
+            <small>Usuario: @ViewBag.usuario</small>
+        }
+    </div>
+</div>
+
+<div class="container" style="max-width: 1200px;">
     @if (ViewBag.Error != null)
     {
-        <div class="alert alert-danger">
-            @ViewBag.Error
+        <div class="alert-custom alert-danger-custom" id="errorAlert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>@ViewBag.Error</span>
         </div>
     }
-
     @if (ViewBag.Success != null)
     {
-        <div class="alert alert-success">
-            @ViewBag.Success
+        <div class="alert-custom alert-success-custom" id="successAlert">
+            <i class="fas fa-check-circle"></i>
+            <span>@ViewBag.Success</span>
         </div>
+        if (ViewBag.RedirectToHome != null)
+        {
+            <div class="alert-custom alert-info-custom" id="redirectAlert">
+                <i class="fas fa-info-circle"></i>
+                <span>Será redirigido al inicio en <span id="countdown">3</span> segundos...</span>
+            </div>
+        }
     }
 
-    <div class="row">
-        <div class="col-md-6">
-            @using (Html.BeginForm("CambiarContrasena", "Usuarios", FormMethod.Post, new { @class = "form-horizontal" }))
-            {
-                @Html.AntiForgeryToken()
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="password-card fade-in">
+                @if (ViewBag.id_usuario != null)
+                {
+                   using (Html.BeginForm("CambiarContrasena", "Usuarios", FormMethod.Post, new { @class = "password-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@ViewBag.id_usuario" />
 
-                <input type="hidden" name="id" value="@ViewBag.id_usuario" />
+                        <div class="form-group-custom">
+                            <label for="nuevaContrasena" class="form-label-custom">
+                                <i class="fas fa-lock"></i>
+                                Nueva contraseña
+                            </label>
+                            <input type="password"
+                                   name="nuevaContrasena"
+                                   id="nuevaContrasena"
+                                   class="form-control form-control-custom"
+                                   required
+                                   minlength="6"
+                                   placeholder="Ingrese su nueva contraseña"
+                                   autocomplete="new-password"
+                                   title="La contraseña debe tener al menos 6 caracteres" />
+                            <div class="help-text-custom">
+                                <i class="fas fa-info-circle"></i>
+                                Mínimo 6 caracteres, se recomienda incluir mayúsculas, números y símbolos
+                            </div>
+                            <div class="password-strength" id="passwordStrength" style="display: none;">
+                                <small class="text-muted">Fortaleza de contraseña:</small>
+                                <div class="strength-indicator" id="strengthBar"></div>
+                                <small id="strengthText"></small>
+                            </div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="nuevaContrasena" class="control-label">Nueva contraseña:</label>
-                    <input type="password" name="nuevaContrasena" id="nuevaContrasena" class="form-control" required
-                           minlength="6" title="La contraseña debe tener al menos 6 caracteres" />
-                    <small class="form-text text-muted">Mínimo 6 caracteres</small>
-                </div>
+                        <div class="form-group-custom">
+                            <label for="confirmarContrasena" class="form-label-custom">
+                                <i class="fas fa-lock-open"></i>
+                                Confirmar nueva contraseña
+                            </label>
+                            <input type="password"
+                                   name="confirmarContrasena"
+                                   id="confirmarContrasena"
+                                   class="form-control form-control-custom"
+                                   required
+                                   minlength="6"
+                                   placeholder="Confirme su nueva contraseña"
+                                   autocomplete="new-password"
+                                   title="Las contraseñas deben coincidir" />
+                            <div class="help-text-custom" id="matchIndicator" style="display: none;">
+                                <i class="fas fa-times-circle text-danger"></i>
+                                <span>Las contraseñas no coinciden</span>
+                            </div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="confirmarContrasena" class="control-label">Confirmar nueva contraseña:</label>
-                    <input type="password" name="confirmarContrasena" id="confirmarContrasena" class="form-control" required
-                           minlength="6" title="Las contraseñas deben coincidir" />
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Cancelar</a>
-                </div>
-            }
+                        <div class="button-group-custom">
+                            @if (ViewBag.Success == null)
+                            {
+                                <button type="submit" class="btn btn-primary-custom" id="submitBtn">
+                                    <i class="fas fa-save"></i>
+                                    Guardar Cambios
+                                </button>
+                            }
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary-custom">
+                                <i class="fas fa-home"></i>
+                                @(ViewBag.Success != null ? "Ir al Inicio" : "Cancelar")
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert-custom alert-danger-custom">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>No se pudo identificar al usuario. Por favor, inicie sesión nuevamente.</span>
+                    </div>
+                    <div class="button-group-custom">
+                        <a href="@Url.Action("Login", "Usuarios")" class="btn btn-primary-custom">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Iniciar Sesión
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -53,23 +459,236 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Validación para que las contraseñas coincidan
-            $("#confirmarContrasena").on('keyup', function() {
-                if ($("#nuevaContrasena").val() != $("#confirmarContrasena").val()) {
-                    this.setCustomValidity("Las contraseñas no coinciden");
-                } else {
-                    this.setCustomValidity("");
+            let redirectTimer;
+
+            // Redirección automática si es exitoso
+            @if (ViewBag.RedirectToHome != null)
+            {
+                <text>
+                let countdown = 3;
+                const countdownElement = $('#countdown');
+
+                const updateCountdown = () => {
+                    countdownElement.text(countdown);
+                    countdown--;
+
+                    if (countdown < 0) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    }
+                };
+
+                redirectTimer = setInterval(updateCountdown, 1000);
+                </text>
+            }
+
+            // Función para evaluar fortaleza de contraseña
+            function evaluatePasswordStrength(password) {
+                let score = 0;
+                let feedback = '';
+                let color = '';
+
+                if (password.length >= 8) score += 1;
+                if (/[a-z]/.test(password)) score += 1;
+                if (/[A-Z]/.test(password)) score += 1;
+                if (/[0-9]/.test(password)) score += 1;
+                if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+                const strengthBar = $('#strengthBar');
+                const strengthText = $('#strengthText');
+
+                if (password.length === 0) {
+                    $('#passwordStrength').hide();
+                    return;
                 }
+
+                $('#passwordStrength').show();
+
+                switch(score) {
+                    case 0:
+                    case 1:
+                        color = '#dc3545';
+                        feedback = 'Muy débil';
+                        break;
+                    case 2:
+                        color = '#ffc107';
+                        feedback = 'Débil';
+                        break;
+                    case 3:
+                        color = '#fab61b';
+                        feedback = 'Regular';
+                        break;
+                    case 4:
+                        color = '#1788ca';
+                        feedback = 'Buena';
+                        break;
+                    case 5:
+                        color = '#28a745';
+                        feedback = 'Excelente';
+                        break;
+                }
+
+                const widthPercent = Math.max(20, (score / 5) * 100);
+                strengthBar.css({
+                    'background': color,
+                    'width': widthPercent + '%'
+                });
+                strengthText.text(feedback).css('color', color);
+            }
+
+            // Evaluar fortaleza mientras el usuario escribe
+            $("#nuevaContrasena").on('input', function() {
+                evaluatePasswordStrength($(this).val());
+                checkPasswordMatch();
+            });
+
+            // Función para verificar coincidencia de contraseñas
+            function checkPasswordMatch() {
+                const password = $("#nuevaContrasena").val();
+                const confirm = $("#confirmarContrasena").val();
+                const matchIndicator = $("#matchIndicator");
+
+                if (confirm.length === 0) {
+                    matchIndicator.hide();
+                    $("#confirmarContrasena")[0].setCustomValidity("");
+                    return;
+                }
+
+                if (password !== confirm) {
+                    matchIndicator.show()
+                        .removeClass('match-indicator-success')
+                        .addClass('match-indicator-error')
+                        .html('<i class="fas fa-times-circle"></i><span>Las contraseñas no coinciden</span>');
+                    $("#confirmarContrasena")[0].setCustomValidity("Las contraseñas no coinciden");
+                } else {
+                    matchIndicator.show()
+                        .removeClass('match-indicator-error')
+                        .addClass('match-indicator-success')
+                        .html('<i class="fas fa-check-circle"></i><span>Las contraseñas coinciden</span>');
+                    $("#confirmarContrasena")[0].setCustomValidity("");
+                }
+            }
+
+            // Validación mientras el usuario escribe la confirmación
+            $("#confirmarContrasena").on('input', function() {
+                checkPasswordMatch();
+            });
+
+            // Efectos visuales en los inputs
+            $('.form-control-custom').on('focus', function() {
+                $(this).closest('.form-group-custom').addClass('focused');
+            }).on('blur', function() {
+                $(this).closest('.form-group-custom').removeClass('focused');
             });
 
             // Validación del formulario antes de enviar
-            $("form").submit(function(e) {
-                if ($("#nuevaContrasena").val() !== $("#confirmarContrasena").val()) {
+            $("#passwordForm").submit(function(e) {
+                const password = $("#nuevaContrasena").val();
+                const confirm = $("#confirmarContrasena").val();
+
+                // Validar que las contraseñas coincidan
+                if (password !== confirm) {
                     e.preventDefault();
-                    alert("Las contraseñas no coinciden");
+
+                    // Mostrar alerta temporal
+                    showTemporaryAlert('Las contraseñas no coinciden. Por favor, verifique e intente nuevamente.', 'danger');
+
+                    // Enfocar el campo de confirmación
+                    $("#confirmarContrasena").focus();
                     return false;
                 }
+
+                // Validar longitud mínima
+                if (password.length < 6) {
+                    e.preventDefault();
+                    showTemporaryAlert('La contraseña debe tener al menos 6 caracteres.', 'danger');
+                    $("#nuevaContrasena").focus();
+                    return false;
+                }
+
+                // Mostrar loading overlay
+                $("#loadingOverlay").fadeIn(300);
+
+                // Deshabilitar botón durante el envío
+                $("#submitBtn").prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+
                 return true;
+            });
+
+            // Función para mostrar alertas temporales
+            function showTemporaryAlert(message, type = 'danger') {
+                const alertClass = `alert-${type}-custom`;
+                const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+
+                const alertHtml = `
+                    <div class="alert-custom ${alertClass}" id="tempAlert" style="display: none;">
+                        <i class="fas ${iconClass}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+
+                // Remover alertas temporales previas
+                $('#tempAlert').remove();
+
+                // Agregar nueva alerta
+                $('.container').first().prepend(alertHtml);
+                $('#tempAlert').slideDown(300);
+
+                // Scroll hacia arriba para mostrar la alerta
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 500);
+
+                // Remover alerta después de 5 segundos
+                setTimeout(function() {
+                    $('#tempAlert').slideUp(300, function() {
+                        $(this).remove();
+                    });
+                }, 5000);
+            }
+
+            // Auto-remover alertas de error después de 10 segundos
+            setTimeout(function() {
+                $('#errorAlert').slideUp(300);
+            }, 10000);
+
+            // Prevenir envío múltiple del formulario
+            let formSubmitted = false;
+            $("#passwordForm").on('submit', function() {
+                if (formSubmitted) {
+                    return false;
+                }
+                formSubmitted = true;
+                return true;
+            });
+
+            // Habilitar/deshabilitar botón según validez del formulario
+            function checkFormValidity() {
+                const password = $("#nuevaContrasena").val();
+                const confirm = $("#confirmarContrasena").val();
+                const isValid = password.length >= 6 && password === confirm;
+
+                $("#submitBtn").prop('disabled', !isValid);
+
+                if (isValid) {
+                    $("#submitBtn").removeClass('btn-disabled');
+                } else {
+                    $("#submitBtn").addClass('btn-disabled');
+                }
+            }
+
+            // Verificar validez en tiempo real
+            $("#nuevaContrasena, #confirmarContrasena").on('input', function() {
+                setTimeout(checkFormValidity, 100);
+            });
+
+            // Verificación inicial
+            checkFormValidity();
+
+            // Limpiar timer al salir de la página
+            $(window).on('beforeunload', function() {
+                if (redirectTimer) {
+                    clearInterval(redirectTimer);
+                }
             });
         });
     </script>

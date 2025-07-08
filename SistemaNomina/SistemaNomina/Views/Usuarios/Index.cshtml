@@ -1,87 +1,1077 @@
 ﻿@model IEnumerable<SistemaNomina.Models.Usuarios>
 
 @{
-    ViewBag.Title = "Usuarios";
+    ViewBag.Title = "Gestión de Usuarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    // Validación mejorada de sesión
     var usuarioSesion = Session["Usuario"] as string;
     var rolSesion = Session["RolUsuario"] as string;
     var userId = Session["UserId"] as int?;
 
     if (string.IsNullOrEmpty(usuarioSesion) || string.IsNullOrEmpty(rolSesion) || !userId.HasValue)
     {
-        Response.Redirect("~/Login/Login");
+        Response.Redirect("~/Usuarios/Login");
     }
 
-    // Solo Admin puede acceder a esta vista
     if (!rolSesion.Equals("Admin", StringComparison.OrdinalIgnoreCase))
     {
         Response.Redirect("~/Home/AccesoDenegado");
     }
 }
 
-<h2>Listado de Usuarios</h2>
+<div class="users-index-container">
+    <!-- Header Principal -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-users"></i>
+                    Gestión de Usuarios
+                </h1>
+                <p class="page-subtitle">Administración completa de usuarios del sistema</p>
+            </div>
+            <div class="header-actions">
+                <a href="@Url.Action("Create")" class="btn btn-primary-custom">
+                    <i class="fas fa-user-plus"></i>
+                    Crear Usuario
+                </a>
+            </div>
+        </div>
+    </div>
 
-<p>
-    @Html.ActionLink("Crear Nuevo Usuario", "Create", null, new { @class = "btn btn-success" })
-</p>
+    <!-- Estadísticas -->
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">@(Model?.Count() ?? 0)</h3>
+                    <p class="stat-label">Usuarios Totales</p>
+                </div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">@(Model?.Count(u => u.primer_ingreso == false) ?? 0)</h3>
+                    <p class="stat-label">Usuarios Activos</p>
+                </div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-icon">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">@(Model?.Count(u => u.primer_ingreso == true) ?? 0)</h3>
+                    <p class="stat-label">Primer Ingreso</p>
+                </div>
+            </div>
+            <div class="stat-card roles">
+                <div class="stat-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">@(Model?.Where(u => u.Roles != null).Select(u => u.Roles.nombre).Distinct().Count() ?? 0)</h3>
+                    <p class="stat-label">Roles Únicos</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-info">No hay usuarios registrados.</div>
-}
-else
-{
-    <table class="table-striped table-bordered table">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.usuario)</th>
-                <th>Contraseña</th>
-                <th>Primer Ingreso</th>
-                <th>Fecha Creación</th>
-                <th>Fecha Actualización</th>
-                <th>Empleado</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.usuario)</td>
-                    <td>******</td>
-                    <td>@(item.primer_ingreso.HasValue ? (item.primer_ingreso.Value ? "Sí" : "No") : "N/A")</td>
-                    <td>@Html.DisplayFor(modelItem => item.fecha_creacion)</td>
-                    <td>@Html.DisplayFor(modelItem => item.fecha_actualizacion)</td>
-                    <td>
-                        @if (item.Empleados != null)
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="filters-card">
+            <div class="filters-header">
+                <h3 class="filters-title">
+                    <i class="fas fa-filter"></i>
+                    Filtros de Búsqueda
+                </h3>
+            </div>
+            <div class="filters-content">
+                <div class="filter-group">
+                    <label class="filter-label">Buscar Usuario</label>
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchUser" class="filter-input" placeholder="Nombre de usuario o empleado...">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Rol</label>
+                    <select id="filterRole" class="filter-select">
+                        <option value="">Todos los roles</option>
+                        @if (Model != null)
                         {
-                            @Html.DisplayFor(modelItem => item.Empleados.cedula)
+                            foreach (var role in Model.Where(u => u.Roles != null).Select(u => u.Roles.nombre).Distinct())
+                            {
+                                <option value="@role">@role</option>
+                            }
                         }
-                        else
-                        {
-                            <span class="text-muted">N/A</span>
-                        }
-                    </td>
-                    <td>
-                        @if (item.Roles != null)
-                        {
-                            @Html.DisplayFor(modelItem => item.Roles.nombre)
-                        }
-                        else
-                        {
-                            <span class="text-muted">N/A</span>
-                        }
-                    </td>
-                    <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.id_usuario }, new { @class = "btn btn-sm btn-primary" })
-                        @Html.ActionLink("Detalles", "Details", new { id = item.id_usuario }, new { @class = "btn btn-sm btn-info" })
-                        @Html.ActionLink("Eliminar", "Delete", new { id = item.id_usuario }, new { @class = "btn btn-sm btn-danger" })
-                    </td>
-                </tr>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Estado</label>
+                    <select id="filterStatus" class="filter-select">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activos</option>
+                        <option value="primer_ingreso">Primer Ingreso</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="button" class="btn btn-secondary-custom" onclick="clearFilters()">
+                        <i class="fas fa-times"></i>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Usuarios -->
+    <div class="table-section">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="empty-title">No hay usuarios registrados</h3>
+                <p class="empty-message">Comience creando el primer usuario del sistema</p>
+                <a href="@Url.Action("Create")" class="btn btn-primary-custom">
+                    <i class="fas fa-user-plus"></i>
+                    Crear Primer Usuario
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">
+                        <i class="fas fa-list"></i>
+                        Lista de Usuarios
+                        <span class="record-count">(@Model.Count() registros)</span>
+                    </h3>
+                    <div class="table-actions">
+                        <button type="button" class="btn btn-outline-custom" onclick="exportTable()">
+                            <i class="fas fa-download"></i>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <i class="fas fa-user"></i>
+                                    Usuario
+                                </th>
+                                <th>
+                                    <i class="fas fa-id-card"></i>
+                                    Empleado
+                                </th>
+                                <th>
+                                    <i class="fas fa-shield-alt"></i>
+                                    Rol
+                                </th>
+                                <th>
+                                    <i class="fas fa-key"></i>
+                                    Estado Acceso
+                                </th>
+                                <th>
+                                    <i class="fas fa-calendar"></i>
+                                    Fecha Creación
+                                </th>
+                                <th>
+                                    <i class="fas fa-clock"></i>
+                                    Última Actualización
+                                </th>
+                                <th class="actions-column">
+                                    <i class="fas fa-cogs"></i>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr data-role="@(item.Roles?.nombre ?? "")"
+                                    data-status="@(item.primer_ingreso == true ? "primer_ingreso" : "activo")">
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">
+                                                @{
+                                                    var initials = "";
+                                                    if (!string.IsNullOrEmpty(item.usuario) && item.usuario.Length >= 2)
+                                                    {
+                                                        initials = item.usuario.Substring(0, 2).ToUpper();
+                                                    }
+                                                    else if (!string.IsNullOrEmpty(item.usuario))
+                                                    {
+                                                        initials = item.usuario.Substring(0, 1).ToUpper();
+                                                    }
+                                                }
+                                                @initials
+                                            </div>
+                                            <div class="user-details">
+                                                <strong class="user-name">@Html.DisplayFor(modelItem => item.usuario)</strong>
+                                                <small class="user-id">ID: @item.id_usuario</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (item.Empleados != null)
+                                        {
+                                            <div class="employee-info">
+                                                <strong>@Html.DisplayFor(modelItem => item.Empleados.cedula)</strong>
+                                                <small>@(item.Empleados.nombre1) @(item.Empleados.apellido1)</small>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                <i class="fas fa-minus"></i>
+                                                Sin asignar
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.Roles != null)
+                                        {
+                                            <span class="role-badge role-@(item.Roles.nombre.ToLower())">
+                                                <i class="fas fa-user-shield"></i>
+                                                @Html.DisplayFor(modelItem => item.Roles.nombre)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="role-badge role-none">
+                                                <i class="fas fa-question"></i>
+                                                Sin rol
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.primer_ingreso.HasValue)
+                                        {
+                                            if (item.primer_ingreso.Value)
+                                            {
+                                                <span class="status-badge status-pending">
+                                                    <i class="fas fa-clock"></i>
+                                                    Primer Ingreso
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status-badge status-active">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    Activo
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge status-unknown">
+                                                <i class="fas fa-question"></i>
+                                                Indefinido
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            <strong>@Html.DisplayFor(modelItem => item.fecha_creacion)</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            @if (item.fecha_actualizacion.HasValue)
+                                            {
+                                                <strong>@Html.DisplayFor(modelItem => item.fecha_actualizacion)</strong>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Sin actualizar</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            @Html.ActionLink("Details", "Details", new { id = item.id_usuario }, new
+                                            {
+                                                @class = "btn btn-info-custom btn-sm",
+                                                title = "Ver detalles",
+                                                @onclick = "return true;"
+                                            })
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.id_usuario }, new
+                                            {
+                                                @class = "btn btn-warning-custom btn-sm",
+                                                title = "Editar usuario",
+                                                @onclick = "return true;"
+                                            })
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.id_usuario }, new
+                                            {
+                                                @class = "btn btn-danger-custom btn-sm",
+                                                title = "Eliminar usuario",
+                                                @onclick = "return confirm('¿Está seguro de eliminar este usuario?');"
+                                            })
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Variables CSS Corporativas */
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --info-color: #17a2b8;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
+    }
+
+    .users-index-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: var(--white);
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
+        padding: 2rem;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        margin-bottom: 0;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background: var(--white);
+        padding: 2rem;
+        border-left: 1px solid var(--neutral-color);
+        border-right: 1px solid var(--neutral-color);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: var(--transition);
+        border-left: 4px solid;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card.total {
+            border-left-color: var(--primary-color);
+        }
+
+        .stat-card.active {
+            border-left-color: var(--success-color);
+        }
+
+        .stat-card.pending {
+            border-left-color: var(--warning-color);
+        }
+
+        .stat-card.roles {
+            border-left-color: var(--info-color);
+        }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--white);
+    }
+
+    .stat-card.total .stat-icon {
+        background: linear-gradient(135deg, var(--primary-color), #2c4d7a);
+    }
+
+    .stat-card.active .stat-icon {
+        background: linear-gradient(135deg, var(--success-color), #229954);
+    }
+
+    .stat-card.pending .stat-icon {
+        background: linear-gradient(135deg, var(--warning-color), #e0a800);
+    }
+
+    .stat-card.roles .stat-icon {
+        background: linear-gradient(135deg, var(--info-color), #138496);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    /* Filters Section */
+    .filters-section {
+        background: var(--white);
+        padding: 0 2rem 2rem 2rem;
+        border-left: 1px solid var(--neutral-color);
+        border-right: 1px solid var(--neutral-color);
+    }
+
+    .filters-card {
+        background: var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+    }
+
+    .filters-header {
+        background: var(--accent-color);
+        color: var(--white);
+        padding: 1rem 1.5rem;
+    }
+
+    .filters-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filters-content {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr auto;
+        gap: 1.5rem;
+        align-items: end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    .filter-input, .filter-select {
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--white);
+        border-radius: var(--border-radius-sm);
+        font-size: 0.95rem;
+        transition: var(--transition);
+    }
+
+    .search-wrapper {
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+    }
+
+    .filter-input {
+        padding-left: 2.5rem;
+    }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
+        }
+
+    /* Table Section */
+    .table-section {
+        background: var(--white);
+        padding: 0 2rem 2rem 2rem;
+        border: 1px solid var(--neutral-color);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+
+    .table-card {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
+    }
+
+    .table-header {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .table-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .record-count {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        font-weight: 400;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table-custom {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--white);
+    }
+
+        .table-custom thead th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            white-space: nowrap;
+        }
+
+            .table-custom thead th i {
+                margin-right: 0.5rem;
+                opacity: 0.8;
             }
-        </tbody>
-    </table>
+
+        .table-custom tbody tr {
+            border-bottom: 1px solid var(--neutral-color);
+            transition: var(--transition);
+        }
+
+            .table-custom tbody tr:hover {
+                background: rgba(23, 136, 202, 0.05);
+            }
+
+        .table-custom tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+    /* User Info Styling */
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        color: var(--text-dark);
+        font-size: 0.95rem;
+    }
+
+    .user-id {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .employee-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .employee-info strong {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .employee-info small {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+    /* Badges */
+    .role-badge, .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        white-space: nowrap;
+    }
+
+    .role-admin {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+
+    .role-rrhh {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+
+    .role-supervisor {
+        background: rgba(23, 162, 184, 0.1);
+        color: var(--info-color);
+    }
+
+    .role-empleado {
+        background: rgba(108, 117, 125, 0.1);
+        color: var(--text-muted);
+    }
+
+    .role-it {
+        background: rgba(111, 66, 193, 0.1);
+        color: #6f42c1;
+    }
+
+    .role-none {
+        background: rgba(108, 117, 125, 0.1);
+        color: var(--text-muted);
+    }
+
+    .status-active {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+
+    .status-pending {
+        background: rgba(255, 193, 7, 0.1);
+        color: var(--warning-color);
+    }
+
+    .status-unknown {
+        background: rgba(108, 117, 125, 0.1);
+        color: var(--text-muted);
+    }
+
+    /* Action Buttons */
+    .actions-column {
+        width: 140px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.25rem;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 0.5rem 0.75rem;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 29, 66, 0.3);
+        }
+
+    .btn-secondary-custom {
+        background: var(--text-muted);
+        color: var(--white);
+    }
+
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+        }
+
+    .btn-outline-custom {
+        background: transparent;
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+
+        .btn-outline-custom:hover {
+            background: var(--secondary-color);
+            color: var(--white);
+        }
+
+    .btn-info-custom {
+        background: var(--info-color);
+        color: var(--white);
+    }
+
+        .btn-info-custom:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .btn-info-custom::before {
+            content: "\f06e";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+    .btn-warning-custom {
+        background: var(--warning-color);
+        color: var(--text-dark);
+    }
+
+        .btn-warning-custom:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning-custom::before {
+            content: "\f044";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+    .btn-danger-custom {
+        background: var(--danger-color);
+        color: var(--white);
+    }
+
+        .btn-danger-custom:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger-custom::before {
+            content: "\f2ed";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--neutral-color), #d3d3d3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 3rem;
+        color: var(--text-muted);
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+
+    .empty-message {
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .date-info {
+        font-size: 0.9rem;
+    }
+
+        .date-info strong {
+            color: var(--text-dark);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filters-content {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .users-index-container {
+            padding: 1rem;
+        }
+
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-section, .filters-section, .table-section {
+            padding: 1rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .actions-column {
+            width: auto;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .table-responsive {
+            font-size: 0.8rem;
+        }
+
+        .user-info {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Animaciones */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .users-index-container {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .stat-card {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+    /* Hidden elements for filtering */
+    .hidden {
+        display: none !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Inicializar filtros
+            initializeFilters();
+        });
+
+        function initializeFilters() {
+            // Filtro de búsqueda en tiempo real
+            $('#searchUser').on('keyup', function () {
+                filterTable();
+            });
+
+            // Filtros de select
+            $('#filterRole, #filterStatus').on('change', function () {
+                filterTable();
+            });
+        }
+
+        function filterTable() {
+            var searchTerm = $('#searchUser').val().toLowerCase();
+            var roleFilter = $('#filterRole').val().toLowerCase();
+            var statusFilter = $('#filterStatus').val().toLowerCase();
+
+            $('#usersTable tbody tr').each(function () {
+                var row = $(this);
+                var userName = row.find('.user-name').text().toLowerCase();
+                var employeeInfo = row.find('.employee-info').text().toLowerCase();
+                var role = row.data('role').toLowerCase();
+                var status = row.data('status').toLowerCase();
+
+                var matchesSearch = searchTerm === '' ||
+                    userName.includes(searchTerm) ||
+                    employeeInfo.includes(searchTerm);
+                var matchesRole = roleFilter === '' || role === roleFilter;
+                var matchesStatus = statusFilter === '' || status === statusFilter;
+
+                if (matchesSearch && matchesRole && matchesStatus) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+
+            updateRecordCount();
+        }
+
+        function updateRecordCount() {
+            var visibleRows = $('#usersTable tbody tr:visible').length;
+            var totalRows = $('#usersTable tbody tr').length;
+            $('.record-count').text('(' + visibleRows + ' de ' + totalRows + ' registros)');
+        }
+
+        function clearFilters() {
+            $('#searchUser').val('');
+            $('#filterRole').val('');
+            $('#filterStatus').val('');
+            filterTable();
+        }
+
+        function exportTable() {
+            // Aquí implementarías la funcionalidad de exportación
+            alert('Funcionalidad de exportación en desarrollo');
+        }
+    </script>
 }

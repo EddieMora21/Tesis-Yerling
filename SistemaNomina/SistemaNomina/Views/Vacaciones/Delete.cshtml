@@ -1,75 +1,665 @@
 ﻿@model SistemaNomina.Models.Vacaciones
-@{
-    // título navegador
-    ViewBag.Title = "Delete";
 
-    // vista
+@{
+    ViewBag.Title = "Eliminar Registro de Vacaciones";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
-
-<!-- Título que pregunta al usuario  -->
-<h3>Are you sure you want to delete this?</h3>
-
-<div>
-    <h4>Vacaciones</h4>
-    <hr />
-
-    <!-- Lista de datos Vacaciones que se van a mostrar antes de eliminar -->
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.periodo) <!-- Muestra el nombre del campo 'periodo' -->
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.periodo) <!-- Muestra el valor del campo 'periodo' -->
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.dias_disponibles) <!-- Nombre del campo 'días disponibles' -->
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.dias_disponibles) <!-- Valor de 'días disponibles' -->
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.dias_disfrutados) <!-- Nombre del campo 'días disfrutados' -->
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.dias_disfrutados) <!-- Valor de 'días disfrutados' -->
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion) <!-- Nombre del campo 'fecha de creación' -->
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion) <!-- Valor de 'fecha de creación' -->
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion) <!-- Nombre del campo 'fecha de actualización' -->
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion) <!-- Valor de 'fecha de actualización' -->
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Empleados.cedula) <!-- Muestra el nombre del campo de la cédula del empleado -->
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula) <!-- Muestra la cédula del empleado  -->
-        </dd>
-    </dl>
-
-    <!-- Formulario para confirmar la eliminación del registro -->
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken() <!-- seguridad -->
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> <!-- Botón para confirmar la eliminación -->
-            |
-            @Html.ActionLink("Back to List", "Index") <!-- Enlace para regresar a la lista sin eliminar -->
-        </div>
-    }
+<!-- Header principal -->
+<div class="page-header-gradient delete-header">
+    <div class="container">
+        <h1><i class="fa fa-trash"></i> Eliminar Registro de Vacaciones</h1>
+        <p class="header-subtitle">¿Está seguro que desea eliminar este registro?</p>
+    </div>
 </div>
+
+<div class="main-container container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Alerta de advertencia -->
+            <div class="alert-custom alert-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                <div class="alert-content">
+                    <strong>¡Advertencia!</strong>
+                    <p>Esta acción eliminará permanentemente el registro de vacaciones. Esta operación no se puede deshacer.</p>
+                </div>
+            </div>
+
+            <!-- Panel de confirmación -->
+            <div class="delete-card">
+                <div class="delete-card-header">
+                    <h3><i class="fa fa-info-circle"></i> Información a Eliminar</h3>
+                    <div class="employee-info">
+                        <i class="fa fa-user"></i>
+                        <strong>@(Model.Empleados?.nombre1) @(Model.Empleados?.apellido1)</strong>
+                        <span class="employee-id">Cédula: @(Model.Empleados?.cedula)</span>
+                    </div>
+                </div>
+
+                <div class="delete-card-body">
+                    <!-- Resumen del registro -->
+                    <div class="summary-section">
+                        <h4><i class="fa fa-list"></i> Resumen del Registro</h4>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <i class="fa fa-calendar"></i> Período
+                                </div>
+                                <div class="summary-value">
+                                    @Html.DisplayFor(model => model.periodo)
+                                </div>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <i class="fa fa-calendar-plus-o"></i> Días Disponibles
+                                </div>
+                                <div class="summary-value">
+                                    @Html.DisplayFor(model => model.dias_disponibles) días
+                                </div>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <i class="fa fa-calendar-check-o"></i> Días Disfrutados
+                                </div>
+                                <div class="summary-value">
+                                    @(Model.dias_disfrutados ?? 0) días
+                                </div>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <i class="fa fa-calculator"></i> Días Restantes
+                                </div>
+                                <div class="summary-value days-remaining">
+                                    @Math.Max(0, Model.dias_disponibles - (Model.dias_disfrutados ?? 0)) días
+                                </div>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <i class="fa fa-clock-o"></i> Fecha de Creación
+                                </div>
+                                <div class="summary-value">
+                                    @(Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm") ?? "No registrada")
+                                </div>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <i class="fa fa-refresh"></i> Última Actualización
+                                </div>
+                                <div class="summary-value">
+                                    @(Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "No actualizada")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consecuencias de la eliminación -->
+                    <div class="consequences-section">
+                        <h4><i class="fa fa-exclamation-triangle"></i> Consecuencias de la Eliminación</h4>
+                        <div class="consequences-list">
+                            <div class="consequence-item">
+                                <i class="fa fa-times-circle text-danger"></i>
+                                <span>Se eliminará permanentemente el registro de vacaciones del período <strong>@Model.periodo</strong></span>
+                            </div>
+                            <div class="consequence-item">
+                                <i class="fa fa-times-circle text-danger"></i>
+                                <span>Las solicitudes de vacaciones asociadas a este período quedarán sin referencia</span>
+                            </div>
+                            <div class="consequence-item">
+                                <i class="fa fa-times-circle text-danger"></i>
+                                <span>Se perderá el historial de días disponibles y disfrutados para este período</span>
+                            </div>
+                            @if ((Model.dias_disfrutados ?? 0) > 0)
+                            {
+                                <div class="consequence-item warning">
+                                    <i class="fa fa-exclamation-triangle text-warning"></i>
+                                    <span>El empleado ya ha disfrutado <strong>@Model.dias_disfrutados días</strong> de este registro</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Formulario de confirmación CORREGIDO -->
+                    @using (Html.BeginForm("Delete", "Vacaciones", new { id = Model.id_vacacion }, FormMethod.Post, new { @class = "delete-form", @id = "formEliminar" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- Checkbox de confirmación -->
+                        <div class="confirmation-section">
+                            <div class="form-group-custom">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="confirmarEliminacion" name="confirmarEliminacion" required>
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        Confirmo que entiendo las consecuencias y deseo eliminar este registro permanentemente
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-danger-custom" id="btnEliminar" disabled>
+                                <i class="fa fa-trash"></i> Eliminar Definitivamente
+                            </button>
+                            <a href="@Url.Action("Details", new { id = Model.id_vacacion })" class="btn-info-custom">
+                                <i class="fa fa-eye"></i> Ver Detalles
+                            </a>
+                            <a href="@Url.Action("Index")" class="btn-secondary-custom">
+                                <i class="fa fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ESTILOS CSS COMPLETOS EMBEBIDOS */
+
+/* Reset y base */
+* {
+    box-sizing: border-box;
+}
+
+/* Header de eliminación */
+.page-header-gradient {
+    background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 15px 15px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.delete-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+.page-header-gradient h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Contenedor principal */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Alertas personalizadas */
+.alert-custom {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    color: #856404;
+    margin-bottom: 2rem;
+}
+
+.alert-custom i {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    margin-top: 0.1rem;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+/* Card de eliminación */
+.delete-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(220, 53, 69, 0.15);
+    border: 2px solid #f8d7da;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.delete-card-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.delete-card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+}
+
+.employee-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+}
+
+.employee-id {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin-left: auto;
+}
+
+.delete-card-body {
+    padding: 2rem;
+}
+
+/* Sección de resumen */
+.summary-section {
+    margin-bottom: 2.5rem;
+}
+
+.summary-section h4 {
+    color: #221d42;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e7e8eb;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.summary-item {
+    background: #f8f9fa;
+    border: 1px solid #e7e8eb;
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #dc3545;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.summary-value {
+    color: #221d42;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.days-remaining {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Sección de consecuencias */
+.consequences-section {
+    margin-bottom: 2rem;
+}
+
+.consequences-section h4 {
+    color: #dc3545;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f8d7da;
+}
+
+.consequences-list {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.consequence-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #dc3545;
+}
+
+.consequence-item:last-child {
+    margin-bottom: 0;
+}
+
+.consequence-item.warning {
+    border-left-color: #ffc107;
+    background: #fff3cd;
+}
+
+.consequence-item i {
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+}
+
+.consequence-item span {
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.4;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+/* Sección de confirmación */
+.confirmation-section {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Checkbox personalizado */
+.checkbox-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #dc3545;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #f8f9fa;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-text {
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Acciones del formulario */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e7e8eb;
+    flex-wrap: wrap;
+}
+
+/* Botones personalizados */
+.btn-danger-custom {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 180px;
+    justify-content: center;
+}
+
+.btn-danger-custom:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-danger-custom:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-info-custom {
+    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-info-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 136, 202, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-secondary-custom {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.btn-secondary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .employee-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .employee-id {
+        margin-left: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-danger-custom,
+    .btn-info-custom,
+    .btn-secondary-custom {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-danger-custom:last-child,
+    .btn-info-custom:last-child,
+    .btn-secondary-custom:last-child {
+        margin-bottom: 0;
+    }
+
+    .consequence-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: left;
+    }
+
+    .checkbox-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+@@media (max-width: 576px) {
+    .main-container {
+        padding: 0 10px;
+    }
+
+    .delete-card-body {
+        padding: 1.5rem;
+    }
+
+    .summary-item {
+        padding: 0.75rem;
+    }
+
+    .consequences-list {
+        padding: 1rem;
+    }
+
+    .consequence-item {
+        padding: 0.5rem;
+    }
+
+    .confirmation-section {
+        padding: 1rem;
+    }
+}
+</style>
+
+<script>
+    // JavaScript CORREGIDO - SIN CONFLICTOS
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('confirmarEliminacion');
+        const btnEliminar = document.getElementById('btnEliminar');
+        const formulario = document.getElementById('formEliminar');
+
+        // Habilitar/deshabilitar botón según checkbox
+        checkbox.addEventListener('change', function () {
+            btnEliminar.disabled = !this.checked;
+        });
+
+        // Manejar envío del formulario
+        formulario.addEventListener('submit', function (e) {
+            // Verificar checkbox
+            if (!checkbox.checked) {
+                e.preventDefault();
+                alert('❌ Debe confirmar que entiende las consecuencias antes de eliminar.');
+                return false;
+            }
+
+            // Confirmación final
+            const confirmacion = confirm(
+                '⚠️ CONFIRMACIÓN FINAL\n\n' +
+                'Está a punto de eliminar permanentemente el registro de vacaciones.\n\n' +
+                '¿Está completamente seguro de continuar?\n\n' +
+                'Esta acción NO se puede deshacer.'
+            );
+
+            if (!confirmacion) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Mostrar indicador de carga SOLO si se confirma
+            btnEliminar.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Eliminando...';
+            btnEliminar.disabled = true;
+
+            // Permitir que el formulario se envíe normalmente
+            return true;
+        });
+    });
+</script>

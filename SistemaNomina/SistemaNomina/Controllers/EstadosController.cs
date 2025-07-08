@@ -17,8 +17,16 @@ namespace SistemaNomina.Controllers
         private smartbuilding_rhEntities db = new smartbuilding_rhEntities();
 
         // Lista de módulos válidos
-        private readonly string[] ModulosValidos = { "Permisos", "Vacaciones", "Asistencias" };
-
+        private readonly string[] ModulosValidos = {
+            "Permisos",
+            "Vacaciones",
+            "Asistencias",
+            "HorasExtras",      // ✅ AGREGAR ESTA LÍNEA
+            "Incapacidades",    // ✅ Y TAMBIÉN ESTAS SI LAS NECESITAS
+            "Aguinaldo",
+            "Liquidaciones",
+            "Nominas"
+        };
         // Mostrar la lista de estados
         public ActionResult Index()
         {

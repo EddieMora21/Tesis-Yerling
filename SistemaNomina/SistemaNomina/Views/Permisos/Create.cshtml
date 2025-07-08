@@ -1,144 +1,264 @@
 ﻿@model SistemaNomina.Models.Permisos
 
 @{
-    ViewBag.Title = "Create";  // Título de la página
-    Layout = "~/Views/Shared/_Layout.cshtml";  // Diseño página
+    ViewBag.Title = "Nuevo Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>  <!-- Título  página -->
-
-@using (Html.BeginForm())  // Inicio del formulario 
-{
-    @Html.AntiForgeryToken() // seguridad
-
-    <div class="form-horizontal">
-        <h4>Permisos</h4>  <!-- Subtítulo formulario -->
-        <hr />  <!-- Línea separar secciones -->
-
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })  <!-- Muestra errores generales del formulario -->
-
-        <div class="form-group">
-            <!-- Agrupa etiqueta y campo para el id_empleado -->
-            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta para el campo id_empleado -->
-            <div class="col-md-10">
-                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
-                <!-- Lista desplegable para seleccionar empleado -->
-                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
-                <!-- Mensaje de error específico para id_empleado -->
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-primary mb-0">
+                        <i class="fas fa-plus-circle"></i> Nuevo Permiso
+                    </h4>
+                    <small class="text-muted">Complete la información del permiso solicitado</small>
+                </div>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
             </div>
-        </div>
 
-        <div class="form-group">
-            <!-- Campo para fecha -->
-            @Html.LabelFor(model => model.fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta fecha -->
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control" } })
-                <!-- Campo para ingresar fecha -->
-                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para fecha -->
+            <!-- Formulario -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check"></i> Información del Permiso</h5>
+                </div>
+
+                <div class="card-body">
+                    @using (Html.BeginForm("Create", "Permisos", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="row">
+                            <!-- Empleado -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-user text-primary"></i> Empleado *
+                                </label>
+                                @Html.DropDownList("id_empleado", null, "Seleccione un empleado...",
+                                    new { @class = "form-select", required = "required" })
+                                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <!-- Tipo de Permiso -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-tag text-primary"></i> Tipo de Permiso *
+                                </label>
+                                @Html.DropDownList("id_tipo_permiso", null, "Seleccione el tipo...",
+                                    new { @class = "form-select", required = "required", onchange = "actualizarInfoTipo()" })
+                                @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "text-danger small" })
+                                <div id="infoTipoPermiso" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Fecha -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar-day text-primary"></i> Fecha del Permiso *
+                                </label>
+                                @Html.EditorFor(model => model.fecha, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control",
+                                        @type = "date",
+                                        required = "required",
+                                        min = DateTime.Now.ToString("yyyy-MM-dd")
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <!-- Horas -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-clock text-primary"></i> Horas Solicitadas
+                                </label>
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.horas, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control",
+                                            @type = "number",
+                                            step = "0.5",
+                                            min = "0.5",
+                                            max = "8",
+                                            placeholder = "Ej: 4.5"
+                                        }
+                                    })
+                                    <span class="input-group-text">horas</span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.horas, "", new { @class = "text-danger small" })
+                                <small class="text-muted">Máximo 8 horas por día</small>
+                            </div>
+                        </div>
+
+                        <!-- Motivo -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-comment text-primary"></i> Motivo del Permiso *
+                            </label>
+                            @Html.TextAreaFor(model => model.motivo, new
+                            {
+                                @class = "form-control",
+                                rows = "3",
+                                placeholder = "Describa detalladamente el motivo del permiso...",
+                                required = "required",
+                                maxlength = "500"
+                            })
+                            @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger small" })
+                            <div class="form-text">
+                                <span id="contadorCaracteres">0</span>/500 caracteres
+                            </div>
+                        </div>
+
+                        <!-- Estado (oculto, se establece como Pendiente por defecto) -->
+                        @Html.HiddenFor(model => model.id_estado)
+
+                        <!-- Campos de fecha automáticos (ocultos) -->
+                        @Html.HiddenFor(model => model.fecha_creacion)
+                        @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                        <!-- Botones -->
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Guardar Permiso
+                            </button>
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <!-- Campo para horas -->
-            @Html.LabelFor(model => model.horas, htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta horas -->
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.horas, new { htmlAttributes = new { @class = "form-control" } })
-                <!-- Campo para ingresar horas -->
-                @Html.ValidationMessageFor(model => model.horas, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para horas -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Lista para tipo de permiso -->
-            @Html.LabelFor(model => model.id_tipo_permiso, "id_tipo_permiso", htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta para tipo permiso -->
-            <div class="col-md-10">
-                @Html.DropDownList("id_tipo_permiso", null, htmlAttributes: new { @class = "form-control" })
-                <!-- Desplegable para seleccionar tipo de permiso -->
-                @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para tipo permiso -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Campo para motivo -->
-            @Html.LabelFor(model => model.motivo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta motivo -->
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.motivo, new { htmlAttributes = new { @class = "form-control" } })
-                <!-- Campo para ingresar motivo -->
-                @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para motivo -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Lista para estado -->
-            @Html.LabelFor(model => model.id_estado, "id_estado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta estado -->
-            <div class="col-md-10">
-                @Html.DropDownList("id_estado", null, htmlAttributes: new { @class = "form-control" })
-                <!-- Desplegable para seleccionar estado -->
-                @Html.ValidationMessageFor(model => model.id_estado, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para estado -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Lista para aprobado_por -->
-            @Html.LabelFor(model => model.aprobado_por, "aprobado_por", htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta aprobado por -->
-            <div class="col-md-10">
-                @Html.DropDownList("aprobado_por", null, htmlAttributes: new { @class = "form-control" })
-                <!-- Desplegable para seleccionar quien aprobó -->
-                @Html.ValidationMessageFor(model => model.aprobado_por, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para aprobado_por -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Campo para fecha_creacion -->
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta fecha de creación -->
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                <!-- Campo para ingresar fecha de creación -->
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para fecha de creación -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Campo para fecha_actualizacion -->
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta fecha de actualización -->
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                <!-- Campo para ingresar fecha de actualización -->
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-                <!-- Mensaje de error para fecha de actualización -->
-            </div>
-        </div>
-
-        <div class="form-group">
-            <!-- Botón para enviar el formulario -->
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-                <!-- Botón crear -->
+            <!-- Información Adicional -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0 text-info">
+                        <i class="fas fa-info-circle"></i> Información Importante
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li><strong>Permisos con goce:</strong> No afectan su salario mensual</li>
+                        <li><strong>Permisos sin goce:</strong> Se descontarán del salario proporcional</li>
+                        <li><strong>Proceso:</strong> Su solicitud será enviada para aprobación</li>
+                        <li><strong>Notificación:</strong> Recibirá una respuesta en su correo registrado</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")  <!-- Enlace para volver a la lista -->
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")  <!-- validación  -->
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function() {
+            // Establecer fecha mínima como hoy
+            var today = new Date().toISOString().split('T')[0];
+            $('input[type="date"]').attr('min', today);
+
+            // Contador de caracteres para motivo
+            $('#motivo').on('input', function() {
+                var length = $(this).val().length;
+                $('#contadorCaracteres').text(length);
+
+                if (length > 450) {
+                    $('#contadorCaracteres').addClass('text-warning');
+                } else {
+                    $('#contadorCaracteres').removeClass('text-warning');
+                }
+            });
+
+            // Establecer valores por defecto
+            $('#fecha_creacion').val(new Date().toISOString());
+            $('#fecha_actualizacion').val(new Date().toISOString());
+
+            // Establecer estado como Pendiente (asumiendo ID = 1)
+            $('#id_estado').val(1);
+
+            // Validación personalizada
+            $('form').on('submit', function(e) {
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Mostrar mensaje de error personalizado
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Formulario Incompleto',
+                        text: 'Por favor complete todos los campos requeridos.',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+                $(this).addClass('was-validated');
+            });
+        });
+
+        function actualizarInfoTipo() {
+            var selectTipo = $('#id_tipo_permiso');
+            var infoDiv = $('#infoTipoPermiso');
+
+            if (selectTipo.val()) {
+                // Aquí podrías hacer una llamada AJAX para obtener información del tipo
+                // Por ahora, mostraré información estática
+                var tipoTexto = selectTipo.find('option:selected').text();
+
+                if (tipoTexto.toLowerCase().includes('goce')) {
+                    infoDiv.html('<small class="text-success"><i class="fas fa-check-circle"></i> Este permiso no afecta su salario</small>');
+                } else {
+                    infoDiv.html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Este permiso puede afectar su salario</small>');
+                }
+            } else {
+                infoDiv.html('');
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .form-label.fw-bold i {
+            width: 16px;
+            margin-right: 5px;
+        }
+
+        .card-header.bg-primary {
+            border-bottom: 2px solid #2653d4;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+
+            .btn-primary:hover {
+                background-color: #2e59d9;
+                border-color: #2653d4;
+            }
+
+        .was-validated .form-control:invalid {
+            border-color: #e74a3b;
+        }
+
+        .was-validated .form-control:valid {
+            border-color: #1cc88a;
+        }
+    </style>
 }

@@ -6,12 +6,25 @@
 }
 
 <style>
+    /* === VARIABLES DE COLORES CORPORATIVOS === */
+    :root {
+        --color-primario: #221d42;
+        --color-secundario: #1788ca;
+        --color-acento: #fab61b;
+        --color-neutro: #e7e8eb;
+        --color-danger: #dc3545;
+        --color-blanco: #ffffff;
+        --color-texto: #495057;
+        --color-texto-claro: #6c757d;
+    }
+
     .page-header {
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--color-danger) 0%, #c82333 100%);
+        color: var(--color-blanco);
         padding: 2rem 0;
         margin-bottom: 2rem;
         border-radius: 0 0 15px 15px;
+        box-shadow: 0 8px 32px rgba(220, 53, 69, 0.15);
     }
 
     .page-title {
@@ -22,7 +35,7 @@
     }
 
     .delete-card {
-        background: white;
+        background: var(--color-blanco);
         border-radius: 15px;
         box-shadow: 0 8px 32px rgba(220, 53, 69, 0.15);
         overflow: hidden;
@@ -36,11 +49,11 @@
         color: #721c24;
     }
 
-        .delete-header h4 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.3rem;
-        }
+    .delete-header h4 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
 
     .warning-message {
         background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
@@ -51,13 +64,14 @@
         color: #856404;
         font-weight: 500;
         text-align: center;
+        border-left: 4px solid var(--color-acento);
     }
 
-        .warning-message i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
+    .warning-message i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
     .delete-body {
         padding: 2rem;
@@ -67,17 +81,17 @@
         display: flex;
         align-items: center;
         padding: 1rem 0;
-        border-bottom: 1px solid #e7e8eb;
+        border-bottom: 1px solid var(--color-neutro);
     }
 
-        .detail-row:last-child {
-            border-bottom: none;
-            margin-bottom: 1rem;
-        }
+    .detail-row:last-child {
+        border-bottom: none;
+        margin-bottom: 1rem;
+    }
 
     .detail-label {
         font-weight: 600;
-        color: #221d42;
+        color: var(--color-primario);
         font-size: 1rem;
         min-width: 120px;
         display: flex;
@@ -87,7 +101,7 @@
 
     .detail-value {
         font-size: 1rem;
-        color: #495057;
+        color: var(--color-texto);
         margin-left: 2rem;
     }
 
@@ -102,28 +116,38 @@
     }
 
     .modulo-vacaciones {
-        background: linear-gradient(135deg, #1788ca, #0f6da3);
-        color: white;
+        background: linear-gradient(135deg, var(--color-secundario), #0f6da3);
+        color: var(--color-blanco);
     }
 
     .modulo-permisos {
-        background: linear-gradient(135deg, #fab61b, #e09f15);
-        color: #221d42;
+        background: linear-gradient(135deg, var(--color-acento), #e09f15);
+        color: var(--color-primario);
     }
 
-    .modulo-asistencia {
-        background: linear-gradient(135deg, #221d42, #1a1536);
-        color: white;
+    .modulo-asistencias {
+        background: linear-gradient(135deg, var(--color-primario), #1a1536);
+        color: var(--color-blanco);
+    }
+
+    .modulo-horasextras {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        color: var(--color-blanco);
+    }
+
+    .modulo-incapacidades {
+        background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        color: var(--color-blanco);
     }
 
     .estado-name {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #221d42;
-        background: linear-gradient(135deg, #e7e8eb, #f8f9fa);
+        color: var(--color-primario);
+        background: linear-gradient(135deg, var(--color-neutro), #f8f9fa);
         padding: 12px 16px;
         border-radius: 8px;
-        border-left: 4px solid #dc3545;
+        border-left: 4px solid var(--color-danger);
     }
 
     .button-group {
@@ -132,14 +156,14 @@
         align-items: center;
         margin-top: 2rem;
         padding-top: 1.5rem;
-        border-top: 1px solid #e7e8eb;
+        border-top: 1px solid var(--color-neutro);
         justify-content: center;
     }
 
     .btn-danger-custom {
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        background: linear-gradient(135deg, var(--color-danger) 0%, #c82333 100%);
         border: none;
-        color: white;
+        color: var(--color-blanco);
         font-weight: 600;
         padding: 12px 30px;
         border-radius: 8px;
@@ -148,19 +172,20 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        cursor: pointer;
     }
 
-        .btn-danger-custom:hover {
-            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
-            color: white;
-        }
+    .btn-danger-custom:hover {
+        background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: var(--color-blanco);
+    }
 
     .btn-secondary-custom {
-        background: #e7e8eb;
-        border: 2px solid #e7e8eb;
-        color: #221d42;
+        background: var(--color-neutro);
+        border: 2px solid var(--color-neutro);
+        color: var(--color-primario);
         font-weight: 600;
         padding: 10px 24px;
         border-radius: 8px;
@@ -171,14 +196,34 @@
         gap: 8px;
     }
 
-        .btn-secondary-custom:hover {
-            background: #d6d8db;
-            border-color: #d6d8db;
-            color: #221d42;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
+    .btn-secondary-custom:hover {
+        background: #d6d8db;
+        border-color: #d6d8db;
+        color: var(--color-primario);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
 
+    .records-warning {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border: 1px solid #f5c6cb;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        color: #721c24;
+        font-weight: 500;
+        text-align: center;
+        border-left: 4px solid var(--color-danger);
+    }
+
+    .records-warning i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: var(--color-danger);
+    }
+
+    /* === RESPONSIVE === */
     @@media (max-width: 768px) {
         .page-header {
             padding: 1.5rem 0;
@@ -241,12 +286,27 @@
                 </div>
 
                 <div class="delete-body">
-                    <div class="warning-message">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>¿Está seguro que desea eliminar este estado?</strong>
-                        <br>
-                        Esta acción no se puede deshacer.
-                    </div>
+                    <!-- Verificar si hay registros asociados -->
+                    @if (ViewBag.RegistrosAsociados != null && ViewBag.RegistrosAsociados > 0)
+                    {
+                        <div class="records-warning">
+                            <i class="fas fa-ban"></i>
+                            <strong>¡No se puede eliminar este estado!</strong>
+                            <br>
+                            Está siendo utilizado por @ViewBag.RegistrosAsociados @ViewBag.TipoRegistros.
+                            <br><br>
+                            <small>Para eliminar este estado, primero debe cambiar el estado de todos los registros asociados.</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="warning-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>¿Está seguro que desea eliminar este estado?</strong>
+                            <br>
+                            Esta acción no se puede deshacer.
+                        </div>
+                    }
 
                     <div class="detail-row">
                         <div class="detail-label">
@@ -270,13 +330,26 @@
                         </div>
                     </div>
 
+                    <!-- Formulario con AntiForgeryToken -->
                     @using (Html.BeginForm())
                     {
+                        @Html.AntiForgeryToken() @* ✅ ESTE ERA EL TOKEN FALTANTE *@
+
                         <div class="button-group">
-                            <button type="submit" class="btn-danger-custom">
-                                <i class="fas fa-trash"></i>
-                                Sí, Eliminar
-                            </button>
+                            @if (ViewBag.RegistrosAsociados == null || ViewBag.RegistrosAsociados == 0)
+                            {
+                                <button type="submit" class="btn-danger-custom" onclick="return confirm('¿Está completamente seguro de eliminar este estado? Esta acción es irreversible.');">
+                                    <i class="fas fa-trash"></i>
+                                    Sí, Eliminar
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn-danger-custom" disabled title="No se puede eliminar">
+                                    <i class="fas fa-ban"></i>
+                                    No se puede eliminar
+                                </button>
+                            }
                             <a href="@Url.Action("Index")" class="btn-secondary-custom">
                                 <i class="fas fa-times"></i>
                                 Cancelar

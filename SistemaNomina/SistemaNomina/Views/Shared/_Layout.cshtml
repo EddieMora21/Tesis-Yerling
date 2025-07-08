@@ -21,10 +21,9 @@
     <!-- Font Awesome para iconos adicionales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- AGREGAR ESTA LÍNEA -->
     @RenderSection("Styles", required: false)
 
-    <!-- Estilos personalizados adaptados a la paleta -->
+    <!-- Estilos personalizados mejorados -->
     <style>
         :root {
             --azul-oscuro: #221d42;
@@ -32,89 +31,90 @@
             --amarillo: #fab61b;
             --gris-claro: #e7e8eb;
             --blanco: #ffffff;
+            --sidebar-width: 280px;
+            --header-height: 65px;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gris-claro);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--gris-claro);
         }
 
-        .wrapper {
-            display: flex;
-            flex: 1;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: var(--celeste);
+        /* === HEADER MEJORADO === */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, #2c2654 100%);
             color: var(--blanco);
-            height: 100vh;
-            overflow-y: auto;
-            border-right: 5px solid var(--amarillo);
-        }
-
-            .sidebar h5 {
-                padding: 1rem;
-                margin: 0;
-                background-color: var(--azul-oscuro);
-                color: var(--blanco);
-                border-bottom: 2px solid var(--amarillo);
-            }
-
-            .sidebar a {
-                color: var(--blanco);
-                padding: 0.75rem 1.5rem;
-                display: block;
-                text-decoration: none;
-                transition: background-color 0.2s ease;
-                border: none;
-                background: none;
-                width: 100%;
-                text-align: left;
-            }
-
-                .sidebar a:hover {
-                    background-color: var(--amarillo);
-                    color: var(--azul-oscuro);
-                }
-
-            .sidebar .collapse a {
-                padding-left: 2.5rem;
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-                .sidebar .collapse a:hover {
-                    background-color: var(--amarillo);
-                    color: var(--azul-oscuro);
-                }
-
-            /* Estilos para submenus anidados */
-            .sidebar .collapse .collapse a {
-                padding-left: 3.5rem;
-                background-color: rgba(255, 255, 255, 0.2);
-            }
-
-            /* Iconos de chevron */
-            .sidebar a[data-bs-toggle="collapse"] .bi-chevron-down {
-                transition: transform 0.2s ease;
-            }
-
-            .sidebar a[data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
-                transform: rotate(180deg);
-            }
-
-        header {
-            background-color: var(--azul-oscuro);
-            color: var(--blanco);
-            padding: 0.75rem 1.25rem;
-            border-bottom: 4px solid var(--amarillo);
+            padding: 0 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1030;
+            border-bottom: 3px solid var(--amarillo);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--blanco);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--amarillo) 0%, #ffc843 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul-oscuro);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.5px;
         }
 
         .header-actions {
@@ -123,70 +123,343 @@
             gap: 1rem;
         }
 
-            .header-actions span {
-                font-weight: 500;
-            }
-
-        .btn-outline-custom {
-            color: var(--blanco);
-            border-color: var(--blanco);
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            font-size: 0.9rem;
         }
 
-            .btn-outline-custom:hover {
-                background-color: var(--amarillo);
-                color: var(--azul-oscuro);
-                border-color: var(--amarillo);
-            }
+        .header-btn {
+            color: var(--blanco);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background-color: var(--amarillo);
+            color: var(--azul-oscuro);
+            border-color: var(--amarillo);
+            transform: translateY(-1px);
+        }
+
+        /* === SIDEBAR MEJORADO === */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: linear-gradient(180deg, var(--celeste) 0%, #1571a8 100%);
+            color: var(--blanco);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 1020;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1.25rem 1rem;
+            background-color: rgba(0,0,0,0.1);
+            border-bottom: 2px solid var(--amarillo);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--blanco);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-section {
+            padding: 0.5rem 0;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1.25rem;
+            color: var(--blanco);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .menu-link:hover {
+            background: linear-gradient(90deg, var(--amarillo) 0%, rgba(250, 182, 27, 0.8) 100%);
+            color: var(--azul-oscuro);
+            transform: translateX(3px);
+            padding-left: 1.5rem;
+        }
+
+        .menu-link.active {
+            background: linear-gradient(90deg, var(--amarillo) 0%, rgba(250, 182, 27, 0.9) 100%);
+            color: var(--azul-oscuro);
+            font-weight: 600;
+        }
+
+        .menu-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--azul-oscuro);
+        }
+
+        .menu-toggle-icon {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .menu-link[aria-expanded="true"] .menu-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .menu-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* Submenús */
+        .submenu {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+        .submenu .menu-link {
+            padding-left: 3rem;
+            font-size: 0.9rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .submenu .submenu .menu-link {
+            padding-left: 4rem;
+            font-size: 0.85rem;
+        }
+
+        /* === CONTENIDO PRINCIPAL CORREGIDO === */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            transition: margin-left 0.3s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - var(--header-height));
+        }
 
         .content {
+            padding: 2rem;
             flex: 1;
-            padding: 30px;
-            background-color: var(--gris-claro);
         }
 
         .page-template {
             background-color: var(--blanco);
             border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            border-left: 6px solid var(--amarillo);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            border-left: 5px solid var(--amarillo);
+            margin-bottom: 2rem;
         }
 
-        footer {
-            border-top: 2px solid var(--amarillo);
-            background-color: var(--gris-claro);
-            padding: 15px;
+        /* === FOOTER CORREGIDO === */
+        .footer {
+            background-color: var(--azul-oscuro);
+            color: var(--blanco);
             text-align: center;
+            padding: 1rem;
+            border-top: 3px solid var(--amarillo);
+            
+            transition: margin-left 0.3s ease;
+            margin-top: auto;
+            flex-shrink: 0;
         }
 
-        /* Estilos adicionales para Consultas */
-        .sidebar .menu-consultas {
-            border-left: 3px solid var(--amarillo);
+        /* === OVERLAY PARA MÓVIL === */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1010;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
 
-        .sidebar .menu-consultas:hover {
-            border-left: 3px solid var(--azul-oscuro);
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
-        /* Estilos adicionales para Reportes */
-        .sidebar .menu-reportes {
-            border-left: 3px solid var(--amarillo);
+        /* === RESPONSIVE CORREGIDO === */
+        @@media (max-width: 1024px) {
+            :root {
+                --sidebar-width: 260px;
+            }
         }
 
-        .sidebar .menu-reportes:hover {
-            border-left: 3px solid var(--azul-oscuro);
-        }
-
-        /* Responsive */
         @@media (max-width: 768px) {
-            .wrapper {
-                flex-direction: column;
+            .menu-toggle {
+                display: block;
+            }
+
+            .header-title {
+                font-size: 1.1rem;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .header-actions {
+                gap: 0.5rem;
+            }
+
+            .header-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
             }
 
             .sidebar {
-                width: 100%;
-                height: auto;
+                transform: translateX(-100%);
+                width: 85vw;
+                max-width: 320px;
             }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .footer {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .page-template {
+                padding: 1.5rem;
+                border-radius: 8px;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .logo-section .header-title {
+                display: none;
+            }
+
+            .header-actions .header-btn span {
+                display: none;
+            }
+
+            .sidebar {
+                width: 90vw;
+            }
+        }
+
+        /* === ANIMACIONES === */
+        @@keyframes slideInRight {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .submenu.show {
+            animation: slideInRight 0.3s ease;
+        }
+
+        /* === SCROLLBAR PERSONALIZADO === */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* === BADGES PARA NOTIFICACIONES === */
+        .menu-badge {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 10px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+
+        /* === ESTILOS ADICIONALES PARA MEJORAR UX === */
+        .page-template h1, .page-template h2, .page-template h3 {
+            color: var(--azul-oscuro);
+        }
+
+        .btn-primary {
+            background-color: var(--celeste);
+            border-color: var(--celeste);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--azul-oscuro);
+            border-color: var(--azul-oscuro);
+        }
+
+        .btn-warning {
+            background-color: var(--amarillo);
+            border-color: var(--amarillo);
+            color: var(--azul-oscuro);
+        }
+
+        .btn-warning:hover {
+            background-color: #e5a515;
+            border-color: #e5a515;
+            color: var(--azul-oscuro);
         }
     </style>
 </head>
@@ -203,172 +476,326 @@
         }
     }
 
-    <!-- Encabezado -->
-    <header>
-        <h4 class="mb-0">SBS SISTEMA DE RH</h4>
+    <!-- Overlay para móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Encabezado mejorado -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-toggle" id="menuToggle" type="button">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h4 class="header-title">SBS SISTEMA DE RH</h4>
+            </div>
+        </div>
+
         @if (User.Identity.IsAuthenticated)
         {
             <div class="header-actions">
-                <span><i class="bi bi-person-circle me-1"></i> @User.Identity.Name</span>
-                <a href="/Usuarios/CambiarContrasena" class="btn btn-outline-custom btn-sm">Cambiar contraseña</a>
-                <a href="/Usuarios/Logout" class="btn btn-outline-custom btn-sm">Cerrar sesión</a>
+                <div class="user-info d-none d-md-flex">
+                    <i class="bi bi-person-circle"></i>
+                    <span>@User.Identity.Name</span>
+                </div>
+                <a href="/Usuarios/CambiarContrasena" class="header-btn">
+                    <i class="bi bi-key me-1"></i>
+                    <span class="d-none d-sm-inline">Cambiar contraseña</span>
+                </a>
+                <a href="/Usuarios/Logout" class="header-btn">
+                    <i class="bi bi-box-arrow-right me-1"></i>
+                    <span class="d-none d-sm-inline">Cerrar sesión</span>
+                </a>
             </div>
         }
     </header>
 
-    <!-- Contenedor principal -->
-    <div class="wrapper">
-        @if (User.Identity.IsAuthenticated)
-        {
-            <!-- Menú lateral con control de acceso por roles -->
-            <nav class="sidebar">
-                <h5>Menú</h5>
-                <a href="/Home/Index"><i class="bi bi-house-door"></i> Inicio</a>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Menú lateral mejorado -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h5 class="sidebar-title">
+                    <i class="fas fa-compass"></i>
+                    Navegación
+                </h5>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-item">
+                    <a href="/Home/Index" class="menu-link">
+                        <i class="bi bi-house-door menu-icon"></i>
+                        <span>Panel Principal</span>
+                    </a>
+                </div>
 
                 <!-- Gestiones - Solo para Admin, RRHH e IT -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "IT"))
                 {
-                    <a data-bs-toggle="collapse" href="#gestionesMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="gestionesMenu">
-                        <span><i class="bi bi-gear"></i> Gestiones</span>
-                        <i class="bi bi-chevron-down me-2"></i>
-                    </a>
-                    <div class="collapse" id="gestionesMenu">
-                        <a href="/Estados">Estados</a>
-                        <a href="/EstadoCivil">Estado Civil</a>
-                        <a href="/TiposPermiso">Tipos de Permiso</a>
-                        <a href="/TiposHoraExtra">Tipos de Hora Extra</a>
-                        <a href="/Feriados">Feriados</a>
-                        <a href="/ISR">ISR</a>
-                        <a href="/TipoIncapacidades">Tipos de Incapacidades</a>
-                        <a href="/Departamentos">Departamentos</a>
-                        <a href="/Horarios">Horarios</a>
-                        <a href="/Puestos">Puestos</a>
-                        <a href="/Empleados">Empleados</a>
-
-                        <!-- Registro de Asistencia - Submenu -->
-                        <a data-bs-toggle="collapse" href="#asistenciaSubmenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="asistenciaSubmenu">
-                            <span> Registro de Asistencia</span>
-                            <i class="bi bi-chevron-down me-2"></i>
+                    <div class="menu-item">
+                        <a data-bs-toggle="collapse" href="#gestionesMenu" role="button"
+                           class="menu-link" aria-expanded="false" aria-controls="gestionesMenu">
+                            <i class="fas fa-cogs menu-icon"></i>
+                            <span>Administración</span>
+                            <i class="bi bi-chevron-down menu-toggle-icon"></i>
                         </a>
-                        <div class="collapse" id="asistenciaSubmenu">
-                            <a href="/Asistencia/Marcar">Marcar Asistencia</a>
-                            <a href="/Asistencia/Index">Ver Asistencias</a>
-                            <a href="/Asistencia/Reportes">Reportes</a>
+                        <div class="submenu collapse" id="gestionesMenu">
+                            <a href="/Estados" class="menu-link">
+                                <i class="fas fa-circle-notch menu-icon"></i>
+                                <span>Estados</span>
+                            </a>
+                            <a href="/EstadoCivil" class="menu-link">
+                                <i class="fas fa-heart menu-icon"></i>
+                                <span>Estado Civil</span>
+                            </a>
+                            <a href="/TiposPermiso" class="menu-link">
+                                <i class="fas fa-stamp menu-icon"></i>
+                                <span>Tipos de Permiso</span>
+                            </a>
+                            <a href="/TiposHoraExtra" class="menu-link">
+                                <i class="fas fa-clock menu-icon"></i>
+                                <span>Tipos de Hora Extra</span>
+                            </a>
+                            <a href="/Feriados" class="menu-link">
+                                <i class="fas fa-calendar-alt menu-icon"></i>
+                                <span>Feriados</span>
+                            </a>
+                            <a href="/ISR" class="menu-link">
+                                <i class="fas fa-percentage menu-icon"></i>
+                                <span>ISR</span>
+                            </a>
+                            <a href="/TipoIncapacidades" class="menu-link">
+                                <i class="fas fa-user-injured menu-icon"></i>
+                                <span>Tipos de Incapacidades</span>
+                            </a>
+                            <a href="/Departamentos" class="menu-link">
+                                <i class="fas fa-sitemap menu-icon"></i>
+                                <span>Departamentos</span>
+                            </a>
+                            <a href="/Horarios" class="menu-link">
+                                <i class="fas fa-business-time menu-icon"></i>
+                                <span>Horarios</span>
+                            </a>
+                            <a href="/Puestos" class="menu-link">
+                                <i class="fas fa-briefcase menu-icon"></i>
+                                <span>Puestos</span>
+                            </a>
+                            <a href="/Empleados" class="menu-link">
+                                <i class="fas fa-users menu-icon"></i>
+                                <span>Empleados</span>
+                            </a>
+
+                            <!-- Registro de Asistencia - Submenu -->
+                            <a data-bs-toggle="collapse" href="#asistenciaSubmenu" role="button"
+                               class="menu-link" aria-expanded="false" aria-controls="asistenciaSubmenu">
+                                <i class="fas fa-user-check menu-icon"></i>
+                                <span>Registro de Asistencia</span>
+                                <i class="bi bi-chevron-down menu-toggle-icon"></i>
+                            </a>
+                            <div class="submenu collapse" id="asistenciaSubmenu">
+                                <a href="/Asistencia/Marcar" class="menu-link">
+                                    <i class="fas fa-fingerprint menu-icon"></i>
+                                    <span>Marcar Asistencia</span>
+                                </a>
+                                <a href="/Asistencia/Index" class="menu-link">
+                                    <i class="fas fa-list menu-icon"></i>
+                                    <span>Ver Asistencias</span>
+                                </a>
+                                <a href="/Asistencia/Reportes" class="menu-link">
+                                    <i class="fas fa-chart-line menu-icon"></i>
+                                    <span>Reportes</span>
+                                </a>
+                            </div>
+
+                            <a href="/HorasExtras" class="menu-link">
+                                <i class="fas fa-clock menu-icon"></i>
+                                <span>Control de Horas Extras</span>
+                            </a>
+                            <a href="/Vacaciones" class="menu-link">
+                                <i class="fas fa-umbrella-beach menu-icon"></i>
+                                <span>Gestión de Vacaciones</span>
+                            </a>
+                            <a href="/Incapacidades" class="menu-link">
+                                <i class="fas fa-first-aid menu-icon"></i>
+                                <span>Gestión de Incapacidades</span>
+                            </a>
+                            <a href="/Aguinaldo" class="menu-link">
+                                <i class="fas fa-gift menu-icon"></i>
+                                <span>Cálculo de Aguinaldo</span>
+                            </a>
+
+                            <!-- Pago de Nómina - Submenu -->
+                            <a data-bs-toggle="collapse" href="#nominaSubmenu" role="button"
+                               class="menu-link" aria-expanded="false" aria-controls="nominaSubmenu">
+                                <i class="fas fa-money-check-alt menu-icon"></i>
+                                <span>Pago de Nómina</span>
+                                <i class="bi bi-chevron-down menu-toggle-icon"></i>
+                            </a>
+                            <div class="submenu collapse" id="nominaSubmenu">
+                                <a href="/Nominas/SeleccionarPeriodo" class="menu-link">
+                                    <i class="fas fa-plus-circle menu-icon"></i>
+                                    <span>Generar Nómina</span>
+                                </a>
+                                <a href="/Nominas/Index" class="menu-link">
+                                    <i class="fas fa-table menu-icon"></i>
+                                    <span>Ver Nóminas</span>
+                                </a>
+                                <a href="/Nominas/Create" class="menu-link">
+                                    <i class="fas fa-edit menu-icon"></i>
+                                    <span>Crear Manual</span>
+                                </a>
+                            </div>
+
+                            <a href="/TipoLiquidacion" class="menu-link">
+                                <i class="fas fa-handshake menu-icon"></i>
+                                <span>Tipos de Liquidación</span>
+                            </a>
+                            <a href="/Liquidaciones" class="menu-link">
+                                <i class="fas fa-calculator menu-icon"></i>
+                                <span>Cálculo de Liquidaciones</span>
+                            </a>
                         </div>
-
-                        <a href="/HorasExtras">Control de Horas Extras</a>
-                        <a href="/Vacaciones">Gestión de Vacaciones</a>
-                        <a href="/Incapacidades">Gestión de Incapacidades</a>
-                        <a href="/Aguinaldo">Cálculo de Aguinaldo</a>
-
-                        <!-- Pago de Nómina - Submenu -->
-                        <a data-bs-toggle="collapse" href="#nominaSubmenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="nominaSubmenu">
-                            <span> Pago de Nómina</span>
-                            <i class="bi bi-chevron-down me-2"></i>
-                        </a>
-                        <div class="collapse" id="nominaSubmenu">
-                            <a href="/Nominas/SeleccionarPeriodo">Generar Nómina</a>
-                            <a href="/Nominas/Index">Ver Nóminas</a>
-                            <a href="/Nominas/Create">Crear Manual</a>
-                        </div>
-
-                        <a href="/TipoLiquidacion">Tipos de Liquidación</a>
-                        <a href="/Liquidaciones">Cálculo de Liquidaciones</a>
                     </div>
                 }
 
                 <!-- Solicitudes - Para varios roles -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "Empleado", "IT"))
                 {
-                    <a data-bs-toggle="collapse" href="#solicitudesMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="solicitudesMenu">
-                        <span><i class="bi bi-file-earmark-text"></i> Solicitudes</span>
-                        <i class="bi bi-chevron-down me-2"></i>
-                    </a>
-                    <div class="collapse" id="solicitudesMenu">
-                        <a href="/SolicitudesVacaciones">Solicitud de Vacaciones</a>
+                    <div class="menu-item">
+                        <a data-bs-toggle="collapse" href="#solicitudesMenu" role="button"
+                           class="menu-link" aria-expanded="false" aria-controls="solicitudesMenu">
+                            <i class="fas fa-file-alt menu-icon"></i>
+                            <span>Solicitudes</span>
+                            <i class="bi bi-chevron-down menu-toggle-icon"></i>
+                        </a>
+                        <div class="submenu collapse" id="solicitudesMenu">
+                            <a href="/SolicitudesVacaciones" class="menu-link">
+                                <i class="fas fa-paper-plane menu-icon"></i>
+                                <span>Solicitud de Vacaciones</span>
+                            </a>
 
-                        @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Empleado", "IT"))
-                        {
-                            <a href="/Incapacidades">Solicitud de Incapacidad</a>
-                        }
+                            @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Empleado", "IT"))
+                            {
+                                <a href="/Incapacidades" class="menu-link">
+                                    <i class="fas fa-notes-medical menu-icon"></i>
+                                    <span>Solicitud de Incapacidad</span>
+                                </a>
+                            }
 
-                        @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "IT"))
-                        {
-                            <a href="/SolicitudesVacaciones/SolicitudesPendientes">Solicitudes Pendientes</a>
-                        }
+                            @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "IT"))
+                            {
+                                <a href="/SolicitudesVacaciones/SolicitudesPendientes" class="menu-link">
+                                    <i class="fas fa-hourglass-half menu-icon"></i>
+                                    <span>Solicitudes Pendientes</span>
+                                    <span class="menu-badge">3</span>
+                                </a>
+                            }
+                        </div>
                     </div>
                 }
 
                 <!-- Permisos - Para varios roles -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor", "Empleado", "IT"))
                 {
-                    <a data-bs-toggle="collapse" href="#permisosMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="permisosMenu">
-                        <span><i class="bi bi-patch-check"></i> Permisos</span>
-                        <i class="bi bi-chevron-down me-2"></i>
-                    </a>
-                    <div class="collapse" id="permisosMenu">
-                        <a href="/Permisos">Permisos</a>
+                    <div class="menu-item">
+                        <a data-bs-toggle="collapse" href="#permisosMenu" role="button"
+                           class="menu-link" aria-expanded="false" aria-controls="permisosMenu">
+                            <i class="fas fa-shield-alt menu-icon"></i>
+                            <span>Permisos</span>
+                            <i class="bi bi-chevron-down menu-toggle-icon"></i>
+                        </a>
+                        <div class="submenu collapse" id="permisosMenu">
+                            <a href="/Permisos" class="menu-link">
+                                <i class="fas fa-key menu-icon"></i>
+                                <span>Gestión de Permisos</span>
+                            </a>
+                        </div>
                     </div>
                 }
 
-                <!-- 🔍 CONSULTAS - MÓDULO -->
+                <!-- CONSULTAS - MÓDULO -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor"))
                 {
-                    <a data-bs-toggle="collapse" href="#consultasMenu" role="button" class="d-flex justify-content-between align-items-center menu-consultas" aria-expanded="false" aria-controls="consultasMenu">
-                        <span><i class="fas fa-search"></i> Consultas</span>
-                        <i class="bi bi-chevron-down me-2"></i>
-                    </a>
-                    <div class="collapse" id="consultasMenu">
-                        <a href="/Consultas/ConsultarPorColaborador">
-                            <i class="fas fa-user-search me-2"></i>Consultar por Colaborador
+                    <div class="menu-item">
+                        <a data-bs-toggle="collapse" href="#consultasMenu" role="button"
+                           class="menu-link" aria-expanded="false" aria-controls="consultasMenu">
+                            <i class="fas fa-search menu-icon"></i>
+                            <span>Consultas</span>
+                            <i class="bi bi-chevron-down menu-toggle-icon"></i>
                         </a>
-                        <a href="/Consultas/HistoricoPlanillas">
-                            <i class="fas fa-table me-2"></i>Histórico de Planillas
-                        </a>
+                        <div class="submenu collapse" id="consultasMenu">
+                            <a href="/Consultas/ConsultarPorColaborador" class="menu-link">
+                                <i class="fas fa-user-search menu-icon"></i>
+                                <span>Consultar por Colaborador</span>
+                            </a>
+                            <a href="/Consultas/HistoricoPlanillas" class="menu-link">
+                                <i class="fas fa-history menu-icon"></i>
+                                <span>Histórico de Planillas</span>
+                            </a>
+                        </div>
                     </div>
                 }
 
-                <!-- 📊 REPORTES - NUEVO MÓDULO -->
+                <!-- REPORTES - MÓDULO -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "RRHH", "Supervisor"))
                 {
-                    <a data-bs-toggle="collapse" href="#reportesMenu" role="button" class="d-flex justify-content-between align-items-center menu-reportes" aria-expanded="false" aria-controls="reportesMenu">
-                        <span><i class="fas fa-chart-bar"></i> Reportes</span>
-                        <i class="bi bi-chevron-down me-2"></i>
-                    </a>
-                    <div class="collapse" id="reportesMenu">
-                        <a href="/Reportes">
-                            <i class="fas fa-file-pdf me-2"></i>Generar Reportes
+                    <div class="menu-item">
+                        <a data-bs-toggle="collapse" href="#reportesMenu" role="button"
+                           class="menu-link" aria-expanded="false" aria-controls="reportesMenu">
+                            <i class="fas fa-chart-bar menu-icon"></i>
+                            <span>Reportes</span>
+                            <i class="bi bi-chevron-down menu-toggle-icon"></i>
                         </a>
+                        <div class="submenu collapse" id="reportesMenu">
+                            <a href="/Reportes" class="menu-link">
+                                <i class="fas fa-file-pdf menu-icon"></i>
+                                <span>Generar Reportes</span>
+                            </a>
+                        </div>
                     </div>
                 }
 
                 <!-- Seguridad - Solo Admin e IT -->
                 @if (RoleHelper.UserHasAnyRole("Admin", "IT"))
                 {
-                    <a data-bs-toggle="collapse" href="#seguridadMenu" role="button" class="d-flex justify-content-between align-items-center" aria-expanded="false" aria-controls="seguridadMenu">
-                        <span><i class="bi bi-shield-lock"></i> Seguridad</span>
-                        <i class="bi bi-chevron-down me-2"></i>
-                    </a>
-                    <div class="collapse" id="seguridadMenu">
-                        <a href="/Usuarios">Gestión de Usuarios</a>
-                        <a href="/Roles">Roles</a>
+                    <div class="menu-item">
+                        <a data-bs-toggle="collapse" href="#seguridadMenu" role="button"
+                           class="menu-link" aria-expanded="false" aria-controls="seguridadMenu">
+                            <i class="fas fa-shield-virus menu-icon"></i>
+                            <span>Seguridad</span>
+                            <i class="bi bi-chevron-down menu-toggle-icon"></i>
+                        </a>
+                        <div class="submenu collapse" id="seguridadMenu">
+                            <a href="/Usuarios" class="menu-link">
+                                <i class="fas fa-users-cog menu-icon"></i>
+                                <span>Gestión de Usuarios</span>
+                            </a>
+                            <a href="/Roles" class="menu-link">
+                                <i class="fas fa-user-tag menu-icon"></i>
+                                <span>Roles</span>
+                            </a>
+                        </div>
                     </div>
                 }
-            </nav>
-        }
+            </div>
+        </nav>
+    }
 
-        <!-- Sección principal -->
+    <!-- Sección principal -->
+    <div class="main-wrapper">
         <main class="content">
             <div class="page-template">
                 @RenderBody()
             </div>
         </main>
-    </div>
 
-    <!-- Pie de página -->
-    <footer>
-        <small>&copy; 2025 Smart Building Solutions - Todos los derechos reservados.</small>
-    </footer>
+        <!-- Pie de página CORREGIDO -->
+        <footer class="footer">
+            <small>&copy; 2025 Smart Building Solutions - Sistema de Recursos Humanos | Todos los derechos reservados.</small>
+        </footer>
+    </div>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -395,58 +822,66 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Script para mejorar la funcionalidad del sidebar -->
+    <!-- Script mejorado para el funcionamiento del menú -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Inicializar todos los collapses
-            var collapseElements = document.querySelectorAll('.collapse');
-            collapseElements.forEach(function (element) {
-                new bootstrap.Collapse(element, {
-                    toggle: false
-                });
-            });
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mainWrapper = document.querySelector('.main-wrapper');
 
-            // Agregar funcionalidad para rotar iconos
-            var toggleButtons = document.querySelectorAll('[data-bs-toggle="collapse"]');
-            toggleButtons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                    var icon = this.querySelector('.bi-chevron-down');
-                    if (icon) {
-                        // Pequeño delay para sincronizar con la animación
-                        setTimeout(function () {
-                            var isExpanded = button.getAttribute('aria-expanded') === 'true';
-                            if (isExpanded) {
-                                icon.style.transform = 'rotate(180deg)';
-                            } else {
-                                icon.style.transform = 'rotate(0deg)';
-                            }
-                        }, 50);
+            // Función para alternar el menú móvil
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                sidebarOverlay.classList.toggle('show');
+                document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+            }
+
+            // Event listeners para el menú móvil
+            if (menuToggle) {
+                menuToggle.addEventListener('click', toggleSidebar);
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Cerrar menú al hacer clic en un enlace (móvil)
+            const menuLinks = document.querySelectorAll('.sidebar .menu-link[href]');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
                     }
                 });
             });
 
+            // Manejar resize de ventana
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+
             // Mantener el estado del menú activo
-            var currentPath = window.location.pathname;
-            var menuLinks = document.querySelectorAll('.sidebar a[href]');
-            menuLinks.forEach(function (link) {
+            const currentPath = window.location.pathname;
+            const allMenuLinks = document.querySelectorAll('.sidebar .menu-link[href]');
+
+            allMenuLinks.forEach(function (link) {
                 if (link.getAttribute('href') === currentPath) {
-                    link.style.backgroundColor = 'var(--amarillo)';
-                    link.style.color = 'var(--azul-oscuro)';
+                    link.classList.add('active');
 
-                    // Expandir el menú padre si es necesario
-                    var parentCollapse = link.closest('.collapse');
-                    if (parentCollapse) {
-                        var collapse = new bootstrap.Collapse(parentCollapse, {
-                            show: true
-                        });
-
-                        // También expandir el menú abuelo si existe (submenús anidados)
-                        var grandParentCollapse = parentCollapse.parentElement.closest('.collapse');
-                        if (grandParentCollapse) {
-                            var grandCollapse = new bootstrap.Collapse(grandParentCollapse, {
-                                show: true
-                            });
+                    // Expandir menús padre
+                    let parentCollapse = link.closest('.collapse');
+                    while (parentCollapse) {
+                        parentCollapse.classList.add('show');
+                        const toggleButton = document.querySelector(`[href="#${parentCollapse.id}"]`);
+                        if (toggleButton) {
+                            toggleButton.setAttribute('aria-expanded', 'true');
                         }
+                        parentCollapse = parentCollapse.parentElement.closest('.collapse');
                     }
                 }
             });
@@ -455,20 +890,66 @@
             if (typeof $.fn.select2 !== 'undefined') {
                 $.fn.select2.defaults.set('theme', 'bootstrap-5');
                 $.fn.select2.defaults.set('language', 'es');
+                $.fn.select2.defaults.set('width', '100%');
             }
 
             // Configuración global para SweetAlert2
             if (typeof Swal !== 'undefined') {
-                Swal.mixin({
+                const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
-                        confirmButton: 'btn btn-success',
+                        confirmButton: 'btn btn-success me-2',
                         cancelButton: 'btn btn-danger'
                     },
                     buttonsStyling: false
                 });
+                window.SwalBS = swalWithBootstrapButtons;
             }
+
+            // Inicializar tooltips de Bootstrap
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
         });
+
+        // Función para mostrar notificaciones toast
+        function showToast(message, type = 'success') {
+            const toastHtml = `
+                    <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+
+            // Crear contenedor de toasts si no existe
+            let toastContainer = document.querySelector('.toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                toastContainer.style.zIndex = '9999';
+                document.body.appendChild(toastContainer);
+            }
+
+            // Agregar toast
+            toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+            const toastElement = toastContainer.lastElementChild;
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+
+            // Limpiar después de que se oculte
+            toastElement.addEventListener('hidden.bs.toast', function () {
+                toastElement.remove();
+            });
+        }
+
+        // Hacer la función global
+        window.showToast = showToast;
     </script>
+    <script src="~/Scripts/session-manager.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

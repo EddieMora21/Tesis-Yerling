@@ -1,72 +1,251 @@
 ﻿@model SistemaNomina.Models.Roles
 
 @{
-    ViewBag.Title = "Editar Rol"; // Título de la página
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Layout general
+    ViewBag.Title = "Editar Rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Editar Rol</h2>
+<style>
+    .page-header-edit {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 20px rgba(250, 182, 27, 0.15);
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken() <!-- Previene ataques CSRF -->
+    .page-header-edit h2 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-    <div class="form-horizontal">
-        <h4>Roles</h4>
-        <hr />
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+    }
 
-        <!-- Muestra errores generales de validación -->
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        <!-- Campo oculto para el ID del rol (no editable) -->
-        @Html.HiddenFor(model => model.id_rol)
+    .form-label-custom {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <!-- Campo para editar el nombre del rol -->
-        <div class="form-group row">
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
-            <div class="col-sm-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-custom {
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
 
-        <!-- Campo para editar la descripción del rol -->
-        <div class="form-group row">
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
-            <div class="col-sm-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-custom:focus {
+        border-color: #fab61b;
+        box-shadow: 0 0 0 0.2rem rgba(250, 182, 27, 0.15);
+        outline: none;
+    }
 
-        <!-- Campo para editar fecha de creación (formato fecha) -->
-        <div class="form-group row">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
-            <div class="col-sm-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-update {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 32px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        <!-- Campo para editar fecha de actualización (formato fecha) -->
-        <div class="form-group row">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
-            <div class="col-sm-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+        color: white;
+    }
 
-        <!-- Botones para enviar formulario o regresar a la lista -->
-        <div class="form-group row">
-            <div class="col-sm-10 offset-sm-2">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-                @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-default ml-2" })
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .help-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-style: italic;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .form-section-title {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e7e8eb;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .readonly-field {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-edit {
+            padding: 1.5rem 0;
+        }
+
+        .form-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .btn-update, .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-edit">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12">
+                <h2><i class="fas fa-edit me-3"></i>Editar Rol</h2>
+                <p class="mb-0 opacity-75">Modifica la información del rol "@Model.nombre"</p>
             </div>
         </div>
     </div>
-}
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="form-card">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.id_rol)
+
+                    <h4 class="form-section-title">
+                        <i class="fas fa-user-edit"></i>
+                        Modificar Información del Rol
+                    </h4>
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-tag"></i>
+                            @Html.DisplayNameFor(model => model.nombre)
+                        </label>
+                        @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control form-control-custom", @placeholder = "Ej: Administrador, Supervisor, etc." } })
+                        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "validation-message" })
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Modifica el nombre descriptivo del rol
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-align-left"></i>
+                            @Html.DisplayNameFor(model => model.descripcion)
+                        </label>
+                        @Html.TextAreaFor(model => model.descripcion, new { @class = "form-control form-control-custom", @rows = "3", @placeholder = "Describe las responsabilidades y alcance de este rol..." })
+                        @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "validation-message" })
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            Actualiza la descripción de funciones y permisos
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    @Html.DisplayNameFor(model => model.fecha_creacion)
+                                </label>
+                                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control form-control-custom readonly-field", @type = "date", @readonly = "readonly" } })
+                                <div class="help-text">
+                                    <i class="fas fa-lock"></i>
+                                    Fecha de creación (no modificable)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-calendar-edit"></i>
+                                    @Html.DisplayNameFor(model => model.fecha_actualizacion)
+                                </label>
+                                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "date" } })
+                                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "validation-message" })
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Se actualiza automáticamente al guardar
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-end mt-4">
+                        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                        <button type="submit" class="btn-update">
+                            <i class="fas fa-save"></i>
+                            Guardar Cambios
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval") <!-- Scripts de validación jQuery -->
+    @Scripts.Render("~/bundles/jqueryval")
 }

@@ -1,58 +1,1484 @@
 ﻿@model SistemaNomina.Models.Usuarios
 
 @{
-    ViewBag.Title = "Eliminar Usuario";  // Título que aparece en la pestaña del navegador
-    Layout = "~/Views/Shared/_Layout.cshtml";  // Vista maestra del sistema
+    ViewBag.Title = "Eliminar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Eliminar Usuario</h2>  <!-- Título principal en la página -->
+<div class="delete-container">
+    <!-- Header de Advertencia -->
+    <div class="warning-header">
+        <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="warning-content">
+            <h1 class="warning-title">Confirmar Eliminación</h1>
+            <p class="warning-subtitle">Esta acción eliminará permanentemente el usuario del sistema</p>
+        </div>
+    </div>
 
-<h3>¿Está seguro de que desea eliminar este usuario?</h3>  <!-- Confirmación para el usuario -->
+    <!-- Información del Usuario a Eliminar -->
+    <div class="user-summary-card">
+        <div class="summary-header">
+            <h3 class="summary-title">
+                <i class="fas fa-user"></i>
+                Usuario a Eliminar
+            </h3>
+        </div>
+        <div class="summary-content">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    @{
+                        string userInitials = "";
+                        if (!string.IsNullOrEmpty(Model.usuario) && Model.usuario.Length >= 2)
+                        {
+                            userInitials = Model.usuario.Substring(0, 2).ToUpper();
+                        }
+                    }
+                    <span class="avatar-text">@userInitials</span>
+                </div>
+                <div class="user-details">
+                    <h4 class="user-name">@Model.usuario</h4>
+                    <p class="user-meta">
+                        @if (Model.Empleados != null)
+                        {
+                            <span><i class="fas fa-user"></i> @Model.Empleados.nombre1 @Model.Empleados.apellido1</span>
+                        }
+                        @if (Model.Roles != null)
+                        {
+                            <span><i class="fas fa-shield-alt"></i> @Model.Roles.nombre</span>
+                        }
+                        <span><i class="fas fa-calendar"></i> Creado: @Html.DisplayFor(model => model.fecha_creacion)</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div>
-    <h4>Detalles del Usuario</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <!-- Formato de lista para mostrar los detalles -->
+    <!-- Detalles de la Eliminación -->
+    <div class="details-grid">
+        <div class="detail-card info-card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    Información Básica
+                </h4>
+            </div>
+            <div class="card-content">
+                <div class="detail-row">
+                    <span class="label">ID Usuario:</span>
+                    <span class="value">#@Model.id_usuario</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Usuario:</span>
+                    <span class="value">@Html.DisplayFor(model => model.usuario)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Estado:</span>
+                    <span class="value">
+                        @if (Model.primer_ingreso == true)
+                        {
+                            <span class="status-badge pending">
+                                <i class="fas fa-clock"></i>
+                                Primer Ingreso Pendiente
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge active">
+                                <i class="fas fa-check-circle"></i>
+                                Usuario Activo
+                            </span>
+                        }
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fecha de Creación:</span>
+                    <span class="value">@Html.DisplayFor(model => model.fecha_creacion)</span>
+                </div>
+                @if (Model.fecha_actualizacion.HasValue)
+                {
+                    <div class="detail-row">
+                        <span class="label">Última Actualización:</span>
+                        <span class="value">@Html.DisplayFor(model => model.fecha_actualizacion)</span>
+                    </div>
+                }
+            </div>
+        </div>
 
-        <dt>@Html.DisplayNameFor(model => model.usuario)</dt>
-        <dd>@Html.DisplayFor(model => model.usuario)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.contrasena)</dt>
-        <dd>@Html.DisplayFor(model => model.contrasena)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.primer_ingreso)</dt>
-        <dd>@Html.DisplayFor(model => model.primer_ingreso)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.fecha_creacion)</dt>
-        <dd>@Html.DisplayFor(model => model.fecha_creacion)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.fecha_actualizacion)</dt>
-        <dd>@Html.DisplayFor(model => model.fecha_actualizacion)</dd>
-
-        @* Validamos que las propiedades de navegación no sean nulas *@
         @if (Model.Empleados != null)
         {
-            <dt>Cédula del Empleado</dt>
-            <dd>@Html.DisplayFor(model => model.Empleados.cedula)</dd>
+            <div class="detail-card employee-card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fas fa-id-card"></i>
+                        Empleado Asociado
+                    </h4>
+                </div>
+                <div class="card-content">
+                    <div class="employee-info">
+                        <div class="employee-avatar">
+                            @{
+                                string empInitials = "";
+                                if (!string.IsNullOrEmpty(Model.Empleados.nombre1) && !string.IsNullOrEmpty(Model.Empleados.apellido1))
+                                {
+                                    empInitials = Model.Empleados.nombre1.Substring(0, 1) + Model.Empleados.apellido1.Substring(0, 1);
+                                }
+                            }
+                            <span class="avatar-text">@empInitials.ToUpper()</span>
+                        </div>
+                        <div class="employee-details">
+                            <h5 class="employee-name">
+                                @Model.Empleados.nombre1 @Model.Empleados.nombre2 @Model.Empleados.apellido1 @Model.Empleados.apellido2
+                            </h5>
+                            <p class="employee-cedula">Cédula: @Model.Empleados.cedula</p>
+                            @if (!string.IsNullOrEmpty(Model.Empleados.correo))
+                            {
+                                <p class="employee-email">Email: @Model.Empleados.correo</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
 
         @if (Model.Roles != null)
         {
-            <dt>Rol Asignado</dt>
-            <dd>@Html.DisplayFor(model => model.Roles.nombre)</dd>
+            <div class="detail-card role-card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Rol Asignado
+                    </h4>
+                </div>
+                <div class="card-content">
+                    <div class="role-info">
+                        <div class="role-badge role-@(Model.Roles.nombre.ToLower())">
+                            <i class="fas fa-user-shield"></i>
+                            <span>@Html.DisplayFor(model => model.Roles.nombre)</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Roles.descripcion))
+                        {
+                            <p class="role-description">@Model.Roles.descripcion</p>
+                        }
+                    </div>
+                </div>
+            </div>
         }
-    </dl>
+    </div>
 
-    <!-- Formulario de eliminación protegido con token antifalsificación -->
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Eliminar" class="btn btn-danger" /> <!-- Botón rojo para eliminar -->
-            @Html.Raw("&nbsp;") <!-- Espacio entre botones -->
-            @Html.ActionLink("Volver al Listado", "Index", null, new { @class = "btn btn-secondary" }) <!-- Botón de regreso -->
+    <!-- Advertencias Críticas -->
+    <div class="warnings-section">
+        <div class="critical-warning">
+            <div class="warning-icon-large">
+                <i class="fas fa-skull-crossbones"></i>
+            </div>
+            <div class="warning-details">
+                <h3 class="warning-title">⚠️ ADVERTENCIA CRÍTICA</h3>
+                <p class="warning-description">
+                    La eliminación de este usuario es una acción <strong>IRREVERSIBLE</strong> que tendrá las siguientes consecuencias:
+                </p>
+                <ul class="consequences-list">
+                    <li>
+                        <i class="fas fa-times-circle"></i>
+                        <strong>Pérdida total de datos:</strong> Toda la información del usuario será eliminada permanentemente
+                    </li>
+                    <li>
+                        <i class="fas fa-ban"></i>
+                        <strong>Acceso revocado:</strong> El usuario no podrá iniciar sesión en el sistema
+                    </li>
+                    <li>
+                        <i class="fas fa-unlink"></i>
+                        <strong>Pérdida de relaciones:</strong> Se perderán las asociaciones con empleados y roles
+                    </li>
+                    <li>
+                        <i class="fas fa-history"></i>
+                        <strong>Historial eliminado:</strong> Se perderá todo el registro de actividades del usuario
+                    </li>
+                    <li>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Sin recuperación:</strong> Esta acción NO se puede deshacer bajo ninguna circunstancia
+                    </li>
+                </ul>
+            </div>
         </div>
-    }
+    </div>
+
+    <!-- Alternativas Sugeridas -->
+    <div class="alternatives-section">
+        <div class="alternatives-card">
+            <div class="alternatives-header">
+                <h3 class="alternatives-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Alternativas Recomendadas
+                </h3>
+                <p class="alternatives-subtitle">Considere estas opciones antes de eliminar permanentemente</p>
+            </div>
+            <div class="alternatives-content">
+                <div class="alternative-option">
+                    <div class="option-icon edit">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="option-content">
+                        <h4 class="option-title">Editar Usuario</h4>
+                        <p class="option-description">Modificar la información o cambiar el rol asignado</p>
+                        <a href="@Url.Action("Edit", new { id = Model.id_usuario })" class="option-link">
+                            <i class="fas fa-arrow-right"></i>
+                            Ir a editar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="alternative-option">
+                    <div class="option-icon disable">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <div class="option-content">
+                        <h4 class="option-title">Desactivar Usuario</h4>
+                        <p class="option-description">Deshabilitar temporalmente sin perder los datos</p>
+                        <button type="button" class="option-link" onclick="disableUser(@Model.id_usuario)">
+                            <i class="fas fa-arrow-right"></i>
+                            Desactivar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alternative-option">
+                    <div class="option-icon reset">
+                        <i class="fas fa-redo"></i>
+                    </div>
+                    <div class="option-content">
+                        <h4 class="option-title">Restablecer Acceso</h4>
+                        <p class="option-description">Forzar cambio de contraseña en el próximo ingreso</p>
+                        <button type="button" class="option-link" onclick="resetAccess(@Model.id_usuario)">
+                            <i class="fas fa-arrow-right"></i>
+                            Restablecer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmación Final -->
+    <div class="confirmation-section">
+        <div class="confirmation-card">
+            <div class="confirmation-header">
+                <h3 class="confirmation-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirmación Final
+                </h3>
+                <p class="confirmation-subtitle">Si está completamente seguro, confirme la eliminación</p>
+            </div>
+            <div class="confirmation-content">
+                <div class="confirmation-checkbox">
+                    <input type="checkbox" id="confirmUnderstood" class="confirm-checkbox">
+                    <label for="confirmUnderstood" class="confirm-label">
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text">
+                            Entiendo que esta acción eliminará permanentemente el usuario y toda su información asociada
+                        </span>
+                    </label>
+                </div>
+
+                <div class="confirmation-checkbox">
+                    <input type="checkbox" id="confirmIrreversible" class="confirm-checkbox">
+                    <label for="confirmIrreversible" class="confirm-label">
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text">
+                            Confirmo que esta acción es irreversible y no se puede deshacer
+                        </span>
+                    </label>
+                </div>
+
+                <div class="confirmation-checkbox">
+                    <input type="checkbox" id="confirmResponsibility" class="confirm-checkbox">
+                    <label for="confirmResponsibility" class="confirm-label">
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text">
+                            Asumo la responsabilidad completa de esta eliminación
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="actions-section">
+        @using (Html.BeginForm("DeleteConfirmed", "Usuarios", FormMethod.Post, new { @id = "deleteForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.id_usuario)
+
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-danger-custom" id="deleteBtn" disabled>
+                    <i class="fas fa-trash-alt"></i>
+                    <span class="btn-text">Eliminar Permanentemente</span>
+                </button>
+
+                <a href="@Url.Action("Details", new { id = Model.id_usuario })" class="btn btn-secondary-custom">
+                    <i class="fas fa-eye"></i>
+                    Ver Detalles
+                </a>
+
+                <a href="@Url.Action("Index")" class="btn btn-primary-custom">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Listado
+                </a>
+            </div>
+        }
+    </div>
 </div>
+
+<style>
+    /* Variables de Colores Corporativos */
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --info-color: #17a2b8;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
+    }
+
+    .delete-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Warning Header */
+    .warning-header {
+        background: linear-gradient(135deg, var(--danger-color) 0%, #c82333 100%);
+        color: var(--white);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: var(--shadow-main);
+    }
+
+    .warning-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .warning-content {
+        flex: 1;
+    }
+
+    .warning-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .warning-subtitle {
+        font-size: 1.2rem;
+        margin: 0;
+        opacity: 0.9;
+    }
+
+    /* User Summary Card */
+    .user-summary-card {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--danger-color);
+    }
+
+    .summary-header {
+        background: var(--neutral-color);
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .summary-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .summary-content {
+        padding: 1.5rem;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .user-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .avatar-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+    }
+
+    .user-details {
+        flex: 1;
+    }
+
+    .user-name {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .user-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+        .user-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-meta i {
+            width: 16px;
+            color: var(--info-color);
+        }
+
+    /* Details Grid */
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-card {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
+    }
+
+    .info-card {
+        border-left: 4px solid var(--info-color);
+    }
+
+    .employee-card {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .role-card {
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .card-header {
+        background: var(--neutral-color);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--neutral-color);
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row .label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .detail-row .value {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+        .status-badge.active {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+
+    /* Employee Info */
+    .employee-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .employee-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--success-color), #229954);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+        .employee-avatar .avatar-text {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+    .employee-details {
+        flex: 1;
+    }
+
+    .employee-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .employee-cedula,
+    .employee-email {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    /* Role Info */
+    .role-info {
+        text-align: center;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .role-admin {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+
+    .role-rrhh {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+
+    .role-supervisor {
+        background: rgba(23, 162, 184, 0.1);
+        color: var(--info-color);
+    }
+
+    .role-empleado {
+        background: rgba(108, 117, 125, 0.1);
+        color: var(--text-muted);
+    }
+
+    .role-it {
+        background: rgba(111, 66, 193, 0.1);
+        color: #6f42c1;
+    }
+
+    .role-description {
+        color: var(--text-muted);
+        font-style: italic;
+        margin: 0;
+        text-align: center;
+    }
+
+    /* Critical Warning */
+    .warnings-section {
+        margin-bottom: 2rem;
+    }
+
+    .critical-warning {
+        background: rgba(220, 53, 69, 0.05);
+        border: 2px solid var(--danger-color);
+        border-radius: var(--border-radius-sm);
+        padding: 2rem;
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .warning-icon-large {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--danger-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.8rem;
+        flex-shrink: 0;
+        animation: shake 2s infinite;
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        10%, 30%, 50%, 70%, 90% {
+            transform: translateX(-2px);
+        }
+
+        20%, 40%, 60%, 80% {
+            transform: translateX(2px);
+        }
+    }
+
+    .warning-details {
+        flex: 1;
+    }
+
+        .warning-details .warning-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--danger-color);
+            margin: 0 0 1rem 0;
+        }
+
+    .warning-description {
+        color: var(--text-dark);
+        margin: 0 0 1rem 0;
+        line-height: 1.6;
+    }
+
+    .consequences-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .consequences-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(220, 53, 69, 0.2);
+            color: var(--text-dark);
+        }
+
+            .consequences-list li:last-child {
+                border-bottom: none;
+            }
+
+        .consequences-list i {
+            color: var(--danger-color);
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+    /* Alternatives Section */
+    .alternatives-section {
+        margin-bottom: 2rem;
+    }
+
+    .alternatives-card {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .alternatives-header {
+        background: var(--neutral-color);
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .alternatives-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .alternatives-subtitle {
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    .alternatives-content {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .alternative-option {
+        background: var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+        .alternative-option:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+    .option-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+        margin: 0 auto 1rem;
+    }
+
+        .option-icon.edit {
+            background: linear-gradient(135deg, var(--accent-color), #e0a800);
+        }
+
+        .option-icon.disable {
+            background: linear-gradient(135deg, var(--text-muted), #5a6268);
+        }
+
+        .option-icon.reset {
+            background: linear-gradient(135deg, var(--secondary-color), #0056b3);
+        }
+
+    .option-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .option-description {
+        color: var(--text-muted);
+        margin: 0 0 1rem 0;
+        line-height: 1.4;
+    }
+
+    .option-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 600;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .option-link:hover {
+            color: var(--primary-color);
+            text-decoration: none;
+            transform: translateX(3px);
+        }
+
+    /* Confirmation Section */
+    .confirmation-section {
+        margin-bottom: 2rem;
+    }
+
+    .confirmation-card {
+        background: rgba(220, 53, 69, 0.05);
+        border: 2px solid var(--danger-color);
+        border-radius: var(--border-radius-sm);
+    }
+
+    .confirmation-header {
+        background: var(--danger-color);
+        color: var(--white);
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .confirmation-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .confirmation-subtitle {
+        margin: 0;
+        opacity: 0.9;
+    }
+
+    .confirmation-content {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .confirmation-checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .confirm-checkbox {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .confirm-label {
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        user-select: none;
+    }
+
+    .checkbox-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--danger-color);
+        border-radius: 4px;
+        display: inline-block;
+        position: relative;
+        transition: var(--transition);
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .confirm-checkbox:checked + .confirm-label .checkbox-custom {
+        background: var(--danger-color);
+        border-color: var(--danger-color);
+    }
+
+        .confirm-checkbox:checked + .confirm-label .checkbox-custom::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--white);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+        }
+
+    .checkbox-text {
+        color: var(--text-dark);
+        line-height: 1.5;
+        font-weight: 500;
+    }
+
+    /* Actions Section */
+    .actions-section {
+        text-align: center;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+        .btn-danger-custom:hover:not(:disabled) {
+            background: linear-gradient(135deg, #c82333, #a71e2a);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .btn-danger-custom:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    .btn-secondary-custom {
+        background: var(--text-muted);
+        color: var(--white);
+    }
+
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+    /* Loading State */
+    .btn.loading {
+        pointer-events: none;
+    }
+
+        .btn.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        .btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .delete-container {
+            padding: 1rem;
+        }
+
+        .warning-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .warning-title {
+            font-size: 2rem;
+        }
+
+        .user-profile {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .critical-warning {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .alternatives-content {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .confirm-label {
+            flex-direction: column;
+            gap: 0.75rem;
+            text-align: center;
+        }
+
+        .employee-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .delete-container {
+            padding: 0.5rem;
+        }
+
+        .warning-header {
+            padding: 1rem;
+        }
+
+        .warning-title {
+            font-size: 1.5rem;
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+        }
+
+        .summary-content,
+        .card-content,
+        .alternatives-content,
+        .confirmation-content {
+            padding: 1rem;
+        }
+
+        .critical-warning {
+            padding: 1rem;
+        }
+
+        .warning-details .warning-title {
+            font-size: 1.2rem;
+        }
+
+        .consequences-list li {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            gap: 0.25rem;
+            text-align: center;
+        }
+    }
+
+    /* Animaciones */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .delete-container {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .user-summary-card {
+        animation: slideInUp 0.4s ease-out;
+        animation-delay: 0.1s;
+        animation-fill-mode: both;
+    }
+
+    .detail-card {
+        animation: slideInUp 0.4s ease-out;
+        animation-fill-mode: both;
+    }
+
+        .detail-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .detail-card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .detail-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+    .critical-warning {
+        animation: slideInUp 0.5s ease-out;
+        animation-delay: 0.5s;
+        animation-fill-mode: both;
+    }
+
+    .alternatives-card {
+        animation: slideInUp 0.5s ease-out;
+        animation-delay: 0.6s;
+        animation-fill-mode: both;
+    }
+
+    .confirmation-card {
+        animation: slideInUp 0.5s ease-out;
+        animation-delay: 0.7s;
+        animation-fill-mode: both;
+    }
+
+    .actions-section {
+        animation: slideInUp 0.5s ease-out;
+        animation-delay: 0.8s;
+        animation-fill-mode: both;
+    }
+
+    /* Efectos de hover mejorados */
+    .alternative-option:hover .option-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .user-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+    }
+
+    .employee-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Mejoras de accesibilidad */
+    .btn:focus,
+    .option-link:focus,
+    .confirm-label:focus {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 2px;
+    }
+
+    /* Estados adicionales */
+    .detail-card.highlight {
+        border-left-width: 6px;
+        transform: scale(1.02);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* Estilos para impresión */
+    @@media print {
+        .warning-header {
+            background: var(--white) !important;
+            color: var(--text-dark) !important;
+            border: 2px solid var(--danger-color) !important;
+        }
+
+        .actions-section,
+        .alternatives-section {
+            display: none !important;
+        }
+
+        .critical-warning,
+        .confirmation-card {
+            break-inside: avoid;
+        }
+
+        .detail-card {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+       $(document).ready(function() {
+           initializeDeletePage();
+       });
+
+       function initializeDeletePage() {
+           // Configurar validación de confirmación
+           setupConfirmationValidation();
+
+           // Configurar formulario de eliminación
+           setupDeleteForm();
+
+           // Configurar alternativas
+           setupAlternatives();
+
+           // Configurar atajos de teclado
+           setupKeyboardShortcuts();
+       }
+
+       function setupConfirmationValidation() {
+           var checkboxes = $('.confirm-checkbox');
+           var deleteBtn = $('#deleteBtn');
+
+           checkboxes.on('change', function() {
+               var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+
+               if (allChecked) {
+                   deleteBtn.prop('disabled', false)
+                          .removeClass('btn-disabled')
+                          .html('<i class="fas fa-trash-alt"></i> <span class="btn-text">Eliminar Permanentemente</span>');
+               } else {
+                   deleteBtn.prop('disabled', true)
+                          .addClass('btn-disabled')
+                          .html('<i class="fas fa-lock"></i> <span class="btn-text">Complete todas las confirmaciones</span>');
+               }
+           });
+       }
+
+       function setupDeleteForm() {
+           $('#deleteForm').on('submit', function(e) {
+               e.preventDefault();
+
+               // Confirmación final adicional
+               var result = confirm(
+                   '🚨 ÚLTIMA CONFIRMACIÓN 🚨\n\n' +
+                   'Está a punto de ELIMINAR PERMANENTEMENTE este usuario.\n\n' +
+                   'Esta es su ÚLTIMA OPORTUNIDAD para cancelar.\n\n' +
+                   '¿Proceder con la eliminación IRREVERSIBLE?'
+               );
+
+               if (result) {
+                   // Mostrar estado de carga
+                   var deleteBtn = $('#deleteBtn');
+                   deleteBtn.prop('disabled', true)
+                           .addClass('loading')
+                           .html('<i class="fas fa-spinner fa-spin"></i> <span class="btn-text">Eliminando usuario...</span>');
+
+                   // Agregar efecto visual de eliminación
+                   $('.user-summary-card, .detail-card').addClass('deleting');
+
+                   // Enviar formulario después de un delay para mostrar el efecto
+                   setTimeout(() => {
+                       this.submit();
+                   }, 2000);
+               } else {
+                   // Usuario canceló
+                   showNotification('Eliminación cancelada', 'info');
+               }
+           });
+       }
+
+       function setupAlternatives() {
+           // Ya configuradas con los métodos individuales
+       }
+
+       function setupKeyboardShortcuts() {
+           $(document).on('keydown', function(e) {
+               // Escape para cancelar
+               if (e.key === 'Escape') {
+                   window.location.href = '@Url.Action("Details", new { id = Model.id_usuario })';
+               }
+
+               // Ctrl/Cmd + E para editar
+               if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                   e.preventDefault();
+                   window.location.href = '@Url.Action("Edit", new { id = Model.id_usuario })';
+               }
+           });
+       }
+
+       function disableUser(userId) {
+           if (confirm('¿Desea desactivar temporalmente este usuario?\n\nEsta opción preserva todos los datos pero impide el acceso al sistema.')) {
+               showNotification('Funcionalidad de desactivación en desarrollo', 'info');
+
+               // En producción, aquí iría la llamada AJAX:
+               /*
+               $.ajax({
+                   url: '@Url.Action("DisableUser", "Usuarios")',
+                   type: 'POST',
+                   data: {
+                       id: userId,
+                       __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                   },
+                   success: function(response) {
+                       if (response.success) {
+                           showNotification('Usuario desactivado correctamente', 'success');
+                           setTimeout(() => {
+                               window.location.href = '@Url.Action("Index")';
+                           }, 2000);
+                       } else {
+                           showNotification('Error: ' + response.message, 'error');
+                       }
+                   },
+                   error: function() {
+                       showNotification('Error de conexión', 'error');
+                   }
+               });
+               */
+           }
+       }
+
+       function resetAccess(userId) {
+           if (confirm('¿Desea restablecer el acceso del usuario?\n\nEsto forzará un cambio de contraseña en el próximo inicio de sesión.')) {
+               showNotification('Funcionalidad de restablecimiento en desarrollo', 'info');
+
+               // En producción, aquí iría la llamada AJAX similar a disableUser
+           }
+       }
+
+       function showNotification(message, type) {
+           var className = 'alert-' + type;
+           var icon = {
+               'success': 'fa-check-circle',
+               'error': 'fa-exclamation-triangle',
+               'warning': 'fa-exclamation-triangle',
+               'info': 'fa-info-circle'
+           }[type] || 'fa-info-circle';
+
+           var notification = $('<div class="alert '+ className +'" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px; animation: slideInRight 0.3s ease-out; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">' +
+                               '<i class="fas '+ icon +'"></i> ' + message +
+                               '</div>');
+
+           $('body').append(notification);
+
+           setTimeout(function() {
+               notification.fadeOut(function() {
+                   $(this).remove();
+               });
+           }, 5000);
+       }
+
+       // Efectos visuales adicionales
+       $('.detail-card').on('mouseenter', function() {
+           $(this).addClass('highlight');
+       }).on('mouseleave', function() {
+           $(this).removeClass('highlight');
+       });
+
+       // Añadir clase de eliminación para efectos visuales
+       $('<style>').text(`
+           .deleting {
+               animation: deleteEffect 2s ease-out forwards;
+           }
+
+           @@keyframes deleteEffect {
+               0% {
+                   opacity: 1;
+                   transform: scale(1);
+               }
+               50% {
+                   opacity: 0.5;
+                   transform: scale(0.98);
+                   filter: grayscale(50%);
+               }
+               100% {
+                   opacity: 0.3;
+                   transform: scale(0.95);
+                   filter: grayscale(100%);
+               }
+           }
+       `).appendTo('head');
+    </script>
+}

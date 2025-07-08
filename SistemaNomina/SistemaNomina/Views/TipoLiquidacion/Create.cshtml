@@ -1,75 +1,145 @@
 ﻿@model SistemaNomina.Models.TipoLiquidacion
 
 @{
-    ViewBag.Title = "Create"; // Título de la página
-    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+    ViewBag.Title = "Crear Tipo de Liquidación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2> @* titulo página *@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Crear Nuevo Tipo de Liquidación
+                    </h4>
+                </div>
 
-@*  formulario  *@
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken() @* seguridad *@
+                @using (Html.BeginForm("Create", "TipoLiquidacion", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>TipoLiquidacion</h4> @* Subtítulo del formulario *@
-        <hr /> @* Línea divisoria *@
+                    <div class="card-body">
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-        @* Muestra errores generales de validación del modelo (si los hay) *@
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    @Html.LabelFor(model => model.nombre, new { @class = "form-label fw-bold" })
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-tag"></i>
+                                        </span>
+                                        @Html.EditorFor(model => model.nombre, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                placeholder = "Ej: Con responsabilidad patronal",
+                                                required = "required"
+                                            }
+                                        })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
 
-        @* Campo: Nombre *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.nombre, htmlAttributes: new { @class = "control-label col-md-2" }) @* Etiqueta del campo *@
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } }) @* Campo de entrada *@
-                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" }) @* Mensaje de validación *@
-            </div>
-        </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    @Html.LabelFor(model => model.descripcion, new { @class = "form-label fw-bold" })
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-info-circle"></i>
+                                        </span>
+                                        @Html.EditorFor(model => model.descripcion, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                placeholder = "Descripción del tipo de liquidación"
+                                            }
+                                        })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                        </div>
 
-        @* Campo: Descripción *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    @Html.LabelFor(model => model.fecha_creacion, new { @class = "form-label fw-bold" })
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar-plus"></i>
+                                        </span>
+                                        @Html.EditorFor(model => model.fecha_creacion, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @type = "datetime-local"
+                                            }
+                                        })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
 
-        @* Campo: Fecha de creación *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    @Html.LabelFor(model => model.fecha_actualizacion, new { @class = "form-label fw-bold" })
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar-edit"></i>
+                                        </span>
+                                        @Html.EditorFor(model => model.fecha_actualizacion, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @type = "datetime-local"
+                                            }
+                                        })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        @* Campo: Fecha de actualización *@
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @* Botón para enviar el formulario *@
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>
+                                Volver a la Lista
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i>
+                                Crear Tipo de Liquidación
+                            </button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
-}
-
-@* Enlace para regresar a la lista de registros *@
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {
-    @* validación *@
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        // Validación en tiempo real
+        $(document).ready(function() {
+            $('.form-control').on('blur', function() {
+                $(this).removeClass('is-invalid is-valid');
+                if (this.checkValidity()) {
+                    $(this).addClass('is-valid');
+                } else {
+                    $(this).addClass('is-invalid');
+                }
+            });
+        });
+    </script>
 }

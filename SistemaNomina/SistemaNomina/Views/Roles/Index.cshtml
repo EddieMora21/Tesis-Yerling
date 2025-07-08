@@ -1,56 +1,271 @@
-﻿@model IEnumerable<SistemaNomina.Models.Roles> 
+﻿@model IEnumerable<SistemaNomina.Models.Roles>
 
 @{
-    ViewBag.Title = "Listado de Roles";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Usamos el layout general del sistema
+    ViewBag.Title = "Gestión de Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Listado de Roles</h2>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 20px rgba(34, 29, 66, 0.15);
+    }
 
-<!-- Botón para ir a la vista de creación de nuevo rol -->
-<p>
-    @Html.ActionLink("Crear Nuevo Rol", "Create", null, new { @class = "btn btn-primary" })
-</p>
+    .page-header-custom h2 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-<!-- Tabla para mostrar los roles disponibles -->
-<table class="table-striped table-bordered table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
-            <th>@Html.DisplayNameFor(model => model.First().descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fecha_creacion)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fecha_actualizacion)</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            foreach (var item in Model)
-            {
-                // Convertimos fechas a formato dd/MM/yyyy si existen
-                var fechaCreacion = item.fecha_creacion.HasValue ? item.fecha_creacion.Value.ToString("dd/MM/yyyy") : "-";
-                var fechaActualizacion = item.fecha_actualizacion.HasValue ? item.fecha_actualizacion.Value.ToString("dd/MM/yyyy") : "-";
+    .content-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
 
-                <tr>
-                    <td>@item.nombre</td>
-                    <td>@item.descripcion</td>
-                    <td>@fechaCreacion</td>
-                    <td>@fechaActualizacion</td>
-                    <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.id_rol }, new { @class = "btn btn-sm btn-warning" }) |
-                        @Html.ActionLink("Detalles", "Details", new { id = item.id_rol }, new { @class = "btn btn-sm btn-info" }) |
-                        @Html.ActionLink("Eliminar", "Delete", new { id = item.id_rol }, new { @class = "btn btn-sm btn-danger" })
-                    </td>
-                </tr>
-            }
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-custom {
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-custom thead th {
+        background: #221d42;
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .table-custom thead th:first-child {
+        border-radius: 0;
+    }
+
+    .table-custom thead th:last-child {
+        border-radius: 0;
+    }
+
+    .table-custom tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: rgba(23, 136, 202, 0.05);
+    }
+
+    .table-custom tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid #e7e8eb;
+        vertical-align: middle;
+    }
+
+    .btn-action {
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0 2px;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+    }
+
+    .btn-info:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #e7e8eb;
+        margin-bottom: 1rem;
+    }
+
+    .actions-cell {
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .stats-badge {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
         }
-        else
-        {
-            <tr>
-                <td colspan="5" class="text-center">No hay roles disponibles.</td>
-            </tr>
-        }
-    </tbody>
-</table>
 
+        .btn-primary-custom {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .table-responsive {
+            border-radius: 15px;
+        }
+
+        .btn-action {
+            margin: 2px 1px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2><i class="fas fa-users-cog me-3"></i>Gestión de Roles</h2>
+                <p class="mb-0 opacity-75">Administra los roles y permisos del sistema</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <span class="stats-badge">
+                    <i class="fas fa-list-ul me-1"></i>
+                    @(Model?.Count() ?? 0) roles
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0" style="color: #221d42; font-weight: 600;">
+                            <i class="fas fa-list me-2"></i>Lista de Roles
+                        </h4>
+                        @Html.ActionLink("Crear Nuevo Rol", "Create", null, new { @class = "btn-primary-custom" })
+                    </div>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table-custom table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-tag me-2"></i>Nombre</th>
+                                        <th><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                        <th><i class="fas fa-calendar-plus me-2"></i>Fecha Creación</th>
+                                        <th><i class="fas fa-calendar-edit me-2"></i>Última Actualización</th>
+                                        <th><i class="fas fa-cogs me-2"></i>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var fechaCreacion = item.fecha_creacion.HasValue ? item.fecha_creacion.Value.ToString("dd/MM/yyyy") : "-";
+                                        var fechaActualizacion = item.fecha_actualizacion.HasValue ? item.fecha_actualizacion.Value.ToString("dd/MM/yyyy") : "-";
+
+                                        <tr>
+                                            <td>
+                                                <strong style="color: #221d42;">@item.nombre</strong>
+                                            </td>
+                                            <td style="color: #495057;">@item.descripcion</td>
+                                            <td style="color: #6c757d;">
+                                                <i class="fas fa-calendar me-1"></i>@fechaCreacion
+                                            </td>
+                                            <td style="color: #6c757d;">
+                                                <i class="fas fa-calendar me-1"></i>@fechaActualizacion
+                                            </td>
+                                            <td class="actions-cell">
+                                                @Html.ActionLink("Editar", "Edit", new { id = item.id_rol }, new { @class = "btn-action btn-edit", title = "Editar rol" })
+                                                @Html.ActionLink("Ver", "Details", new { id = item.id_rol }, new { @class = "btn-action btn-info", title = "Ver detalles" })
+                                                @Html.ActionLink("Eliminar", "Delete", new { id = item.id_rol }, new { @class = "btn-action btn-danger", title = "Eliminar rol" })
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-users-slash"></i>
+                            <h4 style="color: #221d42;">No hay roles registrados</h4>
+                            <p style="color: #6c757d;">Comienza creando tu primer rol del sistema</p>
+                            @Html.ActionLink("Crear Primer Rol", "Create", null, new { @class = "btn-primary-custom mt-3" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

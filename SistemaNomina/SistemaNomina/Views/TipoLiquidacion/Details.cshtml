@@ -1,52 +1,139 @@
 ﻿@model SistemaNomina.Models.TipoLiquidacion
 
 @{
-    ViewBag.Title = "Details"; // Título pestaña 
-    Layout = "~/Views/Shared/_Layout.cshtml"; // vista
+    ViewBag.Title = "Detalles del Tipo de Liquidación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2> @* Título página *@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-eye me-2"></i>
+                        Detalles del Tipo de Liquidación
+                    </h4>
+                </div>
 
-<div>
-    <h4>TipoLiquidacion</h4> @* Subtítulo  *@
-    <hr /> @* Línea divisoria *@
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-card mb-3">
+                                <div class="info-header">
+                                    <i class="fas fa-hashtag text-primary"></i>
+                                    <strong>ID del Tipo</strong>
+                                </div>
+                                <div class="info-content">
+                                    <span class="badge bg-primary fs-6">@Model.id_tipo</span>
+                                </div>
+                            </div>
 
-    @* Lista de campos y sus valores *@
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.nombre) @* Nombre del campo: "nombre" *@
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.nombre) @* Valor del campo "nombre" del modelo *@
-        </dd>
+                            <div class="info-card mb-3">
+                                <div class="info-header">
+                                    <i class="fas fa-tag text-success"></i>
+                                    <strong>@Html.DisplayNameFor(model => model.nombre)</strong>
+                                </div>
+                                <div class="info-content">
+                                    <h5 class="text-success">@Html.DisplayFor(model => model.nombre)</h5>
+                                </div>
+                            </div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.descripcion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.descripcion)
-        </dd>
+                        <div class="col-md-6">
+                            <div class="info-card mb-3">
+                                <div class="info-header">
+                                    <i class="fas fa-info-circle text-info"></i>
+                                    <strong>@Html.DisplayNameFor(model => model.descripcion)</strong>
+                                </div>
+                                <div class="info-content">
+                                    <p class="text-muted">
+                                        @if (string.IsNullOrEmpty(Model.descripcion))
+                                        {
+                                            <text>Sin descripción</text>
+                                        }
+                                        else
+                                        {
+                                            @Model.descripcion
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+                    <hr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-        </dd>
-    </dl>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-card mb-3">
+                                <div class="info-header">
+                                    <i class="fas fa-calendar-plus text-secondary"></i>
+                                    <strong>@Html.DisplayNameFor(model => model.fecha_creacion)</strong>
+                                </div>
+                                <div class="info-content">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        @Html.DisplayFor(model => model.fecha_creacion)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card mb-3">
+                                <div class="info-header">
+                                    <i class="fas fa-calendar-edit text-secondary"></i>
+                                    <strong>@Html.DisplayNameFor(model => model.fecha_actualizacion)</strong>
+                                </div>
+                                <div class="info-content">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        @Html.DisplayFor(model => model.fecha_actualizacion)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="fas fa-list me-1"></i>
+                            Volver a la Lista
+                        </a>
+                        <div>
+                            <a href="@Url.Action("Edit", new { id = Model.id_tipo })" class="btn btn-warning me-2">
+                                <i class="fas fa-edit me-1"></i>
+                                Editar
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = Model.id_tipo })" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>
+                                Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<p>
-    @* Enlace para ir a la vista de edición, pasando el ID del registro actual *@
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_tipo }) |
+<style>
+    .info-card {
+        border-left: 4px solid #007bff;
+        padding-left: 15px;
+    }
 
-    @* Enlace para volver a la lista de registros *@
-    @Html.ActionLink("Back to List", "Index")
-</p>
+    .info-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+    }
+
+    .info-content {
+        margin-left: 28px;
+    }
+</style>

@@ -1,43 +1,256 @@
 ﻿@model SistemaNomina.Models.Roles
 
 @{
-    ViewBag.Title = "Eliminar Rol"; // Título de la página
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Usa el layout general del sitio
+    ViewBag.Title = "Eliminar Rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Eliminar Rol</h2>
-
-<h3>¿Está seguro de que desea eliminar este rol?</h3>
-
-<div>
-    <h4>Detalles del Rol</h4>
-    <hr />
-
-    <!-- Lista de propiedades del rol que vamos a eliminar -->
-    <dl class="dl-horizontal">
-        <dt>@Html.DisplayNameFor(model => model.nombre)</dt>
-        <dd>@Html.DisplayFor(model => model.nombre)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.descripcion)</dt>
-        <dd>@Html.DisplayFor(model => model.descripcion)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.fecha_creacion)</dt>
-        <dd>@Html.DisplayFor(model => model.fecha_creacion)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.fecha_actualizacion)</dt>
-        <dd>@Html.DisplayFor(model => model.fecha_actualizacion)</dd>
-    </dl>
-
-    <!-- Formulario para confirmar eliminación -->
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken() <!-- Protección contra ataques CSRF -->
-
-        <div class="form-actions">
-            <!-- Botón para eliminar -->
-            <input type="submit" value="Eliminar" class="btn btn-danger" />
-            <!-- Link para cancelar y regresar a la lista -->
-            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
-        </div>
+<style>
+    .page-header-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 20px rgba(220, 53, 69, 0.15);
     }
+
+    .page-header-delete h2 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+    }
+
+    .warning-section {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .warning-section h3 {
+        color: #dc3545;
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .warning-section p {
+        color: #721c24;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .detail-section-title {
+        color: #221d42;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e7e8eb;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-item {
+        display: flex;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: rgba(231, 232, 235, 0.3);
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .detail-label {
+        color: #221d42;
+        font-weight: 600;
+        min-width: 180px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-value {
+        color: #495057;
+        flex: 1;
+        font-weight: 500;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 32px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-danger-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header-delete {
+            padding: 1.5rem 0;
+        }
+
+        .delete-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            min-width: auto;
+        }
+
+        .btn-danger-custom, .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="page-header-delete">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12">
+                <h2><i class="fas fa-trash-alt me-3"></i>Eliminar Rol</h2>
+                <p class="mb-0 opacity-75">Confirma la eliminación permanente del rol</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="delete-card">
+                <div class="warning-section">
+                    <h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        ¿Está seguro de que desea eliminar este rol?
+                    </h3>
+                    <p>Esta acción no se puede deshacer. Todos los datos relacionados se perderán permanentemente.</p>
+                </div>
+
+                <h4 class="detail-section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Información del Rol a Eliminar
+                </h4>
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-tag"></i>
+                        @Html.DisplayNameFor(model => model.nombre):
+                    </div>
+                    <div class="detail-value">
+                        <strong>@Html.DisplayFor(model => model.nombre)</strong>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-align-left"></i>
+                        @Html.DisplayNameFor(model => model.descripcion):
+                    </div>
+                    <div class="detail-value">
+                        @Html.DisplayFor(model => model.descripcion)
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        @Html.DisplayNameFor(model => model.fecha_creacion):
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.fecha_creacion.HasValue)
+                        {
+                            <span>@Model.fecha_creacion.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No disponible</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-edit"></i>
+                        @Html.DisplayNameFor(model => model.fecha_actualizacion):
+                    </div>
+                    <div class="detail-value">
+                        @if (Model.fecha_actualizacion.HasValue)
+                        {
+                            <span>@Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No ha sido actualizado</span>
+                        }
+                    </div>
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="d-flex gap-3 justify-content-end mt-4">
+                        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                        <button type="submit" class="btn-danger-custom" onclick="return confirm('¿Está completamente seguro de eliminar este rol? Esta acción no se puede deshacer.');">
+                            <i class="fas fa-trash-alt"></i>
+                            Confirmar Eliminación
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

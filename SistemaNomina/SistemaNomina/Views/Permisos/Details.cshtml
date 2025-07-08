@@ -1,92 +1,354 @@
 ﻿@model SistemaNomina.Models.Permisos
 
 @{
-    ViewBag.Title = "Details"; @* Título de la página detalles *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @* vista *@
+    ViewBag.Title = "Detalles del Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>  @* Encabezado principal de la página *@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-primary mb-0">
+                        <i class="fas fa-info-circle"></i> Detalles del Permiso
+                    </h4>
+                    <small class="text-muted">Información completa del permiso #@Model.id_permiso</small>
+                </div>
+                <div class="btn-group">
+                    <a href="@Url.Action("Edit", new { id = Model.id_permiso })" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
 
-<div>
-    <h4>Permisos</h4>  @* Subtítulo *@
-    <hr /> 
-    <dl class="dl-horizontal">
-        @* Lista campos y valores *@
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha)  @* Nombre del campo 'fecha' *@
-        </dt>
+            <!-- Estado del Permiso - Badge Principal -->
+            <div class="card mb-4 shadow">
+                <div class="card-body py-4 text-center">
+                    @{
+                        string estadoClass = "";
+                        string iconoEstado = "";
+                        string textoEstado = "";
+                        switch (Model.Estados.nombre)
+                        {
+                            case "Pendiente":
+                                estadoClass = "warning";
+                                iconoEstado = "fas fa-clock";
+                                textoEstado = "En espera de aprobación";
+                                break;
+                            case "Aprobado":
+                                estadoClass = "success";
+                                iconoEstado = "fas fa-check-circle";
+                                textoEstado = "Permiso aprobado";
+                                break;
+                            case "Rechazado":
+                                estadoClass = "danger";
+                                iconoEstado = "fas fa-times-circle";
+                                textoEstado = "Permiso rechazado";
+                                break;
+                        }
+                    }
+                    <div class="mb-3">
+                        <span class="badge bg-@estadoClass fs-6 px-4 py-2">
+                            <i class="@iconoEstado"></i> @Model.Estados.nombre
+                        </span>
+                    </div>
+                    <p class="text-muted mb-0">@textoEstado</p>
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha)  @* Valor del campo 'fecha' *@
-        </dd>
+            <div class="row">
+                <!-- Información del Empleado -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-user"></i> Información del Empleado
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3 text-center">
+                                <div class="avatar-lg bg-primary rounded-circle d-inline-flex align-items-center justify-content-center text-white mb-2">
+                                    <i class="fas fa-user fa-2x"></i>
+                                </div>
+                            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.horas)  @* Nombre del campo 'horas' *@
-        </dt>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">Nombre Completo:</label>
+                                    <p class="fw-bold mb-2">
+                                        @Model.Empleados.nombre1 @Model.Empleados.nombre2 @Model.Empleados.apellido1 @Model.Empleados.apellido2
+                                    </p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">Cédula:</label>
+                                    <p class="mb-2">
+                                        <span class="badge bg-light text-dark">@Model.Empleados.cedula</span>
+                                    </p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">Correo:</label>
+                                    <p class="mb-2">
+                                        <a href="mailto:@Model.Empleados.correo" class="text-decoration-none">
+                                            <i class="fas fa-envelope text-primary"></i> @Model.Empleados.correo
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">Puesto:</label>
+                                    <p class="mb-0">@Model.Empleados.Puestos.nombre_puesto</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.horas)  @* Valor del campo 'horas' *@
-        </dd>
+                <!-- Detalles del Permiso -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-calendar-check"></i> Detalles del Permiso
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">Tipo de Permiso:</label>
+                                    <p class="mb-2">
+                                        <span class="badge @(Model.TiposPermiso.con_goce ? "bg-success" : "bg-warning") fs-6">
+                                            @Model.TiposPermiso.nombre
+                                        </span>
+                                    </p>
+                                    <small class="text-muted">
+                                        @if (Model.TiposPermiso.con_goce)
+                                        {
+                                            <i class="fas fa-check-circle text-success"></i> <span>Con goce de salario</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-exclamation-triangle text-warning"></i> <span>Sin goce de salario</span>
+                                        }
+                                    </small>
+                                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.motivo)  @* Nombre del campo 'motivo' *@
-        </dt>
+                                <div class="col-6">
+                                    <label class="form-label text-muted small">Fecha:</label>
+                                    <p class="fw-bold mb-2">
+                                        <i class="fas fa-calendar-day text-primary"></i>
+                                        @Model.fecha.ToString("dd/MM/yyyy")
+                                    </p>
+                                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.motivo)  @* Valor del campo 'motivo' *@
-        </dd>
+                                <div class="col-6">
+                                    <label class="form-label text-muted small">Horas:</label>
+                                    <p class="fw-bold mb-2">
+                                        <i class="fas fa-clock text-primary"></i>
+                                        @Model.horas horas
+                                    </p>
+                                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Nombre del campo 'fecha_creacion' *@
-        </dt>
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">Día de la semana:</label>
+                                    <p class="mb-2">@Model.fecha.ToString("dddd", new System.Globalization.CultureInfo("es-ES"))</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)  @* Valor del campo 'fecha_creacion' *@
-        </dd>
+            <!-- Motivo -->
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-comment"></i> Motivo del Permiso
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 lead">@Model.motivo</p>
+                </div>
+            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Nombre del campo 'fecha_actualizacion' *@
-        </dt>
+            <!-- Información de Aprobación -->
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-user-check"></i> Información de Gestión
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small">Aprobado por:</label>
+                            <p class="mb-2">
+                                @if (Model.Usuarios != null)
+                                {
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-user"></i> @Model.Usuarios.usuario
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin asignar</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small">Fecha de Creación:</label>
+                            <p class="mb-2">
+                                <i class="fas fa-calendar-plus text-muted"></i>
+                                @Model.fecha_creacion.Value.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small">Última Actualización:</label>
+                            <p class="mb-2">
+                                <i class="fas fa-calendar-edit text-muted"></i>
+                                @Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)  @* Valor del campo 'fecha_actualizacion' *@
-        </dd>
+            <!-- Acciones -->
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0 text-dark">
+                        <i class="fas fa-cogs"></i> Acciones Disponibles
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="@Url.Action("Edit", new { id = Model.id_permiso })" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Editar Permiso
+                        </a>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Empleados.cedula)  @* Nombre de la cédula del empleado  *@
-        </dt>
+                        @if (Model.Estados.nombre == "Pendiente")
+                        {
+                            <button class="btn btn-success" onclick="aprobarPermiso(@Model.id_permiso)">
+                                <i class="fas fa-check"></i> Aprobar
+                            </button>
+                            <button class="btn btn-danger" onclick="rechazarPermiso(@Model.id_permiso)">
+                                <i class="fas fa-times"></i> Rechazar
+                            </button>
+                        }
 
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula)  @* Valor de la cédula del empleado *@
-        </dd>
+                        <a href="@Url.Action("Delete", new { id = Model.id_permiso })" class="btn btn-outline-danger">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Estados.nombre)  @* Nombre del estado del permiso *@
-        </dt>
+                        <button class="btn btn-outline-secondary" onclick="imprimirDetalles()">
+                            <i class="fas fa-print"></i> Imprimir
+                        </button>
 
-        <dd>
-            @Html.DisplayFor(model => model.Estados.nombre)  @* Valor del estado *@
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Usuarios.usuario)  @* Nombre del usuario asociado al permiso *@
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Usuarios.usuario)  @* Valor del usuario *@
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TiposPermiso.nombre)  @* Nombre del tipo de permiso *@
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TiposPermiso.nombre)  @* Valor del tipo de permiso *@
-        </dd>
-
-    </dl>
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                            <i class="fas fa-list"></i> Ver Todos los Permisos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_permiso }) |  @* Enlace para editar este permiso *@
-    @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista principal *@
-</p>
+
+@section Scripts {
+    <script>
+        function aprobarPermiso(id) {
+            Swal.fire({
+                title: '¿Aprobar este permiso?',
+                text: "Esta acción cambiará el estado del permiso a 'Aprobado'",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, aprobar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Aquí harías la llamada AJAX para aprobar
+                    $.post('@Url.Action("Aprobar")', { id: id }, function(data) {
+                        if (data.success) {
+                            Swal.fire('¡Aprobado!', 'El permiso ha sido aprobado.', 'success')
+                                .then(() => location.reload());
+                        }
+                    });
+                }
+            });
+        }
+
+        function rechazarPermiso(id) {
+            Swal.fire({
+                title: '¿Rechazar este permiso?',
+                input: 'textarea',
+                inputLabel: 'Motivo del rechazo (opcional)',
+                inputPlaceholder: 'Escriba el motivo del rechazo...',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, rechazar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Aquí harías la llamada AJAX para rechazar
+                    $.post('@Url.Action("Rechazar")', {
+                        id: id,
+                        motivo: result.value
+                    }, function(data) {
+                        if (data.success) {
+                            Swal.fire('¡Rechazado!', 'El permiso ha sido rechazado.', 'success')
+                                .then(() => location.reload());
+                        }
+                    });
+                }
+            });
+        }
+
+        function imprimirDetalles() {
+            window.print();
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .avatar-lg {
+            width: 60px;
+            height: 60px;
+        }
+
+        .badge.fs-6 {
+            font-size: 0.9rem !important;
+        }
+
+        .card-header h6 {
+            font-weight: 600;
+        }
+
+        .form-label.small {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @@media print {
+            .btn, .card-header {
+                display: none !important;
+            }
+
+            .card {
+                border: 1px solid #dee2e6 !important;
+                box-shadow: none !important;
+            }
+        }
+
+        .gap-2 > * {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+}

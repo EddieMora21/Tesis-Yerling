@@ -3,117 +3,279 @@
 @{
     ViewBag.Title = "Editar Usuario";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Variables para evitar errores de sintaxis de Razor
+    string statusIcon = Model.primer_ingreso == true ? "clock" : "check-circle";
+    string statusText = Model.primer_ingreso == true ? "Pendiente primer ingreso" : "Acceso configurado";
+    string statusClass = Model.primer_ingreso == true ? "status-pending" : "status-active";
+    string userStatusClass = Model.primer_ingreso == true ? "status-pending" : "status-active";
+    string userStatusIcon = Model.primer_ingreso == true ? "clock" : "check-circle";
+    string userStatusText = Model.primer_ingreso == true ? "Primer Ingreso Pendiente" : "Usuario Activo";
 }
 
 <div class="edit-user-container">
-    <div class="header-section">
-        <h1 class="page-title">
-            <i class="icon-edit"></i>
-            Editar Usuario
-        </h1>
-        <p class="page-subtitle">Modificar información del usuario: <strong>@Model.usuario</strong></p>
+    <!-- Header Principal -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-user-edit"></i>
+                    Editar Usuario
+                </h1>
+                <p class="page-subtitle">Modificar información del usuario: <strong>@Model.usuario</strong></p>
+            </div>
+            <div class="header-actions">
+                <span class="user-status @userStatusClass">
+                    <i class="fas fa-@userStatusIcon"></i>
+                    @userStatusText
+                </span>
+                <a href="@Url.Action("Details", new { id = Model.id_usuario })" class="btn btn-info-custom">
+                    <i class="fas fa-eye"></i>
+                    Ver Detalles
+                </a>
+                <a href="@Url.Action("Index")" class="btn btn-secondary-custom">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Listado
+                </a>
+            </div>
+        </div>
     </div>
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("Edit", "Usuarios", FormMethod.Post, new { @class = "user-form", @id = "editUserForm" }))
     {
         @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-custom" })
         @Html.HiddenFor(model => model.id_usuario)
 
         <div class="form-container">
             <!-- SECCIÓN EMPLEADO -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="icon-person"></i>
-                    Información del Empleado
-                </h3>
+            <div class="form-section employee-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-id-card"></i>
+                        Información del Empleado
+                    </h3>
+                    <p class="section-description">Empleado asociado a esta cuenta de usuario</p>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" for="id_empleado">
-                        Empleado <span class="required">*</span>
+                        <i class="fas fa-user"></i>
+                        Empleado Asociado <span class="required">*</span>
                     </label>
                     <div class="input-wrapper">
-                        @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control-custom" })
                         @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "validation-message" })
+                        <div class="input-help">
+                            <i class="fas fa-info-circle"></i>
+                            <small>Cambiar el empleado asociado puede afectar los permisos del usuario</small>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- SECCIÓN CREDENCIALES -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="icon-key"></i>
-                    Credenciales de Acceso
-                </h3>
+            <div class="form-section credentials-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-key"></i>
+                        Credenciales de Acceso
+                    </h3>
+                    <p class="section-description">Configuración de inicio de sesión</p>
+                </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="usuario">
+                            <i class="fas fa-at"></i>
                             Nombre de Usuario <span class="required">*</span>
                         </label>
                         <div class="input-wrapper">
-                            @Html.EditorFor(model => model.usuario, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.EditorFor(model => model.usuario, new { htmlAttributes = new { @class = "form-control-custom", @id = "usuario" } })
                             @Html.ValidationMessageFor(model => model.usuario, "", new { @class = "validation-message" })
+                            <div class="input-help">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <small>Cambiar el usuario puede requerir que vuelva a iniciar sesión</small>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="contrasena">
-                            Nueva Contraseña <span class="required">*</span>
+                            <i class="fas fa-lock"></i>
+                            Nueva Contraseña
                         </label>
                         <div class="input-wrapper">
-                            <input type="password" id="contrasena" name="contrasena"
-                                   class="form-control"
-                                   placeholder="Dejar vacío para mantener contraseña actual"
-                                   value="" />
+                            <div class="password-input-wrapper">
+                                <input type="password"
+                                       id="contrasena"
+                                       name="contrasena"
+                                       class="form-control-custom"
+                                       placeholder="Dejar vacío para mantener contraseña actual"
+                                       value="" />
+                                <button type="button" class="password-toggle" onclick="togglePassword('contrasena')">
+                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
                             @Html.ValidationMessageFor(model => model.contrasena, "", new { @class = "validation-message" })
-                            <small class="help-text">
-                                <i class="icon-info"></i>
-                                La contraseña actual está protegida. Ingrese una nueva o deje vacío para mantener la actual.
-                            </small>
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <span class="strength-text" id="strengthText">Nueva contraseña</span>
+                            </div>
+                            <div class="input-help">
+                                <i class="fas fa-shield-alt"></i>
+                                <small>La contraseña actual está protegida. Solo ingrese una nueva si desea cambiarla</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- SECCIÓN ROL -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="icon-shield"></i>
-                    Permisos y Rol
-                </h3>
+            <div class="form-section role-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Permisos y Rol
+                    </h3>
+                    <p class="section-description">Nivel de acceso y permisos del usuario</p>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" for="id_rol">
+                        <i class="fas fa-user-shield"></i>
                         Rol del Usuario <span class="required">*</span>
                     </label>
                     <div class="input-wrapper">
-                        @Html.DropDownList("id_rol", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownList("id_rol", null, htmlAttributes: new { @class = "form-control-custom" })
                         @Html.ValidationMessageFor(model => model.id_rol, "", new { @class = "validation-message" })
+                        <div class="input-help">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <small>Cambiar el rol modificará inmediatamente los permisos del usuario</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="current-role-info">
+                    <div class="info-card">
+                        <h4 class="info-title">
+                            <i class="fas fa-info-circle"></i>
+                            Rol Actual
+                        </h4>
+                        @if (Model.Roles != null)
+                        {
+                            <div class="current-role">
+                                <span class="role-badge role-@(Model.Roles.nombre.ToLower())">
+                                    <i class="fas fa-user-shield"></i>
+                                    @Model.Roles.nombre
+                                </span>
+                                @if (!string.IsNullOrEmpty(Model.Roles.descripcion))
+                                {
+                                    <p class="role-description">@Model.Roles.descripcion</p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="no-role">
+                                <span class="text-muted">
+                                    <i class="fas fa-question"></i>
+                                    Sin rol asignado
+                                </span>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
 
             <!-- SECCIÓN CONFIGURACIÓN -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="icon-settings"></i>
-                    Configuración de Cuenta
-                </h3>
+            <div class="form-section config-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-cogs"></i>
+                        Configuración de Cuenta
+                    </h3>
+                    <p class="section-description">Opciones avanzadas de la cuenta de usuario</p>
+                </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">
-                            @Html.EditorFor(model => model.primer_ingreso, new { htmlAttributes = new { style = "margin-right: 0.5rem;" } })
-                            Forzar cambio de contraseña en próximo login
-                        </label>
-                        @Html.ValidationMessageFor(model => model.primer_ingreso, "", new { @class = "validation-message" })
+                        <div class="checkbox-wrapper">
+                            <div class="checkbox-container">
+                                @Html.EditorFor(model => model.primer_ingreso, new { htmlAttributes = new { @class = "checkbox-input", @id = "primer_ingreso" } })
+                                <label class="checkbox-label" for="primer_ingreso">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">
+                                        <strong>Forzar cambio de contraseña</strong>
+                                        <small>El usuario deberá cambiar su contraseña en el próximo inicio de sesión</small>
+                                    </span>
+                                </label>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.primer_ingreso, "", new { @class = "validation-message" })
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="fecha_creacion">Fecha de Creación</label>
+                        <label class="form-label">
+                            <i class="fas fa-calendar-plus"></i>
+                            Fecha de Creación
+                        </label>
                         <div class="input-wrapper">
-                            @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control-custom readonly", @readonly = "readonly" } })
+                            <div class="input-help">
+                                <i class="fas fa-lock"></i>
+                                <small>Campo de solo lectura - no se puede modificar</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN HISTORIAL -->
+            <div class="form-section history-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-history"></i>
+                        Historial de Cambios
+                    </h3>
+                    <p class="section-description">Información de auditoría del usuario</p>
+                </div>
+
+                <div class="history-grid">
+                    <div class="history-item">
+                        <div class="history-icon created">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="history-content">
+                            <h5 class="history-title">Usuario Creado</h5>
+                            <p class="history-date">@Html.DisplayFor(model => model.fecha_creacion)</p>
+                        </div>
+                    </div>
+
+                    @if (Model.fecha_actualizacion.HasValue)
+                    {
+                        <div class="history-item">
+                            <div class="history-icon updated">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="history-content">
+                                <h5 class="history-title">Última Actualización</h5>
+                                <p class="history-date">@Html.DisplayFor(model => model.fecha_actualizacion)</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="history-item">
+                        <div class="history-icon status">
+                            <i class="fas fa-@statusIcon"></i>
+                        </div>
+                        <div class="history-content">
+                            <h5 class="history-title">Estado de Acceso</h5>
+                            <p class="history-status">
+                                <span class="@statusClass">@statusText</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -121,12 +283,44 @@
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="form-actions">
+                <div class="actions-header">
+                    <h3 class="actions-title">
+                        <i class="fas fa-save"></i>
+                        Guardar Cambios
+                    </h3>
+                    <p class="actions-description">Confirme que todos los cambios son correctos antes de guardar</p>
+                </div>
+
                 <div class="action-buttons">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="icon-save"></i>
+                    <button type="submit" class="btn btn-primary-custom" id="submitBtn">
+                        <i class="fas fa-save"></i>
                         Guardar Cambios
                     </button>
-                    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+
+                    <a href="@Url.Action("Index")" class="btn btn-secondary-custom">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+
+                    <a href="@Url.Action("CambiarContrasena", new { id = Model.id_usuario })" class="btn btn-warning-custom">
+                        <i class="fas fa-key"></i>
+                        Cambiar Contraseña
+                    </a>
+
+                    <button type="button" class="btn btn-outline-custom" onclick="resetForm()">
+                        <i class="fas fa-undo"></i>
+                        Restablecer
+                    </button>
+                </div>
+
+                <div class="save-info">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="info-content">
+                            <strong>Importante:</strong> Los cambios en el rol se aplicarán inmediatamente.
+                            Si el usuario está actualmente conectado, deberá iniciar sesión nuevamente para ver los nuevos permisos.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,31 +328,1156 @@
 </div>
 
 <style>
-    /* Usar los mismos estilos del Create pero sin las funcionalidades de password toggle */
-    .edit-user-container, .header-section, .form-container, .form-section,
-    .section-title, .form-group, .form-label, .form-control, .input-wrapper,
-    .form-row, .form-actions, .action-buttons, .btn, .validation-message,
-    .required, .help-text {
-        /* Los mismos estilos del archivo Create.cshtml */
+    /* Variables CSS Corporativas */
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-muted: #6c757d;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --info-color: #17a2b8;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
     }
 
-    .icon-edit::before {
-        content: "✏️";
+    .edit-user-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: var(--white);
     }
 
-    .icon-save::before {
-        content: "💾";
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09900 100%);
+        color: var(--white);
+        padding: 2rem;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        margin-bottom: 0;
     }
 
-    .icon-settings::before {
-        content: "⚙️";
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
-    .icon-info::before {
-        content: "ℹ️";
+    .header-left {
+        flex: 1;
     }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .user-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .status-active {
+        color: var(--success-color);
+        background: rgba(40, 167, 69, 0.2) !important;
+    }
+
+    .status-pending {
+        color: var(--warning-color);
+        background: rgba(255, 193, 7, 0.2) !important;
+    }
+
+    /* Form Container */
+    .form-container {
+        background: var(--white);
+        border: 1px solid var(--neutral-color);
+        border-top: none;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        padding: 2rem;
+        display: grid;
+        gap: 2rem;
+    }
+
+    /* Form Sections */
+    .form-section {
+        background: var(--white);
+        border: 1px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+        box-shadow: var(--shadow-main);
+    }
+
+    .employee-section {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .credentials-section {
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .role-section {
+        border-left: 4px solid var(--info-color);
+    }
+
+    .config-section {
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .history-section {
+        border-left: 4px solid var(--text-muted);
+    }
+
+    .section-header {
+        background: var(--neutral-color);
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-description {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Form Groups */
+    .form-group {
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .required {
+        color: var(--danger-color);
+        font-weight: 700;
+    }
+
+    /* Input Wrapper */
+    .input-wrapper {
+        flex: 1;
+    }
+
+    /* Form Controls */
+    .form-control-custom {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        font-size: 1rem;
+        transition: var(--transition);
+        background: var(--white);
+    }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
+        }
+
+        .form-control-custom.readonly {
+            background: #f8f9fa;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+    /* Password Input */
+    .password-input-wrapper {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: var(--transition);
+    }
+
+        .password-toggle:hover {
+            color: var(--secondary-color);
+        }
+
+    /* Password Strength */
+    .password-strength {
+        margin-top: 0.75rem;
+        display: none;
+    }
+
+        .password-strength.show {
+            display: block;
+        }
+
+    .strength-bar {
+        width: 100%;
+        height: 6px;
+        background: var(--neutral-color);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+
+    .strength-fill {
+        height: 100%;
+        width: 0%;
+        transition: var(--transition);
+        border-radius: 3px;
+    }
+
+        .strength-fill.weak {
+            background: var(--danger-color);
+            width: 25%;
+        }
+
+        .strength-fill.fair {
+            background: var(--warning-color);
+            width: 50%;
+        }
+
+        .strength-fill.good {
+            background: var(--info-color);
+            width: 75%;
+        }
+
+        .strength-fill.strong {
+            background: var(--success-color);
+            width: 100%;
+        }
+
+    .strength-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Input Help */
+    .input-help {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+        .input-help small {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .input-help i {
+            color: var(--info-color);
+            font-size: 0.9rem;
+        }
+
+    /* Checkbox personalizado */
+    .checkbox-wrapper {
+        margin-bottom: 1rem;
+    }
+
+    .checkbox-container {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .checkbox-input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .checkbox-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--neutral-color);
+        border-radius: 4px;
+        display: inline-block;
+        position: relative;
+        transition: var(--transition);
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .checkbox-input:checked + .checkbox-label .checkbox-custom {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+        .checkbox-input:checked + .checkbox-label .checkbox-custom::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--white);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+        }
+
+    .checkbox-label {
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin: 0;
+        font-weight: normal;
+    }
+
+    .checkbox-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+        .checkbox-text strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .checkbox-text small {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+    /* Current Role Info */
+    .current-role-info {
+        padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+
+    .info-card {
+        background: rgba(23, 162, 184, 0.05);
+        border: 1px solid rgba(23, 162, 184, 0.2);
+        border-radius: var(--border-radius-sm);
+        padding: 1rem;
+    }
+
+    .info-title {
+        color: var(--info-color);
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .current-role {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .role-description {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Role Badges */
+    .role-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: fit-content;
+    }
+
+    .role-admin {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+
+    .role-rrhh {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+
+    .role-supervisor {
+        background: rgba(23, 162, 184, 0.1);
+        color: var(--info-color);
+    }
+
+    .role-empleado {
+        background: rgba(108, 117, 125, 0.1);
+        color: var(--text-muted);
+    }
+
+    .role-it {
+        background: rgba(111, 66, 193, 0.1);
+        color: #6f42c1;
+    }
+
+    /* History Section */
+    .history-grid {
+        padding: 1.5rem;
+        display: grid;
+        gap: 1rem;
+    }
+
+    .history-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--white);
+        border: 1px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+    }
+
+    .history-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+        .history-icon.created {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+        }
+
+        .history-icon.updated {
+            background: linear-gradient(135deg, var(--warning-color), #e0a800);
+        }
+
+        .history-icon.status {
+            background: linear-gradient(135deg, var(--info-color), #138496);
+        }
+
+    .history-content {
+        flex: 1;
+    }
+
+    .history-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .history-date {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .history-status {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .status-pending {
+        color: var(--warning-color);
+        font-weight: 500;
+    }
+
+    .status-active {
+        color: var(--success-color);
+        font-weight: 500;
+    }
+
+    /* Botones */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+    }
+
+        .btn-primary-custom:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+    .btn-secondary-custom {
+        background: var(--text-muted);
+        color: var(--white);
+    }
+
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+    .btn-info-custom {
+        background: var(--info-color);
+        color: var(--white);
+    }
+
+        .btn-info-custom:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+    .btn-warning-custom {
+        background: var(--warning-color);
+        color: var(--text-dark);
+    }
+
+        .btn-warning-custom:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+    .btn-outline-custom {
+        background: transparent;
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+
+        .btn-outline-custom:hover {
+            background: var(--secondary-color);
+            color: var(--white);
+        }
+
+    /* Form Actions */
+    .form-actions {
+        background: var(--white);
+        border: 1px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
+    }
+
+    .actions-header {
+        background: var(--accent-color);
+        color: var(--white);
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .actions-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .actions-description {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .action-buttons {
+        padding: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Save Info */
+    .save-info {
+        padding: 1.5rem;
+        border-top: 1px solid var(--neutral-color);
+    }
+
+    .info-box {
+        background: rgba(23, 136, 202, 0.05);
+        border: 1px solid rgba(23, 136, 202, 0.2);
+        border-radius: var(--border-radius-sm);
+        padding: 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+        .info-box i {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+    .info-content {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Validation Messages */
+    .validation-message {
+        display: block;
+        color: var(--danger-color);
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .validation-summary-custom {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(220, 53, 69, 0.2);
+    }
+
+    /* Alertas */
+    .alert {
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .alert-success {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(40, 167, 69, 0.2);
+    }
+
+    .alert-danger {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+    }
+
+    .alert-warning {
+        background: rgba(255, 193, 7, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(255, 193, 7, 0.2);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .edit-user-container {
+            padding: 1rem;
+        }
+
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .header-actions {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-container {
+            padding: 1rem;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-container {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .history-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.75rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            justify-content: center;
+        }
+
+        .section-header {
+            padding: 1rem;
+        }
+
+        .form-group {
+            padding: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .edit-user-container {
+            padding: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .user-status {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+    }
+
+    /* Animaciones */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .edit-user-container {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .form-section {
+        animation: slideIn 0.4s ease-out;
+    }
+
+        .form-section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .form-section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .form-section:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .form-section:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+    .history-item {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+        .history-item:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .history-item:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+    /* Estados de hover para inputs */
+    .form-control-custom:hover:not(:focus):not(.readonly) {
+        border-color: var(--secondary-color);
+    }
+
+    /* Mejoras de accesibilidad */
+    .btn:focus,
+    .form-control-custom:focus {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 2px;
+    }
+
+    /* Estilos adicionales para alertas dinámicas */
+    .unsaved-changes-warning {
+        border-left: 4px solid var(--warning-color);
+    }
+
+    /* Estilos para mejor UX */
+    .form-control-custom:valid:not(:placeholder-shown) {
+        border-color: var(--success-color);
+    }
+
+    .form-control-custom:invalid:not(:placeholder-shown) {
+        border-color: var(--danger-color);
+    }
+
+    /* Loading states */
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+        .btn:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
 </style>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+       $(document).ready(function() {
+           initializeEditForm();
+       });
+
+       function initializeEditForm() {
+           // Validación de contraseña en tiempo real
+           $('#contrasena').on('keyup', function() {
+               var password = $(this).val();
+               if (password.length > 0) {
+                   updatePasswordStrength(password);
+               } else {
+                   $('#passwordStrength').removeClass('show');
+               }
+           });
+
+           // Validación del formulario antes de enviar
+           $('#editUserForm').on('submit', function(e) {
+               if (!validateEditForm()) {
+                   e.preventDefault();
+                   return false;
+               }
+
+               // Mostrar loading en el botón
+               $('#submitBtn').prop('disabled', true)
+                             .html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+           });
+
+           // Detectar cambios en el formulario
+           var originalFormData = $('#editUserForm').serialize();
+           $('#editUserForm input, #editUserForm select').on('change input', function() {
+               checkForChanges(originalFormData);
+           });
+
+           // Prevenir salida sin guardar
+           var hasUnsavedChanges = false;
+           $('#editUserForm input, #editUserForm select').on('change input', function() {
+               hasUnsavedChanges = true;
+           });
+
+           $('#editUserForm').on('submit', function() {
+               hasUnsavedChanges = false;
+           });
+
+           $(window).on('beforeunload', function(e) {
+               if (hasUnsavedChanges) {
+                   var message = 'Tiene cambios sin guardar. ¿Está seguro de que desea salir?';
+                   e.returnValue = message;
+                   return message;
+               }
+           });
+
+           // Limpiar warning al salir por enlaces seguros
+           $('a[href*="Index"], a[href*="Details"]').on('click', function() {
+               hasUnsavedChanges = false;
+           });
+       }
+
+       function togglePassword(inputId) {
+           var input = document.getElementById(inputId);
+           var icon = document.getElementById('toggleIcon');
+
+           if (input.type === 'password') {
+               input.type = 'text';
+               icon.className = 'fas fa-eye-slash';
+           } else {
+               input.type = 'password';
+               icon.className = 'fas fa-eye';
+           }
+       }
+
+       function updatePasswordStrength(password) {
+           var strengthIndicator = $('#passwordStrength');
+           var strengthFill = $('#strengthFill');
+           var strengthText = $('#strengthText');
+
+           strengthIndicator.addClass('show');
+
+           var strength = calculatePasswordStrength(password);
+           strengthFill.removeClass('weak fair good strong').addClass(strength.class);
+           strengthText.text(strength.text).css('color', strength.color);
+
+           // Validación visual del input
+           if (strength.valid) {
+               $('#contrasena').removeClass('is-invalid').addClass('is-valid');
+           } else {
+               $('#contrasena').removeClass('is-valid').addClass('is-invalid');
+           }
+       }
+
+       function calculatePasswordStrength(password) {
+           var score = 0;
+           var hasLower = /[a-z]/.test(password);
+           var hasUpper = /[A-Z]/.test(password);
+           var hasNumber = /\d/.test(password);
+           var hasSpecial = /[!@@#$%^&*(),.?':{}|<>]/.test(password);
+           var isLongEnough = password.length >= 6;
+           var isVeryLong = password.length >= 12;
+
+           if (isLongEnough) score++;
+           if (hasLower) score++;
+           if (hasUpper) score++;
+           if (hasNumber) score++;
+           if (hasSpecial) score++;
+           if (isVeryLong) score++;
+
+           if (score < 2) {
+               return {
+                   class: 'weak',
+                   text: 'Muy débil',
+                   color: '#dc3545',
+                   valid: false
+               };
+           } else if (score < 3) {
+               return {
+                   class: 'fair',
+                   text: 'Débil',
+                   color: '#ffc107',
+                   valid: isLongEnough
+               };
+           } else if (score < 5) {
+               return {
+                   class: 'good',
+                   text: 'Buena',
+                   color: '#17a2b8',
+                   valid: true
+               };
+           } else {
+               return {
+                   class: 'strong',
+                   text: 'Excelente',
+                   color: '#28a745',
+                   valid: true
+               };
+           }
+       }
+
+       function validateEditForm() {
+           var isValid = true;
+           var messages = [];
+
+           // Validar empleado
+           if (!$('#id_empleado').val()) {
+               messages.push('Debe seleccionar un empleado');
+               isValid = false;
+           }
+
+           // Validar usuario
+           var usuario = $('#usuario').val().trim();
+           if (!usuario) {
+               messages.push('El nombre de usuario es obligatorio');
+               isValid = false;
+           } else if (usuario.length < 3) {
+               messages.push('El nombre de usuario debe tener al menos 3 caracteres');
+               isValid = false;
+           }
+
+           // Validar contraseña solo si se ingresó una nueva
+           var password = $('#contrasena').val();
+           if (password && password.length < 6) {
+               messages.push('La nueva contraseña debe tener al menos 6 caracteres');
+               isValid = false;
+           }
+
+           // Validar rol
+           if (!$('#id_rol').val()) {
+               messages.push('Debe seleccionar un rol');
+               isValid = false;
+           }
+
+           if (!isValid) {
+               showAlert('Por favor corrija los siguientes errores:\n• ' + messages.join('\n• '), 'danger');
+           }
+
+           return isValid;
+       }
+
+       function checkForChanges(originalData) {
+           var currentData = $('#editUserForm').serialize();
+           var hasChanges = currentData !== originalData;
+
+           if (hasChanges) {
+               $('#submitBtn').removeClass('btn-primary-custom')
+                             .addClass('btn-warning-custom')
+                             .html('<i class="fas fa-save"></i> Guardar Cambios *');
+
+               if (!$('.unsaved-changes-warning').length) {
+                   var warningHtml = '<div class="alert alert-warning unsaved-changes-warning" style="animation: fadeIn 0.3s ease-out;">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<strong>Cambios sin guardar:</strong> Hay modificaciones pendientes en el formulario.' +
+                                    '</div>';
+                   $('.form-container').prepend(warningHtml);
+               }
+           } else {
+               $('#submitBtn').removeClass('btn-warning-custom')
+                             .addClass('btn-primary-custom')
+                             .html('<i class="fas fa-save"></i> Guardar Cambios');
+               $('.unsaved-changes-warning').fadeOut().remove();
+           }
+       }
+
+       function resetForm() {
+           if (confirm('¿Está seguro de que desea restablecer todos los cambios? Se perderán todas las modificaciones realizadas.')) {
+               location.reload();
+           }
+       }
+
+       function showAlert(message, type) {
+           var alertClass = type === 'danger' ? 'alert-danger' :
+                          type === 'warning' ? 'alert-warning' : 'alert-success';
+           var icon = type === 'danger' ? 'fa-exclamation-triangle' :
+                     type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+
+           var alertHtml = '<div class="alert '+ alertClass +'" style="animation: fadeIn 0.3s ease-out;">' +
+                          '<i class="fas '+ icon +'"></i>' +
+                          '<strong>' + (type === 'danger' ? 'Error:' : type === 'warning' ? 'Advertencia:' : 'Éxito:') + '</strong> ' + message +
+                          '</div>';
+
+           $('.form-container').prepend(alertHtml);
+
+           // Scroll suave al top para ver la alerta
+           $('html, body').animate({
+               scrollTop: $('.form-container').offset().top - 100
+           }, 500);
+
+           setTimeout(function() {
+               $('.alert').fadeOut(function() {
+                   $(this).remove();
+               });
+           }, type === 'danger' ? 7000 : 5000);
+       }
+
+       // Funciones adicionales para mejorar UX
+       function showSuccessMessage(message) {
+           showAlert(message, 'success');
+       }
+
+       function showErrorMessage(message) {
+           showAlert(message, 'danger');
+       }
+
+       function showWarningMessage(message) {
+           showAlert(message, 'warning');
+       }
+
+       // Auto-save draft (opcional - comentado por ahora)
+       /*
+       function saveDraft() {
+           var formData = $('#editUserForm').serialize();
+           localStorage.setItem('editUserDraft_' + @Model.id_usuario, formData);
+       }
+
+       function loadDraft() {
+           var draftData = localStorage.getItem('editUserDraft_' + @Model.id_usuario);
+           if (draftData) {
+               // Implementar lógica para cargar draft
+               console.log('Draft encontrado:', draftData);
+           }
+       }
+       */
+    </script>
 }

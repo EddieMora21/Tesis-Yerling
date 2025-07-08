@@ -208,7 +208,7 @@
                         <th><i class="fa fa-briefcase" style="margin-right: 8px;"></i>Puesto</th>
                         <th><i class="fa fa-phone" style="margin-right: 8px;"></i>Teléfono</th>
                         <th><i class="fa fa-toggle-on" style="margin-right: 8px;"></i>Estado</th>
-                        <th><i class="fa fa-calendar-check" style="margin-right: 8px;"></i>Vacaciones</th>
+                        
                         <th><i class="fa fa-cogs" style="margin-right: 8px;"></i>Acciones</th>
                     </tr>
                 </thead>
@@ -234,13 +234,7 @@
                                     @Html.DisplayFor(modelItem => item.estado)
                                 </span>
                             </td>
-                            <td>
-                                <a href="@Url.Action("DetalleVacaciones", "Empleados", new { id_empleado = item.id_empleado })"
-                                   class="btn-outline-secondary-custom" style="text-decoration: none;">
-                                    <i class="fa fa-info-circle" style="margin-right: 4px;"></i>
-                                    Ver Detalle
-                                </a>
-                            </td>
+                            
                             <td>
                                 <div class="action-buttons">
                                     @Html.ActionLink("Editar", "Edit", new { id = item.id_empleado }, new { @class = "btn-warning-custom", style = "text-decoration: none;" })

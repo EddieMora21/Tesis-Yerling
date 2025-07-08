@@ -2,59 +2,71 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using SistemaNomina.Models;
+using SistemaNomina.Helpers;
 
 namespace SistemaNomina.Filters
 {
-    // Atributo que puede usarse en clases (controladores) o métodos (acciones)
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class RoleAuthorizeAttribute : AuthorizeAttribute
     {
-        private readonly string[] allowedRoles;
+        private readonly string[] _allowedRoles;
 
-        // Constructor que acepta uno o varios roles
         public RoleAuthorizeAttribute(params string[] roles)
         {
-            this.allowedRoles = roles;
+            _allowedRoles = roles;
         }
 
-        // Método principal que realiza la autorización
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            // Primero verifica si está autenticado
-            if (!httpContext.User.Identity.IsAuthenticated)
-                return false;
-
-            using (var db = new smartbuilding_rhEntities())
+            // 🔍 VALIDACIÓN COMPLETA DE SESIÓN
+            if (!SessionHelper.IsSessionValid())
             {
-                var username = httpContext.User.Identity.Name;
-                var user = db.Usuarios.FirstOrDefault(u => u.usuario == username);
+                return false;
+            }
 
-                // Si no encuentra usuario o rol, acceso denegado
-                if (user == null || user.Roles == null)
+            try
+            {
+                var userRole = httpContext.Session["RolUsuario"]?.ToString();
+
+                if (string.IsNullOrEmpty(userRole))
+                {
                     return false;
+                }
 
-                // Verifica si el rol del usuario está entre los permitidos
-                return allowedRoles.Contains(user.Roles.nombre);
+                // Verificar si el rol del usuario está en los roles permitidos
+                return _allowedRoles.Contains(userRole, StringComparer.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        // Maneja el caso cuando el acceso es denegado
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            if (filterContext.HttpContext.User.Identity.IsAuthenticated)
+            if (!SessionHelper.IsSessionValid())
             {
-                // Usuario autenticado pero sin permisos
+                // 🚨 SESIÓN EXPIRADA - Redirigir al login
+                filterContext.Result = SessionHelper.RedirectToLogin();
+            }
+            else
+            {
+                // 🚫 ACCESO DENEGADO - Mostrar página de error
                 filterContext.Result = new ViewResult
                 {
                     ViewName = "~/Views/Shared/Unauthorized.cshtml"
                 };
             }
-            else
+        }
+
+        public override void OnAuthorization(AuthorizationContext filterContext)
+        {
+            // Renovar sesión si es válida
+            if (SessionHelper.IsSessionValid())
             {
-                // Usuario no autenticado - redirige al login
-                base.HandleUnauthorizedRequest(filterContext);
+                SessionHelper.ValidateAndRenewSession();
             }
+
+            base.OnAuthorization(filterContext);
         }
     }
 }

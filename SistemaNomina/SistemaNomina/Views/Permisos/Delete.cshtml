@@ -1,100 +1,288 @@
 ﻿@model SistemaNomina.Models.Permisos
 
 @{
-    ViewBag.Title = "Delete"; @* Título de la página *@
-    Layout = "~/Views/Shared/_Layout.cshtml"; @* Vista *@
+    ViewBag.Title = "Eliminar Permiso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>  @* Encabezado principal *@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header de Advertencia -->
+            <div class="alert alert-danger d-flex align-items-center mb-4">
+                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                <div>
+                    <h5 class="alert-heading mb-1">¡Atención! Eliminación de Permiso</h5>
+                    <p class="mb-0">Esta acción es <strong>irreversible</strong>. Una vez eliminado, no podrá recuperar este permiso.</p>
+                </div>
+            </div>
 
-<h3>Are you sure you want to delete this?</h3>  @* Confirmación para eliminar *@
+            <!-- Información del Permiso a Eliminar -->
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-trash"></i> Confirmar Eliminación
+                    </h5>
+                </div>
 
-<div>
-    <h4>Permisos</h4>  @* Subtítulo *@
-    <hr />  
-    <dl class="dl-horizontal">
-        @* Lista campos *@
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha)  @* Nombre del campo 'fecha' *@
-        </dt>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <!-- Información del Empleado -->
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-primary mb-3">
+                                    <i class="fas fa-user"></i> Información del Empleado
+                                </h6>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <strong>Nombre:</strong>
+                                        <span class="text-muted">@Model.Empleados.nombre1 @Model.Empleados.apellido1</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <strong>Cédula:</strong>
+                                        <span class="badge bg-secondary">@Model.Empleados.cedula</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <strong>Puesto:</strong>
+                                        <span class="text-muted">@Model.Empleados.Puestos.nombre_puesto</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha)  @* Valor del campo 'fecha' *@
-        </dd>
+                        <!-- Información del Permiso -->
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-info mb-3">
+                                    <i class="fas fa-calendar-check"></i> Detalles del Permiso
+                                </h6>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <strong>Tipo:</strong>
+                                        <span class="badge @(Model.TiposPermiso.con_goce ? "bg-success" : "bg-warning")">
+                                            @Model.TiposPermiso.nombre
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Fecha:</strong>
+                                        <br><span class="text-muted">@Model.fecha.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Horas:</strong>
+                                        <br><span class="text-muted">@Model.horas h</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <strong>Estado:</strong>
+                                        @{
+                                            string estadoClass = Model.Estados.nombre == "Pendiente" ? "warning" :
+                                                                Model.Estados.nombre == "Aprobado" ? "success" : "danger";
+                                        }
+                                        <span class="badge bg-@estadoClass">@Model.Estados.nombre</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.horas)  @* Nombre del campo 'horas' *@
-        </dt>
+                    <!-- Motivo del Permiso -->
+                    <div class="mb-4">
+                        <h6 class="text-secondary">
+                            <i class="fas fa-comment"></i> Motivo del Permiso:
+                        </h6>
+                        <div class="bg-light p-3 rounded">
+                            <p class="mb-0 fst-italic">@Model.motivo</p>
+                        </div>
+                    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.horas)  @* Valor del campo 'horas' *@
-        </dd>
+                    <!-- Información de Gestión -->
+                    <div class="mb-4">
+                        <h6 class="text-dark">
+                            <i class="fas fa-info-circle"></i> Información de Gestión:
+                        </h6>
+                        <div class="row text-muted small">
+                            <div class="col-md-4">
+                                <strong>Creado:</strong> @Model.fecha_creacion.Value.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Actualizado:</strong> @Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Aprobado por:</strong>
+                                @(Model.Usuarios?.usuario ?? "Sin asignar")
+                            </div>
+                        </div>
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.motivo)  @* Nombre del campo 'motivo' *@
-        </dt>
+                    <!-- Advertencias específicas -->
+                    @if (Model.Estados.nombre == "Aprobado")
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <strong>Permiso Aprobado:</strong> Este permiso ya fue aprobado. Eliminarlo puede afectar
+                            reportes y cálculos de nómina existentes.
+                        </div>
+                    }
 
-        <dd>
-            @Html.DisplayFor(model => model.motivo)  @* Valor del campo 'motivo' *@
-        </dd>
+                    @if (Model.fecha < DateTime.Now.Date)
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-calendar-times"></i>
+                            <strong>Permiso Pasado:</strong> La fecha de este permiso ya pasó.
+                            Verifique que no haya sido utilizado en cálculos de nómina.
+                        </div>
+                    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)  @* Nombre del campo 'fecha_creacion' *@
-        </dt>
+                    <!-- Formulario de Confirmación -->
+                    @using (Html.BeginForm("Delete", "Permisos", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.id_permiso)
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)  @* Valor del campo 'fecha_creacion' *@
-        </dd>
+                        <!-- Checkbox de confirmación -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmarEliminacion" required>
+                                <label class="form-check-label fw-bold text-danger" for="confirmarEliminacion">
+                                    Confirmo que entiendo que esta acción es irreversible
+                                </label>
+                            </div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)  @* Nombre del campo 'fecha_actualizacion' *@
-        </dt>
+                        <!-- Motivo de eliminación (opcional) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-sticky-note"></i> Motivo de Eliminación (Opcional):
+                            </label>
+                            <textarea class="form-control" name="motivoEliminacion" rows="3"
+                                      placeholder="Describa el motivo por el cual se elimina este permiso..."></textarea>
+                            <small class="text-muted">Esta información se guardará en el log del sistema</small>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)  @* Valor del campo 'fecha_actualizacion' *@
-        </dd>
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="@Url.Action("Details", new { id = Model.id_permiso })" class="btn btn-outline-info">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left"></i> Cancelar
+                                </a>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-danger" id="btnEliminar" disabled>
+                                    <i class="fas fa-trash"></i> Confirmar Eliminación
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Empleados.cedula)  @* Nombre de la cédula del empleado *@
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula)  @* Valor de la cédula del empleado *@
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Estados.nombre)  @* Nombre del estado del permiso *@
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Estados.nombre)  @* Valor del estado *@
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Usuarios.usuario)  @* Nombre del usuario asociado *@
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Usuarios.usuario)  @* Valor del usuario *@
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TiposPermiso.nombre)  @* Nombre del tipo de permiso *@
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TiposPermiso.nombre)  @* Valor del tipo de permiso *@
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken() @* seguridad *@
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |  @* Botón para confirmar eliminación *@
-            @Html.ActionLink("Back to List", "Index")  @* Enlace para regresar a la lista sin eliminar *@
+            <!-- Información sobre el impacto -->
+            <div class="card mt-4 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle"></i> ¿Qué sucede al eliminar este permiso?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>El registro del permiso se eliminará permanentemente</li>
+                        <li>Se creará una entrada en el log de auditoría</li>
+                        <li>Los reportes históricos ya generados no se verán afectados</li>
+                        <li>Si era un permiso aprobado, puede afectar cálculos futuros de nómina</li>
+                        <li>El empleado no recibirá notificación automática</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Habilitar/deshabilitar botón según checkbox
+            $('#confirmarEliminacion').on('change', function() {
+                $('#btnEliminar').prop('disabled', !this.checked);
+            });
+
+            // Confirmación adicional al enviar
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: '¿Está completamente seguro?',
+                    html: `
+                        <p>Esta acción eliminará <strong>permanentemente</strong> el permiso.</p>
+                        <p class="text-muted">Escriba <strong>ELIMINAR</strong> para confirmar:</p>
+                        <input type="text" id="confirmText" class="swal2-input" placeholder="Escriba ELIMINAR">
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    preConfirm: () => {
+                        const confirmText = document.getElementById('confirmText').value;
+                        if (confirmText !== 'ELIMINAR') {
+                            Swal.showValidationMessage('Debe escribir exactamente "ELIMINAR"');
+                            return false;
+                        }
+                        return true;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Mostrar loading y enviar formulario
+                        Swal.fire({
+                            title: 'Eliminando...',
+                            text: 'Por favor espere',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Enviar formulario
+                        e.target.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .alert-heading {
+            font-weight: 600;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+
+        .card-header.bg-danger {
+            border-bottom: 2px solid #c82333;
+        }
+
+        .card-header.bg-warning {
+            border-bottom: 2px solid #e0a800;
+        }
+
+        .form-check-input:checked {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .fst-italic {
+            font-style: italic;
+        }
+    </style>
+}

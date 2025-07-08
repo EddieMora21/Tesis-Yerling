@@ -1,26 +1,796 @@
 ﻿@{
     ViewBag.Title = "Inicio";
+    var empleado = ViewBag.Empleado as SistemaNomina.Models.Empleados;
+    var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Models.Asistencia;
+    var esFeriado = (bool)(ViewBag.EsFeriado ?? false);
+    var feriado = ViewBag.Feriado as SistemaNomina.Models.Feriados;
 }
 
-<div class="text-center">
-    <!-- Logo -->
-    <img src="~/Content/Imagenes/SBSLogo.png" alt="LogoSBS" style="max-width: 200px; margin-bottom: 20px;" />
+<style>
+    .dashboard-container {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e7e8eb 100%);
+        min-height: 100vh;
+        padding: 20px 0;
+        margin: -15px -15px 0 -15px;
+    }
 
-    <!-- Título -->
-    <h1 class="mb-3" style="color: #221d42; font-weight: 700;">Bienvenido al Sistema SBS</h1>
+    .welcome-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(34, 29, 66, 0.3);
+    }
 
-    <!-- Mensaje -->
-    <p class="lead mb-4" style="color: #1788ca;">
-        Gestiona fácilmente todos los procesos de recursos humanos y nómina desde un solo lugar.
-    </p>
+    .logo-container {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-    <!-- Botones -->
-    <div>
-        <a href="/Empleados" class="btn btn-principal me-3 px-4 py-2 fs-5">
-            <i class="bi bi-people-fill me-2"></i> Empleados
-        </a>
-        <a href="/Nominas" class="btn btn-secundario px-4 py-2 fs-5">
-            <i class="bi bi-cash-stack me-2"></i> Nóminas
-        </a>
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+            /* REMOVIDO: filter: brightness(0) invert(1); */
+            opacity: 0.9;
+            display: block;
+            margin: 0 auto;
+            /* Agregamos un fondo semi-transparente para que se vea bien */
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .welcome-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .employee-info {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 25px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(34, 29, 66, 0.2);
+        }
+
+    .marcar-card {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+    }
+
+        .marcar-card:hover {
+            background: linear-gradient(135deg, #218838 0%, #1e7e6d 100%);
+        }
+
+    .card-header {
+        padding: 25px 25px 20px 25px;
+        border-bottom: 1px solid rgba(231, 232, 235, 0.5);
+    }
+
+    .marcar-card .card-header {
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .card-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #1788ca;
+    }
+
+    .marcar-card .card-icon {
+        color: rgba(255,255,255,0.9);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #221d42;
+        margin-bottom: 10px;
+    }
+
+    .marcar-card .card-title {
+        color: white;
+    }
+
+    .card-description {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+    .marcar-card .card-description {
+        color: rgba(255,255,255,0.9);
+    }
+
+    .card-body {
+        padding: 0 25px 25px 25px;
+    }
+
+    .btn-card-primary {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 15px 25px;
+        color: white;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .btn-card-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-card-accent {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 15px 25px;
+        color: white;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .btn-card-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-marcar {
+        position: relative;
+        padding: 18px 35px;
+        font-size: 18px;
+        font-weight: 700;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+        .btn-marcar:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-marcar:hover:before {
+            left: 100%;
+        }
+
+    .btn-entrada {
+        background: white;
+        color: #28a745;
+        border: 2px solid rgba(255,255,255,0.3);
+        box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+    }
+
+        .btn-entrada:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.4);
+        }
+
+    .btn-salida {
+        background: white;
+        color: #dc3545;
+        border: 2px solid rgba(255,255,255,0.3);
+        box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+    }
+
+        .btn-salida:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.4);
+        }
+
+    .btn-marcar:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    .time-widget {
+        text-align: center;
+        padding: 20px;
+        background: rgba(23, 136, 202, 0.1);
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+
+    .current-time {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #221d42;
+        font-family: 'Courier New', monospace;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .current-date {
+        font-size: 1.1rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .status-info {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        border-left: 4px solid #17a2b8;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        color: #0c5460;
+    }
+
+    .feriado-alert {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        color: #856404;
+    }
+
+    .asistencia-completa {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border-radius: 12px;
+        color: #155724;
+        border: 2px solid #28a745;
+        margin-bottom: 15px;
+    }
+
+    .info-no-disponible {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border-radius: 12px;
+        color: #721c24;
+        border: 2px solid #dc3545;
+        margin-bottom: 15px;
+    }
+
+    .loading-indicator {
+        display: none;
+        text-align: center;
+        padding: 15px;
+        color: rgba(255,255,255,0.8);
+    }
+
+    .spinner {
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top: 3px solid white;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px auto;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .success-message {
+        background: rgba(40, 167, 69, 0.2);
+        border: 1px solid #28a745;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+        color: #28a745;
+        display: none;
+        text-align: center;
+    }
+
+    .error-message {
+        background: rgba(220, 53, 69, 0.2);
+        border: 1px solid #dc3545;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+        color: #dc3545;
+        display: none;
+        text-align: center;
+    }
+
+    .navigation-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .nav-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 2px solid #e7e8eb;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+
+        .nav-card:hover {
+            border-color: #1788ca;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+
+    .nav-icon {
+        font-size: 2.5rem;
+        color: #1788ca;
+        margin-bottom: 15px;
+    }
+
+    .nav-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #221d42;
+        margin-bottom: 8px;
+    }
+
+    .nav-description {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .link-asistencias {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 8px;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+        .link-asistencias:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            padding: 10px 0;
+            margin: -15px -10px 0 -10px;
+        }
+
+        .welcome-header {
+            padding: 25px 20px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+        }
+
+        .quick-actions {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .current-time {
+            font-size: 2rem;
+        }
+
+        .navigation-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .nav-card {
+            padding: 15px;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .btn-marcar {
+            font-size: 16px;
+            padding: 15px 25px;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="container" style="max-width: 1200px;">
+        <!-- Header de Bienvenida -->
+        <div class="welcome-header">
+            <div class="logo-container">
+                <img src="~/logo.jpeg" alt="Smart Building Solutions" />
+            </div>
+            <h1 class="welcome-title">Bienvenido al Sistema SBS</h1>
+            <p class="welcome-subtitle">Gestión integral de recursos humanos y nómina</p>
+
+            @if (empleado != null)
+            {
+                <div class="employee-info">
+                    <h4 style="margin-bottom: 10px;">
+                        <i class="fa fa-user" style="margin-right: 10px;"></i>
+                        @(empleado.nombre1 ?? "") @(empleado.apellido1 ?? "")
+                    </h4>
+                    <p style="margin-bottom: 5px; opacity: 0.9;">
+                        <i class="fa fa-briefcase" style="margin-right: 8px;"></i>
+                        @(empleado.Puestos?.nombre_puesto ?? "Sin puesto asignado")
+                    </p>
+                    <p style="margin: 0; opacity: 0.8;">
+                        <i class="fa fa-building" style="margin-right: 8px;"></i>
+                        @(empleado.Puestos?.Departamentos?.nombre ?? "Sin departamento asignado")
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="employee-info">
+                    <h4 style="margin-bottom: 10px;">
+                        <i class="fa fa-user" style="margin-right: 10px;"></i>
+                        Usuario del Sistema
+                    </h4>
+                    <p style="margin: 0; opacity: 0.8;">
+                        <i class="fa fa-info-circle" style="margin-right: 8px;"></i>
+                        Información de empleado no disponible
+                    </p>
+                </div>
+            }
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="quick-actions">
+            <!-- Card de Marcar Asistencia -->
+            <div class="action-card marcar-card">
+                <div class="card-header">
+                    <div class="text-center">
+                        <i class="fa fa-clock card-icon pulse"></i>
+                        <h3 class="card-title">Control de Asistencia</h3>
+                        <p class="card-description">Marca tu entrada y salida desde aquí</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (esFeriado && feriado != null)
+                    {
+                        <div class="feriado-alert">
+                            <i class="fa fa-calendar" style="margin-right: 8px;"></i>
+                            <strong>Día Feriado:</strong> @feriado.nombre
+                        </div>
+                    }
+
+                    <div class="time-widget">
+                        <div class="current-time" id="currentTime"></div>
+                        <div class="current-date" id="currentDate"></div>
+                    </div>
+
+                    @if (empleado != null)
+                    {
+                        if (asistenciaHoy != null)
+                        {
+                            <div class="status-info">
+                                <h5 style="margin-bottom: 10px;">
+                                    <i class="fa fa-info-circle" style="margin-right: 8px;"></i>
+                                    Estado de Hoy
+                                </h5>
+                                @if (asistenciaHoy.hora_entrada.HasValue)
+                                {
+                                    <p style="margin-bottom: 5px;">
+                                        <strong>Entrada:</strong> @asistenciaHoy.hora_entrada.Value.ToString(@"hh\:mm")
+                                    </p>
+                                }
+                                @if (asistenciaHoy.hora_salida.HasValue)
+                                {
+                                    <p style="margin: 0;">
+                                        <strong>Salida:</strong> @asistenciaHoy.hora_salida.Value.ToString(@"hh\:mm")
+                                    </p>
+                                }
+                            </div>
+                        }
+
+                        <!-- Botones de Marcar -->
+                        if (asistenciaHoy == null)
+                        {
+                            <button class="btn-marcar btn-entrada" id="btnEntrada">
+                                <i class="fa fa-sign-in" style="margin-right: 10px; font-size: 20px;"></i>
+                                Marcar Entrada
+                            </button>
+                        }
+                        else if (!asistenciaHoy.hora_salida.HasValue)
+                        {
+                            <button class="btn-marcar btn-salida" id="btnSalida">
+                                <i class="fa fa-sign-out" style="margin-right: 10px; font-size: 20px;"></i>
+                                Marcar Salida
+                            </button>
+                        }
+                        else
+                        {
+                            <div class="asistencia-completa">
+                                <i class="fa fa-check-circle" style="margin-right: 8px; font-size: 24px;"></i>
+                                <h5 style="margin: 10px 0 5px 0;">¡Asistencia Completa!</h5>
+                                <p style="margin: 0; font-size: 14px;">Has registrado tu entrada y salida del día</p>
+                            </div>
+                        }
+
+                        <!-- Indicador de carga -->
+                        <div class="loading-indicator" id="loading">
+                            <div class="spinner"></div>
+                            <p>Registrando en la base de datos...</p>
+                        </div>
+
+                        <!-- Mensajes de respuesta -->
+                        <div class="success-message" id="successMessage">
+                            <i class="fa fa-check-circle"></i> <span id="successText"></span>
+                        </div>
+
+                        <div class="error-message" id="errorMessage">
+                            <i class="fa fa-exclamation-triangle"></i> <span id="errorText"></span>
+                        </div>
+
+                        <a href="@Url.Action("Index", "Asistencia")" class="link-asistencias">
+                            <i class="fa fa-list" style="margin-right: 8px;"></i>
+                            Ver Todas las Asistencias
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="info-no-disponible">
+                            <i class="fa fa-exclamation-triangle" style="margin-right: 8px; font-size: 20px;"></i>
+                            <h5 style="margin: 10px 0 5px 0;">Información No Disponible</h5>
+                            <p style="margin: 0; font-size: 14px;">No se pudo cargar la información del empleado</p>
+                        </div>
+                        <a href="@Url.Action("Login", "Usuarios")" class="link-asistencias" style="background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #721c24;">
+                            <i class="fa fa-sign-in" style="margin-right: 8px;"></i>
+                            Verificar Sesión
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Card de Gestión de Empleados -->
+            <div class="action-card">
+                <div class="card-header">
+                    <div class="text-center">
+                        <i class="fa fa-users card-icon"></i>
+                        <h3 class="card-title">Gestión de Empleados</h3>
+                        <p class="card-description">Administra la información del personal</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("Index", "Empleados")" class="btn-card-primary">
+                        <i class="fa fa-users" style="margin-right: 10px;"></i>
+                        Ver Empleados
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card de Nóminas -->
+            <div class="action-card">
+                <div class="card-header">
+                    <div class="text-center">
+                        <i class="fa fa-money-bill-wave card-icon"></i>
+                        <h3 class="card-title">Gestión de Nóminas</h3>
+                        <p class="card-description">Procesa y administra los pagos</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("Index", "Nominas")" class="btn-card-accent">
+                        <i class="fa fa-calculator" style="margin-right: 10px;"></i>
+                        Ver Nóminas
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación Rápida -->
+        <div class="navigation-grid">
+            <a href="@Url.Action("Index", "Vacaciones")" class="nav-card">
+                <i class="fa fa-umbrella-beach nav-icon"></i>
+                <div class="nav-title">Vacaciones</div>
+                <p class="nav-description">Solicitudes y gestión de vacaciones</p>
+            </a>
+
+            <a href="@Url.Action("Index", "HorasExtras")" class="nav-card">
+                <i class="fa fa-clock nav-icon"></i>
+                <div class="nav-title">Horas Extras</div>
+                <p class="nav-description">Control de tiempo adicional</p>
+            </a>
+
+            <a href="@Url.Action("Index", "Incapacidades")" class="nav-card">
+                <i class="fa fa-user-injured nav-icon"></i>
+                <div class="nav-title">Incapacidades</div>
+                <p class="nav-description">Registro de ausencias médicas</p>
+            </a>
+
+            <a href="@Url.Action("Index", "Reportes")" class="nav-card">
+                <i class="fa fa-chart-bar nav-icon"></i>
+                <div class="nav-title">Reportes</div>
+                <p class="nav-description">Informes y estadísticas</p>
+            </a>
+
+            <a href="@Url.Action("Index", "Aguinaldo")" class="nav-card">
+                <i class="fa fa-gift nav-icon"></i>
+                <div class="nav-title">Aguinaldo</div>
+                <p class="nav-description">Cálculo de prestaciones</p>
+            </a>
+
+            <a href="@Url.Action("Index", "Liquidaciones")" class="nav-card">
+                <i class="fa fa-file-invoice nav-icon"></i>
+                <div class="nav-title">Liquidaciones</div>
+                <p class="nav-description">Cálculos de finiquitos</p>
+            </a>
+        </div>
     </div>
 </div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Actualizar reloj
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // Eventos de botones
+            $('#btnEntrada').click(function () {
+                marcarAsistencia('entrada');
+            });
+
+            $('#btnSalida').click(function () {
+                marcarAsistencia('salida');
+            });
+        });
+
+        function updateClock() {
+            var now = new Date();
+            var time = now.toLocaleTimeString('es-CR', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            var date = now.toLocaleDateString('es-CR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            $('#currentTime').text(time);
+            $('#currentDate').text(date.charAt(0).toUpperCase() + date.slice(1));
+        }
+
+        function marcarAsistencia(tipo) {
+            var url = tipo === 'entrada' ? '@Url.Action("MarcarEntrada", "Home")' : '@Url.Action("MarcarSalida", "Home")';
+            var btn = tipo === 'entrada' ? '#btnEntrada' : '#btnSalida';
+
+            $('#successMessage, #errorMessage').hide();
+            $(btn).prop('disabled', true);
+            $('#loading').show();
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    $('#loading').hide();
+                    if (response.success) {
+                        $('#successText').text(response.message + ' a las ' + response.hora);
+                        $('#successMessage').fadeIn();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        $('#errorText').text(response.message);
+                        $('#errorMessage').fadeIn();
+                        $(btn).prop('disabled', false);
+                    }
+                },
+                error: function () {
+                    $('#loading').hide();
+                    $('#errorText').text('Error de conexión');
+                    $('#errorMessage').fadeIn();
+                    $(btn).prop('disabled', false);
+                }
+            });
+        }
+    </script>
+}

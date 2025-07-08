@@ -1,97 +1,234 @@
 ﻿@model IEnumerable<SistemaNomina.Models.Permisos>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Gestión de Permisos";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    @* vista *@
 }
 
-<h2>Index</h2>
-@* Título  *@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Header Section -->
+            <div class="card mb-4 shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h4 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-calendar-check"></i> Gestión de Permisos
+                    </h4>
+                    <a href="@Url.Action("Create")" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Nuevo Permiso
+                    </a>
+                </div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-    @* Enlace creación *@
-</p>
+                <!-- Filtros -->
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Filtrar por Estado:</label>
+                            <select class="form-select" id="filtroEstado">
+                                <option value="">Todos los estados</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Aprobado">Aprobado</option>
+                                <option value="Rechazado">Rechazado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Filtrar por Tipo:</label>
+                            <select class="form-select" id="filtroTipo">
+                                <option value="">Todos los tipos</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Buscar:</label>
+                            <input type="text" class="form-control" id="buscarPermiso" placeholder="Buscar por empleado o motivo...">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-outline-secondary" onclick="limpiarFiltros()">
+                                <i class="fas fa-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<table class="table">
-    <tr>
-        @* Encabezados de la tabla  *@
-        <th>
-            @Html.DisplayNameFor(model => model.fecha)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.horas)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.motivo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Empleados.cedula)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Estados.nombre)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Usuarios.usuario)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TiposPermiso.nombre)
-        </th>
-        <th></th> @* Columna vacía para los botones de acción *@
-    </tr>
+            <!-- Tabla de Permisos -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table-hover table" id="tablaPermisos">
+                            <thead class="table-light">
+                                <tr>
+                                    <th><i class="fas fa-user"></i> Empleado</th>
+                                    <th><i class="fas fa-calendar-day"></i> Fecha</th>
+                                    <th><i class="fas fa-clock"></i> Horas</th>
+                                    <th><i class="fas fa-tag"></i> Tipo</th>
+                                    <th><i class="fas fa-comment"></i> Motivo</th>
+                                    <th><i class="fas fa-traffic-light"></i> Estado</th>
+                                    <th><i class="fas fa-user-check"></i> Aprobado por</th>
+                                    <th><i class="fas fa-cogs"></i> Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-2">
+                                                    @item.Empleados.nombre1.Substring(0, 1)
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">@item.Empleados.nombre1 @item.Empleados.apellido1</div>
+                                                    <small class="text-muted">@item.Empleados.cedula</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                @item.fecha.ToString("dd/MM/yyyy")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">@item.horas h</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge @(item.TiposPermiso.con_goce ? "bg-success" : "bg-warning")">
+                                                @item.TiposPermiso.nombre
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="text-truncate" style="max-width: 150px;" title="@item.motivo">
+                                                @(item.motivo?.Length > 30 ? item.motivo.Substring(0, 30) + "..." : item.motivo)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string estadoClass = "";
+                                                string iconoEstado = "";
+                                                switch (item.Estados.nombre)
+                                                {
+                                                    case "Pendiente":
+                                                        estadoClass = "bg-warning";
+                                                        iconoEstado = "fas fa-clock";
+                                                        break;
+                                                    case "Aprobado":
+                                                        estadoClass = "bg-success";
+                                                        iconoEstado = "fas fa-check";
+                                                        break;
+                                                    case "Rechazado":
+                                                        estadoClass = "bg-danger";
+                                                        iconoEstado = "fas fa-times";
+                                                        break;
+                                                }
+                                            }
+                                            <span class="badge @estadoClass">
+                                                <i class="@iconoEstado"></i> @item.Estados.nombre
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (item.Usuarios != null)
+                                            {
+                                                <small class="text-muted">@item.Usuarios.usuario</small>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">Sin asignar</small>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="@Url.Action("Details", new { id = item.id_permiso })"
+                                                   class="btn btn-outline-info" title="Ver detalles">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="@Url.Action("Edit", new { id = item.id_permiso })"
+                                                   class="btn btn-outline-primary" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="@Url.Action("Delete", new { id = item.id_permiso })"
+                                                   class="btn btn-outline-danger" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha)
-                @* Muestra la fecha del permiso *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.horas)
-                @* Muestra la cantidad de horas solicitadas *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.motivo)
-                @* Muestra el motivo del permiso *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_creacion)
-                @* Muestra la fecha en que se creó el registro *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
-                @* Muestra la fecha de la última modificación *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Empleados.cedula)
-                @* Muestra la cédula del empleado que solicitó el permiso *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estados.nombre)
-                @* Muestra el estado del permiso  *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Usuarios.usuario)
-                @* Muestra el nombre del usuario que registró el permiso *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TiposPermiso.nombre)
-                @* Muestra el tipo de permiso  *@
-            </td>
-            <td>
-                @* Enlaces para editar, ver detalles o eliminar el permiso *@
-                @Html.ActionLink("Edit", "Edit", new { id = item.id_permiso }) |
-                @Html.ActionLink("Details", "Details", new { id = item.id_permiso }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id_permiso })
-            </td>
-        </tr>
-    }
-</table>
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Inicializar DataTable para búsqueda y paginación
+            $('#tablaPermisos').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                },
+                "pageLength": 10,
+                "order": [[1, "desc"]], // Ordenar por fecha descendente
+                "columnDefs": [
+                    { "orderable": false, "targets": 7 } // Desactivar ordenamiento en columna de acciones
+                ]
+            });
+
+            // Filtros personalizados
+            $('#filtroEstado, #filtroTipo').on('change', function() {
+                aplicarFiltros();
+            });
+
+            $('#buscarPermiso').on('keyup', function() {
+                var table = $('#tablaPermisos').DataTable();
+                table.search(this.value).draw();
+            });
+        });
+
+        function aplicarFiltros() {
+            var estado = $('#filtroEstado').val();
+            var tipo = $('#filtroTipo').val();
+            var table = $('#tablaPermisos').DataTable();
+
+            // Aplicar filtros combinados
+            table.columns(5).search(estado).draw();
+            table.columns(3).search(tipo).draw();
+        }
+
+        function limpiarFiltros() {
+            $('#filtroEstado, #filtroTipo, #buscarPermiso').val('');
+            var table = $('#tablaPermisos').DataTable();
+            table.search('').columns().search('').draw();
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #5a5c69;
+        }
+
+        .btn-group-sm > .btn {
+            padding: 0.25rem 0.5rem;
+        }
+
+        .text-truncate {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+}

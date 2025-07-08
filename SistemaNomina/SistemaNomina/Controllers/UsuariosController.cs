@@ -154,6 +154,36 @@ namespace SistemaNomina.Controllers
             }
             return View(usuario);
         }
+        // 🔄 RENOVAR SESIÓN VÍA AJAX
+        [HttpPost]
+        public ActionResult RenewSession()
+        {
+            try
+            {
+                if (SessionHelper.IsSessionValid())
+                {
+                    // 🔧 USAR EL MÉTODO MEJORADO
+                    bool renewed = SessionHelper.RenewAuthenticationTicket();
+
+                    if (renewed)
+                    {
+                        return Json(new { success = true, message = "Sesión renovada" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "No se pudo renovar la sesión" });
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, sessionExpired = true });
+                }
+            }
+            catch
+            {
+                return Json(new { success = false, sessionExpired = true });
+            }
+        }
 
         // GET: Usuarios/Create
         [RoleAuthorize("Admin")]
@@ -337,12 +367,26 @@ namespace SistemaNomina.Controllers
         }
 
         [Authorize]
-        public ActionResult CambiarContrasena(int id)
+        public ActionResult CambiarContrasena(int? id)
         {
-            var currentUserId = (int?)Session["UserId"];
+            // Si no hay ID, obtenerlo de la sesión
+            if (!id.HasValue)
+            {
+                var currentUserId = (int?)Session["UserId"];
+                if (currentUserId.HasValue)
+                {
+                    id = currentUserId.Value;
+                }
+                else
+                {
+                    return RedirectToAction("Login");
+                }
+            }
+
+            var currentUserIdSession = (int?)Session["UserId"];
             var currentUserRole = Session["RolUsuario"] as string;
 
-            if (id != currentUserId && currentUserRole != "Admin" && currentUserRole != "IT")
+            if (id != currentUserIdSession && currentUserRole != "Admin" && currentUserRole != "IT")
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
@@ -361,54 +405,85 @@ namespace SistemaNomina.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult CambiarContrasena(int id, string nuevaContrasena, string confirmarContrasena)
+        public ActionResult CambiarContrasena(int? id, string nuevaContrasena, string confirmarContrasena)
         {
-            var currentUserId = (int?)Session["UserId"];
-            var currentUserRole = Session["RolUsuario"] as string;
-
-            if (id != currentUserId && currentUserRole != "Admin" && currentUserRole != "IT")
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                // Validar que el ID no sea null
+                if (!id.HasValue)
+                {
+                    ViewBag.Error = "Error: ID de usuario no válido.";
+                    return View();
+                }
+
+                var currentUserId = (int?)Session["UserId"];
+                var currentUserRole = Session["RolUsuario"] as string;
+
+                // Verificar permisos
+                if (id != currentUserId && currentUserRole != "Admin" && currentUserRole != "IT")
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
+
+                // Validar que las contraseñas no estén vacías
+                if (string.IsNullOrEmpty(nuevaContrasena) || string.IsNullOrEmpty(confirmarContrasena))
+                {
+                    ViewBag.Error = "Por favor, complete todos los campos.";
+                    ViewBag.id_usuario = id.Value;
+                    return View();
+                }
+
+                // Validar que las contraseñas coincidan
+                if (nuevaContrasena != confirmarContrasena)
+                {
+                    ViewBag.Error = "Las contraseñas no coinciden.";
+                    ViewBag.id_usuario = id.Value;
+                    return View();
+                }
+
+                // 🔐 VALIDAR POLÍTICA DE CONTRASEÑAS
+                if (!SecurityHelper.IsValidPassword(nuevaContrasena))
+                {
+                    ViewBag.Error = "La contraseña debe tener al menos 6 caracteres, incluyendo letras y números.";
+                    ViewBag.id_usuario = id.Value;
+                    return View();
+                }
+
+                var usuario = db.Usuarios.Find(id.Value);
+                if (usuario == null)
+                {
+                    ViewBag.Error = "Usuario no encontrado.";
+                    return View();
+                }
+
+                // 🔐 ENCRIPTAR NUEVA CONTRASEÑA
+                usuario.contrasena = SecurityHelper.EncryptPassword(nuevaContrasena);
+                usuario.primer_ingreso = false;
+                usuario.fecha_actualizacion = DateTime.Now;
+
+                db.Entry(usuario).State = EntityState.Modified;
+                db.SaveChanges();
+
+                // 📋 LOG AUTOMÁTICO - Cambio de contraseña
+                BitacoraHelper.RegistrarCambioContrasena(usuario.id_usuario, usuario.usuario);
+
+                ViewBag.Success = "Contraseña cambiada exitosamente.";
+                ViewBag.id_usuario = id.Value;
+
+                // Si es el primer ingreso, redirigir al home después de un delay
+                if (usuario.primer_ingreso == false && id == currentUserId)
+                {
+                    ViewBag.RedirectToHome = true;
+                }
+
+                return View();
             }
-
-            if (nuevaContrasena != confirmarContrasena)
+            catch (Exception ex)
             {
-                ViewBag.Error = "Las contraseñas no coinciden.";
+                ViewBag.Error = "Error interno: " + ex.Message;
                 ViewBag.id_usuario = id;
                 return View();
             }
-
-            // 🔐 VALIDAR POLÍTICA DE CONTRASEÑAS
-            if (!SecurityHelper.IsValidPassword(nuevaContrasena))
-            {
-                ViewBag.Error = "La contraseña debe tener al menos 6 caracteres, incluyendo letras y números.";
-                ViewBag.id_usuario = id;
-                return View();
-            }
-
-            var usuario = db.Usuarios.Find(id);
-            if (usuario == null)
-            {
-                return HttpNotFound();
-            }
-
-            // 🔐 ENCRIPTAR NUEVA CONTRASEÑA
-            usuario.contrasena = SecurityHelper.EncryptPassword(nuevaContrasena);
-            usuario.primer_ingreso = false;
-            usuario.fecha_actualizacion = DateTime.Now;
-
-            db.Entry(usuario).State = EntityState.Modified;
-            db.SaveChanges();
-
-            // 📋 LOG AUTOMÁTICO - Cambio de contraseña
-            BitacoraHelper.RegistrarCambioContrasena(usuario.id_usuario, usuario.usuario);
-
-            if (id == currentUserId)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
