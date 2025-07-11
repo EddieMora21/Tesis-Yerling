@@ -78,6 +78,89 @@ namespace SistemaNomina.Controllers
         }
 
         // 🔥 NUEVA: Solicitar vacaciones (caso de uso 1)
+
+        // Método específico para que empleados vean sus días disponibles
+        [Authorize]
+        public ActionResult MisDiasDisponibles()
+        {
+            try
+            {
+                var currentUserId = (int?)Session["UserId"];
+                if (!currentUserId.HasValue)
+                {
+                    return RedirectToAction("Login", "Usuarios");
+                }
+
+                // Buscar empleado del usuario actual
+                var usuario = db.Usuarios.Include(u => u.Empleados)
+                                        .Include(u => u.Empleados.Puestos)
+                                        .Include(u => u.Empleados.Puestos.Departamentos)
+                                        .FirstOrDefault(u => u.id_usuario == currentUserId.Value);
+
+                if (usuario?.Empleados == null)
+                {
+                    ViewBag.Error = "No se encontró información del empleado asociado.";
+                    return View("Error");
+                }
+
+                var empleado = usuario.Empleados;
+
+                // Obtener o crear registro de vacaciones automáticamente
+                var vacacionesActuales = ObtenerOCrearVacaciones(empleado.id_empleado);
+
+                // Calcular información adicional
+                var diasDisfrutados = vacacionesActuales.dias_disfrutados ?? 0;
+                var diasDisponibles = vacacionesActuales.dias_disponibles - diasDisfrutados;
+                var antiguedadEnDias = (DateTime.Now - empleado.fecha_ingreso).Days;
+                var antiguedadEnAnios = Math.Floor(antiguedadEnDias / 365.25);
+                var antiguedadEnMeses = Math.Floor((antiguedadEnDias % 365.25) / 30.44);
+
+                // Obtener solicitudes pendientes
+                var solicitudesPendientes = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
+                    .Where(s => s.id_vacacion == vacacionesActuales.id_vacacion)
+                    .Where(s => s.Estados.nombre == "Pendiente" && s.Estados.modulo == "Vacaciones")
+                    .OrderByDescending(s => s.fecha_solicitud)
+                    .ToList();
+
+                // Obtener últimas solicitudes aprobadas
+                var solicitudesAprobadas = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
+                    .Where(s => s.id_vacacion == vacacionesActuales.id_vacacion)
+                    .Where(s => s.Estados.nombre == "Aprobado" && s.Estados.modulo == "Vacaciones")
+                    .OrderByDescending(s => s.fecha_solicitud)
+                    .Take(5)
+                    .ToList();
+
+                // Preparar ViewBag con toda la información
+                ViewBag.NombreEmpleado = $"{empleado.nombre1} {empleado.apellido1}";
+                ViewBag.Cedula = empleado.cedula;
+                ViewBag.Departamento = empleado.Puestos?.Departamentos?.nombre ?? "No asignado";
+                ViewBag.Puesto = empleado.Puestos?.nombre_puesto ?? "No asignado";
+                ViewBag.FechaIngreso = empleado.fecha_ingreso.ToString("dd/MM/yyyy");
+                ViewBag.AntiguedadAnios = antiguedadEnAnios;
+                ViewBag.AntiguedadMeses = antiguedadEnMeses;
+                ViewBag.DiasDisponibles = diasDisponibles;
+                ViewBag.DiasDisfrutados = diasDisfrutados;
+                ViewBag.DiasAcumulados = vacacionesActuales.dias_disponibles;
+                ViewBag.Periodo = vacacionesActuales.periodo;
+                ViewBag.SolicitudesPendientes = solicitudesPendientes;
+                ViewBag.SolicitudesAprobadas = solicitudesAprobadas;
+
+                // 📋 LOG AUTOMÁTICO
+                BitacoraHelper.RegistrarAccion("CONSULTAR_DIAS_VACACIONES",
+                    $"Empleado {empleado.nombre1} {empleado.apellido1} consultó sus días de vacaciones disponibles",
+                    currentUserId.Value);
+
+                return View(vacacionesActuales);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en MisDiasDisponibles: {ex.Message}");
+                ViewBag.Error = "Ocurrió un error al cargar su información de vacaciones.";
+                return View("Error");
+            }
+        }
         public ActionResult SolicitarVacaciones()
         {
             try

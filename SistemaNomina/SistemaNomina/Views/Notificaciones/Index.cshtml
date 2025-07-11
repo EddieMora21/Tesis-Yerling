@@ -1,0 +1,735 @@
+﻿@* Views/Notificaciones/Index.cshtml *@
+@model List<SistemaNomina.Models.Notificaciones>
+
+@{
+    ViewBag.Title = "Mis Notificaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .notifications-header {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 15px 15px;
+            margin: -2rem -2rem 2rem -2rem;
+            box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+        }
+
+        .notification-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(34, 29, 66, 0.1);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--celeste);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 29, 66, 0.15);
+        }
+
+        .notification-card.unread {
+            border-left-color: var(--amarillo);
+            background: linear-gradient(90deg, rgba(250, 182, 27, 0.05) 0%, white 100%);
+        }
+
+        .notification-card.read {
+            opacity: 0.8;
+            border-left-color: var(--gris-claro);
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-message {
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .notification-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #8a8a8a;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-notification {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn-mark-read {
+            background-color: var(--celeste);
+            color: white;
+        }
+
+        .btn-mark-read:hover {
+            background-color: var(--azul-oscuro);
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-details {
+            background-color: var(--amarillo);
+            color: var(--azul-oscuro);
+        }
+
+        .btn-details:hover {
+            background-color: #e5a515;
+            color: var(--azul-oscuro);
+            transform: translateY(-1px);
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, var(--amarillo) 0%, #ffc843 100%);
+            color: var(--azul-oscuro);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-urgent {
+            border-left-color: #dc3545 !important;
+            animation: pulse-urgent 2s infinite;
+        }
+
+        .priority-high {
+            border-left-color: #fd7e14 !important;
+        }
+
+        .priority-low {
+            opacity: 0.7;
+        }
+
+        @keyframes pulse-urgent {
+            0%, 100% { border-left-color: #dc3545; }
+            50% { border-left-color: #ff6b7a; }
+        }
+
+        .empty-notifications {
+            text-align: center;
+            padding: 3rem;
+            color: #8a8a8a;
+        }
+
+        .empty-notifications i {
+            font-size: 4rem;
+            color: var(--gris-claro);
+            margin-bottom: 1rem;
+        }
+
+        .stats-cards {
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(34, 29, 66, 0.1);
+            border-top: 3px solid var(--celeste);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 29, 66, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+        }
+
+        .filters-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 15px rgba(34, 29, 66, 0.1);
+            border-top: 3px solid var(--amarillo);
+        }
+
+        .custom-select, .custom-input {
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .custom-select:focus, .custom-input:focus {
+            border-color: var(--celeste);
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        }
+
+        .remitente-info {
+            font-size: 0.8rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .notification-card .d-flex {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .notification-icon {
+                margin: 0 auto 1rem;
+            }
+
+            .notification-meta {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .notification-actions {
+                justify-content: center;
+            }
+
+            .stats-cards .row > div {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+}
+
+<div class="notifications-header">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-bell fa-2x"></i>
+                </div>
+                <div>
+                    <h2 class="mb-1">Mis Notificaciones</h2>
+                    <p class="mb-0 opacity-75">Centro de mensajes y alertas del sistema</p>
+                </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/Notificaciones/NoLeidas" class="btn btn-outline-light">
+                    <i class="fas fa-filter me-2"></i>Solo No Le�das
+                </a>
+                <button type="button" class="btn btn-outline-light" id="markAllRead">
+                    <i class="fas fa-check-double me-2"></i>
+                    <span class="d-none d-sm-inline">Marcar todas como le�das</span>
+                </button>
+                <button type="button" class="btn btn-warning" id="refreshNotifications">
+                    <i class="fas fa-sync me-2"></i>
+                    <span class="d-none d-sm-inline">Actualizar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Estad�sticas -->
+    <div class="row stats-cards">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number" id="totalNotifications">@Model.Count</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number text-warning" id="unreadNotifications">@Model.Count(n => !n.leido)</div>
+                <div class="stat-label">No Le�das</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number text-success" id="readNotifications">@Model.Count(n => n.leido)</div>
+                <div class="stat-label">Le�das</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number text-info" id="todayNotifications">@Model.Count(n => n.fecha_creacion.Date == DateTime.Today)</div>
+                <div class="stat-label">Hoy</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-card">
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-filter me-2"></i>Filtrar por tipo
+                </label>
+                <select class="form-select custom-select" id="filterType">
+                    <option value="">Todos los tipos</option>
+                    <option value="solicitud">Solicitudes</option>
+                    <option value="aprobacion">Aprobaciones</option>
+                    <option value="rechazo">Rechazos</option>
+                    <option value="sistema">Sistema</option>
+                    <option value="informativa">Informativas</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Filtrar por prioridad
+                </label>
+                <select class="form-select custom-select" id="filterPriority">
+                    <option value="">Todas las prioridades</option>
+                    <option value="urgente">Urgente</option>
+                    <option value="alta">Alta</option>
+                    <option value="normal">Normal</option>
+                    <option value="baja">Baja</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-search me-2"></i>Buscar
+                </label>
+                <input type="text" class="form-control custom-input" id="searchNotifications"
+                       placeholder="Buscar en t�tulo o mensaje...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Notificaciones -->
+    <div id="notificationsList">
+        @if (Model.Any())
+        {
+            @foreach (var notificacion in Model)
+            {
+                <div class="notification-card @(notificacion.leido ? "read" : "unread") @notificacion.ClasePrioridad"
+                     data-id="@notificacion.id_notificacion"
+                     data-type="@notificacion.tipo"
+                     data-priority="@notificacion.prioridad"
+                     data-leido="@notificacion.leido.ToString().ToLower()">
+                    <div class="p-3">
+                        <div class="d-flex align-items-start">
+                            <div class="notification-icon bg-@notificacion.color">
+                                <i class="@notificacion.icono"></i>
+                            </div>
+
+                            <div class="notification-content">
+                                <div class="notification-title">
+                                    @notificacion.titulo
+                                    @if (!notificacion.leido)
+                                    {
+                                        <span class="notification-badge">Nueva</span>
+                                    }
+                                    @if (notificacion.prioridad == "urgente")
+                                    {
+                                        <i class="fas fa-exclamation-triangle text-danger" title="Urgente"></i>
+                                    }
+                                    else if (notificacion.prioridad == "alta")
+                                    {
+                                        <i class="fas fa-exclamation text-warning" title="Prioridad Alta"></i>
+                                    }
+                                </div>
+
+                                <div class="notification-message">
+                                    @(notificacion.mensaje.Length > 150 ? notificacion.mensaje.Substring(0, 150) + "..." : notificacion.mensaje)
+                                </div>
+
+                                @if (notificacion.Remitente != null)
+                                {
+                                    <div class="remitente-info mb-2">
+                                        <i class="fas fa-user me-1"></i>
+                                        <span>Enviado por: @notificacion.Remitente.nombre1 @notificacion.Remitente.apellido1</span>
+                                    </div>
+                                }
+
+                                <div class="notification-meta">
+                                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                                        <span>
+                                            <i class="fas fa-clock me-1"></i>
+                                            @notificacion.TiempoTranscurrido
+                                        </span>
+                                        <span class="badge bg-secondary">@notificacion.tipo</span>
+                                        @if (!string.IsNullOrEmpty(notificacion.referencia_tipo))
+                                        {
+                                            <span class="badge bg-info">@notificacion.referencia_tipo</span>
+                                        }
+                                    </div>
+
+                                    <div class="notification-actions">
+                                        <a href="/Notificaciones/Detalles/@notificacion.id_notificacion"
+                                           class="btn-notification btn-details">
+                                            <i class="fas fa-eye"></i>Ver
+                                        </a>
+
+                                        @if (!notificacion.leido)
+                                        {
+                                            <button type="button" class="btn-notification btn-mark-read"
+                                                    onclick="markAsRead(@notificacion.id_notificacion)">
+                                                <i class="fas fa-check"></i>Marcar le�da
+                                            </button>
+                                        }
+
+                                        <button type="button" class="btn-notification btn-delete"
+                                                onclick="deleteNotification(@notificacion.id_notificacion)">
+                                            <i class="fas fa-trash"></i>Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-notifications">
+                <i class="fas fa-bell-slash"></i>
+                <h4>No tienes notificaciones</h4>
+                <p>Cuando recibas nuevas notificaciones aparecer�n aqu�.</p>
+                <a href="/Home/Index" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>Volver al inicio
+                </a>
+            </div>
+        }
+    </div>
+
+    @if (Model.Count > 10)
+    {
+        <div class="mt-4 text-center">
+            <button type="button" class="btn btn-outline-primary" id="loadMoreBtn">
+                <i class="fas fa-chevron-down me-2"></i>Cargar m�s notificaciones
+            </button>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Actualizar contador en el men�
+            updateNotificationBadge();
+
+            // Filtros y b�squeda
+            $('#filterType, #filterPriority, #searchNotifications').on('change keyup', function () {
+                filterNotifications();
+            });
+
+            // Marcar todas como le�das
+            $('#markAllRead').click(function () {
+                markAllAsRead();
+            });
+
+            // Actualizar notificaciones
+            $('#refreshNotifications').click(function () {
+                location.reload();
+            });
+
+            // Auto-actualizar cada 60 segundos
+            setInterval(function () {
+                updateNotificationBadge();
+            }, 60000);
+
+            // Cargar m�s notificaciones
+            $('#loadMoreBtn').click(function () {
+                // Implementar paginaci�n si es necesario
+                showToast('Funcionalidad en desarrollo', 'info');
+            });
+        });
+
+        function updateNotificationBadge() {
+            $.get('/Notificaciones/GetNotificacionesCount')
+                .done(function (response) {
+                    const badge = $('#notificationBadge');
+                    if (response.count > 0) {
+                        badge.text(response.count).show();
+                    } else {
+                        badge.hide();
+                    }
+                })
+                .fail(function () {
+                    console.error('Error al obtener el contador de notificaciones');
+                });
+        }
+
+        function markAsRead(notificationId) {
+            const token = $('input[name="__RequestVerificationToken"]').val() ||
+                $('meta[name="csrf-token"]').attr('content');
+
+            $.post('/Notificaciones/MarcarComoLeida', {
+                id: notificationId,
+                __RequestVerificationToken: token
+            })
+                .done(function (response) {
+                    if (response.success) {
+                        const card = $(`[data-id="${notificationId}"]`);
+                        card.removeClass('unread').addClass('read');
+                        card.find('.notification-badge').remove();
+                        card.find('.btn-mark-read').remove();
+                        card.attr('data-leido', 'true');
+
+                        // Actualizar estad�sticas
+                        updateStats();
+                        updateNotificationBadge();
+
+                        showToast('Notificaci�n marcada como le�da', 'success');
+                    } else {
+                        showToast('Error al marcar la notificaci�n', 'error');
+                    }
+                })
+                .fail(function () {
+                    showToast('Error de conexi�n', 'error');
+                });
+        }
+
+        function markAllAsRead() {
+            const unreadCount = $('.notification-card.unread').length;
+
+            if (unreadCount === 0) {
+                showToast('No hay notificaciones sin leer', 'info');
+                return;
+            }
+
+            SwalBS.fire({
+                title: '�Marcar todas como le�das?',
+                text: `Esta acci�n marcar� ${unreadCount} notificaciones como le�das`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'S�, marcar todas',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const token = $('input[name="__RequestVerificationToken"]').val() ||
+                        $('meta[name="csrf-token"]').attr('content');
+
+                    $.post('/Notificaciones/MarcarTodasComoLeidas', {
+                        __RequestVerificationToken: token
+                    })
+                        .done(function (response) {
+                            if (response.success) {
+                                $('.notification-card.unread').removeClass('unread').addClass('read');
+                                $('.notification-badge').remove();
+                                $('.btn-mark-read').remove();
+                                $('.notification-card').attr('data-leido', 'true');
+
+                                updateStats();
+                                updateNotificationBadge();
+
+                                showToast(response.message || 'Todas las notificaciones han sido marcadas como le�das', 'success');
+                            } else {
+                                showToast(response.message || 'Error al marcar las notificaciones', 'error');
+                            }
+                        })
+                        .fail(function () {
+                            showToast('Error de conexi�n', 'error');
+                        });
+                }
+            });
+        }
+
+        function deleteNotification(notificationId) {
+            SwalBS.fire({
+                title: '�Eliminar notificaci�n?',
+                text: "Esta acci�n no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'S�, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const token = $('input[name="__RequestVerificationToken"]').val() ||
+                        $('meta[name="csrf-token"]').attr('content');
+
+                    $.post('/Notificaciones/Eliminar', {
+                        id: notificationId,
+                        __RequestVerificationToken: token
+                    })
+                        .done(function (response) {
+                            if (response.success) {
+                                $(`[data-id="${notificationId}"]`).fadeOut(300, function () {
+                                    $(this).remove();
+                                    updateStats();
+                                    updateNotificationBadge();
+
+                                    // Verificar si no quedan notificaciones
+                                    if ($('.notification-card').length === 0) {
+                                        $('#notificationsList').html(`
+                                                <div class="empty-notifications">
+                                                    <i class="fas fa-bell-slash"></i>
+                                                    <h4>No tienes notificaciones</h4>
+                                                    <p>Cuando recibas nuevas notificaciones aparecer�n aqu�.</p>
+                                                    <a href="/Home/Index" class="btn btn-primary">
+                                                        <i class="fas fa-home me-2"></i>Volver al inicio
+                                                    </a>
+                                                </div>
+                                            `);
+                                    }
+                                });
+
+                                showToast(response.message || 'Notificaci�n eliminada', 'success');
+                            } else {
+                                showToast(response.message || 'Error al eliminar la notificaci�n', 'error');
+                            }
+                        })
+                        .fail(function () {
+                            showToast('Error de conexi�n', 'error');
+                        });
+                }
+            });
+        }
+
+        function filterNotifications() {
+            const typeFilter = $('#filterType').val().toLowerCase();
+            const priorityFilter = $('#filterPriority').val().toLowerCase();
+            const searchText = $('#searchNotifications').val().toLowerCase();
+
+            let visibleCount = 0;
+
+            $('.notification-card').each(function () {
+                const card = $(this);
+                const type = card.data('type').toLowerCase();
+                const priority = card.data('priority').toLowerCase();
+                const title = card.find('.notification-title').text().toLowerCase();
+                const message = card.find('.notification-message').text().toLowerCase();
+
+                const matchesType = !typeFilter || type === typeFilter;
+                const matchesPriority = !priorityFilter || priority === priorityFilter;
+                const matchesSearch = !searchText ||
+                    title.includes(searchText) ||
+                    message.includes(searchText);
+
+                if (matchesType && matchesPriority && matchesSearch) {
+                    card.show();
+                    visibleCount++;
+                } else {
+                    card.hide();
+                }
+            });
+
+            // Mostrar mensaje si no hay resultados
+            if (visibleCount === 0) {
+                if ($('.no-results-message').length === 0) {
+                    $('#notificationsList').append(`
+                            <div class="no-results-message p-4 text-center">
+                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                <h5>No se encontraron notificaciones</h5>
+                                <p class="text-muted">Intenta ajustar los filtros de b�squeda</p>
+                                <button type="button" class="btn btn-outline-primary" onclick="clearFilters()">
+                                    <i class="fas fa-times me-2"></i>Limpiar filtros
+                                </button>
+                            </div>
+                        `);
+                }
+            } else {
+                $('.no-results-message').remove();
+            }
+        }
+
+        function clearFilters() {
+            $('#filterType').val('');
+            $('#filterPriority').val('');
+            $('#searchNotifications').val('');
+            $('.notification-card').show();
+            $('.no-results-message').remove();
+        }
+
+        function updateStats() {
+            const total = $('.notification-card').length;
+            const unread = $('.notification-card.unread:visible').length;
+            const read = $('.notification-card.read:visible').length;
+
+            // Contar las de hoy (esto es aproximado, basado en el texto mostrado)
+            const today = $('.notification-card').filter(function () {
+                const timeText = $(this).find('.notification-meta .fas.fa-clock').parent().text();
+                return timeText.includes('Hace') && (timeText.includes('minutos') || timeText.includes('horas'));
+            }).length;
+
+            $('#totalNotifications').text(total);
+            $('#unreadNotifications').text(unread);
+            $('#readNotifications').text(read);
+            $('#todayNotifications').text(today);
+        }
+
+        // Funci�n para marcar como le�da al hacer hover (opcional)
+        $('.notification-card.unread').hover(function () {
+            const card = $(this);
+            if (!card.hasClass('hover-preview')) {
+                card.addClass('hover-preview');
+                setTimeout(() => {
+                    if (card.hasClass('hover-preview') && card.hasClass('unread')) {
+                        // Marcar como le�da despu�s de 3 segundos de hover
+                        const notifId = card.data('id');
+                        markAsRead(notifId);
+                    }
+                }, 3000);
+            }
+        }, function () {
+            $(this).removeClass('hover-preview');
+        });
+    </script>
+}

@@ -36,6 +36,11 @@
             outline: none;
         }
 
+        .form-control-custom.error {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+
     .control-label-custom {
         color: #221d42;
         font-weight: 600;
@@ -100,6 +105,14 @@
         border-left: 4px solid #1788ca;
     }
 
+    .error-message {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 500;
+        display: none;
+    }
+
     @@media (max-width: 768px) {
         .form-card {
             padding: 20px 15px;
@@ -146,11 +159,12 @@
                         <div class="form-group">
                             <label class="control-label-custom">
                                 <i class="fa fa-id-card" style="margin-right: 5px;"></i>
-                                Cédula
+                                Cédula / Identificación
                             </label>
-                            @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "000-0000000-0", @required = "required", id = "cedula" } })
+                            @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control form-control-custom campo-cedula", placeholder = "Ingrese número de identificación", @required = "required", id = "input_cedula", maxlength = "20" } })
                             @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "text-danger" })
-                            <small class="help-text">Formato: 000-0000000-0</small>
+                            <small class="help-text">Solo números - Longitud flexible</small>
+                            <div class="error-message" id="error_cedula"></div>
                         </div>
 
                         <div class="form-group">
@@ -158,8 +172,9 @@
                                 <i class="fa fa-user" style="margin-right: 5px;"></i>
                                 Primer Nombre
                             </label>
-                            @Html.EditorFor(model => model.nombre1, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Primer nombre", @required = "required" } })
+                            @Html.EditorFor(model => model.nombre1, new { htmlAttributes = new { @class = "form-control form-control-custom campo-letras", placeholder = "Primer nombre", @required = "required", id = "input_nombre1", maxlength = "50" } })
                             @Html.ValidationMessageFor(model => model.nombre1, "", new { @class = "text-danger" })
+                            <div class="error-message" id="error_nombre1"></div>
                         </div>
 
                         <div class="form-group">
@@ -167,9 +182,10 @@
                                 <i class="fa fa-user" style="margin-right: 5px;"></i>
                                 Segundo Nombre
                             </label>
-                            @Html.EditorFor(model => model.nombre2, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Segundo nombre (opcional)" } })
+                            @Html.EditorFor(model => model.nombre2, new { htmlAttributes = new { @class = "form-control form-control-custom campo-letras", placeholder = "Segundo nombre (opcional)", id = "input_nombre2", maxlength = "50" } })
                             @Html.ValidationMessageFor(model => model.nombre2, "", new { @class = "text-danger" })
-                            <small class="help-text">Campo opcional</small>
+                            <small class="help-text">Campo opcional - Solo letras</small>
+                            <div class="error-message" id="error_nombre2"></div>
                         </div>
 
                         <div class="form-group">
@@ -177,8 +193,9 @@
                                 <i class="fa fa-user" style="margin-right: 5px;"></i>
                                 Primer Apellido
                             </label>
-                            @Html.EditorFor(model => model.apellido1, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Primer apellido", @required = "required" } })
+                            @Html.EditorFor(model => model.apellido1, new { htmlAttributes = new { @class = "form-control form-control-custom campo-letras", placeholder = "Primer apellido", @required = "required", id = "input_apellido1", maxlength = "50" } })
                             @Html.ValidationMessageFor(model => model.apellido1, "", new { @class = "text-danger" })
+                            <div class="error-message" id="error_apellido1"></div>
                         </div>
 
                         <div class="form-group">
@@ -186,9 +203,10 @@
                                 <i class="fa fa-user" style="margin-right: 5px;"></i>
                                 Segundo Apellido
                             </label>
-                            @Html.EditorFor(model => model.apellido2, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Segundo apellido (opcional)" } })
+                            @Html.EditorFor(model => model.apellido2, new { htmlAttributes = new { @class = "form-control form-control-custom campo-letras", placeholder = "Segundo apellido (opcional)", id = "input_apellido2", maxlength = "50" } })
                             @Html.ValidationMessageFor(model => model.apellido2, "", new { @class = "text-danger" })
-                            <small class="help-text">Campo opcional</small>
+                            <small class="help-text">Campo opcional - Solo letras</small>
+                            <div class="error-message" id="error_apellido2"></div>
                         </div>
                     </div>
 
@@ -198,9 +216,10 @@
                                 <i class="fa fa-calendar" style="margin-right: 5px;"></i>
                                 Fecha de Nacimiento
                             </label>
-                            @Html.EditorFor(model => model.fecha_nacimiento, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "date", @required = "required", max = DateTime.Today.AddYears(-18).ToString("yyyy-MM-dd") } })
+                            @Html.EditorFor(model => model.fecha_nacimiento, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "date", @required = "required", id = "input_fecha_nacimiento", max = DateTime.Today.AddYears(-18).ToString("yyyy-MM-dd") } })
                             @Html.ValidationMessageFor(model => model.fecha_nacimiento, "", new { @class = "text-danger" })
                             <small class="help-text">Debe ser mayor de 18 años</small>
+                            <div class="error-message" id="error_fecha_nacimiento"></div>
                         </div>
 
                         <div class="form-group">
@@ -208,7 +227,7 @@
                                 <i class="fa fa-map-marker" style="margin-right: 5px;"></i>
                                 Dirección
                             </label>
-                            @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Dirección completa" } })
+                            @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "Dirección completa", id = "input_direccion", maxlength = "200" } })
                             @Html.ValidationMessageFor(model => model.direccion, "", new { @class = "text-danger" })
                         </div>
 
@@ -217,7 +236,7 @@
                                 <i class="fa fa-envelope" style="margin-right: 5px;"></i>
                                 Correo Electrónico
                             </label>
-                            @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "email", placeholder = "ejemplo@dominio.com" } })
+                            @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "email", placeholder = "ejemplo@dominio.com", id = "input_correo", maxlength = "100" } })
                             @Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
                         </div>
 
@@ -226,8 +245,10 @@
                                 <i class="fa fa-phone" style="margin-right: 5px;"></i>
                                 Teléfono
                             </label>
-                            @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control form-control-custom", placeholder = "809-555-1234" } })
+                            @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control form-control-custom campo-telefono", placeholder = "20000000 o 80000000", id = "input_telefono", maxlength = "8" } })
                             @Html.ValidationMessageFor(model => model.telefono, "", new { @class = "text-danger" })
+                            <small class="help-text">Solo números (8 dígitos)</small>
+                            <div class="error-message" id="error_telefono"></div>
                         </div>
 
                         <div class="form-group">
@@ -244,8 +265,10 @@
                                 <i class="fa fa-child" style="margin-right: 5px;"></i>
                                 Cantidad de Hijos
                             </label>
-                            @Html.EditorFor(model => model.cantidad_hijos, new { htmlAttributes = new { @class = "form-control form-control-custom", min = "0", value = "0" } })
+                            @Html.EditorFor(model => model.cantidad_hijos, new { htmlAttributes = new { @class = "form-control form-control-custom campo-numeros", min = "0", max = "20", value = "0", id = "input_cantidad_hijos" } })
                             @Html.ValidationMessageFor(model => model.cantidad_hijos, "", new { @class = "text-danger" })
+                            <small class="help-text">Solo números enteros (0-20)</small>
+                            <div class="error-message" id="error_cantidad_hijos"></div>
                         </div>
                     </div>
                 </div>
@@ -314,10 +337,253 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script src="~/Scripts/jquery.maskedinput.min.js"></script>
     <script>
-        $(function () {
-            $("#cedula").mask("999-9999999-9");
+        $(document).ready(function () {
+
+            // ✅ FUNCIÓN PARA MOSTRAR ERROR
+            function mostrarError(inputId, mensaje) {
+                $('#' + inputId).addClass('error');
+                $('#error_' + inputId.replace('input_', '')).text('❌ ' + mensaje).show();
+
+                setTimeout(function () {
+                    $('#' + inputId).removeClass('error');
+                    $('#error_' + inputId.replace('input_', '')).hide();
+                }, 3000);
+            }
+
+            // ✅ FUNCIÓN PARA VALIDAR SOLO LETRAS
+            function validarLetras(event) {
+                var charCode = event.which || event.keyCode;
+
+                // Permitir teclas especiales: backspace, delete, tab, escape, enter, flechas
+                if (charCode == 8 || charCode == 9 || charCode == 27 || charCode == 13 ||
+                    charCode == 46 || (charCode >= 35 && charCode <= 40)) {
+                    return true;
+                }
+
+                // Permitir Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                if ((event.ctrlKey || event.metaKey) &&
+                    (charCode == 65 || charCode == 67 || charCode == 86 || charCode == 88)) {
+                    return true;
+                }
+
+                // Verificar si es letra válida
+                var char = String.fromCharCode(charCode);
+                var regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/;
+
+                if (!regex.test(char)) {
+                    event.preventDefault();
+                    mostrarError(event.target.id, 'Solo se permiten letras y espacios');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // ✅ FUNCIÓN PARA VALIDAR SOLO NÚMEROS
+            function validarNumeros(event) {
+                var charCode = event.which || event.keyCode;
+
+                // Permitir teclas especiales
+                if (charCode == 8 || charCode == 9 || charCode == 27 || charCode == 13 ||
+                    charCode == 46 || (charCode >= 35 && charCode <= 40)) {
+                    return true;
+                }
+
+                // Permitir Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                if ((event.ctrlKey || event.metaKey) &&
+                    (charCode == 65 || charCode == 67 || charCode == 86 || charCode == 88)) {
+                    return true;
+                }
+
+                // Solo números 0-9
+                if (charCode < 48 || charCode > 57) {
+                    event.preventDefault();
+                    mostrarError(event.target.id, 'Solo se permiten números');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // ✅ APLICAR VALIDACIONES DE KEYPRESS
+            $('.campo-letras').on('keypress', validarLetras);
+            $('.campo-numeros, .campo-cedula, .campo-telefono').on('keypress', validarNumeros);
+
+            // ✅ LIMPIAR CONTENIDO PEGADO NO VÁLIDO
+            $('.campo-letras').on('input paste', function () {
+                var $this = $(this);
+                setTimeout(function () {
+                    var valor = $this.val();
+                    var valorLimpio = valor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+
+                    if (valor !== valorLimpio) {
+                        $this.val(valorLimpio);
+                        mostrarError($this.attr('id'), 'Se eliminaron caracteres no válidos');
+                    }
+                }, 1);
+            });
+
+            // ✅ VALIDACIÓN FLEXIBLE DE CÉDULA (solo números, longitud variable)
+            $('.campo-cedula').on('input paste', function () {
+                var $this = $(this);
+                setTimeout(function () {
+                    var valor = $this.val();
+                    var valorLimpio = valor.replace(/[^0-9]/g, '');
+
+                    if (valor !== valorLimpio) {
+                        $this.val(valorLimpio);
+                        mostrarError($this.attr('id'), 'Se eliminaron caracteres no válidos. Solo números permitidos');
+                    }
+
+                    // Validar que no esté vacío
+                    if (valorLimpio.length === 0) {
+                        mostrarError($this.attr('id'), 'La cédula es obligatoria');
+                    }
+                    // Validar longitud mínima razonable
+                    else if (valorLimpio.length < 5) {
+                        mostrarError($this.attr('id'), 'La cédula debe tener al menos 5 dígitos');
+                    }
+                    // Validar longitud máxima
+                    else if (valorLimpio.length > 20) {
+                        $this.val(valorLimpio.substring(0, 20));
+                        mostrarError($this.attr('id'), 'Máximo 20 dígitos permitidos');
+                    }
+                }, 1);
+            });
+
+            $('.campo-telefono').on('input paste', function () {
+                var $this = $(this);
+                setTimeout(function () {
+                    var valor = $this.val();
+                    var valorLimpio = valor.replace(/[^0-9]/g, '');
+
+                    if (valor !== valorLimpio) {
+                        $this.val(valorLimpio);
+                        mostrarError($this.attr('id'), 'Se eliminaron caracteres no válidos');
+                    }
+
+                    // Validar longitud de teléfono (debe tener 8 dígitos)
+                    if (valorLimpio.length > 0 && valorLimpio.length !== 8) {
+                        mostrarError($this.attr('id'), 'El teléfono debe tener exactamente 8 dígitos');
+                    }
+                }, 1);
+            });
+
+            $('.campo-numeros').on('input paste', function () {
+                var $this = $(this);
+                setTimeout(function () {
+                    var valor = $this.val();
+                    var valorLimpio = valor.replace(/[^0-9]/g, '');
+
+                    if (valor !== valorLimpio) {
+                        $this.val(valorLimpio);
+                        mostrarError($this.attr('id'), 'Se eliminaron caracteres no válidos');
+                    }
+
+                    // Validar rango para cantidad de hijos
+                    if ($this.attr('id') === 'input_cantidad_hijos') {
+                        var numero = parseInt($this.val()) || 0;
+                        if (numero < 0) $this.val('0');
+                        if (numero > 20) {
+                            $this.val('20');
+                            mostrarError($this.attr('id'), 'Máximo 20 hijos permitidos');
+                        }
+                    }
+                }, 1);
+            });
+
+            // ✅ VALIDACIÓN DE EDAD
+            $("#input_fecha_nacimiento").on('change', function () {
+                var fechaNacimiento = new Date($(this).val());
+                if (!isNaN(fechaNacimiento.getTime())) {
+                    var hoy = new Date();
+                    var edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+                    var mes = hoy.getMonth() - fechaNacimiento.getMonth();
+
+                    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+                        edad--;
+                    }
+
+                    if (edad < 18) {
+                        mostrarError('input_fecha_nacimiento', `Debe ser mayor de edad. Edad actual: ${edad} años`);
+                    }
+                }
+            });
+
+            // ✅ CAPITALIZAR NOMBRES AL SALIR DEL CAMPO
+            $('.campo-letras').on('blur', function () {
+                if (this.value.trim() !== '') {
+                    var palabras = this.value.toLowerCase().trim().split(/\s+/);
+                    var capitalizado = palabras.map(function (palabra) {
+                        return palabra.charAt(0).toUpperCase() + palabra.slice(1);
+                    }).join(' ');
+                    this.value = capitalizado;
+                }
+            });
+
+            // ✅ VALIDACIÓN FINAL ANTES DE ENVIAR
+            $('form').on('submit', function (e) {
+                var errores = 0;
+
+                // Limpiar todos los campos antes de validar
+                $('.campo-letras').each(function () {
+                    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                });
+
+                $('.campo-cedula, .campo-telefono, .campo-numeros').each(function () {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+
+                // Validar campos obligatorios
+                if ($('#input_nombre1').val().trim() === '') {
+                    mostrarError('input_nombre1', 'El primer nombre es obligatorio');
+                    errores++;
+                }
+
+                if ($('#input_apellido1').val().trim() === '') {
+                    mostrarError('input_apellido1', 'El primer apellido es obligatorio');
+                    errores++;
+                }
+
+                // Validar cédula (flexible)
+                var cedula = $('#input_cedula').val().trim();
+                if (cedula === '') {
+                    mostrarError('input_cedula', 'La cédula es obligatoria');
+                    errores++;
+                } else if (cedula.length < 5) {
+                    mostrarError('input_cedula', 'La cédula debe tener al menos 5 dígitos');
+                    errores++;
+                } else if (!/^\d+$/.test(cedula)) {
+                    mostrarError('input_cedula', 'La cédula solo puede contener números');
+                    errores++;
+                }
+
+                // Validar teléfono si no está vacío
+                var telefono = $('#input_telefono').val().trim();
+                if (telefono !== '' && telefono.length !== 8) {
+                    mostrarError('input_telefono', 'El teléfono debe tener exactamente 8 dígitos');
+                    errores++;
+                }
+
+                if (errores > 0) {
+                    e.preventDefault();
+                    alert('❌ Por favor, corrija los errores antes de continuar.');
+                    return false;
+                }
+            });
+
+            // ✅ LIMPIAR ERRORES AL HACER FOCUS
+            $('input').on('focus', function () {
+                $(this).removeClass('error');
+                $('#error_' + this.id.replace('input_', '')).hide();
+            });
+
+            // ✅ PREVENIR MENÚ CONTEXTUAL Y ARRASTRAR
+            $('.campo-letras, .campo-numeros, .campo-telefono, .campo-cedula').on('contextmenu dragstart', function (e) {
+                e.preventDefault();
+                return false;
+            });
         });
     </script>
 }

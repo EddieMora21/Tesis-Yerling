@@ -75,7 +75,115 @@ namespace SistemaNomina.Controllers
         {
             try
             {
-                // Revisar que todo esté bien, o sea, validaciones
+                // ✅ VALIDACIÓN DE EDAD - Debe ser mayor de 18 años
+                if (empleado.fecha_nacimiento.HasValue)
+                {
+                    var edad = DateTime.Today.Year - empleado.fecha_nacimiento.Value.Year;
+                    if (empleado.fecha_nacimiento.Value.Date > DateTime.Today.AddYears(-edad)) edad--;
+
+                    if (edad < 18)
+                    {
+                        ModelState.AddModelError("fecha_nacimiento",
+                            $"❌ El empleado debe ser mayor de edad. Edad actual: {edad} años. Se requiere mínimo 18 años para poder ser contratado.");
+                        CargarListas();
+                        ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                        return View(empleado);
+                    }
+                }
+
+                // ✅ VALIDACIÓN BÁSICA DE CÉDULA (solo que no esté vacía y sea numérica)
+                if (string.IsNullOrWhiteSpace(empleado.cedula))
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula es obligatoria.");
+                    CargarListas();
+                    ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                    return View(empleado);
+                }
+
+                if (!empleado.cedula.All(char.IsDigit))
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula solo puede contener números.");
+                    CargarListas();
+                    ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                    return View(empleado);
+                }
+
+                if (empleado.cedula.Length < 5)
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula debe tener al menos 5 dígitos.");
+                    CargarListas();
+                    ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                    return View(empleado);
+                }
+
+                if (empleado.cedula.Length > 20)
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula no puede tener más de 20 dígitos.");
+                    CargarListas();
+                    ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                    return View(empleado);
+                }
+
+                // ✅ VALIDACIÓN DE CÉDULA DUPLICADA
+                var cedulaExistente = db.Empleados.FirstOrDefault(e => e.cedula == empleado.cedula);
+                if (cedulaExistente != null)
+                {
+                    ModelState.AddModelError("cedula",
+                        $"❌ Ya existe un empleado registrado con la cédula {empleado.cedula}. " +
+                        $"Empleado existente: {cedulaExistente.nombre1} {cedulaExistente.apellido1}. " +
+                        "Cada empleado debe tener una cédula única.");
+                    CargarListas();
+                    ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                    return View(empleado);
+                }
+
+                // ✅ VALIDACIÓN DE PUESTO ÚNICO PARA JEFE DE DEPARTAMENTO
+                if (empleado.id_puesto > 0)
+                {
+                    var puesto = db.Puestos.Find(empleado.id_puesto);
+                    if (puesto != null && puesto.es_jefe == true)
+                    {
+                        // Verificar si ya existe alguien en un puesto de jefatura en el mismo departamento
+                        var jefeExistente = db.Empleados
+                            .Include(e => e.Puestos)
+                            .FirstOrDefault(e => e.Puestos.es_jefe == true &&
+                                                e.Puestos.id_departamento == puesto.id_departamento &&
+                                                e.estado == "ACTIVO");
+
+                        if (jefeExistente != null)
+                        {
+                            ModelState.AddModelError("id_puesto",
+                                $"❌ Ya existe un jefe activo en este departamento: {jefeExistente.nombre1} {jefeExistente.apellido1} " +
+                                $"({jefeExistente.Puestos.nombre_puesto}). Solo puede haber un jefe por departamento. " +
+                                "Para asignar este puesto, primero debe cambiar el puesto del jefe actual.");
+                            CargarListas();
+                            ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                            return View(empleado);
+                        }
+                    }
+
+                    // ✅ VALIDACIÓN ESPECIAL PARA GERENTE GENERAL - SOLO UNO EN TODA LA EMPRESA
+                    if (puesto != null && puesto.nombre_puesto.ToUpper().Contains("GERENTE GENERAL"))
+                    {
+                        var gerenteGeneralExistente = db.Empleados
+                            .Include(e => e.Puestos)
+                            .FirstOrDefault(e => e.Puestos.nombre_puesto.ToUpper().Contains("GERENTE GENERAL") &&
+                                                e.estado == "ACTIVO");
+
+                        if (gerenteGeneralExistente != null)
+                        {
+                            ModelState.AddModelError("id_puesto",
+                                $"❌ Ya existe un Gerente General activo en la empresa: {gerenteGeneralExistente.nombre1} {gerenteGeneralExistente.apellido1}. " +
+                                $"Solo puede existir un Gerente General en toda la organización. " +
+                                "Para asignar este puesto, primero debe cambiar el puesto del Gerente General actual o inactivar al empleado.");
+                            CargarListas();
+                            ViewBag.ReturnUrl = Request.QueryString["returnUrl"];
+                            return View(empleado);
+                        }
+                    }
+                }
+
+                // Revisar que todo esté bien, o sea, validaciones del modelo
                 if (ModelState.IsValid)
                 {
                     // Poner fechas actuales
@@ -112,21 +220,44 @@ namespace SistemaNomina.Controllers
                         return Redirect(returnUrl + "?refresh=true");
                     }
 
-                    // Volver a la lista de empleados
+                    // Mostrar mensaje de éxito y volver a la lista
+                    TempData["SuccessMessage"] = $"✅ Empleado {empleado.nombre1} {empleado.apellido1} creado exitosamente.";
                     return RedirectToAction("Index");
                 }
             }
             catch (DbUpdateException ex)
             {
-                // Si hay error guardando, mostrar mensaje con la causa
+                // Manejo específico para errores de base de datos
                 var innerException = ex.InnerException?.InnerException ?? ex.InnerException ?? ex;
-                ModelState.AddModelError("", $"Error al guardar: {innerException.Message}");
+                string errorMessage = "❌ Error al guardar el empleado en la base de datos.";
+
+                if (innerException.Message.Contains("UNIQUE") || innerException.Message.Contains("duplicate"))
+                {
+                    if (innerException.Message.Contains("cedula"))
+                    {
+                        errorMessage = "❌ Esta cédula ya está registrada en el sistema. Cada empleado debe tener una cédula única.";
+                    }
+                    else if (innerException.Message.Contains("correo"))
+                    {
+                        errorMessage = "❌ Este correo electrónico ya está registrado en el sistema. Cada empleado debe tener un correo único.";
+                    }
+                    else
+                    {
+                        errorMessage = "❌ Ya existe un registro con esta información. Verifique que los datos sean únicos.";
+                    }
+                }
+                else if (innerException.Message.Contains("CHECK") || innerException.Message.Contains("constraint"))
+                {
+                    errorMessage = "❌ Los datos ingresados no cumplen con las reglas del sistema. Verifique la información.";
+                }
+
+                ModelState.AddModelError("", errorMessage);
                 System.Diagnostics.Debug.WriteLine($"Error al guardar empleado: {innerException.Message}");
             }
             catch (Exception ex)
             {
-                // Si pasa otro error inesperado, mostrar mensaje
-                ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
+                // Si pasa otro error inesperado, mostrar mensaje más amigable
+                ModelState.AddModelError("", "❌ Ocurrió un error inesperado al crear el empleado. Por favor, inténtelo nuevamente.");
                 System.Diagnostics.Debug.WriteLine($"Error inesperado: {ex.Message}");
             }
 
@@ -160,11 +291,120 @@ namespace SistemaNomina.Controllers
         {
             try
             {
-                // Revisar que todo esté bien, o sea, validaciones
+                // ✅ VALIDACIÓN DE EDAD - Debe ser mayor de 18 años
+                if (empleado.fecha_nacimiento.HasValue)
+                {
+                    var edad = DateTime.Today.Year - empleado.fecha_nacimiento.Value.Year;
+                    if (empleado.fecha_nacimiento.Value.Date > DateTime.Today.AddYears(-edad)) edad--;
+
+                    if (edad < 18)
+                    {
+                        ModelState.AddModelError("fecha_nacimiento",
+                            $"❌ El empleado debe ser mayor de edad. Edad actual: {edad} años. Se requiere mínimo 18 años para poder trabajar.");
+                        CargarListas(empleado);
+                        return View(empleado);
+                    }
+                }
+
+                // ✅ VALIDACIÓN BÁSICA DE CÉDULA
+                if (string.IsNullOrWhiteSpace(empleado.cedula))
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula es obligatoria.");
+                    CargarListas(empleado);
+                    return View(empleado);
+                }
+
+                if (!empleado.cedula.All(char.IsDigit))
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula solo puede contener números.");
+                    CargarListas(empleado);
+                    return View(empleado);
+                }
+
+                if (empleado.cedula.Length < 5)
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula debe tener al menos 5 dígitos.");
+                    CargarListas(empleado);
+                    return View(empleado);
+                }
+
+                if (empleado.cedula.Length > 20)
+                {
+                    ModelState.AddModelError("cedula", "❌ La cédula no puede tener más de 20 dígitos.");
+                    CargarListas(empleado);
+                    return View(empleado);
+                }
+
+                // ✅ VALIDACIÓN DE CÉDULA DUPLICADA (excluyendo el empleado actual)
+                var cedulaExistente = db.Empleados.FirstOrDefault(e => e.cedula == empleado.cedula && e.id_empleado != empleado.id_empleado);
+                if (cedulaExistente != null)
+                {
+                    ModelState.AddModelError("cedula",
+                        $"❌ Ya existe otro empleado registrado con la cédula {empleado.cedula}. " +
+                        $"Empleado existente: {cedulaExistente.nombre1} {cedulaExistente.apellido1}. " +
+                        "Cada empleado debe tener una cédula única.");
+                    CargarListas(empleado);
+                    return View(empleado);
+                }
+
+                // ✅ VALIDACIÓN DE PUESTO ÚNICO PARA JEFE DE DEPARTAMENTO
+                if (empleado.id_puesto > 0)
+                {
+                    var puesto = db.Puestos.Find(empleado.id_puesto);
+                    if (puesto != null && puesto.es_jefe == true)
+                    {
+                        // Verificar si ya existe alguien en un puesto de jefatura en el mismo departamento (excluyendo el empleado actual)
+                        var jefeExistente = db.Empleados
+                            .Include(e => e.Puestos)
+                            .FirstOrDefault(e => e.Puestos.es_jefe == true &&
+                                                e.Puestos.id_departamento == puesto.id_departamento &&
+                                                e.estado == "ACTIVO" &&
+                                                e.id_empleado != empleado.id_empleado);
+
+                        if (jefeExistente != null)
+                        {
+                            ModelState.AddModelError("id_puesto",
+                                $"❌ Ya existe un jefe activo en este departamento: {jefeExistente.nombre1} {jefeExistente.apellido1} " +
+                                $"({jefeExistente.Puestos.nombre_puesto}). Solo puede haber un jefe por departamento. " +
+                                "Para asignar este puesto, primero debe cambiar el puesto del jefe actual.");
+                            CargarListas(empleado);
+                            return View(empleado);
+                        }
+                    }
+
+                    // ✅ VALIDACIÓN ESPECIAL PARA GERENTE GENERAL - SOLO UNO EN TODA LA EMPRESA (excluyendo el empleado actual)
+                    if (puesto != null && puesto.nombre_puesto.ToUpper().Contains("GERENTE GENERAL"))
+                    {
+                        var gerenteGeneralExistente = db.Empleados
+                            .Include(e => e.Puestos)
+                            .FirstOrDefault(e => e.Puestos.nombre_puesto.ToUpper().Contains("GERENTE GENERAL") &&
+                                                e.estado == "ACTIVO" &&
+                                                e.id_empleado != empleado.id_empleado);
+
+                        if (gerenteGeneralExistente != null)
+                        {
+                            ModelState.AddModelError("id_puesto",
+                                $"❌ Ya existe un Gerente General activo en la empresa: {gerenteGeneralExistente.nombre1} {gerenteGeneralExistente.apellido1}. " +
+                                $"Solo puede existir un Gerente General en toda la organización. " +
+                                "Para asignar este puesto, primero debe cambiar el puesto del Gerente General actual o inactivar al empleado.");
+                            CargarListas(empleado);
+                            return View(empleado);
+                        }
+                    }
+                }
+
+                // Revisar que todo esté bien, o sea, validaciones del modelo
                 if (ModelState.IsValid)
                 {
                     // Actualizar la fecha de modificación
                     empleado.fecha_actualizacion = DateTime.Now;
+
+                    // Limpiar campos opcionales si están vacíos
+                    empleado.nombre2 = string.IsNullOrWhiteSpace(empleado.nombre2) ? null : empleado.nombre2;
+                    empleado.apellido2 = string.IsNullOrWhiteSpace(empleado.apellido2) ? null : empleado.apellido2;
+                    empleado.direccion = string.IsNullOrWhiteSpace(empleado.direccion) ? null : empleado.direccion;
+                    empleado.correo = string.IsNullOrWhiteSpace(empleado.correo) ? null : empleado.correo;
+                    empleado.telefono = string.IsNullOrWhiteSpace(empleado.telefono) ? null : empleado.telefono;
 
                     // Marcar el empleado como modificado para actualizar en bd
                     db.Entry(empleado).State = EntityState.Modified;
@@ -181,26 +421,45 @@ namespace SistemaNomina.Controllers
                             currentUserId.Value);
                     }
 
-                    // Volver a la lista de empleados
+                    // Mostrar mensaje de éxito y volver a la lista
+                    TempData["SuccessMessage"] = $"✅ Empleado {empleado.nombre1} {empleado.apellido1} actualizado exitosamente.";
                     return RedirectToAction("Index");
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 // Si otro usuario ya modificó ese empleado, mostrar mensaje
-                ModelState.AddModelError("", "Otro usuario modificó este registro. Recarga la página.");
+                ModelState.AddModelError("", "❌ Otro usuario modificó este registro mientras usted lo editaba. Por favor, recargue la página e intente nuevamente.");
             }
             catch (DbUpdateException ex)
             {
-                // Si hay error guardando, mostrar mensaje con la causa
+                // Manejo específico para errores de base de datos
                 var innerException = ex.InnerException?.InnerException ?? ex.InnerException ?? ex;
-                ModelState.AddModelError("", $"Error al guardar: {innerException.Message}");
+                string errorMessage = "❌ Error al actualizar el empleado en la base de datos.";
+
+                if (innerException.Message.Contains("UNIQUE") || innerException.Message.Contains("duplicate"))
+                {
+                    if (innerException.Message.Contains("cedula"))
+                    {
+                        errorMessage = "❌ Esta cédula ya está registrada por otro empleado. Cada empleado debe tener una cédula única.";
+                    }
+                    else if (innerException.Message.Contains("correo"))
+                    {
+                        errorMessage = "❌ Este correo electrónico ya está registrado por otro empleado. Cada empleado debe tener un correo único.";
+                    }
+                    else
+                    {
+                        errorMessage = "❌ Ya existe otro registro con esta información. Verifique que los datos sean únicos.";
+                    }
+                }
+
+                ModelState.AddModelError("", errorMessage);
                 System.Diagnostics.Debug.WriteLine($"Error al actualizar empleado: {innerException.Message}");
             }
             catch (Exception ex)
             {
-                // Si pasa otro error inesperado, mostrar mensaje
-                ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
+                // Si pasa otro error inesperado, mostrar mensaje más amigable
+                ModelState.AddModelError("", "❌ Ocurrió un error inesperado al actualizar el empleado. Por favor, inténtelo nuevamente.");
                 System.Diagnostics.Debug.WriteLine($"Error inesperado: {ex.Message}");
             }
 
@@ -251,7 +510,8 @@ namespace SistemaNomina.Controllers
                     currentUserId.Value);
             }
 
-            // Volver a la lista de empleados
+            // Mostrar mensaje de éxito y volver a la lista
+            TempData["SuccessMessage"] = $"✅ Empleado {empleado.nombre1} {empleado.apellido1} desactivado exitosamente.";
             return RedirectToAction("Index");
         }
 
@@ -284,6 +544,9 @@ namespace SistemaNomina.Controllers
             ViewBag.estado = new SelectList(new[] { "ACTIVO", "INACTIVO" },
                                            empleado?.estado ?? "ACTIVO");
         }
+
+        // Método específico para que los empleados vean solo su información personal
+       
 
         public ActionResult DetalleVacaciones(int id_empleado)
         {

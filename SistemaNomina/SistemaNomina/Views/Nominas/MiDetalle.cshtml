@@ -1,0 +1,221 @@
+﻿@model SistemaNomina.Models.Nomina
+
+@{
+    ViewBag.Title = "Detalle de Mi Planilla";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- ENCABEZADO -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-primary">
+                        <i class="bi bi-file-earmark-text"></i> Detalle de Mi Planilla
+                    </h2>
+                    <p class="text-muted">
+                        Período: @Model.mes/@Model.anio | Creada: @(Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm"))
+                    </p>
+                </div>
+                <div>
+                    @Html.ActionLink("⬅️ Volver a Mi Historial", "MiHistorial", null, new { @class = "btn btn-outline-secondary" })
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- INFORMACIÓN DEL EMPLEADO -->
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">👤 Información Personal</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3 text-center">
+                                <div class="avatar-lg bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    @(Model.Empleados.nombre1?.Substring(0, 1).ToUpper())@(Model.Empleados.apellido1?.Substring(0, 1).ToUpper())
+                                </div>
+                                <h5 class="mt-2 mb-0">@Model.Empleados.nombre1 @Model.Empleados.apellido1</h5>
+                                <p class="text-muted">@Model.Empleados.Puestos.nombre_puesto</p>
+                            </div>
+                            <table class="table-sm table">
+                                <tr>
+                                    <td><strong>Cédula:</strong></td>
+                                    <td>@Model.Empleados.cedula</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Departamento:</strong></td>
+                                    <td>@Model.Empleados.Puestos.Departamentos.nombre</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Salario Base:</strong></td>
+                                    <td>₡@Model.Empleados.Puestos.salario_base.ToString("N2")</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DETALLE DE LA PLANILLA -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">💰 Detalle de Ingresos y Deducciones</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- INGRESOS -->
+                            <div class="mb-4">
+                                <h6 class="text-success"><i class="bi bi-plus-circle"></i> Ingresos</h6>
+                                <div class="table-responsive">
+                                    <table class="table-sm table-borderless table">
+                                        <tr>
+                                            <td>Salario Base:</td>
+                                            <td class="text-end">₡@Model.Empleados.Puestos.salario_base.ToString("N2")</td>
+                                        </tr>
+                                        @if ((Model.horas_extras ?? 0) > 0)
+                                        {
+                                            <tr>
+                                                <td>Horas Extras:</td>
+                                                <td class="text-info text-end">₡@((Model.horas_extras ?? 0).ToString("N2"))</td>
+                                            </tr>
+                                        }
+                                        @if ((Model.salario_dias_feriados ?? 0) > 0)
+                                        {
+                                            <tr>
+                                                <td>Días Feriados:</td>
+                                                <td class="text-info text-end">₡@((Model.salario_dias_feriados ?? 0).ToString("N2"))</td>
+                                            </tr>
+                                        }
+                                        <tr class="border-top">
+                                            <td><strong>Total Bruto:</strong></td>
+                                            <td class="text-end"><strong class="text-success">₡@Model.salario_bruto.ToString("N2")</strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- DEDUCCIONES -->
+                            <div class="mb-4">
+                                <h6 class="text-danger"><i class="bi bi-dash-circle"></i> Deducciones Legales</h6>
+                                <div class="table-responsive">
+                                    <table class="table-sm table-borderless table">
+                                        <tr>
+                                            <td>CCSS (9.34%):</td>
+                                            <td class="text-danger text-end">-₡@((Model.ccss ?? 0).ToString("N2"))</td>
+                                        </tr>
+                                        <tr>
+                                            <td>IVM (2.75%):</td>
+                                            <td class="text-danger text-end">-₡@((Model.ivm ?? 0).ToString("N2"))</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Impuesto Renta:</td>
+                                            <td class="text-danger text-end">-₡@((Model.isr ?? 0).ToString("N2"))</td>
+                                        </tr>
+                                        @if ((Model.otros_descuentos ?? 0) > 0)
+                                        {
+                                            <tr>
+                                                <td>Otros Descuentos:</td>
+                                                <td class="text-warning text-end">-₡@((Model.otros_descuentos ?? 0).ToString("N2"))</td>
+                                            </tr>
+                                        }
+                                        <tr class="border-top">
+                                            <td><strong>Total Deducciones:</strong></td>
+                                            <td class="text-end"><strong class="text-danger">-₡@(((Model.ccss ?? 0) + (Model.ivm ?? 0) + (Model.isr ?? 0) + (Model.otros_descuentos ?? 0)).ToString("N2"))</strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- RESULTADO FINAL -->
+                            <div class="alert alert-success">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h5 class="alert-heading mb-0">💵 Salario Neto a Recibir</h5>
+                                        <small>Después de aplicar todas las deducciones</small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h3 class="mb-0 text-success">₡@Model.salario_neto.ToString("N2")</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- INFORMACIÓN ADICIONAL -->
+                            @if ((Model.credito_hijos ?? 0) > 0 || (Model.credito_conyuge ?? 0) > 0)
+                            {
+                                <div class="mt-3">
+                                    <h6 class="text-info"><i class="bi bi-info-circle"></i> Créditos Aplicados</h6>
+                                    <div class="table-responsive">
+                                        <table class="table-sm table-borderless table">
+                                            @if ((Model.credito_hijos ?? 0) > 0)
+                                            {
+                                                <tr>
+                                                    <td>Crédito por Hijos:</td>
+                                                    <td class="text-info text-end">₡@((Model.credito_hijos ?? 0).ToString("N2"))</td>
+                                                </tr>
+                                            }
+                                            @if ((Model.credito_conyuge ?? 0) > 0)
+                                            {
+                                                <tr>
+                                                    <td>Crédito por Cónyuge:</td>
+                                                    <td class="text-info text-end">₡@((Model.credito_conyuge ?? 0).ToString("N2"))</td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="mt-4 text-center">
+                        <button class="btn btn-outline-success" onclick="imprimirPlanilla()">
+                            <i class="bi bi-printer"></i> Imprimir Planilla
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="descargarPDF()">
+                            <i class="bi bi-file-pdf"></i> Descargar PDF
+                        </button>
+                        @Html.ActionLink("⬅️ Volver al Historial", "MiHistorial", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function imprimirPlanilla() {
+            window.print();
+        }
+
+        function descargarPDF() {
+            showToast('Funcionalidad de descarga PDF próximamente disponible', 'info');
+        }
+    </script>
+}
+
+<style>
+    .avatar-lg {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .alert-success {
+        border-left: 5px solid #28a745;
+    }
+
+    @@media print {
+        .btn, .navbar, .sidebar {
+            display: none !important;
+        }
+
+        .container-fluid {
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+</style>

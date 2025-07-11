@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using SistemaNomina.Helpers;
 using SistemaNomina.Models;
-using System.Linq;
-using System.Data.Entity;
 
 namespace SistemaNomina.Controllers
 {
@@ -61,6 +62,61 @@ namespace SistemaNomina.Controllers
                 ViewBag.EsFeriado = false;
                 ViewBag.Feriado = null;
                 return View();
+            }
+        }
+
+        // Método para que cualquier usuario vea su información personal
+        [Authorize]
+        public ActionResult MiPerfil()
+        {
+            try
+            {
+                using (var db = new smartbuilding_rhEntities())
+                {
+                    // Obtener el ID del usuario logueado desde la sesión
+                    var currentUserId = (int?)Session["UserId"];
+                    if (!currentUserId.HasValue)
+                    {
+                        return RedirectToAction("Login", "Usuarios");
+                    }
+
+                    // Buscar el empleado asociado al usuario logueado
+                    var usuario = db.Usuarios.Include("Empleados")
+                                             .FirstOrDefault(u => u.id_usuario == currentUserId.Value);
+
+                    if (usuario?.Empleados == null)
+                    {
+                        ViewBag.Error = "No se encontró información del empleado asociada a su usuario.";
+                        return View("Error");
+                    }
+
+                    // Obtener el empleado con todas las relaciones necesarias
+                    var empleado = db.Empleados.Include(e => e.EstadoCivil)
+                                              .Include(e => e.Horarios)
+                                              .Include(e => e.Puestos)
+                                              .Include(e => e.Puestos.Departamentos)
+                                              .FirstOrDefault(e => e.id_empleado == usuario.id_empleado);
+
+                    if (empleado == null)
+                    {
+                        ViewBag.Error = "No se encontró la información del empleado.";
+                        return View("Error");
+                    }
+
+                    // 📋 LOG AUTOMÁTICO - Usuario consultó su perfil
+                    BitacoraHelper.RegistrarAccion("CONSULTAR_MI_PERFIL",
+                        $"Usuario consultó su perfil personal: {empleado.nombre1} {empleado.apellido1}",
+                        currentUserId.Value);
+
+                    return View(empleado);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Registrar el error para depuración
+                System.Diagnostics.Debug.WriteLine($"Error en MiPerfil: {ex.Message}");
+                ViewBag.Error = "Ocurrió un error al cargar su información personal.";
+                return View("Error");
             }
         }
 

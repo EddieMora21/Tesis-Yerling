@@ -1,0 +1,485 @@
+@model SistemaNomina.Models.Vacaciones
+
+@{
+    ViewBag.Title = "Mis Días de Vacaciones";
+}
+
+<style>
+    .vacaciones-dashboard {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .header-vacaciones {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .dashboard-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        margin-bottom: 25px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 15px 20px;
+        border-bottom: none;
+    }
+
+        .card-header h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .summary-item {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border-left: 4px solid #28a745;
+        transition: transform 0.3s ease;
+    }
+
+        .summary-item:hover {
+            transform: translateY(-5px);
+        }
+
+    .summary-number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #28a745;
+        margin-bottom: 5px;
+    }
+
+    .summary-label {
+        color: #6c757d;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .employee-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .info-value {
+        color: #6c757d;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin: 25px 0;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+    }
+
+    .solicitudes-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+        .solicitudes-table th,
+        .solicitudes-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .solicitudes-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .solicitudes-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-pendiente {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status-aprobado {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-rechazado {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+    .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+
+    @@media (max-width: 768px) {
+        .vacaciones-dashboard {
+            padding: 15px;
+        }
+
+        .header-vacaciones {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .card-body {
+            padding: 20px 15px;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 1200px;">
+    <div class="header-vacaciones">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-calendar-check" style="font-size: 2rem; margin-right: 15px;"></i>
+                Mis Días de Vacaciones
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Consulta tu saldo y gestiona tus solicitudes de vacaciones</p>
+        </div>
+    </div>
+
+    <div class="vacaciones-dashboard">
+        <!-- Información del empleado -->
+        <div class="employee-info">
+            <h4 style="color: #17a2b8; margin-bottom: 15px;">
+                <i class="fa fa-user"></i> Información Personal
+            </h4>
+            <div class="info-row">
+                <span class="info-label">Empleado:</span>
+                <span class="info-value">@ViewBag.NombreEmpleado</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Cédula:</span>
+                <span class="info-value">@ViewBag.Cedula</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Departamento:</span>
+                <span class="info-value">@ViewBag.Departamento</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Puesto:</span>
+                <span class="info-value">@ViewBag.Puesto</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Fecha de Ingreso:</span>
+                <span class="info-value">@ViewBag.FechaIngreso</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Antigüedad:</span>
+                <span class="info-value">@ViewBag.AntiguedadAnios año@(ViewBag.AntiguedadAnios != 1 ? "s" : "") y @ViewBag.AntiguedadMeses mes@(ViewBag.AntiguedadMeses != 1 ? "es" : "")</span>
+            </div>
+        </div>
+
+        <!-- Resumen de vacaciones -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h4><i class="fa fa-chart-bar"></i> Resumen de Vacaciones - Período @ViewBag.Periodo</h4>
+            </div>
+            <div class="card-body">
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-number">@ViewBag.DiasAcumulados</div>
+                        <div class="summary-label">Días Acumulados</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number">@ViewBag.DiasDisfrutados</div>
+                        <div class="summary-label">Días Disfrutados</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number" style="color: @(ViewBag.DiasDisponibles > 0 ? "#28a745" : "#dc3545");">@ViewBag.DiasDisponibles</div>
+                        <div class="summary-label">Días Disponibles</div>
+                    </div>
+                </div>
+
+                @if (ViewBag.DiasDisponibles <= 0)
+                {
+                    <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <strong>Atención:</strong> No tienes días de vacaciones disponibles en este momento.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        <strong>Información:</strong> Tienes @ViewBag.DiasDisponibles día@(ViewBag.DiasDisponibles != 1 ? "s" : "") laboral@(ViewBag.DiasDisponibles != 1 ? "es" : "") disponible@(ViewBag.DiasDisponibles != 1 ? "s" : "") para solicitar vacaciones.
+                    </div>
+                }
+
+                <div class="action-buttons">
+                    @if (ViewBag.DiasDisponibles > 0)
+                    {
+                        <a href="@Url.Action("SolicitarVacaciones")" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                            Solicitar Vacaciones
+                        </a>
+                    }
+                    <a href="/SolicitudesVacaciones/MisSolicitudes" class="btn btn-info">
+                        <i class="fa fa-list"></i>
+                        Ver Mis Solicitudes
+                    </a>
+                    <a href="/Home/Index" class="btn btn-secondary">
+                        <i class="fa fa-home"></i>
+                        Panel Principal
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Solicitudes pendientes -->
+        @{
+            var solicitudesPendientes = ViewBag.SolicitudesPendientes as List<SistemaNomina.Models.SolicitudesVacaciones>;
+        }
+        @if (solicitudesPendientes != null && solicitudesPendientes.Any())
+        {
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h4><i class="fa fa-clock-o"></i> Solicitudes Pendientes</h4>
+                </div>
+                <div class="card-body">
+                    <table class="solicitudes-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha Solicitud</th>
+                                <th>Período Solicitado</th>
+                                <th>Días</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var solicitud in solicitudesPendientes)
+                            {
+                                <tr>
+                                    <td>@solicitud.fecha_solicitud?.ToString("dd/MM/yyyy")</td>
+                                    <td>@solicitud.fecha_inicio.ToString("dd/MM/yyyy") - @solicitud.fecha_fin.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @{
+                                            int diasCalculados = 0;
+                                            for (var fecha = solicitud.fecha_inicio; fecha <= solicitud.fecha_fin; fecha = fecha.AddDays(1))
+                                            {
+                                                if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
+                                                {
+                                                    diasCalculados++;
+                                                }
+                                            }
+                                        }
+                                        @diasCalculados días
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-pendiente">Pendiente</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <!-- Últimas solicitudes aprobadas -->
+        @{
+            var solicitudesAprobadas = ViewBag.SolicitudesAprobadas as List<SistemaNomina.Models.SolicitudesVacaciones>;
+        }
+        @if (solicitudesAprobadas != null && solicitudesAprobadas.Any())
+        {
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h4><i class="fa fa-check-circle"></i> Últimas Solicitudes Aprobadas</h4>
+                </div>
+                <div class="card-body">
+                    <table class="solicitudes-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha Solicitud</th>
+                                <th>Período Disfrutado</th>
+                                <th>Días</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var solicitud in solicitudesAprobadas)
+                            {
+                                <tr>
+                                    <td>@solicitud.fecha_solicitud?.ToString("dd/MM/yyyy")</td>
+                                    <td>@solicitud.fecha_inicio.ToString("dd/MM/yyyy") - @solicitud.fecha_fin.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @{
+                                            int diasCalculados = 0;
+                                            for (var fecha = solicitud.fecha_inicio; fecha <= solicitud.fecha_fin; fecha = fecha.AddDays(1))
+                                            {
+                                                if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
+                                                {
+                                                    diasCalculados++;
+                                                }
+                                            }
+                                        }
+                                        @diasCalculados días
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-aprobado">Aprobado</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <!-- Estado vacío si no hay solicitudes -->
+        @if ((solicitudesPendientes == null || !solicitudesPendientes.Any()) &&
+             (solicitudesAprobadas == null || !solicitudesAprobadas.Any()))
+        {
+            <div class="dashboard-card">
+                <div class="card-body">
+                    <div class="empty-state">
+                        <i class="fa fa-calendar-plus-o"></i>
+                        <h4>Sin Solicitudes de Vacaciones</h4>
+                        <p>Aún no has realizado ninguna solicitud de vacaciones.</p>
+                        @if (ViewBag.DiasDisponibles > 0)
+                        {
+                            <a href="@Url.Action("SolicitarVacaciones")" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                                Solicitar Mis Primeras Vacaciones
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

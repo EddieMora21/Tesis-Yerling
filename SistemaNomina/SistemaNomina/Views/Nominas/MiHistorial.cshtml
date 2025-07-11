@@ -1,0 +1,348 @@
+﻿@model IEnumerable<SistemaNomina.Models.Nomina>
+
+@{
+    ViewBag.Title = "Mi Historial de Planillas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- ENCABEZADO PERSONALIZADO -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="card-title mb-1">
+                                <i class="bi bi-person-badge"></i> Mi Historial de Planillas
+                            </h2>
+                            <p class="card-text mb-0">
+                                <strong>@ViewBag.NombreEmpleado</strong> - Cédula: @ViewBag.CedulaEmpleado
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <i class="bi bi-file-earmark-spreadsheet display-4 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTROS RÁPIDOS -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">🔍 Filtrar por período</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Año:</label>
+                    <select id="filtroAnio" class="form-select">
+                        <option value="">Todos los años</option>
+                        @if (Model.Any())
+                        {
+                            foreach (var anio in Model.Select(m => m.anio).Distinct().OrderByDescending(a => a))
+                            {
+                                <option value="@anio">@anio</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Mes:</label>
+                    <select id="filtroMes" class="form-select">
+                        <option value="">Todos los meses</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary" onclick="aplicarFiltros()">
+                            <i class="bi bi-search"></i> Filtrar
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESTADÍSTICAS PERSONALES -->
+    @if (Model.Any())
+    {
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <i class="bi bi-file-earmark-text fs-1"></i>
+                        <h4 class="mt-2">@Model.Count()</h4>
+                        <p class="mb-0">Planillas Totales</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <i class="bi bi-currency-dollar fs-1"></i>
+                        <h4 class="mt-2">₡@Model.Average(n => n.salario_neto).ToString("N0")</h4>
+                        <p class="mb-0">Promedio Neto</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up fs-1"></i>
+                        <h4 class="mt-2">₡@Model.Max(n => n.salario_neto).ToString("N0")</h4>
+                        <p class="mb-0">Mejor Salario</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-dark text-white">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-check fs-1"></i>
+                        <h4 class="mt-2">@Model.Select(n => n.anio).Distinct().Count()</h4>
+                        <p class="mb-0">Años Laborados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- LISTADO DE PLANILLAS -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">📋 Mis Planillas</h5>
+            <div>
+                <span class="badge bg-secondary me-2">@Model.Count() registros</span>
+                <button class="btn btn-outline-success btn-sm" onclick="exportarExcel()">
+                    <i class="bi bi-file-excel"></i> Exportar Excel
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tablaPlanillas">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>📅 Período</th>
+                                <th class="text-end">💰 Salario Bruto</th>
+                                <th class="text-end">⏰ Horas Extras</th>
+                                <th class="text-end">🏖️ Días Feriados</th>
+                                <th class="text-end">📊 Total Deducciones</th>
+                                <th class="text-end">✅ Salario Neto</th>
+                                <th class="text-center">🔍 Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr data-anio="@item.anio" data-mes="@item.mes">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <span class="badge bg-primary fs-6">@item.mes/@item.anio</span>
+                                            </div>
+                                            <div>
+                                                <small class="text-muted">
+                                                    @switch (item.mes)
+                                                    {
+                                                        case 1:<text>Enero</text> break;
+                                                    case 2: <text>Febrero</text> break;
+                                                case 3: <text>Marzo</text> break;
+                                            case 4: <text>Abril</text> break;
+                                        case 5: <text>Mayo</text> break;
+                                    case 6: <text>Junio</text> break;
+                                case 7: <text>Julio</text> break;
+                            case 8: <text>Agosto</text> break;
+                        case 9: <text>Septiembre</text> break;
+                    case 10: <text>Octubre</text> break;
+                case 11: <text>Noviembre</text> break;
+            case 12: <text>Diciembre</text>break;
+    }
+                                                    @item.anio
+                                                </small>
+                                                <br><small class="text-muted">Creada: @(item.fecha_creacion?.ToString("dd/MM/yyyy"))</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong class="text-success">₡@item.salario_bruto.ToString("N2")</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        @if ((item.horas_extras ?? 0) > 0)
+                                        {
+                                            <span class="text-info">₡@((item.horas_extras ?? 0).ToString("N2"))</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">₡0.00</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        @if ((item.salario_dias_feriados ?? 0) > 0)
+                                        {
+                                            <span class="text-info">₡@((item.salario_dias_feriados ?? 0).ToString("N2"))</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">₡0.00</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="text-danger">₡@(((item.ccss ?? 0) + (item.ivm ?? 0) + (item.isr ?? 0)).ToString("N2"))</span>
+                                        <br>
+                                        <small class="text-muted">
+                                            CCSS + IVM + ISR
+                                        </small>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong class="text-primary fs-5">₡@item.salario_neto.ToString("N2")</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        @Html.ActionLink("👁️ Ver Detalle", "MiDetalle", new { id = item.id_nomina }, new { @class = "btn btn-outline-primary btn-sm", @title = "Ver detalle completo" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h4 class="text-muted mt-3">No tienes planillas registradas</h4>
+                    <p class="text-muted">Las planillas aparecerán aquí cuando sean procesadas por el departamento de RRHH</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- INFORMACIÓN ADICIONAL -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">💡 Información Importante</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-primary">📊 Deducciones Legales:</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>CCSS:</strong> 9.34% del salario bruto</li>
+                        <li><strong>IVM:</strong> 2.75% del salario bruto</li>
+                        <li><strong>ISR:</strong> Según tabla progresiva</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-success">✨ Recordatorios:</h6>
+                    <ul class="list-unstyled">
+                        <li>✅ Las planillas se procesan mensualmente</li>
+                        <li>✅ Consulta regularmente tu historial</li>
+                        <li>✅ Cualquier duda, contacta a RRHH</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function aplicarFiltros() {
+            var anio = document.getElementById('filtroAnio').value;
+            var mes = document.getElementById('filtroMes').value;
+            var filas = document.querySelectorAll('#tablaPlanillas tbody tr');
+
+            filas.forEach(function (fila) {
+                var filaAnio = fila.getAttribute('data-anio');
+                var filaMes = fila.getAttribute('data-mes');
+                var mostrar = true;
+
+                if (anio && filaAnio !== anio) {
+                    mostrar = false;
+                }
+
+                if (mes && filaMes !== mes) {
+                    mostrar = false;
+                }
+
+                fila.style.display = mostrar ? '' : 'none';
+            });
+
+            // Actualizar contador
+            var filasVisibles = document.querySelectorAll('#tablaPlanillas tbody tr:not([style*="display: none"])').length;
+            showToast(`Filtro aplicado: ${filasVisibles} planilla(s) encontrada(s)`, 'info');
+        }
+
+        function limpiarFiltros() {
+            document.getElementById('filtroAnio').value = '';
+            document.getElementById('filtroMes').value = '';
+
+            var filas = document.querySelectorAll('#tablaPlanillas tbody tr');
+            filas.forEach(function (fila) {
+                fila.style.display = '';
+            });
+
+            showToast('Filtros limpiados', 'success');
+        }
+
+        function exportarExcel() {
+            showToast('Funcionalidad de exportación próximamente disponible', 'info');
+        }
+
+        // Aplicar clases CSS para inputs de solo números
+        document.addEventListener('DOMContentLoaded', function () {
+            // No hay inputs editables en esta vista, pero se mantiene el patrón
+        });
+    </script>
+}
+
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .fs-6 {
+        font-size: 1rem !important;
+    }
+
+    .badge {
+        font-size: 0.875em;
+    }
+
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .display-1 {
+            font-size: 3rem;
+        }
+    }
+</style>

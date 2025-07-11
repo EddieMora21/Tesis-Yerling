@@ -46,6 +46,79 @@ namespace SistemaNomina.Controllers
             return View(nomina);
         }
 
+        public ActionResult MiHistorial()
+        {
+            // Obtener el usuario autenticado
+            var usuarioActual = User.Identity.Name;
+
+            // Buscar el empleado basado en el usuario autenticado
+            var empleado = db.Usuarios
+                .Where(u => u.usuario == usuarioActual)
+                .Select(u => u.Empleados)
+                .FirstOrDefault();
+
+            if (empleado == null)
+            {
+                TempData["Error"] = "No se pudo encontrar información del empleado.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Obtener todas las nóminas del empleado
+            var misNominas = db.Nomina
+                .Where(n => n.id_empleado == empleado.id_empleado)
+                .Include(n => n.Empleados)
+                .Include(n => n.ISR1)
+                .OrderByDescending(n => n.anio)
+                .ThenByDescending(n => n.mes)
+                .ToList();
+
+            ViewBag.NombreEmpleado = $"{empleado.nombre1} {empleado.apellido1}";
+            ViewBag.CedulaEmpleado = empleado.cedula;
+
+            return View(misNominas);
+        }
+
+        /// <summary>
+        /// CASO DE USO: Detalle de mi planilla específica
+        /// Permite al empleado ver el detalle de una nómina específica (solo suya)
+        /// </summary>
+        public ActionResult MiDetalle(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Obtener el usuario autenticado
+            var usuarioActual = User.Identity.Name;
+
+            // Buscar el empleado basado en el usuario autenticado
+            var empleado = db.Usuarios
+                .Where(u => u.usuario == usuarioActual)
+                .Select(u => u.Empleados)
+                .FirstOrDefault();
+
+            if (empleado == null)
+            {
+                TempData["Error"] = "No se pudo encontrar información del empleado.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Buscar la nómina solo si pertenece al empleado autenticado
+            Nomina nomina = db.Nomina
+                .Include(n => n.Empleados)
+                .Include(n => n.ISR1)
+                .FirstOrDefault(n => n.id_nomina == id && n.id_empleado == empleado.id_empleado);
+
+            if (nomina == null)
+            {
+                TempData["Error"] = "No tiene permisos para ver esta planilla o no existe.";
+                return RedirectToAction("MiHistorial");
+            }
+
+            return View(nomina);
+        }
+
         // Muestra el formulario para crear una nueva nómina
         public ActionResult Create()
         {

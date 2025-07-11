@@ -1,0 +1,384 @@
+@model SistemaNomina.Models.Empleados
+
+@{
+    ViewBag.Title = "Mi Información Personal";
+}
+
+<style>
+    .header-details {
+        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -15px -15px 30px -15px;
+        border-radius: 0 0 15px 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 30px;
+    }
+
+    .employee-header {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .section-title {
+        color: #221d42;
+        font-weight: 600;
+        border-bottom: 2px solid #1788ca;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-left: 4px solid #1788ca;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        width: 180px;
+        flex-shrink: 0;
+    }
+
+    .detail-value {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .detail-icon {
+        margin-right: 8px;
+        color: #1788ca;
+        width: 20px;
+        text-align: center;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-default-custom {
+        background: white;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: #221d42;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-default-custom:hover {
+            background: #f8f9fa;
+            border-color: #1788ca;
+            color: #1788ca;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+    }
+
+    .info-alert {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border: 1px solid #1788ca;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 25px;
+        color: #1565c0;
+    }
+
+    @@media (max-width: 768px) {
+        .details-card {
+            padding: 20px 15px;
+        }
+
+        .header-details {
+            padding: 1.5rem 0;
+            margin: -15px -15px 20px -15px;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .employee-header h3 {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<div class="container" style="max-width: 1200px;">
+    <div class="header-details">
+        <div class="container">
+            <h2 class="mb-0">
+                <i class="fa fa-user-circle" style="font-size: 2rem; margin-right: 15px;"></i>
+                Mi Información Personal
+            </h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Consulta tu información personal y laboral</p>
+        </div>
+    </div>
+
+    <div class="details-card">
+        <div class="info-alert">
+            <i class="fa fa-info-circle" style="margin-right: 8px;"></i>
+            <strong>Información:</strong> Esta es tu información personal registrada en el sistema.
+            Si necesitas realizar algún cambio, contacta al departamento de Recursos Humanos.
+        </div>
+
+        <div class="employee-header">
+            <div class="row align-items-center">
+                <div class="col-md-9">
+                    <h3 class="mb-1">
+                        <i class="fa fa-user" style="margin-right: 15px; font-size: 2rem;"></i>
+                        @Model.nombre1 @Model.nombre2 @Model.apellido1 @Model.apellido2
+                    </h3>
+                    <p class="mb-0" style="font-size: 18px; opacity: 0.9;">
+                        <i class="fa fa-id-card" style="margin-right: 8px;"></i>
+                        Cédula: @Model.cedula
+                    </p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="status-badge @(Model.estado == "ACTIVO" ? "status-active" : "status-inactive")">
+                        @Model.estado
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-section">
+                    <h4 class="section-title">
+                        <i class="fa fa-user" style="margin-right: 10px; color: #1788ca;"></i>
+                        Información Personal
+                    </h4>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-user detail-icon"></i>
+                            Primer Nombre:
+                        </div>
+                        <div class="detail-value">@Model.nombre1</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-user detail-icon"></i>
+                            Segundo Nombre:
+                        </div>
+                        <div class="detail-value">@(Model.nombre2 ?? "N/A")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-user detail-icon"></i>
+                            Primer Apellido:
+                        </div>
+                        <div class="detail-value">@Model.apellido1</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-user detail-icon"></i>
+                            Segundo Apellido:
+                        </div>
+                        <div class="detail-value">@(Model.apellido2 ?? "N/A")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-calendar detail-icon"></i>
+                            Fecha de Nacimiento:
+                        </div>
+                        <div class="detail-value">@Model.fecha_nacimiento.Value.ToString("dd/MM/yyyy")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-heart detail-icon"></i>
+                            Estado Civil:
+                        </div>
+                        <div class="detail-value">@Model.EstadoCivil.nombre</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-child detail-icon"></i>
+                            Cantidad de Hijos:
+                        </div>
+                        <div class="detail-value">@Model.cantidad_hijos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-section">
+                    <h4 class="section-title">
+                        <i class="fa fa-address-book" style="margin-right: 10px; color: #1788ca;"></i>
+                        Información de Contacto
+                    </h4>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-map-marker detail-icon"></i>
+                            Dirección:
+                        </div>
+                        <div class="detail-value">@(Model.direccion ?? "No especificada")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-envelope detail-icon"></i>
+                            Correo Electrónico:
+                        </div>
+                        <div class="detail-value">@(Model.correo ?? "No especificado")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-phone detail-icon"></i>
+                            Teléfono:
+                        </div>
+                        <div class="detail-value">@(Model.telefono ?? "No especificado")</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h4 class="section-title">
+                        <i class="fa fa-briefcase" style="margin-right: 10px; color: #1788ca;"></i>
+                        Información Laboral
+                    </h4>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-building detail-icon"></i>
+                            Departamento:
+                        </div>
+                        <div class="detail-value">@Model.Puestos.Departamentos.nombre</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-briefcase detail-icon"></i>
+                            Puesto:
+                        </div>
+                        <div class="detail-value">@Model.Puestos.nombre_puesto</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-clock detail-icon"></i>
+                            Horario:
+                        </div>
+                        <div class="detail-value">
+                            @Model.Horarios.nombre<br>
+                            <small style="color: #6c757d;">
+                                @Model.Horarios.hora_entrada.ToString(@"hh\:mm") - @Model.Horarios.hora_salida.ToString(@"hh\:mm")
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-calendar-check detail-icon"></i>
+                            Fecha de Ingreso:
+                        </div>
+                        <div class="detail-value">@Model.fecha_ingreso.ToString("dd/MM/yyyy")</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-calendar detail-icon"></i>
+                            Antigüedad:
+                        </div>
+                        <div class="detail-value">
+                            @{
+                                var antiguedad = DateTime.Now - Model.fecha_ingreso;
+                                var años = (int)(antiguedad.TotalDays / 365.25);
+                                var meses = (int)((antiguedad.TotalDays % 365.25) / 30.44);
+                            }
+                            @años año@(años != 1 ? "s" : "") y @meses mes@(meses != 1 ? "es" : "")
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fa fa-toggle-on detail-icon"></i>
+                            Estado:
+                        </div>
+                        <div class="detail-value">
+                            <span class="status-badge @(Model.estado == "ACTIVO" ? "status-active" : "status-inactive")" style="font-size: 12px; padding: 4px 8px;">
+                                @Model.estado
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e7e8eb;">
+            <a href="/Home/Index" class="btn-default-custom">
+                <i class="fa fa-home" style="margin-right: 8px;"></i>
+                Volver al Panel Principal
+            </a>
+        </div>
+    </div>
+</div>
