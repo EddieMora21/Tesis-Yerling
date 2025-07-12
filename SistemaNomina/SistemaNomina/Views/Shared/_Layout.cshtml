@@ -839,11 +839,29 @@
                                 <i class="fas fa-paper-plane menu-icon"></i>
                                 <span>Todas las Solicitudes</span>
                             </a>
-                            <a href="/SolicitudesVacaciones/SolicitudesPendientes" class="menu-link">
-                                <i class="fas fa-hourglass-half menu-icon"></i>
-                                <span>Solicitudes Pendientes</span>
-                                <span class="menu-badge">3</span>
-                            </a>
+                           <a href="/SolicitudesVacaciones/SolicitudesPendientes" class="menu-link">
+                               <i class="fas fa-hourglass-half menu-icon"></i>
+                               <span>Solicitudes Pendientes</span>
+                               @{
+                                   var pendingCount = 0;
+                                   try
+                                   {
+                                       using (var db = new SistemaNomina.Models.smartbuilding_rhEntities())
+                                       {
+                                           var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente" && e.modulo == "Vacaciones");
+                                           if (estadoPendiente != null)
+                                           {
+                                               pendingCount = db.SolicitudesVacaciones.Count(s => s.id_estado == estadoPendiente.id_estado);
+                                           }
+                                       }
+                                   }
+                                   catch { }
+                               }
+                               @if (pendingCount > 0)
+                               {
+                                   <span class="menu-badge">@pendingCount</span>
+                               }
+                           </a>
                             <a href="/Permisos" class="menu-link">
                                 <i class="fas fa-key menu-icon"></i>
                                 <span>Gestión de Permisos</span>

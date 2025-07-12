@@ -1,141 +1,412 @@
 ﻿@model SistemaNomina.Models.Liquidaciones
 
 @{
-    // Establece el título de la página en la pestaña del navegador
-    ViewBag.Title = "Details";
-
-    //  vista 
+    ViewBag.Title = "Detalles de Liquidación";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+    }
 
-<div>
-    <h4>Liquidaciones</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @* Muestra el nombre del campo 'fecha_salida' *@
-            @Html.DisplayNameFor(model => model.fecha_salida)
-        </dt>
+    .header-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
 
-        <dd>
-            @* Muestra el valor de 'fecha_salida' *@
-            @Html.DisplayFor(model => model.fecha_salida)
-        </dd>
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 1.5rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.preaviso)
-        </dt>
+    .card-header-info {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.preaviso)
-        </dd>
+    .card-header-success {
+        background: linear-gradient(135deg, #28a745 0%, rgba(40, 167, 69, 0.8) 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.cesantia)
-        </dt>
+    .info-item {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--secondary-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.cesantia)
-        </dd>
+    .info-label {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.vacaciones_pendientes)
-        </dt>
+    .info-value {
+        color: #495057;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.vacaciones_pendientes)
-        </dd>
+    .money-value {
+        color: var(--secondary-color);
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.dias_vacaciones_pendientes)
-        </dt>
+    .money-value.total {
+        color: #28a745;
+        font-size: 1.5rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.dias_vacaciones_pendientes)
-        </dd>
+    .money-value.deduction {
+        color: #dc3545;
+        font-size: 1.1rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.aguinaldo_proporcional)
-        </dt>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.aguinaldo_proporcional)
-        </dd>
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        color: white;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.total_liquidacion)
-        </dt>
+    .btn-outline-custom {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.total_liquidacion)
-        </dd>
+    .btn-outline-custom:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-1px);
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.isr_liquidacion)
-        </dt>
+    .btn-success-custom {
+        background: linear-gradient(135deg, #28a745 0%, rgba(40, 167, 69, 0.8) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.isr_liquidacion)
-        </dd>
+    .btn-success-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        color: white;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.css_liquidacion)
-        </dt>
+    .employee-badge {
+        background: linear-gradient(135deg, var(--accent-color) 0%, rgba(250, 182, 27, 0.8) 100%);
+        color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.css_liquidacion)
-        </dd>
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ivm_liquidacion)
-        </dt>
+    .summary-section {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        border: 2px solid rgba(40, 167, 69, 0.2);
+        text-align: center;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.ivm_liquidacion)
-        </dd>
+    .status-badge {
+        background: var(--accent-color);
+        color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
+    @@media (max-width: 768px) {
+        .header-gradient {
+            padding: 1.5rem 0;
+        }
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+        .info-item {
+            padding: 1rem;
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </dt>
+        .summary-section {
+            padding: 1.5rem;
+        }
+    }
+</style>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-        </dd>
+<div class="container-fluid">
+    <!-- ENCABEZADO -->
+    <div class="header-gradient">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">
+                        <i class="fas fa-file-contract fa-2x"></i>
+                        Detalles de Liquidación
+                    </h1>
+                    <p class="mb-0 fs-5">Información completa del proceso de liquidación</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span class="employee-badge">
+                        <i class="fas fa-user"></i>
+                        @Html.DisplayFor(model => model.Empleados.nombre1) @Html.DisplayFor(model => model.Empleados.apellido1)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <dt>
-            @* Accede al campo 'cedula' del empleado  *@
-            @Html.DisplayNameFor(model => model.Empleados.cedula)
-        </dt>
+    <div class="container">
+        <!-- INFORMACIÓN DEL EMPLEADO -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-header-info">
+                        <h5 class="mb-0">
+                            <i class="fas fa-id-card"></i>
+                            Información del Empleado
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-id-badge icon-primary"></i>
+                                Cédula del Empleado
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.Empleados.cedula)</div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula)
-        </dd>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-user-tie icon-primary"></i>
+                                Nombre Completo
+                            </div>
+                            <div class="info-value">
+                                @Html.DisplayFor(model => model.Empleados.nombre1)
+                                @Html.DisplayFor(model => model.Empleados.nombre2)
+                                @Html.DisplayFor(model => model.Empleados.apellido1)
+                                @Html.DisplayFor(model => model.Empleados.apellido2)
+                            </div>
+                        </div>
 
-        <dt>
-            @* Muestra el nombre del tipo de liquidación  *@
-            @Html.DisplayNameFor(model => model.TipoLiquidacion.nombre)
-        </dt>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-times icon-primary"></i>
+                                Fecha de Salida
+                            </div>
+                            <div class="info-value">
+                                <span class="status-badge">
+                                    @Html.DisplayFor(model => model.fecha_salida)
+                                </span>
+                            </div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.TipoLiquidacion.nombre)
-        </dd>
-    </dl>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-tags icon-primary"></i>
+                                Tipo de Liquidación
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.TipoLiquidacion.nombre)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-header-info">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock"></i>
+                            Información de Fechas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-plus-circle icon-primary"></i>
+                                Fecha de Creación
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.fecha_creacion)</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-edit icon-primary"></i>
+                                Fecha de Actualización
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.fecha_actualizacion)</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-day icon-primary"></i>
+                                Días de Vacaciones Pendientes
+                            </div>
+                            <div class="info-value">
+                                <span class="badge bg-info fs-6">
+                                    @Html.DisplayFor(model => model.dias_vacaciones_pendientes) días
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETALLES FINANCIEROS -->
+        <div class="card-custom">
+            <div class="card-header-success">
+                <h5 class="mb-0">
+                    <i class="fas fa-calculator"></i>
+                    Detalles Financieros de la Liquidación
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-bell icon-primary"></i>
+                                Preaviso
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.preaviso)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-handshake icon-primary"></i>
+                                Cesantía
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.cesantia)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-umbrella-beach icon-primary"></i>
+                                Vacaciones Pendientes
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.vacaciones_pendientes)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-gift icon-primary"></i>
+                                Aguinaldo Proporcional
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.aguinaldo_proporcional)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-receipt icon-primary"></i>
+                                ISR Liquidación
+                            </div>
+                            <div class="money-value deduction">₡@Html.DisplayFor(model => model.isr_liquidacion)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-shield-alt icon-primary"></i>
+                                CCSS Liquidación
+                            </div>
+                            <div class="money-value deduction">₡@Html.DisplayFor(model => model.css_liquidacion)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-piggy-bank icon-primary"></i>
+                                IVM Liquidación
+                            </div>
+                            <div class="money-value deduction">₡@Html.DisplayFor(model => model.ivm_liquidacion)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOTAL FINAL -->
+        <div class="summary-section">
+            <h3 class="mb-3" style="color: var(--primary-color);">
+                <i class="fas fa-money-check-alt"></i>
+                Total de Liquidación
+            </h3>
+            <h1 class="money-value total">
+                ₡@Html.DisplayFor(model => model.total_liquidacion)
+            </h1>
+            <p class="text-muted mt-3">Monto final a pagar al empleado</p>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                @Html.ActionLink("Volver a Lista", "Index", null, new { @class = "btn btn-outline-custom" })
+            </div>
+            <div>
+                @Html.ActionLink("Generar PDF", "GenerarPDF", new { id = Model.id_liquidacion }, new { @class = "btn btn-success-custom", target = "_blank" })
+                @Html.ActionLink("Editar Liquidación", "Edit", new { id = Model.id_liquidacion }, new { @class = "btn btn-primary-custom" })
+            </div>
+        </div>
+    </div>
 </div>
-
-<p>
-    @* Enlace para ir a la pantalla de edición de esta liquidación *@
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_liquidacion }) |
-
-    @* Enlace para regresar a la lista de liquidaciones *@
-    @Html.ActionLink("Back to List", "Index")
-</p>

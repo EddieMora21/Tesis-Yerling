@@ -440,8 +440,9 @@ namespace SistemaNomina.Controllers
                 var salarioBruto = preaviso + cesantia + vacacionesPendientes + aguinaldoProporcional;
 
                 // Calcular deducciones
-                var ccss = salarioBruto * 0.0934m; // 9.34%
-                var ivm = salarioBruto * 0.0275m;  // 2.75%
+                // ✅ CALCULAR DEDUCCIONES CON PORCENTAJES CORRECTOS
+                var ccss = salarioBruto * 0.1067m; // 10.67% CCSS
+                var ivm = salarioBruto * 0.0417m;  // 4.17% IVM
                 var isr = CalcularISR(salarioBruto, empleado.cantidad_hijos ?? 0); // ISR según tabla
 
                 var totalDeducciones = ccss + ivm + isr;
@@ -754,7 +755,7 @@ namespace SistemaNomina.Controllers
             }
         }
 
-        // GET: Liquidaciones/Edit/5
+        // GET: Liquidaciones/Edit/5 - MÉTODO CORREGIDO
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -772,7 +773,16 @@ namespace SistemaNomina.Controllers
                     return RedirectToAction("Index");
                 }
 
-                ViewBag.id_empleado = new SelectList(db.Empleados, "id_empleado", "cedula", liquidaciones.id_empleado);
+                // ✅ CORREGIDO: Solo empleados activos
+                var empleadosActivos = db.Empleados
+                    .Where(e => e.estado == "Activo")
+                    .Select(e => new {
+                        id_empleado = e.id_empleado,
+                        display = e.cedula + " - " + e.nombre1 + " " + e.apellido1
+                    })
+                    .ToList();
+
+                ViewBag.id_empleado = new SelectList(empleadosActivos, "id_empleado", "display", liquidaciones.id_empleado);
                 ViewBag.id_tipo = new SelectList(db.TipoLiquidacion, "id_tipo", "nombre", liquidaciones.id_tipo);
                 return View(liquidaciones);
             }
@@ -783,7 +793,7 @@ namespace SistemaNomina.Controllers
             }
         }
 
-        // POST: Liquidaciones/Edit/5
+        // POST: Liquidaciones/Edit/5 - MÉTODO CORREGIDO
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id_liquidacion,id_empleado,id_tipo,fecha_salida,preaviso,cesantia,vacaciones_pendientes,dias_vacaciones_pendientes,aguinaldo_proporcional,total_liquidacion,isr_liquidacion,css_liquidacion,ivm_liquidacion,fecha_creacion,fecha_actualizacion")] Liquidaciones liquidaciones)
@@ -799,19 +809,37 @@ namespace SistemaNomina.Controllers
                     return RedirectToAction("Index");
                 }
 
-                ViewBag.id_empleado = new SelectList(db.Empleados, "id_empleado", "cedula", liquidaciones.id_empleado);
+                // ✅ CORREGIDO: Solo empleados activos en caso de error
+                var empleadosActivos = db.Empleados
+                    .Where(e => e.estado == "Activo")
+                    .Select(e => new {
+                        id_empleado = e.id_empleado,
+                        display = e.cedula + " - " + e.nombre1 + " " + e.apellido1
+                    })
+                    .ToList();
+
+                ViewBag.id_empleado = new SelectList(empleadosActivos, "id_empleado", "display", liquidaciones.id_empleado);
                 ViewBag.id_tipo = new SelectList(db.TipoLiquidacion, "id_tipo", "nombre", liquidaciones.id_tipo);
                 return View(liquidaciones);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al actualizar liquidación: " + ex.Message;
-                ViewBag.id_empleado = new SelectList(db.Empleados, "id_empleado", "cedula", liquidaciones.id_empleado);
+
+                // ✅ CORREGIDO: Solo empleados activos en caso de excepción
+                var empleadosActivos = db.Empleados
+                    .Where(e => e.estado == "Activo")
+                    .Select(e => new {
+                        id_empleado = e.id_empleado,
+                        display = e.cedula + " - " + e.nombre1 + " " + e.apellido1
+                    })
+                    .ToList();
+
+                ViewBag.id_empleado = new SelectList(empleadosActivos, "id_empleado", "display", liquidaciones.id_empleado);
                 ViewBag.id_tipo = new SelectList(db.TipoLiquidacion, "id_tipo", "nombre", liquidaciones.id_tipo);
                 return View(liquidaciones);
             }
         }
-
         // GET: Liquidaciones/Delete/5
         public ActionResult Delete(int? id)
         {

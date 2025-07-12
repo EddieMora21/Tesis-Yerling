@@ -5,245 +5,325 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <!-- ENCABEZADO CON ACCIONES -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2 class="text-primary">
-                <i class="bi bi-calculator"></i> Gestión de Nóminas
-            </h2>
-            <p class="text-muted">Administra y consulta las nóminas generadas</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <div class="btn-group" role="group">
-                @Html.ActionLink("📊 Generar Nómina", "SeleccionarPeriodo", null, new { @class = "btn btn-success btn-lg" })
-                @Html.ActionLink("➕ Crear Manual", "Create", null, new { @class = "btn btn-outline-primary" })
-            </div>
-        </div>
-    </div>
-
-    <!-- FILTROS Y BÚSQUEDA -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title mb-0">🔍 Filtros de Búsqueda</h5>
-        </div>
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">Año:</label>
-                    <select name="anio" class="form-select">
-                        <option value="">Todos los años</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Mes:</label>
-                    <select name="mes" class="form-select">
-                        <option value="">Todos los meses</option>
-                        <option value="1">Enero</option>
-                        <option value="2">Febrero</option>
-                        <option value="3">Marzo</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Mayo</option>
-                        <option value="6">Junio</option>
-                        <option value="7">Julio</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Septiembre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Empleado:</label>
-                    <input type="text" name="empleado" class="form-control" placeholder="Buscar por cédula o nombre...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary d-block w-100">
-                        <i class="bi bi-search"></i> Buscar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ESTADÍSTICAS RÁPIDAS -->
-    @if (Model.Any())
-    {
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title">Total Nóminas</h6>
-                                <h3 class="mb-0">@Model.Count()</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="bi bi-file-earmark-text fs-1"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title">Total Bruto</h6>
-                                <h3 class="mb-0">₡@Model.Sum(n => n.salario_bruto).ToString("N0")</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="bi bi-currency-dollar fs-1"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title">Total Neto</h6>
-                                <h3 class="mb-0">₡@Model.Sum(n => n.salario_neto).ToString("N0")</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="bi bi-piggy-bank fs-1"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title">Total Deducciones</h6>
-                                <h3 class="mb-0">₡@Model.Sum(n => (n.ccss ?? 0) + (n.ivm ?? 0) + (n.isr ?? 0)).ToString("N0")</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="bi bi-receipt fs-1"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
     }
 
-    <!-- LISTADO DE NÓMINAS -->
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">📋 Listado de Nóminas</h5>
-            <span class="badge bg-secondary">@Model.Count() registros</span>
+    .header-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--primary-color) 0%, rgba(34, 29, 66, 0.9) 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+        border-bottom: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, #28a745 0%, rgba(40, 167, 69, 0.8) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-outline-custom {
+        border: 2px solid var(--secondary-color);
+        color: var(--secondary-color);
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--secondary-color);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .form-control-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+    }
+
+    .table-custom {
+        margin-bottom: 0;
+    }
+
+    .table-custom thead th {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: rgba(23, 136, 202, 0.05);
+    }
+
+    .table-custom tbody td {
+        padding: 1rem;
+        border-color: var(--neutral-color);
+    }
+
+    .badge-custom {
+        background: linear-gradient(135deg, var(--accent-color) 0%, rgba(250, 182, 27, 0.8) 100%);
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+    }
+
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--neutral-color);
+        margin-bottom: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .header-gradient {
+            padding: 1.5rem 0;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn-group .btn {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- ENCABEZADO PRINCIPAL -->
+    <div class="header-gradient">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">
+                        <i class="fas fa-calculator fa-2x"></i>
+                        Gestión de Nóminas
+                    </h1>
+                    <p class="mb-0 fs-5">Administra y consulta las nóminas generadas en el sistema</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="btn-group" role="group">
+                        @Html.ActionLink("Generar Nómina", "SeleccionarPeriodo", null, new { @class = "btn btn-success-custom btn-lg" })
+                        @Html.ActionLink("Crear Manual", "Create", null, new { @class = "btn btn-outline-light" })
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            @if (Model.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table-hover table-striped table">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>👤 Empleado</th>
-                                <th>📅 Período</th>
-                                <th class="text-end">💰 Salario Bruto</th>
-                                <th class="text-end">📊 Deducciones</th>
-                                <th class="text-end">✅ Salario Neto</th>
-                                <th class="text-center">🛠️ Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.OrderByDescending(n => n.anio).ThenByDescending(n => n.mes))
-                            {
+    </div>
+
+    <div class="container">
+        <!-- FILTROS Y BÚSQUEDA -->
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <h5 class="mb-0">
+                    <i class="fas fa-search"></i>
+                    Filtros de Búsqueda
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" style="color: var(--primary-color);">
+                            <i class="fas fa-calendar-alt icon-primary"></i>Año:
+                        </label>
+                        <select name="anio" class="form-select form-control-custom">
+                            <option value="">Todos los años</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold" style="color: var(--primary-color);">
+                            <i class="fas fa-calendar icon-primary"></i>Mes:
+                        </label>
+                        <select name="mes" class="form-select form-control-custom">
+                            <option value="">Todos los meses</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold" style="color: var(--primary-color);">
+                            <i class="fas fa-user icon-primary"></i>Empleado:
+                        </label>
+                        <input type="text" name="empleado" class="form-control form-control-custom"
+                               placeholder="Buscar por cédula o nombre..." />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary-custom w-100">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LISTADO DE NÓMINAS -->
+        <div class="card-custom">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list"></i>
+                    Listado de Nóminas
+                </h5>
+                <span class="badge-custom">@Model.Count() registros</span>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table-custom table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                                                @(item.Empleados.nombre1?.Substring(0, 1).ToUpper())
-                                            </div>
-                                            <div>
-                                                <strong>@item.Empleados.nombre1 @item.Empleados.apellido1</strong>
-                                                <br><small class="text-muted">@item.Empleados.cedula</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">
-                                            @item.mes/@item.anio
-                                        </span>
-                                        <br><small class="text-muted">@(item.fecha_creacion?.ToString("dd/MM/yyyy"))</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <strong class="text-success">₡@(item.salario_bruto.ToString("N2"))</strong>
-                                        @if ((item.horas_extras ?? 0) > 0)
-                                        {
-                                            <br><small class="text-info">+ ₡@((item.horas_extras ?? 0).ToString("N2")) HE</small>
-                                        }
-                                    </td>
-                                    <td class="text-end">
-                                        <span class="text-danger">-₡@(((item.ccss ?? 0) + (item.ivm ?? 0) + (item.isr ?? 0)).ToString("N2"))</span>
-                                        <br>
-                                        <small class="text-muted">
-                                            CCSS: ₡@((item.ccss ?? 0).ToString("N0"))<br>
-                                            IVM: ₡@((item.ivm ?? 0).ToString("N0"))<br>
-                                            ISR: ₡@((item.isr ?? 0).ToString("N0"))
-                                        </small>
-                                    </td>
-                                    <td class="text-end">
-                                        <strong class="text-primary fs-5">₡@(item.salario_neto.ToString("N2"))</strong>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            @Html.ActionLink("👁️", "Details", new { id = item.id_nomina }, new { @class = "btn btn-outline-info", @title = "Ver detalles" })
-                                            @Html.ActionLink("✏️", "Edit", new { id = item.id_nomina }, new { @class = "btn btn-outline-warning", @title = "Editar" })
-                                            @Html.ActionLink("🗑️", "Delete", new { id = item.id_nomina }, new { @class = "btn btn-outline-danger", @title = "Eliminar" })
-                                        </div>
-                                    </td>
+                                    <th><i class="fas fa-user"></i> Empleado</th>
+                                    <th><i class="fas fa-calendar"></i> Período</th>
+                                    <th><i class="fas fa-money-bill-wave"></i> Salario Bruto</th>
+                                    <th><i class="fas fa-clock"></i> Horas Extras</th>
+                                    <th><i class="fas fa-calendar-day"></i> Días Feriados</th>
+                                    <th><i class="fas fa-minus-circle"></i> Deducciones</th>
+                                    <th><i class="fas fa-check-circle"></i> Salario Neto</th>
+                                    <th class="text-center"><i class="fas fa-cogs"></i> Acciones</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div class="py-5 text-center">
-                    <i class="bi bi-inbox display-1 text-muted"></i>
-                    <h4 class="text-muted mt-3">No hay nóminas registradas</h4>
-                    <p class="text-muted">Comienza generando tu primera nómina</p>
-                    @Html.ActionLink("📊 Generar Primera Nómina", "SeleccionarPeriodo", null, new { @class = "btn btn-success btn-lg mt-3" })
-                </div>
-            }
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-3" style="background: var(--secondary-color); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                                    @(item.Empleados?.nombre1?.Substring(0, 1) ?? "N")
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">@Html.DisplayFor(modelItem => item.Empleados.nombre1) @Html.DisplayFor(modelItem => item.Empleados.apellido1)</div>
+                                                    <small class="text-muted">@Html.DisplayFor(modelItem => item.Empleados.cedula)</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge" style="background: var(--primary-color); color: white; font-size: 0.9rem;">
+                                                @Html.DisplayFor(modelItem => item.mes)/@Html.DisplayFor(modelItem => item.anio)
+                                            </span>
+                                        </td>
+                                        <td class="fw-bold text-success">₡@Html.DisplayFor(modelItem => item.salario_bruto)</td>
+                                        <td>₡@(item.horas_extras?.ToString("N0") ?? "0")</td>
+                                        <td>₡@(item.salario_dias_feriados?.ToString("N0") ?? "0")</td>
+                                        <td class="text-warning fw-bold">₡@((item.ccss ?? 0) + (item.ivm ?? 0) + (item.isr ?? 0))</td>
+                                        <td class="fw-bold" style="color: var(--secondary-color);">₡@Html.DisplayFor(modelItem => item.salario_neto)</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                @Html.ActionLink("Detalles", "Details", new { id = item.id_nomina }, new { @class = "btn btn-outline-custom btn-sm", title = "Ver detalles", @data_bs_toggle = "tooltip" })
+                                                @Html.ActionLink("Editar", "Edit", new { id = item.id_nomina }, new { @class = "btn btn-outline-custom btn-sm", title = "Editar", @data_bs_toggle = "tooltip" })
+                                                @Html.ActionLink("Delete", "Delete", new { id = item.id_nomina }, new { @class = "btn btn-outline-danger btn-sm", title = "Eliminar", @data_bs_toggle = "tooltip" })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h4>No se encontraron nóminas</h4>
+                        <p>No hay registros que coincidan con los filtros aplicados.</p>
+                        @Html.ActionLink("Generar Primera Nómina", "SeleccionarPeriodo", null, new { @class = "btn btn-primary-custom" })
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
-<style>
-    .avatar-sm {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .table th {
-        border-top: none;
-        font-weight: 600;
-    }
-
-    .card {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        border: 1px solid rgba(0, 0, 0, 0.125);
-    }
-
-    .btn-group-sm > .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-    }
-</style>
+<script>
+    // Inicializar tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>

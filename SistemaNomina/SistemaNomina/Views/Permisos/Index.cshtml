@@ -5,230 +5,601 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Header Section -->
-            <div class="card mb-4 shadow">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h4 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-calendar-check"></i> Gestión de Permisos
-                    </h4>
-                    <a href="@Url.Action("Create")" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus"></i> Nuevo Permiso
-                    </a>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+    }
+
+    .page-header-custom h1 {
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header-custom p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+
+    .filters-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        align-items: end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        color: #221d42;
+    }
+
+    .filter-select, .filter-input {
+        padding: 0.75rem 1rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:focus, .filter-input:focus {
+        outline: none;
+        border-color: #1788ca;
+        box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
+    }
+
+    .btn-filter {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #0d7ab0 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+    }
+
+    .table-custom {
+        margin: 0;
+        width: 100%;
+    }
+
+    .table-custom thead {
+        background: #221d42;
+        color: white;
+    }
+
+    .table-custom thead th {
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: rgba(23, 136, 202, 0.05);
+    }
+
+    .table-custom td {
+        padding: 1rem;
+        border-color: #e7e8eb;
+        vertical-align: middle;
+    }
+
+    .employee-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .employee-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .employee-details h6 {
+        margin: 0;
+        font-weight: 600;
+        color: #221d42;
+    }
+
+    .employee-id {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pendiente {
+        background: linear-gradient(135deg, #fab61b 0%, #e67e22 100%);
+        color: white;
+    }
+
+    .status-aprobado {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    .status-rechazado {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+    }
+
+    .btn-action-custom {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+
+    .btn-details {
+        background: linear-gradient(135deg, #1788ca 0%, #0d7ab0 100%);
+        color: white;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #fab61b 0%, #e67e22 100%);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+    }
+
+    .btn-approve {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    .btn-reject {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+    }
+
+    .btn-action-custom:hover {
+        transform: translateY(-1px);
+        text-decoration: none;
+        color: white;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 0.25rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .alert-error {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #e7e8eb;
+    }
+
+    @@media (max-width: 768px) {
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .table-responsive {
+            border-radius: 15px;
+        }
+
+        .actions-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-action-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Mensajes de alerta -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert-success">
+        <i class="fas fa-check-circle"></i>
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        @TempData["Error"]
+    </div>
+}
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-clipboard-list"></i> Gestión de Permisos</h1>
+                <p class="mb-0">Administra las solicitudes de permisos del personal</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="max-width: 1400px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <!-- Filtros -->
+            <div class="filters-container">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Filtrar por Estado:</label>
+                        <select id="filtroEstado" class="filter-select">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="aprobado">Aprobado</option>
+                            <option value="rechazado">Rechazado</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Filtrar por Tipo:</label>
+                        <select id="filtroTipo" class="filter-select">
+                            <option value="">Todos los tipos</option>
+                            @foreach (var tipo in ViewBag.TiposPermiso as IEnumerable<SistemaNomina.Models.TiposPermiso> ?? Enumerable.Empty<SistemaNomina.Models.TiposPermiso>())
+                            {
+                                <option value="@tipo.nombre.ToLower()">@tipo.nombre</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Buscar:</label>
+                        <input type="text" id="filtroEmpleado" class="filter-input" placeholder="Buscar por empleado o motivo...">
+                    </div>
+
+                    <div class="filter-group">
+                        <button id="limpiarFiltros" class="btn-filter">
+                            <i class="fas fa-broom"></i> Limpiar
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Filtros -->
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Filtrar por Estado:</label>
-                            <select class="form-select" id="filtroEstado">
-                                <option value="">Todos los estados</option>
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="Aprobado">Aprobado</option>
-                                <option value="Rechazado">Rechazado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Filtrar por Tipo:</label>
-                            <select class="form-select" id="filtroTipo">
-                                <option value="">Todos los tipos</option>
-                                <!-- Se llena dinámicamente -->
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Buscar:</label>
-                            <input type="text" class="form-control" id="buscarPermiso" placeholder="Buscar por empleado o motivo...">
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-outline-secondary" onclick="limpiarFiltros()">
-                                <i class="fas fa-eraser"></i> Limpiar
-                            </button>
-                        </div>
-                    </div>
+                <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #6c757d;">
+                        <i class="fas fa-info-circle"></i>
+                        Mostrando <strong id="registrosVisibles">@Model.Count()</strong> de <strong>@Model.Count()</strong> registros
+                    </span>
+                    @Html.ActionLink("Nuevo Permiso", "Create", null, new { @class = "btn-primary-custom" })
                 </div>
             </div>
 
-            <!-- Tabla de Permisos -->
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table-hover table" id="tablaPermisos">
-                            <thead class="table-light">
-                                <tr>
-                                    <th><i class="fas fa-user"></i> Empleado</th>
-                                    <th><i class="fas fa-calendar-day"></i> Fecha</th>
-                                    <th><i class="fas fa-clock"></i> Horas</th>
-                                    <th><i class="fas fa-tag"></i> Tipo</th>
-                                    <th><i class="fas fa-comment"></i> Motivo</th>
-                                    <th><i class="fas fa-traffic-light"></i> Estado</th>
-                                    <th><i class="fas fa-user-check"></i> Aprobado por</th>
-                                    <th><i class="fas fa-cogs"></i> Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
+            <!-- Tabla de permisos -->
+            <div class="card-custom">
+                <div class="card-body p-0">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table-custom table" id="tablaPermisos">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-2">
-                                                    @item.Empleados.nombre1.Substring(0, 1)
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold">@item.Empleados.nombre1 @item.Empleados.apellido1</div>
-                                                    <small class="text-muted">@item.Empleados.cedula</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-dark">
-                                                @item.fecha.ToString("dd/MM/yyyy")
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">@item.horas h</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge @(item.TiposPermiso.con_goce ? "bg-success" : "bg-warning")">
-                                                @item.TiposPermiso.nombre
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="text-truncate" style="max-width: 150px;" title="@item.motivo">
-                                                @(item.motivo?.Length > 30 ? item.motivo.Substring(0, 30) + "..." : item.motivo)
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @{
-                                                string estadoClass = "";
-                                                string iconoEstado = "";
-                                                switch (item.Estados.nombre)
-                                                {
-                                                    case "Pendiente":
-                                                        estadoClass = "bg-warning";
-                                                        iconoEstado = "fas fa-clock";
-                                                        break;
-                                                    case "Aprobado":
-                                                        estadoClass = "bg-success";
-                                                        iconoEstado = "fas fa-check";
-                                                        break;
-                                                    case "Rechazado":
-                                                        estadoClass = "bg-danger";
-                                                        iconoEstado = "fas fa-times";
-                                                        break;
-                                                }
-                                            }
-                                            <span class="badge @estadoClass">
-                                                <i class="@iconoEstado"></i> @item.Estados.nombre
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if (item.Usuarios != null)
-                                            {
-                                                <small class="text-muted">@item.Usuarios.usuario</small>
-                                            }
-                                            else
-                                            {
-                                                <small class="text-muted">Sin asignar</small>
-                                            }
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="@Url.Action("Details", new { id = item.id_permiso })"
-                                                   class="btn btn-outline-info" title="Ver detalles">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="@Url.Action("Edit", new { id = item.id_permiso })"
-                                                   class="btn btn-outline-primary" title="Editar">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="@Url.Action("Delete", new { id = item.id_permiso })"
-                                                   class="btn btn-outline-danger" title="Eliminar">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <th><i class="fas fa-user"></i> Empleado</th>
+                                        <th><i class="fas fa-calendar"></i> Fecha</th>
+                                        <th><i class="fas fa-clock"></i> Horas</th>
+                                        <th><i class="fas fa-tag"></i> Tipo</th>
+                                        <th><i class="fas fa-comment"></i> Motivo</th>
+                                        <th><i class="fas fa-info-circle"></i> Estado</th>
+                                        <th><i class="fas fa-user-check"></i> Aprobado por</th>
+                                        <th><i class="fas fa-cogs"></i> Acciones</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="permiso-row"
+                                            data-estado="@item.Estados.nombre.ToLower()"
+                                            data-tipo="@item.TiposPermiso.nombre.ToLower()">
+                                            <td>
+                                                <div class="employee-info">
+                                                    <div class="employee-avatar">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                    <div class="employee-details">
+                                                        <h6>@item.Empleados.nombre1 @item.Empleados.apellido1</h6>
+                                                        <p class="employee-id">Cédula: @item.Empleados.cedula</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <strong>@item.fecha.ToString("dd/MM/yyyy")</strong>
+                                            </td>
+                                            <td>
+                                                <strong>@item.horas horas</strong>
+                                            </td>
+                                            <td>
+                                                <span style="color: #1788ca; font-weight: 600;">
+                                                    @item.TiposPermiso.nombre
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span title="@item.motivo">
+                                                    @(item.motivo.Length > 50 ? item.motivo.Substring(0, 50) + "..." : item.motivo)
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var estadoClass = item.Estados.nombre.ToLower() == "pendiente" ? "status-pendiente" :
+                                                                     item.Estados.nombre.ToLower() == "aprobado" ? "status-aprobado" : "status-rechazado";
+                                                }
+                                                <span class="status-badge @estadoClass">
+                                                    @item.Estados.nombre
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (item.Usuarios != null)
+                                                {
+                                                    <span>@item.Usuarios.usuario</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="actions-group">
+                                                    @Html.ActionLink("Ver", "Details", new { id = item.id_permiso }, new { @class = "btn-action-custom btn-details", title = "Ver detalles" })
+
+                                                    @if (item.Estados.nombre.ToLower() == "pendiente")
+                                                    {
+                                                        @Html.ActionLink("Editar", "Edit", new { id = item.id_permiso }, new { @class = "btn-action-custom btn-edit", title = "Editar" })
+
+                                                        <button class="btn-action-custom btn-approve" onclick="cambiarEstado(@item.id_permiso, 'aprobar')" title="Aprobar">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+
+                                                        <button class="btn-action-custom btn-reject" onclick="cambiarEstado(@item.id_permiso, 'rechazar')" title="Rechazar">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    }
+
+                                                    @Html.ActionLink("Eliminar", "Delete", new { id = item.id_permiso }, new { @class = "btn-action-custom btn-delete", title = "Eliminar" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h5>No hay permisos registrados</h5>
+                            <p>Comienza creando el primer permiso del sistema</p>
+                            @Html.ActionLink("Crear Permiso", "Create", null, new { @class = "btn-primary-custom" })
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Inicializar DataTable para búsqueda y paginación
-            $('#tablaPermisos').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
-                },
-                "pageLength": 10,
-                "order": [[1, "desc"]], // Ordenar por fecha descendente
-                "columnDefs": [
-                    { "orderable": false, "targets": 7 } // Desactivar ordenamiento en columna de acciones
-                ]
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elementos del DOM
+        const filtroEstado = document.getElementById('filtroEstado');
+        const filtroTipo = document.getElementById('filtroTipo');
+        const filtroEmpleado = document.getElementById('filtroEmpleado');
+        const limpiarFiltros = document.getElementById('limpiarFiltros');
+        const registrosVisibles = document.getElementById('registrosVisibles');
+        const permisoRows = document.querySelectorAll('.permiso-row');
+
+        // Función para filtrar tabla
+        function filtrarTabla() {
+            const estadoSeleccionado = filtroEstado.value.toLowerCase();
+            const tipoSeleccionado = filtroTipo.value.toLowerCase();
+            const busqueda = filtroEmpleado.value.toLowerCase();
+            let contadorVisibles = 0;
+
+            permisoRows.forEach(function (row) {
+                const estado = row.getAttribute('data-estado');
+                const tipo = row.getAttribute('data-tipo');
+                const empleado = row.querySelector('.employee-details h6').textContent.toLowerCase();
+                const motivo = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+                let mostrar = true;
+
+                // Filtro por estado
+                if (estadoSeleccionado && estado !== estadoSeleccionado) {
+                    mostrar = false;
+                }
+
+                // Filtro por tipo
+                if (tipoSeleccionado && tipo !== tipoSeleccionado) {
+                    mostrar = false;
+                }
+
+                // Filtro por búsqueda (empleado o motivo)
+                if (busqueda && !empleado.includes(busqueda) && !motivo.includes(busqueda)) {
+                    mostrar = false;
+                }
+
+                if (mostrar) {
+                    row.style.display = '';
+                    contadorVisibles++;
+                } else {
+                    row.style.display = 'none';
+                }
             });
 
-            // Filtros personalizados
-            $('#filtroEstado, #filtroTipo').on('change', function() {
-                aplicarFiltros();
-            });
+            // Actualizar contador
+            registrosVisibles.textContent = contadorVisibles;
+        }
 
-            $('#buscarPermiso').on('keyup', function() {
-                var table = $('#tablaPermisos').DataTable();
-                table.search(this.value).draw();
-            });
+        // Event listeners para filtros
+        filtroEstado.addEventListener('change', filtrarTabla);
+        filtroTipo.addEventListener('change', filtrarTabla);
+        filtroEmpleado.addEventListener('input', filtrarTabla);
+
+        // Limpiar filtros
+        limpiarFiltros.addEventListener('click', function () {
+            filtroEstado.value = '';
+            filtroTipo.value = '';
+            filtroEmpleado.value = '';
+            filtrarTabla();
         });
+    });
 
-        function aplicarFiltros() {
-            var estado = $('#filtroEstado').val();
-            var tipo = $('#filtroTipo').val();
-            var table = $('#tablaPermisos').DataTable();
+    // Función para cambiar estado de permiso
+    function cambiarEstado(permisoId, accion) {
+        const mensaje = accion === 'aprobar' ? '¿Aprobar este permiso?' : '¿Rechazar este permiso?';
 
-            // Aplicar filtros combinados
-            table.columns(5).search(estado).draw();
-            table.columns(3).search(tipo).draw();
+        if (confirm(mensaje)) {
+            // Aquí harías una llamada AJAX al controlador
+            const estadoId = accion === 'aprobar' ? 2 : 3; // Asumiendo que 2=Aprobado, 3=Rechazado
+
+            fetch('/Permisos/CambiarEstado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({
+                    id: permisoId,
+                    nuevoEstado: estadoId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload(); // Recargar la página para ver los cambios
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error al procesar la solicitud');
+                    console.error('Error:', error);
+                });
         }
-
-        function limpiarFiltros() {
-            $('#filtroEstado, #filtroTipo, #buscarPermiso').val('');
-            var table = $('#tablaPermisos').DataTable();
-            table.search('').columns().search('').draw();
-        }
-    </script>
-}
-
-@section Styles {
-    <style>
-        .avatar-sm {
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
-        }
-
-        .table th {
-            border-top: none;
-            font-weight: 600;
-            color: #5a5c69;
-        }
-
-        .btn-group-sm > .btn {
-            padding: 0.25rem 0.5rem;
-        }
-
-        .text-truncate {
-            display: inline-block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
-}
+    }
+</script>

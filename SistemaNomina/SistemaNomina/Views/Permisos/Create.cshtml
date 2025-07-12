@@ -1,264 +1,230 @@
 ﻿@model SistemaNomina.Models.Permisos
 
 @{
-    ViewBag.Title = "Nuevo Permiso";
+    ViewBag.Title = "Crear Permiso";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="text-primary mb-0">
-                        <i class="fas fa-plus-circle"></i> Nuevo Permiso
-                    </h4>
-                    <small class="text-muted">Complete la información del permiso solicitado</small>
-                </div>
-                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Volver a la lista
-                </a>
-            </div>
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+    }
 
-            <!-- Formulario -->
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-calendar-check"></i> Información del Permiso</h5>
-                </div>
+    .form-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        padding: 2rem;
+    }
 
-                <div class="card-body">
-                    @using (Html.BeginForm("Create", "Permisos", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
 
-                        <div class="row">
-                            <!-- Empleado -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-user text-primary"></i> Empleado *
-                                </label>
-                                @Html.DropDownList("id_empleado", null, "Seleccione un empleado...",
-                                    new { @class = "form-select", required = "required" })
-                                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger small" })
-                            </div>
+    .form-label {
+        font-weight: 600;
+        color: #221d42;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-                            <!-- Tipo de Permiso -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-tag text-primary"></i> Tipo de Permiso *
-                                </label>
-                                @Html.DropDownList("id_tipo_permiso", null, "Seleccione el tipo...",
-                                    new { @class = "form-select", required = "required", onchange = "actualizarInfoTipo()" })
-                                @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "text-danger small" })
-                                <div id="infoTipoPermiso" class="mt-2"></div>
-                            </div>
-                        </div>
+    .form-control-custom {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
 
-                        <div class="row">
-                            <!-- Fecha -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-calendar-day text-primary"></i> Fecha del Permiso *
-                                </label>
-                                @Html.EditorFor(model => model.fecha, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control",
-                                        @type = "date",
-                                        required = "required",
-                                        min = DateTime.Now.ToString("yyyy-MM-dd")
-                                    }
-                                })
-                                @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "text-danger small" })
-                            </div>
+    .form-control-custom:focus {
+        outline: none;
+        border-color: #1788ca;
+        box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
+    }
 
-                            <!-- Horas -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-clock text-primary"></i> Horas Solicitadas
-                                </label>
-                                <div class="input-group">
-                                    @Html.EditorFor(model => model.horas, new
-                                    {
-                                        htmlAttributes = new
-                                        {
-                                            @class = "form-control",
-                                            @type = "number",
-                                            step = "0.5",
-                                            min = "0.5",
-                                            max = "8",
-                                            placeholder = "Ej: 4.5"
-                                        }
-                                    })
-                                    <span class="input-group-text">horas</span>
-                                </div>
-                                @Html.ValidationMessageFor(model => model.horas, "", new { @class = "text-danger small" })
-                                <small class="text-muted">Máximo 8 horas por día</small>
-                            </div>
-                        </div>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #0d7ab0 100%);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-                        <!-- Motivo -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-comment text-primary"></i> Motivo del Permiso *
-                            </label>
-                            @Html.TextAreaFor(model => model.motivo, new
-                            {
-                                @class = "form-control",
-                                rows = "3",
-                                placeholder = "Describa detalladamente el motivo del permiso...",
-                                required = "required",
-                                maxlength = "500"
-                            })
-                            @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "text-danger small" })
-                            <div class="form-text">
-                                <span id="contadorCaracteres">0</span>/500 caracteres
-                            </div>
-                        </div>
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.4);
+    }
 
-                        <!-- Estado (oculto, se establece como Pendiente por defecto) -->
-                        @Html.HiddenFor(model => model.id_estado)
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
 
-                        <!-- Campos de fecha automáticos (ocultos) -->
-                        @Html.HiddenFor(model => model.fecha_creacion)
-                        @Html.HiddenFor(model => model.fecha_actualizacion)
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
 
-                        <!-- Botones -->
-                        <hr>
-                        <div class="d-flex justify-content-between">
-                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
-                                <i class="fas fa-times"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Guardar Permiso
-                            </button>
-                        </div>
-                    }
-                </div>
-            </div>
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
 
-            <!-- Información Adicional -->
-            <div class="card mt-4 border-info">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0 text-info">
-                        <i class="fas fa-info-circle"></i> Información Importante
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <ul class="mb-0">
-                        <li><strong>Permisos con goce:</strong> No afectan su salario mensual</li>
-                        <li><strong>Permisos sin goce:</strong> Se descontarán del salario proporcional</li>
-                        <li><strong>Proceso:</strong> Su solicitud será enviada para aprobación</li>
-                        <li><strong>Notificación:</strong> Recibirá una respuesta en su correo registrado</li>
-                    </ul>
-                </div>
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e7e8eb;
+    }
+
+    .validation-summary {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+        margin-bottom: 2rem;
+    }
+
+    .field-validation-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    @@media (max-width: 768px) {
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-plus-circle"></i> Crear Nuevo Permiso</h1>
+                <p class="mb-0">Registra una nueva solicitud de permiso</p>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+<div class="container" style="max-width: 800px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="form-container">
+                @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
 
-    <script>
-        $(document).ready(function() {
-            // Establecer fecha mínima como hoy
-            var today = new Date().toISOString().split('T')[0];
-            $('input[type="date"]').attr('min', today);
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
 
-            // Contador de caracteres para motivo
-            $('#motivo').on('input', function() {
-                var length = $(this).val().length;
-                $('#contadorCaracteres').text(length);
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i> Empleado *
+                        </label>
+                        @Html.DropDownList("id_empleado", null, "Selecciona un empleado", new { @class = "form-control-custom", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "field-validation-error" })
+                        <small class="help-text">Selecciona el empleado que solicita el permiso</small>
+                    </div>
 
-                if (length > 450) {
-                    $('#contadorCaracteres').addClass('text-warning');
-                } else {
-                    $('#contadorCaracteres').removeClass('text-warning');
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar"></i> Fecha del Permiso *
+                        </label>
+                        @Html.EditorFor(model => model.fecha, new { htmlAttributes = new { @class = "form-control-custom", @type = "date", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.fecha, "", new { @class = "field-validation-error" })
+                        <small class="help-text">Fecha en la que se utilizará el permiso</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-clock"></i> Horas *
+                        </label>
+                        @Html.EditorFor(model => model.horas, new { htmlAttributes = new { @class = "form-control-custom", @type = "number", @min = "1", @max = "8", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.horas, "", new { @class = "field-validation-error" })
+                        <small class="help-text">Número de horas del permiso (máximo 8 horas)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tag"></i> Tipo de Permiso *
+                        </label>
+                        @Html.DropDownList("id_tipo_permiso", null, "Selecciona el tipo de permiso", new { @class = "form-control-custom", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.id_tipo_permiso, "", new { @class = "field-validation-error" })
+                        <small class="help-text">Tipo o categoría del permiso solicitado</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-comment"></i> Motivo *
+                        </label>
+                        @Html.TextAreaFor(model => model.motivo, new { @class = "form-control-custom", @rows = "4", @required = "required", @maxlength = "500" })
+                        @Html.ValidationMessageFor(model => model.motivo, "", new { @class = "field-validation-error" })
+                        <small class="help-text">Describe el motivo de la solicitud del permiso (máximo 500 caracteres)</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="fas fa-save"></i> Crear Permiso
+                        </button>
+                        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn-secondary-custom" })
+                    </div>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Establecer fecha mínima como hoy
+        const fechaInput = document.querySelector('input[type="date"]');
+        if (fechaInput) {
+            const today = new Date().toISOString().split('T')[0];
+            fechaInput.setAttribute('min', today);
+        }
+
+        // Contador de caracteres para el motivo
+        const motivoTextarea = document.querySelector('textarea[name="motivo"]');
+        if (motivoTextarea) {
+            const maxLength = motivoTextarea.getAttribute('maxlength');
+            const helpText = motivoTextarea.parentNode.querySelector('.help-text');
+
+            motivoTextarea.addEventListener('input', function () {
+                const remaining = maxLength - this.value.length;
+                helpText.textContent = `Describe el motivo de la solicitud del permiso (${remaining} caracteres restantes)`;
             });
-
-            // Establecer valores por defecto
-            $('#fecha_creacion').val(new Date().toISOString());
-            $('#fecha_actualizacion').val(new Date().toISOString());
-
-            // Establecer estado como Pendiente (asumiendo ID = 1)
-            $('#id_estado').val(1);
-
-            // Validación personalizada
-            $('form').on('submit', function(e) {
-                if (!this.checkValidity()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    // Mostrar mensaje de error personalizado
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Formulario Incompleto',
-                        text: 'Por favor complete todos los campos requeridos.',
-                        confirmButtonColor: '#d33'
-                    });
-                }
-                $(this).addClass('was-validated');
-            });
-        });
-
-        function actualizarInfoTipo() {
-            var selectTipo = $('#id_tipo_permiso');
-            var infoDiv = $('#infoTipoPermiso');
-
-            if (selectTipo.val()) {
-                // Aquí podrías hacer una llamada AJAX para obtener información del tipo
-                // Por ahora, mostraré información estática
-                var tipoTexto = selectTipo.find('option:selected').text();
-
-                if (tipoTexto.toLowerCase().includes('goce')) {
-                    infoDiv.html('<small class="text-success"><i class="fas fa-check-circle"></i> Este permiso no afecta su salario</small>');
-                } else {
-                    infoDiv.html('<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Este permiso puede afectar su salario</small>');
-                }
-            } else {
-                infoDiv.html('');
-            }
         }
-    </script>
-}
-
-@section Styles {
-    <style>
-        .form-label.fw-bold i {
-            width: 16px;
-            margin-right: 5px;
-        }
-
-        .card-header.bg-primary {
-            border-bottom: 2px solid #2653d4;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #4e73df;
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-        }
-
-        .btn-primary {
-            background-color: #4e73df;
-            border-color: #4e73df;
-        }
-
-            .btn-primary:hover {
-                background-color: #2e59d9;
-                border-color: #2653d4;
-            }
-
-        .was-validated .form-control:invalid {
-            border-color: #e74a3b;
-        }
-
-        .was-validated .form-control:valid {
-            border-color: #1cc88a;
-        }
-    </style>
-}
+    });
+</script>

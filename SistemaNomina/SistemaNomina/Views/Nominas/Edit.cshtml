@@ -1,107 +1,536 @@
 ﻿@model SistemaNomina.Models.Nomina
 
 @{
-    // Establece el título de la página
-    ViewBag.Title = "Edit";
-    //  vista
+    ViewBag.Title = "Editar Nómina";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+    }
 
-@using (Html.BeginForm()) // Inicio del formulario que enviará los datos al servidor
-{
-    @Html.AntiForgeryToken() // seguridad
+    .header-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
 
-    <div class="form-horizontal">
-        <h4>Nomina</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <!-- Muestra errores de validación si hay -->
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 1.5rem;
+    }
 
-        @Html.HiddenFor(model => model.id_nomina)
-        <!-- Campo oculto para el ID de la nómina  -->
+    .card-header-edit {
+        background: linear-gradient(135deg, var(--accent-color) 0%, rgba(250, 182, 27, 0.8) 100%);
+        color: var(--primary-color);
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.id_empleado, "id_empleado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta para el campo id_empleado -->
-            <div class="col-md-10">
-                @Html.DropDownList("id_empleado", null, htmlAttributes: new { @class = "form-control" })
-                <!-- Lista desplegable para seleccionar el empleado -->
-                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
-                <!-- Mensaje de error si el campo no es válido -->
-            </div>
-        </div>
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.id_isr, "id_isr", htmlAttributes: new { @class = "control-label col-md-2" })
-            <!-- Etiqueta para el campo id_isr -->
-            <div class="col-md-10">
-                @Html.DropDownList("id_isr", null, htmlAttributes: new { @class = "form-control" })
-                <!-- Lista desplegable para seleccionar el ISR -->
-                @Html.ValidationMessageFor(model => model.id_isr, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-label-custom {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
 
-        <!--  editables etiquetas y validaciones -->
+    .form-control-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.mes, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.mes, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.mes, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.anio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-select-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        background-color: white;
+    }
 
-        <!--  campos de entrada -->
+    .form-select-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.salario_bruto, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.salario_bruto, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.salario_bruto, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-save-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.horas_extras, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.horas_extras, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.horas_extras, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-save-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        color: white;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .btn-cancel-custom {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
 
-        <!-- Botón para enviar el formulario -->
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+    .btn-cancel-custom:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .btn-details-custom {
+        background: transparent;
+        border: 2px solid var(--secondary-color);
+        color: var(--secondary-color);
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-details-custom:hover {
+        background: var(--secondary-color);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+
+    .input-group-custom {
+        position: relative;
+    }
+
+    .input-group-custom .currency-symbol {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--secondary-color);
+        font-weight: 600;
+        z-index: 3;
+    }
+
+    .input-group-custom .form-control-custom {
+        padding-left: 2rem;
+    }
+
+    .help-text {
+        color: #6c757d;
+        font-style: italic;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .validation-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .section-divider {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neutral-color) 0%, var(--secondary-color) 50%, var(--neutral-color) 100%);
+        margin: 2rem 0;
+    }
+
+    @@media (max-width: 768px) {
+        .header-gradient {
+            padding: 1.5rem 0;
+        }
+
+        .btn-group-custom {
+            flex-direction: column;
+        }
+
+        .btn-group-custom .btn {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- ENCABEZADO -->
+    <div class="header-gradient">
+        <div class="container">
+            <h1 class="mb-2">
+                <i class="fas fa-edit fa-2x"></i>
+                Editar Nómina
+            </h1>
+            <p class="mb-0 fs-5">Modifica los datos de la nómina seleccionada</p>
         </div>
     </div>
-}
 
-<div>
-    <!-- Enlace para regresar a la lista principal -->
-    @Html.ActionLink("Back to List", "Index")
+    <div class="container">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <!-- INFORMACIÓN DEL EMPLEADO -->
+            <div class="card-custom">
+                <div class="card-header-edit">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user"></i>
+                        Información del Empleado
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                    @Html.HiddenFor(model => model.id_nomina)
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-user icon-primary"></i>
+                                    Empleado
+                                </label>
+                                @Html.DropDownList("id_empleado", null, "Seleccione un empleado", new { @class = "form-select form-select-custom" })
+                                @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "validation-error" })
+                                <div class="help-text">Seleccione el empleado para esta nómina</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-percentage icon-primary"></i>
+                                    Categoría ISR
+                                </label>
+                                @Html.DropDownList("id_isr", null, "Seleccione categoría ISR", new { @class = "form-select form-select-custom" })
+                                @Html.ValidationMessageFor(model => model.id_isr, "", new { @class = "validation-error" })
+                                <div class="help-text">Categoría de impuesto sobre la renta aplicable</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERÍODO DE NÓMINA -->
+            <div class="card-custom">
+                <div class="card-header-edit">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar"></i>
+                        Período de Nómina
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-calendar-alt icon-primary"></i>
+                                    Mes
+                                </label>
+                                @Html.EditorFor(model => model.mes, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @min = "1", @max = "12" } })
+                                @Html.ValidationMessageFor(model => model.mes, "", new { @class = "validation-error" })
+                                <div class="help-text">Mes de la nómina (1-12)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-calendar icon-primary"></i>
+                                    Año
+                                </label>
+                                @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @min = "2020", @max = "2030" } })
+                                @Html.ValidationMessageFor(model => model.anio, "", new { @class = "validation-error" })
+                                <div class="help-text">Año de la nómina</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INGRESOS -->
+            <div class="card-custom">
+                <div class="card-header-edit">
+                    <h5 class="mb-0">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Ingresos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-money-bill icon-primary"></i>
+                                    Salario Bruto
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.salario_bruto, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.salario_bruto, "", new { @class = "validation-error" })
+                                <div class="help-text">Salario base del empleado</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-clock icon-primary"></i>
+                                    Horas Extras
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.horas_extras, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.horas_extras, "", new { @class = "validation-error" })
+                                <div class="help-text">Pago por horas trabajadas adicionales</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-calendar-day icon-primary"></i>
+                                    Días Feriados
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.salario_dias_feriados, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.salario_dias_feriados, "", new { @class = "validation-error" })
+                                <div class="help-text">Pago por días feriados trabajados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEDUCCIONES -->
+            <div class="card-custom">
+                <div class="card-header-edit">
+                    <h5 class="mb-0">
+                        <i class="fas fa-minus-circle"></i>
+                        Deducciones
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-shield-alt icon-primary"></i>
+                                    CCSS
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.ccss, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.ccss, "", new { @class = "validation-error" })
+                                <div class="help-text">Caja Costarricense de Seguro Social</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-piggy-bank icon-primary"></i>
+                                    IVM
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.ivm, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.ivm, "", new { @class = "validation-error" })
+                                <div class="help-text">Invalidez, Vejez y Muerte</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-receipt icon-primary"></i>
+                                    ISR
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.isr, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.isr, "", new { @class = "validation-error" })
+                                <div class="help-text">Impuesto Sobre la Renta</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-child icon-primary"></i>
+                                    Crédito por Hijos
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.credito_hijos, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.credito_hijos, "", new { @class = "validation-error" })
+                                <div class="help-text">Crédito fiscal por dependientes menores</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-heart icon-primary"></i>
+                                    Crédito por Cónyuge
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.credito_conyuge, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "validation-error" })
+                                <div class="help-text">Crédito fiscal por cónyuge</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-minus icon-primary"></i>
+                                    Otros Descuentos
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.otros_descuentos, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.otros_descuentos, "", new { @class = "validation-error" })
+                                <div class="help-text">Otros descuentos aplicables</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-chart-bar icon-primary"></i>
+                                    Base Imponible
+                                </label>
+                                <div class="input-group-custom">
+                                    <span class="currency-symbol">₡</span>
+                                    @Html.EditorFor(model => model.base_imponible, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.base_imponible, "", new { @class = "validation-error" })
+                                <div class="help-text">Base para cálculo de impuestos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTADO FINAL -->
+            <div class="card-custom">
+                <div class="card-header-edit">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle"></i>
+                        Salario Final
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-money-check-alt icon-primary"></i>
+                            Salario Neto
+                        </label>
+                        <div class="input-group-custom">
+                            <span class="currency-symbol">₡</span>
+                            @Html.EditorFor(model => model.salario_neto, new { htmlAttributes = new { @class = "form-control form-control-custom", @type = "number", @step = "0.01", @min = "0" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.salario_neto, "", new { @class = "validation-error" })
+                        <div class="help-text">Salario final después de deducciones</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="btn-group-custom">
+                    @Html.ActionLink("Ver Detalles", "Details", new { id = Model.id_nomina }, new { @class = "btn btn-details-custom" })
+                    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-cancel-custom" })
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-save-custom">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
-@section Scripts {
-    <!-- validación -->
-    @Scripts.Render("~/bundles/jqueryval")
-}
+<script>
+    // Calcular salario neto automáticamente
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['salario_bruto', 'horas_extras', 'salario_dias_feriados', 'ccss', 'ivm', 'isr', 'otros_descuentos', 'credito_hijos', 'credito_conyuge'];
+
+        inputs.forEach(function(inputName) {
+            const element = document.querySelector(`input[name="${inputName}"]`);
+            if (element) {
+                element.addEventListener('input', calcularSalarioNeto);
+            }
+        });
+
+        function calcularSalarioNeto() {
+            const salarioBruto = parseFloat(document.querySelector('input[name="salario_bruto"]').value) || 0;
+            const horasExtras = parseFloat(document.querySelector('input[name="horas_extras"]').value) || 0;
+            const diasFeriados = parseFloat(document.querySelector('input[name="salario_dias_feriados"]').value) || 0;
+            const ccss = parseFloat(document.querySelector('input[name="ccss"]').value) || 0;
+            const ivm = parseFloat(document.querySelector('input[name="ivm"]').value) || 0;
+            const isr = parseFloat(document.querySelector('input[name="isr"]').value) || 0;
+            const otrosDescuentos = parseFloat(document.querySelector('input[name="otros_descuentos"]').value) || 0;
+            const creditoHijos = parseFloat(document.querySelector('input[name="credito_hijos"]').value) || 0;
+            const creditoConyuge = parseFloat(document.querySelector('input[name="credito_conyuge"]').value) || 0;
+
+            const totalIngresos = salarioBruto + horasExtras + diasFeriados;
+            const totalDeducciones = ccss + ivm + isr + otrosDescuentos;
+            const totalCreditos = creditoHijos + creditoConyuge;
+            const salarioNeto = totalIngresos - totalDeducciones + totalCreditos;
+
+            document.querySelector('input[name="salario_neto"]').value = salarioNeto.toFixed(2);
+        }
+    });
+</script>

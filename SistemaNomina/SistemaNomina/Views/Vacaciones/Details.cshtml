@@ -5,151 +5,434 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Header principal -->
-<div class="page-header-gradient">
+<style>
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+    }
+
+    .page-header-custom h1 {
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header-custom p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid #e7e8eb;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .details-card-header {
+        background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .details-card-header h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 1rem 0;
+    }
+
+    .employee-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .employee-id {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.9rem;
+        margin-left: auto;
+    }
+
+    .details-card-body {
+        padding: 2rem;
+    }
+
+    .details-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .details-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .details-section h4 {
+        color: #221d42;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #221d42;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
+    .detail-value {
+        flex: 2;
+        text-align: right;
+        color: #495057;
+    }
+
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .badge-primary {
+        background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
+        color: white;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #fab61b 0%, #e67e22 100%);
+        color: white;
+    }
+
+    .progress-container {
+        background: #e7e8eb;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 12px;
+        margin: 0.5rem 0;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(135deg, #1788ca 0%, #28a745 100%);
+        transition: width 0.3s ease;
+        border-radius: 8px;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .alert-warning-custom {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #fab61b;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .action-buttons-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e7e8eb;
+    }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, #fab61b 0%, #e67e22 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(250, 182, 27, 0.3);
+    }
+
+    .btn-warning-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, #1788ca 0%, #0d7ab0 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-info-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-secondary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    @@media (max-width: 768px) {
+        .details-card-body {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .detail-value {
+            text-align: left;
+        }
+
+        .action-buttons-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-warning-custom,
+        .btn-info-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="page-header-custom">
     <div class="container">
-        <h1><i class="fa fa-eye"></i> Detalles de Vacaciones</h1>
-        <p class="header-subtitle">Información completa del registro de vacaciones</p>
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-calendar-alt"></i> Detalles de Vacaciones</h1>
+                <p class="mb-0">Información completa del registro de vacaciones</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="main-container container">
+<div class="container" style="max-width: 1000px;">
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            <!-- Panel principal de detalles -->
+        <div class="col-12">
+            <!-- Card de detalles del empleado -->
             <div class="details-card">
                 <div class="details-card-header">
-                    <h3><i class="fa fa-info-circle"></i> Información del Registro</h3>
+                    <h3><i class="fas fa-user"></i> @Model.Empleados.nombre1 @Model.Empleados.apellido1 @Model.Empleados.apellido2</h3>
                     <div class="employee-info">
-                        <i class="fa fa-user"></i>
-                        <strong>@(Model.Empleados?.nombre1) @(Model.Empleados?.apellido1)</strong>
-                        <span class="employee-id">Cédula: @(Model.Empleados?.cedula)</span>
+                        <span><i class="fas fa-id-card"></i> Cédula: @Model.Empleados.cedula</span>
+                        <span class="employee-id">ID Empleado: @Model.id_empleado</span>
                     </div>
                 </div>
 
                 <div class="details-card-body">
-                    <!-- Información principal -->
+                    <!-- Información del Período -->
                     <div class="details-section">
-                        <h4><i class="fa fa-calendar"></i> Información General</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <div class="detail-label">
-                                    <i class="fa fa-calendar"></i> Período
-                                </div>
-                                <div class="detail-value period-badge">
+                        <h4><i class="fas fa-calendar"></i> Información del Período</h4>
+
+                        <div class="detail-row">
+                            <div class="detail-label">
+                                <i class="fas fa-clock"></i>
+                                Período de Vacaciones
+                            </div>
+                            <div class="detail-value">
+                                <span class="badge-custom badge-primary">
+                                    <i class="fas fa-calendar-year"></i>
                                     @Html.DisplayFor(model => model.periodo)
-                                </div>
-                            </div>
-
-                            <div class="detail-item">
-                                <div class="detail-label">
-                                    <i class="fa fa-clock-o"></i> Fecha de Creación
-                                </div>
-                                <div class="detail-value">
-                                    @(Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm") ?? "No registrada")
-                                </div>
-                            </div>
-
-                            <div class="detail-item">
-                                <div class="detail-label">
-                                    <i class="fa fa-refresh"></i> Última Actualización
-                                </div>
-                                <div class="detail-value">
-                                    @(Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "No actualizada")
-                                </div>
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Estadísticas de vacaciones -->
+                    <!-- Estado de Vacaciones -->
                     <div class="details-section">
-                        <h4><i class="fa fa-bar-chart"></i> Estadísticas de Vacaciones</h4>
-                        <div class="stats-container">
-                            @{
-                                var diasDisponibles = Model.dias_disponibles;
-                                var diasDisfrutados = Model.dias_disfrutados ?? 0;
-                                var diasRestantes = diasDisponibles - diasDisfrutados;
-                                var porcentajeUtilizado = diasDisponibles > 0 ? (diasDisfrutados * 100.0 / diasDisponibles) : 0;
-                            }
+                        <h4><i class="fas fa-chart-pie"></i> Utilización de Vacaciones</h4>
 
-                            <div class="stat-card stat-available">
-                                <div class="stat-icon">
-                                    <i class="fa fa-calendar-plus-o"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <div class="stat-number">@diasDisponibles</div>
-                                    <div class="stat-label">Días Disponibles</div>
-                                </div>
+                        <div class="detail-row">
+                            <div class="detail-label">
+                                <i class="fas fa-plus-circle"></i>
+                                Días Disponibles
                             </div>
-
-                            <div class="stat-card stat-used">
-                                <div class="stat-icon">
-                                    <i class="fa fa-calendar-check-o"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <div class="stat-number">@diasDisfrutados</div>
-                                    <div class="stat-label">Días Disfrutados</div>
-                                </div>
+                            <div class="detail-value">
+                                <strong style="color: #28a745; font-size: 1.2rem;">@Html.DisplayFor(model => model.dias_disponibles) días</strong>
                             </div>
+                        </div>
 
-                            <div class="stat-card stat-remaining">
-                                <div class="stat-icon">
-                                    <i class="fa fa-calendar-o"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <div class="stat-number">@Math.Max(0, diasRestantes)</div>
-                                    <div class="stat-label">Días Restantes</div>
-                                </div>
+                        <div class="detail-row">
+                            <div class="detail-label">
+                                <i class="fas fa-minus-circle"></i>
+                                Días Disfrutados
+                            </div>
+                            <div class="detail-value">
+                                <strong style="color: #dc3545; font-size: 1.2rem;">@Html.DisplayFor(model => model.dias_disfrutados) días</strong>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">
+                                <i class="fas fa-clock"></i>
+                                Días Restantes
+                            </div>
+                            <div class="detail-value">
+                                @{
+                                    // CORRECCIÓN: Sin nullable - son tipos int normales
+                                    int diasDisponibles = Model.dias_disponibles;
+                                    int diasDisfrutados = Model.dias_disfrutados.Value;
+                                    int diasRestantes = diasDisponibles - diasDisfrutados;
+                                }
+                                <strong style="color: #1788ca; font-size: 1.2rem;">@diasRestantes días</strong>
                             </div>
                         </div>
 
                         <!-- Barra de progreso -->
-                        <div class="progress-section">
-                            <div class="progress-label">
-                                <span>Utilización de Vacaciones</span>
-                                <span class="progress-percentage">@Math.Round(porcentajeUtilizado, 1)%</span>
+                        <div class="detail-row">
+                            <div class="detail-label">
+                                <i class="fas fa-chart-bar"></i>
+                                Progreso de Utilización
                             </div>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: @Math.Min(100, porcentajeUtilizado)%"></div>
+                            <div class="detail-value" style="flex: 2;">
+                                @{
+                                    // CORRECCIÓN: Cálculo del porcentaje sin errores
+                                    double porcentajeUsado = diasDisponibles > 0 ? (diasDisfrutados * 100.0 / diasDisponibles) : 0;
+                                }
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: @(porcentajeUsado)%"></div>
+                                </div>
+                                <small style="color: #6c757d;">@porcentajeUsado.ToString("F1")% utilizado</small>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Estado del registro -->
+                    <!-- Información de Registro -->
                     <div class="details-section">
-                        <h4><i class="fa fa-flag"></i> Estado del Registro</h4>
-                        <div class="status-container">
-                            @if (diasRestantes > 0)
-                            {
-                                <div class="status-item status-active">
-                                    <i class="fa fa-check-circle"></i>
-                                    <div class="status-content">
-                                        <strong>Activo</strong>
-                                        <p>El empleado tiene @diasRestantes días de vacaciones disponibles para solicitar.</p>
-                                    </div>
-                                </div>
-                            }
-                            else if (diasRestantes == 0)
-                            {
-                                <div class="status-item status-complete">
-                                    <i class="fa fa-calendar"></i>
-                                    <div class="status-content">
-                                        <strong>Completo</strong>
-                                        <p>El empleado ha utilizado todos sus días de vacaciones para este período.</p>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="status-item status-exceeded">
-                                    <i class="fa fa-exclamation-triangle"></i>
-                                    <div class="status-content">
-                                        <strong>Excedido</strong>
-                                        <p>Los días disfrutados superan los días disponibles. Revisar registro.</p>
-                                    </div>
-                                </div>
-                            }
+                        <h4><i class="fas fa-info-circle"></i> Información de Registro</h4>
+
+                        <div class="detail-row">
+                            <div class="detail-label">
+                                <i class="fas fa-calendar-plus"></i>
+                                Fecha de Creación
+                            </div>
+                            <div class="detail-value">
+                                @Html.DisplayFor(model => model.fecha_creacion)
+                            </div>
                         </div>
+
+                        @if (Model.fecha_actualizacion.HasValue)
+                        {
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-history"></i>
+                                    Última Actualización
+                                </div>
+                                <div class="detail-value">
+                                    @Html.DisplayFor(model => model.fecha_actualizacion)
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Alertas de Estado -->
+                    <div class="details-section">
+                        @if (diasRestantes > 0)
+                        {
+                            <div class="alert-success-custom">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>Estado del Registro</strong><br>
+                                    El empleado tiene @diasRestantes días de vacaciones disponibles para solicitar.
+                                </div>
+                            </div>
+                        }
+                        else if (diasRestantes == 0)
+                        {
+                            <div class="alert-warning-custom">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div>
+                                    <strong>Vacaciones Agotadas</strong><br>
+                                    El empleado ha utilizado todos los días de vacaciones disponibles. Revisar registro.
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -157,403 +440,15 @@
             <!-- Botones de acción -->
             <div class="action-buttons-container">
                 <a href="@Url.Action("Edit", new { id = Model.id_vacacion })" class="btn-warning-custom">
-                    <i class="fa fa-edit"></i> Editar Registro
+                    <i class="fas fa-edit"></i> Editar Registro
                 </a>
                 <a href="@Url.Action("Index", "SolicitudesVacaciones", new { empleadoId = Model.id_empleado })" class="btn-info-custom">
-                    <i class="fa fa-list"></i> Ver Solicitudes
+                    <i class="fas fa-list"></i> Ver Solicitudes
                 </a>
                 <a href="@Url.Action("Index")" class="btn-secondary-custom">
-                    <i class="fa fa-arrow-left"></i> Volver a Lista
+                    <i class="fas fa-arrow-left"></i> Volver a Lista
                 </a>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-/* Card de detalles */
-.details-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-    border: 1px solid #e7e8eb;
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.details-card-header {
-    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
-    color: white;
-    padding: 1.5rem 2rem;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-.details-card-header h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 1rem 0;
-}
-
-.employee-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1rem;
-}
-
-.employee-id {
-    color: rgba(255,255,255,0.8);
-    font-size: 0.9rem;
-    margin-left: auto;
-}
-
-.details-card-body {
-    padding: 2rem;
-}
-
-/* Secciones de detalles */
-.details-section {
-    margin-bottom: 2.5rem;
-}
-
-.details-section:last-child {
-    margin-bottom: 0;
-}
-
-.details-section h4 {
-    color: #221d42;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e7e8eb;
-}
-
-/* Grid de detalles */
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
-
-.detail-item {
-    background: #f8f9fa;
-    border: 1px solid #e7e8eb;
-    border-radius: 10px;
-    padding: 1.25rem;
-    transition: all 0.3s ease;
-}
-
-.detail-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.detail-label {
-    font-weight: 600;
-    color: #495057;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.detail-value {
-    color: #221d42;
-    font-weight: 500;
-    font-size: 1rem;
-}
-
-.period-badge {
-    background: linear-gradient(135deg, #fab61b 0%, #e69500 100%);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    display: inline-block;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-/* Tarjetas de estadísticas */
-.stats-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: white;
-    border: 2px solid #e7e8eb;
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.stat-available {
-    border-color: #1788ca;
-}
-
-.stat-available:hover {
-    border-color: #1788ca;
-    box-shadow: 0 6px 20px rgba(23, 136, 202, 0.3);
-}
-
-.stat-used {
-    border-color: #28a745;
-}
-
-.stat-used:hover {
-    border-color: #28a745;
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
-}
-
-.stat-remaining {
-    border-color: #fab61b;
-}
-
-.stat-remaining:hover {
-    border-color: #fab61b;
-    box-shadow: 0 6px 20px rgba(250, 182, 27, 0.3);
-}
-
-.stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: white;
-}
-
-.stat-available .stat-icon {
-    background: linear-gradient(135deg, #1788ca 0%, #0d6efd 100%);
-}
-
-.stat-used .stat-icon {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-}
-
-.stat-remaining .stat-icon {
-    background: linear-gradient(135deg, #fab61b 0%, #e69500 100%);
-}
-
-.stat-content {
-    flex: 1;
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #221d42;
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 500;
-    margin-top: 0.25rem;
-}
-
-/* Barra de progreso */
-.progress-section {
-    background: #f8f9fa;
-    border: 1px solid #e7e8eb;
-    border-radius: 10px;
-    padding: 1.5rem;
-}
-
-.progress-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    color: #495057;
-}
-
-.progress-percentage {
-    color: #1788ca;
-    font-size: 1.1rem;
-}
-
-.progress-bar-container {
-    background: #e9ecef;
-    border-radius: 10px;
-    height: 10px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    background: linear-gradient(135deg, #1788ca 0%, #28a745 100%);
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.5s ease;
-}
-
-/* Estados */
-.status-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.status-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1.25rem;
-    border-radius: 10px;
-    border-left: 4px solid;
-}
-
-.status-active {
-    background: #d4edda;
-    border-left-color: #28a745;
-}
-
-.status-complete {
-    background: #d1ecf1;
-    border-left-color: #17a2b8;
-}
-
-.status-exceeded {
-    background: #f8d7da;
-    border-left-color: #dc3545;
-}
-
-.status-item i {
-    font-size: 1.5rem;
-    margin-top: 0.25rem;
-}
-
-.status-active i {
-    color: #28a745;
-}
-
-.status-complete i {
-    color: #17a2b8;
-}
-
-.status-exceeded i {
-    color: #dc3545;
-}
-
-.status-content strong {
-    display: block;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    color: #221d42;
-}
-
-.status-content p {
-    margin: 0;
-    color: #495057;
-    line-height: 1.4;
-}
-
-/* Contenedor de botones de acción */
-.action-buttons-container {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.btn-warning-custom {
-    background: linear-gradient(135deg, #fab61b 0%, #e69500 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 150px;
-    justify-content: center;
-}
-
-.btn-warning-custom:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(250, 182, 27, 0.4);
-    text-decoration: none;
-    color: white;
-}
-
-/* Responsive */
-@@media (max-width: 768px) {
-    .details-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .stats-container {
-        grid-template-columns: 1fr;
-    }
-
-    .employee-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .employee-id {
-        margin-left: 0;
-    }
-
-    .action-buttons-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .btn-warning-custom,
-    .btn-info-custom,
-    .btn-secondary-custom {
-        width: 100%;
-        max-width: 250px;
-    }
-
-    .status-item {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .status-item i {
-        align-self: flex-start;
-    }
-}
-
-@@media (max-width: 576px) {
-    .details-card-body {
-        padding: 1.5rem;
-    }
-
-    .stat-card {
-        padding: 1rem;
-    }
-
-    .stat-number {
-        font-size: 1.5rem;
-    }
-
-    .progress-section {
-        padding: 1rem;
-    }
-}
-</style>

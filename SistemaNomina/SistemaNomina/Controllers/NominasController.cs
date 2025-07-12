@@ -358,13 +358,15 @@ namespace SistemaNomina.Controllers
         // REEMPLAZAR este método en NominasController.cs
         private dynamic CalcularDeduccionesLegales(decimal salarioBruto, int cantidadHijos, int anio)
         {
-            // CCSS: 9.34%
-            decimal ccss = salarioBruto * 0.0934m;
+            // ✅ PORCENTAJES CORRECTOS SEGÚN LEY COSTARRICENSE VIGENTE
 
-            // IVM: 2.75%  
-            decimal ivm = salarioBruto * 0.0275m;
+            // CCSS (Enfermedad y Maternidad): 10.67%
+            decimal ccss = salarioBruto * 0.1067m;
 
-            // ISR: Según tabla progresiva
+            // IVM (Invalidez, Vejez y Muerte): 4.17%  
+            decimal ivm = salarioBruto * 0.0417m;
+
+            // ISR: Según tabla progresiva actualizada
             decimal isr = CalcularISR(salarioBruto, cantidadHijos, anio);
 
             return new

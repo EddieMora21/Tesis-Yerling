@@ -1,162 +1,376 @@
 ﻿@model SistemaNomina.Models.Nomina
 
 @{
-    // Establece el título de la página
-    ViewBag.Title = "Details";
-    // vista
+    ViewBag.Title = "Detalles de Nómina";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+    }
 
-<div>
-    <h4>Nomina</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <!-- Mostrar el nombre del campo 'mes' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.mes)
-        </dt>
+    .header-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
 
-        <!-- Mostrar el valor del campo 'mes' -->
-        <dd>
-            @Html.DisplayFor(model => model.mes)
-        </dd>
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 1.5rem;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'anio' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.anio)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.anio)
-        </dd>
+    .card-header-info {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'salario_bruto' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.salario_bruto)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.salario_bruto)
-        </dd>
+    .info-item {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--secondary-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'horas_extras' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.horas_extras)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.horas_extras)
-        </dd>
+    .info-label {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'salario_dias_feriados' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.salario_dias_feriados)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.salario_dias_feriados)
-        </dd>
+    .info-value {
+        color: #495057;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'ccss' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.ccss)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ccss)
-        </dd>
+    .money-value {
+        color: var(--secondary-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'ivm' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.ivm)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ivm)
-        </dd>
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'isr' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.isr)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.isr)
-        </dd>
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'credito_hijos' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.credito_hijos)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.credito_hijos)
-        </dd>
+    .btn-outline-custom {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'credito_conyuge' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.credito_conyuge)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.credito_conyuge)
-        </dd>
+    .btn-outline-custom:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-1px);
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'otros_descuentos' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.otros_descuentos)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.otros_descuentos)
-        </dd>
+    .employee-badge {
+        background: linear-gradient(135deg, var(--accent-color) 0%, rgba(250, 182, 27, 0.8) 100%);
+        color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'base_imponible' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.base_imponible)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.base_imponible)
-        </dd>
+    .period-badge {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'salario_neto' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.salario_neto)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.salario_neto)
-        </dd>
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'fecha_creacion' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+    .summary-section {
+        background: linear-gradient(135deg, rgba(23, 136, 202, 0.1) 0%, rgba(23, 136, 202, 0.05) 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        border: 2px solid rgba(23, 136, 202, 0.2);
+    }
 
-        <!-- Mostrar el nombre y valor del campo 'fecha_actualizacion' -->
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-        </dd>
+    @@media (max-width: 768px) {
+        .header-gradient {
+            padding: 1.5rem 0;
+        }
 
-        <!-- Mostrar el nombre y valor de la cédula del empleado relacionado -->
-        <dt>
-            @Html.DisplayNameFor(model => model.Empleados.cedula)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Empleados.cedula)
-        </dd>
+        .info-item {
+            padding: 1rem;
+        }
 
-        <!-- Mostrar el nombre y valor de la descripción del ISR relacionado -->
-        <dt>
-            @Html.DisplayNameFor(model => model.ISR1.descripcion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ISR1.descripcion)
-        </dd>
+        .summary-section {
+            padding: 1.5rem;
+        }
+    }
+</style>
 
-    </dl>
+<div class="container-fluid">
+    <!-- ENCABEZADO -->
+    <div class="header-gradient">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">
+                        <i class="fas fa-file-invoice-dollar fa-2x"></i>
+                        Detalles de Nómina
+                    </h1>
+                    <p class="mb-0 fs-5">Información completa del registro de nómina</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span class="employee-badge">
+                        <i class="fas fa-user"></i>
+                        @Html.DisplayFor(model => model.Empleados.nombre1) @Html.DisplayFor(model => model.Empleados.apellido1)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- INFORMACIÓN PRINCIPAL -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-header-info">
+                        <h5 class="mb-0">
+                            <i class="fas fa-id-card"></i>
+                            Información del Empleado
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-id-badge icon-primary"></i>
+                                Cédula del Empleado
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.Empleados.cedula)</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-alt icon-primary"></i>
+                                Período de Nómina
+                            </div>
+                            <div class="info-value">
+                                <span class="period-badge">
+                                    @Html.DisplayFor(model => model.mes)/@Html.DisplayFor(model => model.anio)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-percentage icon-primary"></i>
+                                Categoría ISR
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.ISR1.descripcion)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-header-info">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock"></i>
+                            Información de Fechas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-plus-circle icon-primary"></i>
+                                Fecha de Creación
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.fecha_creacion)</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-edit icon-primary"></i>
+                                Fecha de Actualización
+                            </div>
+                            <div class="info-value">@Html.DisplayFor(model => model.fecha_actualizacion)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETALLES FINANCIEROS -->
+        <div class="card-custom">
+            <div class="card-header-info">
+                <h5 class="mb-0">
+                    <i class="fas fa-calculator"></i>
+                    Detalles Financieros
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-money-bill-wave icon-primary"></i>
+                                Salario Bruto
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.salario_bruto)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-clock icon-primary"></i>
+                                Horas Extras
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.horas_extras)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-day icon-primary"></i>
+                                Días Feriados
+                            </div>
+                            <div class="money-value">₡@Html.DisplayFor(model => model.salario_dias_feriados)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-shield-alt icon-primary"></i>
+                                CCSS
+                            </div>
+                            <div class="info-value">₡@Html.DisplayFor(model => model.ccss)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-piggy-bank icon-primary"></i>
+                                IVM
+                            </div>
+                            <div class="info-value">₡@Html.DisplayFor(model => model.ivm)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-receipt icon-primary"></i>
+                                ISR
+                            </div>
+                            <div class="info-value">₡@Html.DisplayFor(model => model.isr)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-minus-circle icon-primary"></i>
+                                Otros Descuentos
+                            </div>
+                            <div class="info-value">₡@(Model.otros_descuentos ?? 0)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-child icon-primary"></i>
+                                Crédito por Hijos
+                            </div>
+                            <div class="info-value">₡@Html.DisplayFor(model => model.credito_hijos)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-heart icon-primary"></i>
+                                Crédito por Cónyuge
+                            </div>
+                            <div class="info-value">₡@Html.DisplayFor(model => model.credito_conyuge)</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-chart-bar icon-primary"></i>
+                                Base Imponible
+                            </div>
+                            <div class="info-value">₡@Html.DisplayFor(model => model.base_imponible)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN FINAL -->
+        <div class="summary-section text-center">
+            <h3 class="mb-3" style="color: var(--primary-color);">
+                <i class="fas fa-check-circle"></i>
+                Salario Neto Final
+            </h3>
+            <h1 style="color: var(--secondary-color); font-weight: 700;">
+                ₡@Html.DisplayFor(model => model.salario_neto)
+            </h1>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                @Html.ActionLink("Volver a Lista", "Index", null, new { @class = "btn btn-outline-custom" })
+            </div>
+            <div>
+                @Html.ActionLink("Editar Nómina", "Edit", new { id = Model.id_nomina }, new { @class = "btn btn-primary-custom" })
+            </div>
+        </div>
+    </div>
 </div>
-
-<p>
-    <!-- Enlace para editar esta nómina, pasando el id -->
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_nomina }) |
-    <!-- Enlace para regresar a la lista de nóminas -->
-    @Html.ActionLink("Back to List", "Index")
-</p>
