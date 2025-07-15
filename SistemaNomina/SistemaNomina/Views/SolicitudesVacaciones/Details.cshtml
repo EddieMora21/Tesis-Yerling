@@ -1,107 +1,295 @@
 ﻿@model SistemaNomina.Models.SolicitudesVacaciones
 
 @{
-    // título navegador
-    ViewBag.Title = "Details";
-
-    // vista
+    ViewBag.Title = "Detalle de Solicitud";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 15px 15px;
+    }
 
-<div>
-    <h4>SolicitudesVacaciones</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <!-- etiqueta para la fecha de inicio -->
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_inicio)
-        </dt>
-        <!-- Muestra el valor de la fecha de inicio -->
-        <dd>
-            @Html.DisplayFor(model => model.fecha_inicio)
-        </dd>
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-bottom: 20px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_fin)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_fin)
-        </dd>
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_solicitud)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_solicitud)
-        </dd>
+    .info-label {
+        font-weight: 600;
+        color: #333;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_aprobacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_aprobacion)
-        </dd>
+    .info-value {
+        color: #666;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.comentario_solicitud)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.comentario_solicitud)
-        </dd>
+    .status-badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.comentario_respuesta)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.comentario_respuesta)
-        </dd>
+    .status-pendiente {
+        background-color: #fff3cd;
+        color: #856404;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+    .status-aprobado {
+        background-color: #d4edda;
+        color: #155724;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_actualizacion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.fecha_actualizacion)
-        </dd>
+    .status-rechazado {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
 
-        <!-- Muestra la etiqueta y el nombre del estado relacionado -->
-        <dt>
-            @Html.DisplayNameFor(model => model.Estados.nombre)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Estados.nombre)
-        </dd>
+    .dias-badge {
+        background-color: #e3f2fd;
+        color: #1976d2;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
 
-        <!-- Muestra la etiqueta y el nombre del usuario relacionado -->
-        <dt>
-            @Html.DisplayNameFor(model => model.Usuarios.usuario)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Usuarios.usuario)
-        </dd>
+    .cadena-aprobacion {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 20px;
+    }
+</style>
 
-        <!-- Muestra la etiqueta y el periodo de vacaciones relacionado -->
-        <dt>
-            @Html.DisplayNameFor(model => model.Vacaciones.periodo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Vacaciones.periodo)
-        </dd>
-    </dl>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-file-alt"></i> Detalle de Solicitud de Vacaciones</h1>
+        <p>Información completa de la solicitud</p>
+    </div>
 </div>
 
-<p>
-    <!-- Enlace para ir a la página de edición de esta solicitud -->
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id_solicitud }) |
+<div class="container">
+    <div class="details-card">
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Información de la Solicitud</h4>
 
-    <!-- Enlace para regresar a la lista de solicitudes -->
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                <div class="info-row">
+                    <span class="info-label">Empleado:</span>
+                    <span class="info-value">
+                        <strong>@Model.Vacaciones.Empleados.nombre1 @Model.Vacaciones.Empleados.apellido1</strong>
+                        (@Model.Vacaciones.Empleados.cedula)
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Departamento:</span>
+                    <span class="info-value">@Model.Vacaciones.Empleados.Puestos.Departamentos.nombre</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Puesto:</span>
+                    <span class="info-value">@Model.Vacaciones.Empleados.Puestos.nombre_puesto</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Período de Vacaciones:</span>
+                    <span class="info-value">@Model.Vacaciones.periodo</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Fechas Solicitadas:</span>
+                    <span class="info-value">
+                        Del @Model.fecha_inicio.ToString("dd/MM/yyyy") al @Model.fecha_fin.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Días Solicitados:</span>
+                    <span class="info-value">
+                        <span class="dias-badge">@ViewBag.DiasCalculados días laborales</span>
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Estado:</span>
+                    <span class="info-value">
+                        <span class="status-badge status-@Model.Estados.nombre.ToLower()">
+                            @Model.Estados.nombre
+                        </span>
+                    </span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.comentario_solicitud))
+                {
+                    <div class="info-row">
+                        <span class="info-label">Motivo:</span>
+                        <span class="info-value">@Model.comentario_solicitud</span>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.comentario_respuesta))
+                {
+                    <div class="info-row">
+                        <span class="info-label">Comentario de Respuesta:</span>
+                        <span class="info-value">@Model.comentario_respuesta</span>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <h5>Fechas Importantes</h5>
+
+                <div class="info-row">
+                    <span class="info-label">Fecha de Solicitud:</span>
+                    <span class="info-value">@Model.fecha_solicitud?.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+
+                @if (Model.fecha_aprobacion.HasValue)
+                {
+                    <div class="info-row">
+                        <span class="info-label">Fecha de Respuesta:</span>
+                        <span class="info-value">@Model.fecha_aprobacion?.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                }
+
+                @if (Model.aprobado_por.HasValue)
+                {
+                    <div class="info-row">
+                        <span class="info-label">Aprobado/Rechazado por:</span>
+                        <span class="info-value">@Model.Usuarios.usuario</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if (ViewBag.CadenaAprobacion != null)
+        {
+            <div class="cadena-aprobacion">
+                <h5><i class="fas fa-route"></i> Cadena de Aprobación</h5>
+                <div class="row">
+                    @foreach (var aprobador in (List<SistemaNomina.Models.Empleados>)ViewBag.CadenaAprobacion)
+                    {
+                        <div class="col-md-4">
+                            <div class="aprobador-card">
+                                <strong>@aprobador.nombre1 @aprobador.apellido1</strong><br>
+                                <small>@aprobador.Puestos.nombre_puesto</small><br>
+                                <small class="text-muted">@aprobador.Puestos.Departamentos.nombre</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="action-buttons mt-4">
+            @if (ViewBag.PuedeAprobar == true && Model.Estados.nombre == "Pendiente")
+            {
+                <button class="btn btn-success" onclick="aprobarSolicitud(@Model.id_solicitud, '@Model.Vacaciones.Empleados.nombre1 @Model.Vacaciones.Empleados.apellido1')">
+                    <i class="fas fa-check"></i> Aprobar
+                </button>
+                <button class="btn btn-danger" onclick="rechazarSolicitud(@Model.id_solicitud, '@Model.Vacaciones.Empleados.nombre1 @Model.Vacaciones.Empleados.apellido1')">
+                    <i class="fas fa-times"></i> Rechazar
+                </button>
+            }
+
+            @if (User.IsInRole("Admin") || User.IsInRole("RRHH"))
+            {
+                <a href="@Url.Action("Edit", new { id = Model.id_solicitud })" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            }
+
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Volver a Lista
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function aprobarSolicitud(id, empleado) {
+            Swal.fire({
+                title: '¿Aprobar solicitud?',
+                text: `Se aprobará la solicitud de vacaciones para ${empleado}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, aprobar',
+                cancelButtonText: 'Cancelar',
+                input: 'textarea',
+                inputPlaceholder: 'Comentario opcional...',
+                inputAttributes: {
+                    'aria-label': 'Comentario opcional'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Aprobar")', {
+                        id: id,
+                        comentario_respuesta: result.value
+                    }, function(data) {
+                        if (data.success) {
+                            Swal.fire('¡Aprobado!', data.message, 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        function rechazarSolicitud(id, empleado) {
+            Swal.fire({
+                title: '¿Rechazar solicitud?',
+                text: `Se rechazará la solicitud de vacaciones para ${empleado}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, rechazar',
+                cancelButtonText: 'Cancelar',
+                input: 'textarea',
+                inputPlaceholder: 'Motivo del rechazo (recomendado)...',
+                inputAttributes: {
+                    'aria-label': 'Motivo del rechazo'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Rechazar")', {
+                        id: id,
+                        comentario_respuesta: result.value
+                    }, function(data) {
+                        if (data.success) {
+                            Swal.fire('Rechazado', data.message, 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

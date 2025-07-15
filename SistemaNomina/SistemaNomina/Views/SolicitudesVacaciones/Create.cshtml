@@ -1,137 +1,229 @@
 ﻿@model SistemaNomina.Models.SolicitudesVacaciones
 
 @{
-    ViewBag.Title = "Create"; <!-- Define el título de la página -->
-    Layout = "~/Views/Shared/_Layout.cshtml"; <!--  vista -->
+    ViewBag.Title = "Solicitar Vacaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>  <!-- Título la página -->
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 15px 15px;
+    }
 
-@using (Html.BeginForm())
-{
-@Html.AntiForgeryToken()  <!-- seguridad -->
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-bottom: 20px;
+    }
 
-<div class="form-horizontal">
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-    <h4>SolicitudesVacaciones</h4>
-    <hr />  <!-- Línea divisoria -->
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
 
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })  <!-- Muestra errores de validación -->
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
 
-    <div class="form-group">
-        <!-- Grupo de formulario para el campo id_vacacion -->
-        @Html.LabelFor(model => model.id_vacacion, "id_vacacion", htmlAttributes: new { @class = "control-label col-md-2" })  <!-- Etiqueta para el campo -->
-        <div class="col-md-10">
-            @Html.DropDownList("id_vacacion", null, htmlAttributes: new { @class = "form-control" })  <!-- Lista desplegable para seleccionar id_vacacion -->
-            @Html.ValidationMessageFor(model => model.id_vacacion, "", new { @class = "text-danger" })  <!-- Mensaje de error para id_vacacion -->
-        </div>
-    </div>
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
 
-    <!-- Grupo para el campo fecha_inicio -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.fecha_inicio, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para ingresar fecha de inicio -->
-            @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
-        </div>
-    </div>
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-    <!-- Grupo para el campo fecha_fin -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.fecha_fin, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para ingresar fecha fin -->
-            @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
-        </div>
-    </div>
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
 
-    <!-- Grupo para el campo fecha_solicitud -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.fecha_solicitud, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.fecha_solicitud, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para ingresar fecha de solicitud -->
-            @Html.ValidationMessageFor(model => model.fecha_solicitud, "", new { @class = "text-danger" })
-        </div>
-    </div>
+    .alert-info {
+        background-color: #d1ecf1;
+        border: 1px solid #b8daff;
+        color: #0c5460;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
 
-    <!-- Grupo para el campo fecha_aprobacion -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.fecha_aprobacion, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.fecha_aprobacion, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para ingresar fecha de aprobación -->
-            @Html.ValidationMessageFor(model => model.fecha_aprobacion, "", new { @class = "text-danger" })
-        </div>
-    </div>
+    .cadena-aprobacion {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
 
-    <!-- Grupo para el campo aprobado_por -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.aprobado_por, "aprobado_por", htmlAttributes: new { @class = "control-label col-md-2" })  <!-- Etiqueta para aprobado_por -->
-        <div class="col-md-10">
-            @Html.DropDownList("aprobado_por", null, htmlAttributes: new { @class = "form-control" })  <!-- Lista desplegable para seleccionar quién aprobó -->
-            @Html.ValidationMessageFor(model => model.aprobado_por, "", new { @class = "text-danger" })
-        </div>
-    </div>
+    .aprobador-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
 
-    <!-- Grupo para comentario_solicitud -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.comentario_solicitud, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.comentario_solicitud, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para comentarios de la solicitud -->
-            @Html.ValidationMessageFor(model => model.comentario_solicitud, "", new { @class = "text-danger" })
-        </div>
-    </div>
+    .aprobador-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-size: 12px;
+    }
 
-    <!-- Grupo para comentario_respuesta -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.comentario_respuesta, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.comentario_respuesta, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para comentarios de la respuesta -->
-            @Html.ValidationMessageFor(model => model.comentario_respuesta, "", new { @class = "text-danger" })
-        </div>
-    </div>
+    .validation-error {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
 
-    <!-- Grupo para id_estado -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.id_estado, "id_estado", htmlAttributes: new { @class = "control-label col-md-2" })  <!-- Etiqueta para estado -->
-        <div class="col-md-10">
-            @Html.DropDownList("id_estado", null, htmlAttributes: new { @class = "form-control" })  <!-- Lista desplegable para seleccionar estado -->
-            @Html.ValidationMessageFor(model => model.id_estado, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <!-- Grupo para fecha_creacion -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.fecha_creacion, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para fecha de creación -->
-            @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <!-- Grupo para fecha_actualizacion -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.fecha_actualizacion, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control" } })  <!-- Campo para fecha de actualización -->
-            @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <!-- Botón para enviar el formulario -->
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />  <!-- Botón para crear la solicitud -->
-        </div>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-calendar-plus"></i> Solicitar Vacaciones</h1>
+        <p>Complete el formulario para enviar su solicitud de vacaciones</p>
     </div>
 </div>
-}
 
-<!-- Enlace para volver a la lista de solicitudes -->
-<div>
-    @Html.ActionLink("Back to List", "Index")
+<div class="container">
+    @if (ViewBag.CadenaAprobacion != null)
+    {
+        <div class="cadena-aprobacion">
+            <h5><i class="fas fa-route"></i> Flujo de Aprobación</h5>
+            <p>Su solicitud seguirá esta ruta de aprobación:</p>
+            <ol>
+                @foreach (var aprobador in (List<SistemaNomina.Models.Empleados>)ViewBag.CadenaAprobacion)
+                {
+                    <li class="aprobador-item">
+                        <div class="aprobador-icon">
+                            @(aprobador.nombre1.Substring(0, 1))@(aprobador.apellido1.Substring(0, 1))
+                        </div>
+                        <div>
+                            <strong>@aprobador.nombre1 @aprobador.apellido1</strong><br>
+                            <small class="text-muted">
+                                @aprobador.Puestos.nombre_puesto - @aprobador.Puestos.Departamentos.nombre
+                            </small>
+                        </div>
+                    </li>
+                }
+            </ol>
+        </div>
+    }
+
+    <div class="form-card">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.id_vacacion, "Período de Vacaciones", new { @class = "form-label" })
+                @Html.DropDownList("id_vacacion", null, "-- Seleccione el período --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.id_vacacion, "", new { @class = "validation-error" })
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.fecha_inicio, "Fecha de Inicio", new { @class = "form-label" })
+                        @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @class = "form-control", @type = "date", @min = DateTime.Today.ToString("yyyy-MM-dd") } })
+                        @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "validation-error" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.fecha_fin, "Fecha de Fin", new { @class = "form-label" })
+                        @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @class = "form-control", @type = "date", @min = DateTime.Today.ToString("yyyy-MM-dd") } })
+                        @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "validation-error" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.comentario_solicitud, "Motivo/Comentario", new { @class = "form-label" })
+                @Html.TextAreaFor(model => model.comentario_solicitud, new { @class = "form-control solo-letras", @rows = "4", @placeholder = "Describa el motivo de su solicitud de vacaciones...", @maxlength = "500" })
+                @Html.ValidationMessageFor(model => model.comentario_solicitud, "", new { @class = "validation-error" })
+                <small class="text-muted">Máximo 500 caracteres</small>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                </button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        }
+    </div>
 </div>
 
-<!-- validación -->
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            // 🎯 APLICAR VALIDACIONES DE SOLO LETRAS
+            $('.solo-letras').on('keypress', function(e) {
+                const char = String.fromCharCode(e.which);
+                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/;
+
+                if (!regex.test(char)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            $('.solo-letras').on('input paste', function() {
+                const $this = $(this);
+                setTimeout(function() {
+                    const valor = $this.val();
+                    const valorLimpio = valor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+
+                    if (valor !== valorLimpio) {
+                        $this.val(valorLimpio);
+                    }
+                }, 1);
+            });
+
+            // Capitalizar automáticamente
+            $('.solo-letras').on('blur', function() {
+                if (this.value.trim() !== '') {
+                    const palabras = this.value.toLowerCase().trim().split(/\s+/);
+                    const capitalizado = palabras.map(palabra =>
+                        palabra.charAt(0).toUpperCase() + palabra.slice(1)
+                    ).join(' ');
+                    this.value = capitalizado;
+                }
+            });
+        });
+    </script>
 }

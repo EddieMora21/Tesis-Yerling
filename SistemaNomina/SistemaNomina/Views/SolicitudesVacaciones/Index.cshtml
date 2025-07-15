@@ -5,885 +5,482 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@functions {
-    public static int CalcularDiasLaborales(DateTime inicio, DateTime fin)
-    {
-        int dias = 0;
-        for (var fecha = inicio; fecha <= fin; fecha = fecha.AddDays(1))
-        {
-            if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
-                dias++;
-        }
-        return dias;
-    }
-}
-
-<div class="solicitudes-container">
-    <!-- Header -->
-    <div class="page-header">
-        <h2>📋 Solicitudes de Vacaciones</h2>
-        <p class="subtitle">Gestiona las solicitudes de vacaciones del sistema</p>
-    </div>
-
-    <!-- Barra de acciones y filtros -->
-    <div class="action-bar">
-        <div class="action-left">
-            @if (Session["RolUsuario"] as string == "Admin" || Session["RolUsuario"] as string == "RRHH")
-            {
-                <a href="@Url.Action("Create")" class="btn btn-success">
-                    ➕ Nueva Solicitud
-                </a>
-            }
-
-            @if (Session["RolUsuario"] as string != "Empleado")
-            {
-                <a href="@Url.Action("SolicitudesPendientes")" class="btn btn-warning">
-                    ⏳ Pendientes
-                </a>
-            }
-
-            <a href="@Url.Action("MisVacaciones", "Vacaciones")" class="btn btn-info">
-                🏖️ Mis Vacaciones
-            </a>
-        </div>
-        <div class="action-right">
-            <div class="filters-container">
-                <select id="filtroEstado" class="filter-select">
-                    <option value="">🔍 Todos los estados</option>
-                    <option value="Pendiente">⏳ Pendiente</option>
-                    <option value="Aprobado">✅ Aprobado</option>
-                    <option value="Rechazado">❌ Rechazado</option>
-                </select>
-                <input type="text" id="filtroBusqueda" class="search-input" placeholder="Buscar empleado..." />
-            </div>
-        </div>
-    </div>
-
-    <!-- Panel principal -->
-    <div class="main-panel">
-        <div class="panel-header">
-            <h3>📊 Lista de Solicitudes</h3>
-            <div class="stats">
-                <span class="stat-item">
-                    <span class="stat-number">@Model.Count()</span>
-                    <span class="stat-label">Total</span>
-                </span>
-                <span class="stat-item">
-                    <span class="stat-number">@Model.Count(s => s.Estados?.nombre == "Pendiente")</span>
-                    <span class="stat-label">Pendientes</span>
-                </span>
-                <span class="stat-item">
-                    <span class="stat-number">@Model.Count(s => s.Estados?.nombre == "Aprobado")</span>
-                    <span class="stat-label">Aprobadas</span>
-                </span>
-            </div>
-        </div>
-        <div class="panel-body">
-            @if (Model != null && Model.Any())
-            {
-                <div class="table-container">
-                    <table class="solicitudes-table" id="tablaSolicitudes">
-                        <thead>
-                            <tr>
-                                <th>👤 Empleado</th>
-                                <th>📅 Periodo</th>
-                                <th>📆 Fecha Solicitud</th>
-                                <th>🗓️ Días Solicitados</th>
-                                <th>📊 Estado</th>
-                                <th>👨‍💼 Aprobado Por</th>
-                                <th>💬 Comentarios</th>
-                                <th>⚙️ Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                var diasSolicitados = CalcularDiasLaborales(item.fecha_inicio, item.fecha_fin);
-
-                                <tr data-estado="@(item.Estados?.nombre ?? "")">
-                                    <td>
-                                        <div class="employee-info">
-                                            <strong>@(item.Vacaciones?.Empleados?.nombre1) @(item.Vacaciones?.Empleados?.apellido1)</strong>
-                                            <small>@(item.Vacaciones?.Empleados?.cedula)</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="period-info">
-                                            <strong>@item.fecha_inicio.ToString("dd/MM/yyyy")</strong>
-                                            <small>al</small>
-                                            <strong>@item.fecha_fin.ToString("dd/MM/yyyy")</strong>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="date-badge">
-                                            @(item.fecha_solicitud?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="days-badge">@diasSolicitados días</span>
-                                    </td>
-                                    <td class="text-center">
-                                        @switch (item.Estados?.nombre)
-                                        {
-                                            case "Pendiente":
-                                                <span class="status-badge status-pending">⏳ Pendiente</span>
-                                                break;
-                                            case "Aprobado":
-                                                <span class="status-badge status-approved">✅ Aprobado</span>
-                                                break;
-                                            case "Rechazado":
-                                                <span class="status-badge status-rejected">❌ Rechazado</span>
-                                                break;
-                                            default:
-                                                <span class="status-badge status-unknown">❓ Desconocido</span>
-                                                break;
-                                        }
-                                    </td>
-                                    <td class="text-center">
-                                        @if (item.Usuarios != null)
-                                        {
-                                            <span class="approver-info">
-                                                @item.Usuarios.Empleados?.nombre1 @item.Usuarios.Empleados?.apellido1
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">-</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <div class="comments-info">
-                                            @if (!string.IsNullOrEmpty(item.comentario_solicitud))
-                                            {
-                                                <div class="comment-item">
-                                                    <strong>Solicitud:</strong>
-                                                    <span>@(item.comentario_solicitud.Length > 50 ? item.comentario_solicitud.Substring(0, 50) + "..." : item.comentario_solicitud)</span>
-                                                </div>
-                                            }
-                                            @if (!string.IsNullOrEmpty(item.comentario_respuesta))
-                                            {
-                                                <div class="comment-item">
-                                                    <strong>Respuesta:</strong>
-                                                    <span>@(item.comentario_respuesta.Length > 50 ? item.comentario_respuesta.Substring(0, 50) + "..." : item.comentario_respuesta)</span>
-                                                </div>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="@Url.Action("Details", new { id = item.id_solicitud })"
-                                               class="btn-action btn-info" title="Ver detalles">
-                                                👁️
-                                            </a>
-
-                                            @if (Session["RolUsuario"] as string != "Empleado" && item.Estados?.nombre == "Pendiente")
-                                            {
-                                                <button type="button"
-                                                        class="btn-action btn-success"
-                                                        onclick="aprobarSolicitud(@item.id_solicitud)"
-                                                        title="Aprobar">
-                                                    ✅
-                                                </button>
-                                                <button type="button"
-                                                        class="btn-action btn-danger"
-                                                        onclick="rechazarSolicitud(@item.id_solicitud)"
-                                                        title="Rechazar">
-                                                    ❌
-                                                </button>
-                                            }
-
-                                            @if (Session["RolUsuario"] as string == "Admin" || Session["RolUsuario"] as string == "RRHH")
-                                            {
-                                                <a href="@Url.Action("Edit", new { id = item.id_solicitud })"
-                                                   class="btn-action btn-warning" title="Editar">
-                                                    ✏️
-                                                </a>
-                                                <a href="@Url.Action("Delete", new { id = item.id_solicitud })"
-                                                   class="btn-action btn-secondary" title="Eliminar">
-                                                    🗑️
-                                                </a>
-                                            }
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <div class="empty-icon">📝</div>
-                    <h4>No hay solicitudes de vacaciones</h4>
-                    <p>Cuando se realicen solicitudes aparecerán aquí.</p>
-                    <a href="@Url.Action("SolicitarVacaciones", "Vacaciones")" class="btn btn-success">
-                        ➕ Hacer Primera Solicitud
-                    </a>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
-<!-- Modal para aprobar/rechazar -->
-<div id="modalAccion" class="modal" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 id="modalTitulo">Confirmar Acción</h4>
-            <span class="modal-close">&times;</span>
-        </div>
-        <div class="modal-body">
-            <form id="formAccion">
-                @Html.AntiForgeryToken()
-                <div class="form-group">
-                    <label for="comentarioRespuesta">💬 Comentario (Opcional):</label>
-                    <textarea id="comentarioRespuesta" class="form-textarea" rows="3"
-                              placeholder="Agrega un comentario sobre tu decisión..."></textarea>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" id="btnConfirmarAccion" class="btn btn-primary">
-                Confirmar
-            </button>
-            <button type="button" class="modal-close btn btn-secondary">
-                Cancelar
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Todo el CSS y JavaScript igual que antes -->
 <style>
-    /* Todo el CSS igual que en la versión anterior */
-    .solicitudes-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
     .page-header {
-        margin-bottom: 25px;
-    }
-
-        .page-header h2 {
-            color: #333;
-            margin: 0 0 10px 0;
-            font-size: 28px;
-            font-weight: 300;
-        }
-
-    .subtitle {
-        color: #6c757d;
-        margin: 0;
-        font-size: 16px;
-    }
-
-    .action-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #f8f9fa;
-        padding: 15px 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .action-left {
-        display: flex;
-        gap: 10px;
-    }
-
-    .action-right {
-        display: flex;
-        align-items: center;
-    }
-
-    .filters-container {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-    }
-
-    .filter-select, .search-input {
-        padding: 8px 12px;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        font-size: 14px;
-        transition: border-color 0.3s ease;
-    }
-
-        .filter-select:focus, .search-input:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-    .search-input {
-        min-width: 200px;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-    }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-
-    .btn-success {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
         color: white;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 15px 15px;
     }
 
-    .btn-warning {
-        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-        color: #212529;
+    .stats-row {
+        margin-bottom: 30px;
     }
 
-    .btn-info {
-        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-        color: white;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-        color: white;
-    }
-
-    .btn-secondary {
-        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-        color: white;
-    }
-
-    .main-panel {
+    .stat-card {
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        overflow: hidden;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        border-left: 4px solid;
     }
 
-    .panel-header {
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-        color: white;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-        .panel-header h3 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 500;
+        .stat-card.pendientes {
+            border-left-color: #ffc107;
         }
 
-    .stats {
-        display: flex;
-        gap: 20px;
-    }
+        .stat-card.aprobadas {
+            border-left-color: #28a745;
+        }
 
-    .stat-item {
-        text-align: center;
-    }
+        .stat-card.rechazadas {
+            border-left-color: #dc3545;
+        }
+
+        .stat-card.total {
+            border-left-color: #007bff;
+        }
 
     .stat-number {
-        display: block;
-        font-size: 18px;
+        font-size: 2rem;
         font-weight: bold;
+        margin-bottom: 5px;
     }
 
     .stat-label {
-        display: block;
-        font-size: 12px;
-        opacity: 0.8;
+        color: #666;
+        font-size: 0.9rem;
     }
 
-    .panel-body {
-        padding: 0;
+    .filters-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
 
-    .table-container {
-        overflow-x: auto;
+    .table-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
 
-    .solicitudes-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
+    .table-responsive {
+        margin: 0;
     }
 
-        .solicitudes-table th {
-            padding: 12px 8px;
-            text-align: left;
-            font-weight: 600;
-            color: #495057;
+    .table {
+        margin-bottom: 0;
+    }
+
+        .table thead th {
             background-color: #f8f9fa;
             border-bottom: 2px solid #dee2e6;
-            white-space: nowrap;
+            font-weight: 600;
         }
-
-        .solicitudes-table td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #dee2e6;
-            vertical-align: middle;
-        }
-
-        .solicitudes-table tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .text-muted {
-        color: #6c757d;
-    }
-
-    .employee-info strong {
-        display: block;
-        color: #333;
-    }
-
-    .employee-info small {
-        color: #6c757d;
-        font-size: 11px;
-    }
-
-    .period-info {
-        text-align: center;
-    }
-
-        .period-info strong {
-            display: block;
-            font-size: 12px;
-        }
-
-        .period-info small {
-            color: #6c757d;
-            font-size: 10px;
-        }
-
-    .date-badge, .days-badge {
-        display: inline-block;
-        padding: 4px 8px;
-        background-color: #e9ecef;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
-        color: #495057;
-    }
 
     .status-badge {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 12px;
+        padding: 4px 12px;
+        border-radius: 15px;
         font-size: 11px;
         font-weight: 600;
-        color: white;
+        text-transform: uppercase;
     }
 
-    .status-pending {
-        background-color: #ffc107;
-        color: #212529;
+    .status-pendiente {
+        background-color: #fff3cd;
+        color: #856404;
     }
 
-    .status-approved {
-        background-color: #28a745;
+    .status-aprobado {
+        background-color: #d4edda;
+        color: #155724;
     }
 
-    .status-rejected {
-        background-color: #dc3545;
-    }
-
-    .status-unknown {
-        background-color: #6c757d;
-    }
-
-    .comments-info {
-        max-width: 200px;
-    }
-
-    .comment-item {
-        margin-bottom: 5px;
-        font-size: 11px;
-    }
-
-        .comment-item strong {
-            color: #333;
-            display: block;
-        }
-
-        .comment-item span {
-            color: #6c757d;
-        }
-
-    .approver-info {
-        font-size: 12px;
-        color: #333;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 4px;
-        justify-content: center;
-        flex-wrap: wrap;
+    .status-rechazado {
+        background-color: #f8d7da;
+        color: #721c24;
     }
 
     .btn-action {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 28px;
-        height: 28px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 12px;
+        padding: 4px 8px;
+        margin: 2px;
         border: none;
+        border-radius: 4px;
+        font-size: 12px;
         cursor: pointer;
-        transition: all 0.3s ease;
     }
 
-        .btn-action:hover {
-            transform: scale(1.1);
-        }
-
-        .btn-action.btn-info {
+        .btn-action.view {
             background-color: #17a2b8;
             color: white;
         }
 
-        .btn-action.btn-success {
+        .btn-action.approve {
             background-color: #28a745;
             color: white;
         }
 
-        .btn-action.btn-warning {
-            background-color: #ffc107;
-            color: #212529;
-        }
-
-        .btn-action.btn-danger {
+        .btn-action.reject {
             background-color: #dc3545;
             color: white;
         }
 
-        .btn-action.btn-secondary {
-            background-color: #6c757d;
-            color: white;
+        .btn-action.edit {
+            background-color: #ffc107;
+            color: #212529;
         }
 
     .empty-state {
         text-align: center;
-        padding: 60px 20px;
-        color: #6c757d;
-    }
-
-    .empty-icon {
-        font-size: 64px;
-        margin-bottom: 20px;
-    }
-
-    .empty-state h4 {
-        margin: 20px 0 10px 0;
-        color: #495057;
-    }
-
-    .empty-state p {
-        margin-bottom: 30px;
-    }
-
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal-content {
-        background: white;
-        border-radius: 8px;
-        max-width: 500px;
-        width: 90%;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-        .modal-header h4 {
-            margin: 0;
-            color: #333;
-        }
-
-    .modal-close {
-        font-size: 24px;
-        cursor: pointer;
-        color: #6c757d;
-        background: none;
-        border: none;
-    }
-
-    .modal-body {
-        padding: 20px;
-    }
-
-    .modal-footer {
-        padding: 20px;
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        border-top: 1px solid #dee2e6;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #333;
-        }
-
-    .form-textarea {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        font-size: 14px;
-        font-family: inherit;
-        resize: vertical;
-        box-sizing: border-box;
-    }
-
-        .form-textarea:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-    @@media (max-width: 768px) {
-        .action-bar {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .filters-container {
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .filter-select, .search-input {
-            width: 100%;
-        }
-
-        .panel-header {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .stats {
-            justify-content: center;
-        }
-
-        .solicitudes-table {
-            font-size: 11px;
-        }
-
-            .solicitudes-table th,
-            .solicitudes-table td {
-                padding: 8px 4px;
-            }
-
-        .action-buttons {
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .btn-action {
-            width: 24px;
-            height: 24px;
-            font-size: 10px;
-        }
-
-        .comments-info {
-            max-width: 120px;
-        }
-    }
-
-    @@media (max-width: 480px) {
-        .solicitudes-container {
-            padding: 10px;
-        }
-
-        .page-header h2 {
-            font-size: 24px;
-        }
-
-        .action-left {
-            flex-direction: column;
-            gap: 5px;
-            width: 100%;
-        }
-
-        .btn {
-            width: 100%;
-            text-align: center;
-        }
+        padding: 40px;
+        color: #666;
     }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let accionActual = null;
-    let solicitudId = null;
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1><i class="fas fa-calendar-check"></i> Mis Solicitudes de Vacaciones</h1>
+                <p>Gestione y revise todas las solicitudes de vacaciones</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="@Url.Action("Create")" class="btn btn-light btn-lg">
+                    <i class="fas fa-plus"></i> Nueva Solicitud
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
-    const filtroEstado = document.getElementById('filtroEstado');
-    const filtroBusqueda = document.getElementById('filtroBusqueda');
-    const tabla = document.getElementById('tablaSolicitudes');
-    const modal = document.getElementById('modalAccion');
-    const modalTitulo = document.getElementById('modalTitulo');
-    const btnConfirmar = document.getElementById('btnConfirmarAccion');
-    const comentarioRespuesta = document.getElementById('comentarioRespuesta');
+<div class="container">
+    <!-- Estadísticas -->
+    <div class="stats-row">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card total">
+                    <div class="stat-number text-primary">@Model.Count()</div>
+                    <div class="stat-label">Total Solicitudes</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card pendientes">
+                    <div class="stat-number text-warning">@Model.Count(s => s.Estados.nombre == "Pendiente")</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card aprobadas">
+                    <div class="stat-number text-success">@Model.Count(s => s.Estados.nombre == "Aprobado")</div>
+                    <div class="stat-label">Aprobadas</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card rechazadas">
+                    <div class="stat-number text-danger">@Model.Count(s => s.Estados.nombre == "Rechazado")</div>
+                    <div class="stat-label">Rechazadas</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    if (filtroEstado) {
-        filtroEstado.addEventListener('change', function() {
-            filtrarTabla();
-        });
+    <!-- Filtros -->
+    <div class="filters-card">
+        <div class="row align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-filter"></i> Filtrar por Estado
+                </label>
+                <select class="form-select" id="filtroEstado">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente">Pendientes</option>
+                    <option value="aprobado">Aprobadas</option>
+                    <option value="rechazado">Rechazadas</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-search"></i> Buscar
+                </label>
+                <input type="text" class="form-control" id="filtroBusqueda"
+                       placeholder="Buscar por empleado, período, fechas...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-calendar"></i> Rango de Fechas
+                </label>
+                <input type="month" class="form-control" id="filtroMes">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Solicitudes -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table-hover table" id="tablaSolicitudes">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Empleado</th>
+                        <th><i class="fas fa-calendar"></i> Período</th>
+                        <th><i class="fas fa-calendar-day"></i> Fechas Solicitadas</th>
+                        <th><i class="fas fa-clock"></i> Días</th>
+                        <th><i class="fas fa-calendar-plus"></i> Fecha Solicitud</th>
+                        <th><i class="fas fa-info-circle"></i> Estado</th>
+                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var solicitud in Model)
+                        {
+                            var diasSolicitados = 0;
+                            for (var fecha = solicitud.fecha_inicio; fecha <= solicitud.fecha_fin; fecha = fecha.AddDays(1))
+                            {
+                                if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
+                                    diasSolicitados++;
+                            }
+
+                            <tr data-estado="@solicitud.Estados.nombre.ToLower()">
+                                <td>
+                                    <div>
+                                        <strong>@solicitud.Vacaciones.Empleados.nombre1 @solicitud.Vacaciones.Empleados.apellido1</strong><br>
+                                        <small class="text-muted">@solicitud.Vacaciones.Empleados.cedula</small><br>
+                                        <small class="text-muted">@solicitud.Vacaciones.Empleados.Puestos.Departamentos.nombre</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@solicitud.Vacaciones.periodo</span>
+                                </td>
+                                <td>
+                                    <strong>@solicitud.fecha_inicio.ToString("dd/MM/yyyy")</strong><br>
+                                    <strong>@solicitud.fecha_fin.ToString("dd/MM/yyyy")</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">@diasSolicitados días</span>
+                                </td>
+                                <td>
+                                    @if (solicitud.fecha_solicitud.HasValue)
+                                    {
+                                        <span>@solicitud.fecha_solicitud.Value.ToString("dd/MM/yyyy")</span><br>
+                                        <small class="text-muted">@solicitud.fecha_solicitud.Value.ToString("HH:mm")</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin fecha</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="status-badge status-@solicitud.Estados.nombre.ToLower()">
+                                        @solicitud.Estados.nombre
+                                    </span>
+                                    @if (solicitud.fecha_aprobacion.HasValue)
+                                    {
+                                        <br><small class="text-muted">@solicitud.fecha_aprobacion.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group-vertical" role="group">
+                                        <button class="btn-action view" onclick="verDetalles(@solicitud.id_solicitud)" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+
+                                        @if (User.IsInRole("Admin") || User.IsInRole("RRHH") || User.IsInRole("Supervisor"))
+                                        {
+                                            if (solicitud.Estados.nombre == "Pendiente")
+                                            {
+                                                <button class="btn-action approve" onclick="aprobarSolicitud(@solicitud.id_solicitud, '@solicitud.Vacaciones.Empleados.nombre1 @solicitud.Vacaciones.Empleados.apellido1')" title="Aprobar">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button class="btn-action reject" onclick="rechazarSolicitud(@solicitud.id_solicitud, '@solicitud.Vacaciones.Empleados.nombre1 @solicitud.Vacaciones.Empleados.apellido1')" title="Rechazar">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            }
+
+                                            if (User.IsInRole("Admin") || User.IsInRole("RRHH"))
+                                            {
+                                                <button class="btn-action edit" onclick="editarSolicitud(@solicitud.id_solicitud)" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                                    <h5>No hay solicitudes de vacaciones</h5>
+                                    <p>Aún no se han registrado solicitudes de vacaciones.</p>
+                                    <a href="@Url.Action("Create")" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Crear Primera Solicitud
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <p class="text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    Mostrando <strong id="registrosVisibles">@Model.Count()</strong> de <strong>@Model.Count()</strong> solicitudes
+                </p>
+            </div>
+            <div class="col-md-6 text-end">
+                <small class="text-muted">
+                    <i class="fas fa-clock"></i>
+                    Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                </small>
+            </div>
+        </div>
     }
+</div>
 
-    if (filtroBusqueda) {
-        filtroBusqueda.addEventListener('input', function() {
-            filtrarTabla();
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            // Aplicar filtros en tiempo real
+            $('#filtroEstado, #filtroBusqueda, #filtroMes').on('change keyup', function() {
+                aplicarFiltros();
+            });
         });
-    }
 
-    document.querySelectorAll('.modal-close').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-    });
+        function aplicarFiltros() {
+            const tabla = document.getElementById('tablaSolicitudes');
+            const filtroEstado = document.getElementById('filtroEstado').value.toLowerCase();
+            const textoBusqueda = document.getElementById('filtroBusqueda').value.toLowerCase();
+            const filtroMes = document.getElementById('filtroMes').value;
+            const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-    if (btnConfirmar) {
-        btnConfirmar.addEventListener('click', function() {
-            ejecutarAccion();
-        });
-    }
+            let visibles = 0;
 
-    function filtrarTabla() {
-        if (!tabla) return;
+            for (let i = 0; i < filas.length; i++) {
+                const fila = filas[i];
+                if (fila.cells.length === 1) continue; // Skip empty state row
 
-        const estadoSeleccionado = filtroEstado ? filtroEstado.value.toLowerCase() : '';
-        const textoBusqueda = filtroBusqueda ? filtroBusqueda.value.toLowerCase() : '';
-        const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+                const estado = fila.getAttribute('data-estado');
+                const texto = fila.textContent.toLowerCase();
 
-        for (let i = 0; i < filas.length; i++) {
-            const fila = filas[i];
-            const estado = fila.getAttribute('data-estado').toLowerCase();
-            const texto = fila.textContent.toLowerCase();
+                const coincideEstado = !filtroEstado || estado === filtroEstado;
+                const coincideTexto = !textoBusqueda || texto.includes(textoBusqueda);
 
-            const coincideEstado = !estadoSeleccionado || estado.includes(estadoSeleccionado);
-            const coincideTexto = !textoBusqueda || texto.includes(textoBusqueda);
+                let coincideMes = true;
+                if (filtroMes) {
+                    const fechaTexto = fila.cells[4].textContent;
+                    coincideMes = fechaTexto.includes(filtroMes.replace('-', '/'));
+                }
 
-            if (coincideEstado && coincideTexto) {
-                fila.style.display = '';
-            } else {
-                fila.style.display = 'none';
+                if (coincideEstado && coincideTexto && coincideMes) {
+                    fila.style.display = '';
+                    visibles++;
+                } else {
+                    fila.style.display = 'none';
+                }
             }
+
+            document.getElementById('registrosVisibles').textContent = visibles;
         }
-    }
 
-    window.aprobarSolicitud = function(id) {
-        accionActual = 'aprobar';
-        solicitudId = id;
-        modalTitulo.textContent = '✅ Aprobar Solicitud';
-        btnConfirmar.textContent = '✅ Aprobar';
-        btnConfirmar.className = 'btn btn-success';
-        comentarioRespuesta.placeholder = 'Comentario sobre la aprobación (opcional)...';
-        modal.style.display = 'flex';
-    };
+        function limpiarFiltros() {
+            document.getElementById('filtroEstado').value = '';
+            document.getElementById('filtroBusqueda').value = '';
+            document.getElementById('filtroMes').value = '';
+            aplicarFiltros();
+        }
 
-    window.rechazarSolicitud = function(id) {
-        accionActual = 'rechazar';
-        solicitudId = id;
-        modalTitulo.textContent = '❌ Rechazar Solicitud';
-        btnConfirmar.textContent = '❌ Rechazar';
-        btnConfirmar.className = 'btn btn-danger';
-        comentarioRespuesta.placeholder = 'Motivo del rechazo (recomendado)...';
-        modal.style.display = 'flex';
-    };
-
-    function ejecutarAccion() {
-        if (!accionActual || !solicitudId) return;
-
-        const url = accionActual === 'aprobar' ? '@Url.Action("Aprobar")' : '@Url.Action("Rechazar")';
-        const datos = {
-            id: solicitudId,
-            comentario_respuesta: comentarioRespuesta.value,
-            __RequestVerificationToken: document.querySelector('[name="__RequestVerificationToken"]').value
+        // Funciones globales
+        window.verDetalles = function(id) {
+            window.location.href = '@Url.Action("Details")/' + id;
         };
 
-        btnConfirmar.disabled = true;
-        btnConfirmar.textContent = '⏳ Procesando...';
+        window.editarSolicitud = function(id) {
+            window.location.href = '@Url.Action("Edit")/' + id;
+        };
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(datos)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('✅ ' + data.message);
-                location.reload();
-            } else {
-                alert('❌ ' + data.message);
-            }
-        })
-        .catch(error => {
-            alert('❌ Error de conexión');
-        })
-        .finally(() => {
-            modal.style.display = 'none';
-            btnConfirmar.disabled = false;
-            comentarioRespuesta.value = '';
-        });
-    }
+        window.aprobarSolicitud = function(id, empleado) {
+            Swal.fire({
+                title: '¿Aprobar solicitud?',
+                text: `Se aprobará la solicitud de vacaciones para ${empleado}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, aprobar',
+                cancelButtonText: 'Cancelar',
+                input: 'textarea',
+                inputPlaceholder: 'Comentario opcional...'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Aprobar")', {
+                        id: id,
+                        comentario_respuesta: result.value
+                    }, function(data) {
+                        if (data.success) {
+                            Swal.fire('¡Aprobado!', data.message, 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        };
 
-    document.querySelectorAll('a[href*="Delete"]').forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            if (!confirm('¿Está seguro de que desea eliminar esta solicitud?')) {
-                e.preventDefault();
-            }
-        });
-    });
-});
-</script>
+        window.rechazarSolicitud = function(id, empleado) {
+            Swal.fire({
+                title: '¿Rechazar solicitud?',
+                text: `Se rechazará la solicitud de vacaciones para ${empleado}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, rechazar',
+                cancelButtonText: 'Cancelar',
+                input: 'textarea',
+                inputPlaceholder: 'Motivo del rechazo (recomendado)...',
+                inputValidator: (value) => {
+                    if (!value || value.trim() === '') {
+                        return 'Por favor proporcione un motivo para el rechazo'
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Rechazar")', {
+                        id: id,
+                        comentario_respuesta: result.value
+                    }, function(data) {
+                        if (data.success) {
+                            Swal.fire('Rechazado', data.message, 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        };
+    </script>
+}
