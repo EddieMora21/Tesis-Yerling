@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.SolicitudesVacaciones>
+﻿@model IEnumerable<SistemaNomina.SolicitudesVacaciones>
 
 @{
     ViewBag.Title = "Solicitudes de Vacaciones";
@@ -247,8 +247,8 @@
                             var diasSolicitados = 0;
                             for (var fecha = solicitud.fecha_inicio; fecha <= solicitud.fecha_fin; fecha = fecha.AddDays(1))
                             {
-                                if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
-                                    diasSolicitados++;
+                                if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday) { diasSolicitados++; }
+
                             }
 
                             <tr data-estado="@solicitud.Estados.nombre.ToLower()">
@@ -270,7 +270,7 @@
                                     <span class="badge bg-primary">@diasSolicitados días</span>
                                 </td>
                                 <td>
-                                    @if (solicitud.fecha_solicitud.HasValue)
+                                    @if (solicitud.fecha_solicitud!= null)
                                     {
                                         <span>@solicitud.fecha_solicitud.Value.ToString("dd/MM/yyyy")</span><br>
                                         <small class="text-muted">@solicitud.fecha_solicitud.Value.ToString("HH:mm")</small>
@@ -284,7 +284,7 @@
                                     <span class="status-badge status-@solicitud.Estados.nombre.ToLower()">
                                         @solicitud.Estados.nombre
                                     </span>
-                                    @if (solicitud.fecha_aprobacion.HasValue)
+                                    @if (solicitud.fecha_aprobacion!= null)
                                     {
                                         <br><small class="text-muted">@solicitud.fecha_aprobacion.Value.ToString("dd/MM/yyyy HH:mm")</small>
                                     }

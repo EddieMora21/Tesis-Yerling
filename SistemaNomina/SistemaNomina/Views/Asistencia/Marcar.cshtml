@@ -1,10 +1,10 @@
 ﻿@{
     ViewBag.Title = "Marcar Asistencia";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var empleado = ViewBag.Empleado as SistemaNomina.Models.Empleados;
-    var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Models.Asistencia;
+    var empleado = ViewBag.Empleado as SistemaNomina.Empleados;
+    var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Asistencia;
     var esFeriado = (bool)ViewBag.EsFeriado;
-    var feriado = ViewBag.Feriado as SistemaNomina.Models.Feriados;
+    var feriado = ViewBag.Feriado as SistemaNomina.Feriados;
 }
 
 <style>
@@ -248,7 +248,7 @@
                 Marcar Entrada
             </button>
         }
-        else if (!asistenciaHoy.hora_salida.HasValue)
+        else if (!asistenciaHoy.hora_salida!= null)
         {
             <button class="btn-mark btn-salida" id="btnSalida">
                 <i class="fa fa-sign-out icon"></i>
@@ -275,16 +275,16 @@
     {
         <div class="status-info">
             <h4><i class="fa fa-clock-o icon"></i>Registro de Hoy</h4>
-            @if (asistenciaHoy.hora_entrada.HasValue)
+            @if (asistenciaHoy.hora_entrada!= null)
             {
                 <p><strong>Entrada:</strong> @asistenciaHoy.hora_entrada.Value.ToString(@"hh\:mm") hrs</p>
             }
-            @if (asistenciaHoy.hora_salida.HasValue)
+            @if (asistenciaHoy.hora_salida!= null)
             {
                 <p><strong>Salida:</strong> @asistenciaHoy.hora_salida.Value.ToString(@"hh\:mm") hrs</p>
                 <p><i class="fa fa-check"></i> Asistencia completa guardada en sistema</p>
             }
-            else if (asistenciaHoy.hora_entrada.HasValue)
+            else if (asistenciaHoy.hora_entrada!= null)
             {
                 <p><i class="fa fa-hourglass-half"></i> Esperando marca de salida...</p>
             }

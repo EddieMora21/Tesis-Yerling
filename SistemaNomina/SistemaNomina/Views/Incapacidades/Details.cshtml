@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.Incapacidades
+﻿@model SistemaNomina.Incapacidades
 
 @{
     ViewBag.Title = "Detalles de Incapacidad";
@@ -262,7 +262,7 @@
                                 <label class="detail-label">Fecha de Registro:</label>
                                 <div class="detail-value">
                                     <i class="fas fa-calendar-plus me-1"></i>
-                                    @if (Model.fecha_registro.HasValue)
+                                    @if (Model.fecha_registro!= null)
                                     {
                                         @Model.fecha_registro.Value.ToString("dd/MM/yyyy HH:mm")
                                     }

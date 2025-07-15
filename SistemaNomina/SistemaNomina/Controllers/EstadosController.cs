@@ -91,7 +91,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Estado creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_ESTADO",
                             $"Creado estado: {estado.nombre} (Módulo: {estado.modulo})",
@@ -166,7 +166,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Estado editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_ESTADO",
                             $"Editado estado: {estado.nombre} (Módulo: {estado.modulo}) (ID: {estado.id_estado})",
@@ -271,7 +271,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO - Estado eliminado
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_ESTADO",
                         $"Eliminado estado: {estado.nombre} (Módulo: {estado.modulo}) (ID: {estado.id_estado})",

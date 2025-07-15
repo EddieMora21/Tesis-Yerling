@@ -114,7 +114,7 @@ namespace SistemaNomina.Controllers
 
                     // Log automático
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_PERMISO",
                             $"Creado permiso para empleado ID: {permiso.id_empleado}",
@@ -193,7 +193,7 @@ namespace SistemaNomina.Controllers
                     db.SaveChanges();
 
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_PERMISO",
                             $"Editado permiso ID: {permiso.id_permiso}",
@@ -262,7 +262,7 @@ namespace SistemaNomina.Controllers
                 db.SaveChanges();
 
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_PERMISO",
                         $"Eliminado permiso ID: {id}",
@@ -301,7 +301,7 @@ namespace SistemaNomina.Controllers
                 db.SaveChanges();
 
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("CAMBIAR_ESTADO_PERMISO",
                         $"Permiso ID: {id} cambió a estado: {estado.nombre}. Comentario: {comentario}",

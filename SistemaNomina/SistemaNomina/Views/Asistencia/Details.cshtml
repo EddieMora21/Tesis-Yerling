@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.Asistencia
+﻿@model SistemaNomina.Asistencia
 
 @{
     ViewBag.Title = "Detalles de Asistencia";
@@ -198,7 +198,7 @@
                     </p>
                 </div>
                 <div class="col-md-4 text-center">
-                    @if (Model.hora_entrada.HasValue && Model.hora_salida.HasValue)
+                    @if (Model.hora_entrada!= null && Model.hora_salida!= null)
                     {
                         <div class="status-badge status-completo">Completo</div>
                     }
@@ -273,7 +273,7 @@
                             Hora de Entrada:
                         </div>
                         <div class="detail-value">
-                            @if (Model.hora_entrada.HasValue)
+                            @if (Model.hora_entrada!= null)
                             {
                                 <span class="time-display">@Model.hora_entrada.Value.ToString(@"hh\:mm")</span>
                             }
@@ -290,7 +290,7 @@
                             Hora de Salida:
                         </div>
                         <div class="detail-value">
-                            @if (Model.hora_salida.HasValue)
+                            @if (Model.hora_salida!= null)
                             {
                                 <span class="time-display">@Model.hora_salida.Value.ToString(@"hh\:mm")</span>
                             }
@@ -331,7 +331,7 @@
             </div>
         </div>
 
-        @if (Model.hora_entrada.HasValue && Model.hora_salida.HasValue)
+        @if (Model.hora_entrada!= null && Model.hora_salida!= null)
         {
             var horasTrabajadas = (Model.hora_salida.Value - Model.hora_entrada.Value).TotalHours;
             <div class="calculated-info">

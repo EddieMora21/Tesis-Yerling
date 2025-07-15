@@ -138,21 +138,21 @@ namespace SistemaNomina.Controllers
             try
             {
                 // Validar parámetros de entrada
-                if (!idEmpleado.HasValue || idEmpleado.Value <= 0)
+                if (idEmpleado == null || idEmpleado.Value <= 0)
                 {
                     Debug.WriteLine("ERROR: ID Empleado inválido");
                     ViewBag.Error = "Por favor seleccione un empleado válido";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
-                if (!idTipo.HasValue || idTipo.Value <= 0)
+                if (idTipo == null || idTipo.Value <= 0)
                 {
                     Debug.WriteLine("ERROR: ID Tipo inválido");
                     ViewBag.Error = "Por favor seleccione un tipo de liquidación válido";
                     return CargarDatosCalculadora(idEmpleado, idTipo);
                 }
 
-                if (!fechaSalida.HasValue)
+                if (fechaSalida == null)
                 {
                     Debug.WriteLine("ERROR: Fecha salida inválida");
                     ViewBag.Error = "Por favor ingrese una fecha de salida válida";
@@ -393,7 +393,7 @@ namespace SistemaNomina.Controllers
                 int diasVacacionesPendientes = 0;
                 if (vacaciones != null)
                 {
-                    diasVacacionesPendientes = Math.Max(0, vacaciones.dias_disponibles - (vacaciones.dias_disfrutados ?? 0));
+                    diasVacacionesPendientes = Math.Max(0, vacaciones.dias_disponibles - (vacaciones.dias_disfrutados));
                 }
 
                 // Calcular componentes según tipo de liquidación
@@ -443,7 +443,7 @@ namespace SistemaNomina.Controllers
                 // ✅ CALCULAR DEDUCCIONES CON PORCENTAJES CORRECTOS
                 var ccss = salarioBruto * 0.1067m; // 10.67% CCSS
                 var ivm = salarioBruto * 0.0417m;  // 4.17% IVM
-                var isr = CalcularISR(salarioBruto, empleado.cantidad_hijos ?? 0); // ISR según tabla
+                var isr = CalcularISR(salarioBruto, empleado.cantidad_hijos); // ISR según tabla
 
                 var totalDeducciones = ccss + ivm + isr;
                 var totalLiquidacion = salarioBruto - totalDeducciones;
@@ -575,7 +575,7 @@ namespace SistemaNomina.Controllers
                 var impuesto = tablaISR.exceso + (baseImponible * (tablaISR.porcentaje / 100));
 
                 // Aplicar créditos
-                var creditos = (cantidadHijos * (tablaISR.credito_hijo ?? 0));
+                var creditos = (cantidadHijos * (tablaISR.credito_hijo));
 
                 return Math.Max(0, impuesto - creditos);
             }
@@ -704,8 +704,8 @@ namespace SistemaNomina.Controllers
                     }
 
                     // Subtotal
-                    var subtotal = (liquidacion.preaviso ?? 0) + (liquidacion.cesantia ?? 0) +
-                                  (liquidacion.vacaciones_pendientes ?? 0) + (liquidacion.aguinaldo_proporcional ?? 0);
+                    var subtotal = (liquidacion.preaviso) + (liquidacion.cesantia) +
+                                  (liquidacion.vacaciones_pendientes) + (liquidacion.aguinaldo_proporcional);
 
                     table.AddCell(new PdfPCell(new Phrase("SUBTOTAL", headerFont)) { BackgroundColor = BaseColor.LIGHT_GRAY });
                     table.AddCell(new PdfPCell(new Phrase($"₡{subtotal:N2}", headerFont)) { BackgroundColor = BaseColor.LIGHT_GRAY });

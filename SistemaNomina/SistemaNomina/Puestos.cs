@@ -7,27 +7,33 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class EstadoCivil
+    public partial class Puestos
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public EstadoCivil()
+        public Puestos()
         {
             this.Empleados = new HashSet<Empleados>();
         }
     
-        public int id_estado_civil { get; set; }
-        public string nombre { get; set; }
-
-        public Nullable<System.DateTime> fecha_creacion { get; set; }        // ← AGREGAR ESTA LÍNEA
-        public Nullable<System.DateTime> fecha_actualizacion { get; set; }   // ← AGREGAR ESTA LÍNEA
-
-
+        public int id_puesto { get; set; }
+        public string nombre_puesto { get; set; }
+        public int id_departamento { get; set; }
+        public decimal salario_base { get; set; }
+        public string descripcion { get; set; }
+        public int horas_jornada { get; set; }
+        public bool es_jefe { get; set; }
+        public int id_horario { get; set; }
+        public Nullable<System.DateTime> fecha_creacion { get; set; }
+        public Nullable<System.DateTime> fecha_actualizacion { get; set; }
+    
+        public virtual Departamentos Departamentos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Empleados> Empleados { get; set; }
+        public virtual Horarios Horarios { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Permisos>
+﻿@model IEnumerable<SistemaNomina.Permisos>
 
 @{
     ViewBag.Title = "Gestión de Permisos";
@@ -362,7 +362,7 @@
                         <label class="filter-label">Filtrar por Tipo:</label>
                         <select id="filtroTipo" class="filter-select">
                             <option value="">Todos los tipos</option>
-                            @foreach (var tipo in ViewBag.TiposPermiso as IEnumerable<SistemaNomina.Models.TiposPermiso> ?? Enumerable.Empty<SistemaNomina.Models.TiposPermiso>())
+                            @foreach (var tipo in ViewBag.TiposPermiso as IEnumerable<SistemaNomina.TiposPermiso> ?? Enumerable.Empty<SistemaNomina.TiposPermiso>())
                             {
                                 <option value="@tipo.nombre.ToLower()">@tipo.nombre</option>
                             }

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Data.Entity;
@@ -39,6 +39,7 @@ namespace SistemaNomina.Models
         public virtual DbSet<ISR> ISR { get; set; }
         public virtual DbSet<Liquidaciones> Liquidaciones { get; set; }
         public virtual DbSet<Nomina> Nomina { get; set; }
+        public virtual DbSet<Notificaciones> Notificaciones { get; set; }
         public virtual DbSet<Permisos> Permisos { get; set; }
         public virtual DbSet<Puestos> Puestos { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }

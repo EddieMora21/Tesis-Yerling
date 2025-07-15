@@ -6,11 +6,11 @@
     </Key>
     <Property Name="id_aguinaldo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="id_empleado" Type="int" Nullable="false" />
-    <Property Name="monto_total" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="monto_total" Type="decimal" Precision="15" Scale="2" Nullable="false" />
     <Property Name="meses_laborados" Type="int" Nullable="false" />
     <Property Name="anio" Type="int" Nullable="false" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Asistencia">
     <Key>
@@ -21,9 +21,11 @@
     <Property Name="fecha" Type="date" Nullable="false" />
     <Property Name="hora_entrada" Type="time" Precision="7" />
     <Property Name="hora_salida" Type="time" Precision="7" />
-    <Property Name="es_feriado" Type="bit" />
-    <Property Name="fecha_registro" Type="datetime" />
+    <Property Name="es_feriado" Type="bit" Nullable="false" />
     <Property Name="id_feriado" Type="int" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_registro" Type="datetime" />
   </EntityType>
   <EntityType Name="Bitacora">
     <Key>
@@ -31,80 +33,84 @@
     </Key>
     <Property Name="id_log" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="id_usuario" Type="int" />
-    <Property Name="accion" Type="varchar" MaxLength="100" Nullable="false" />
-    <Property Name="detalle" Type="text" />
-    <Property Name="fecha_hora" Type="datetime" />
+    <Property Name="accion" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="detalle" Type="nvarchar" MaxLength="500" />
+    <Property Name="fecha_hora" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Departamentos">
     <Key>
       <PropertyRef Name="id_departamento" />
     </Key>
     <Property Name="id_departamento" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Empleados">
     <Key>
       <PropertyRef Name="id_empleado" />
     </Key>
     <Property Name="id_empleado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="cedula" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="nombre1" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="nombre2" Type="varchar" MaxLength="50" />
-    <Property Name="apellido1" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="apellido2" Type="varchar" MaxLength="50" />
-    <Property Name="fecha_nacimiento" Type="date" />
-    <Property Name="direccion" Type="varchar" MaxLength="255" />
-    <Property Name="correo" Type="varchar" MaxLength="100" />
-    <Property Name="telefono" Type="varchar" MaxLength="15" />
-    <Property Name="id_estado_civil" Type="int" />
-    <Property Name="cantidad_hijos" Type="int" />
+    <Property Name="cedula" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="nombre1" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre2" Type="nvarchar" MaxLength="50" />
+    <Property Name="apellido1" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="apellido2" Type="nvarchar" MaxLength="50" />
+    <Property Name="fecha_nacimiento" Type="date" Nullable="false" />
+    <Property Name="direccion" Type="nvarchar" MaxLength="255" />
+    <Property Name="correo" Type="nvarchar" MaxLength="100" />
+    <Property Name="telefono" Type="nvarchar" MaxLength="20" />
+    <Property Name="id_estado_civil" Type="int" Nullable="false" />
+    <Property Name="cantidad_hijos" Type="int" Nullable="false" />
     <Property Name="id_puesto" Type="int" Nullable="false" />
-    <Property Name="id_horario" Type="int" />
+    <Property Name="id_horario" Type="int" Nullable="false" />
     <Property Name="fecha_ingreso" Type="date" Nullable="false" />
-    <Property Name="estado" Type="varchar" MaxLength="10" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="estado" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="EstadoCivil">
     <Key>
       <PropertyRef Name="id_estado_civil" />
     </Key>
     <Property Name="id_estado_civil" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Estados">
     <Key>
       <PropertyRef Name="id_estado" />
     </Key>
     <Property Name="id_estado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="modulo" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="modulo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Feriados">
     <Key>
       <PropertyRef Name="id_feriado" />
     </Key>
     <Property Name="id_feriado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="fecha" Type="date" Nullable="false" />
-    <Property Name="pago_obligatorio" Type="bit" />
-    <Property Name="recargo" Type="decimal" Precision="5" Scale="2" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="pago_obligatorio" Type="bit" Nullable="false" />
+    <Property Name="recargo" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Horarios">
     <Key>
       <PropertyRef Name="id_horario" />
     </Key>
     <Property Name="id_horario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="hora_entrada" Type="time" Precision="7" Nullable="false" />
     <Property Name="hora_salida" Type="time" Precision="7" Nullable="false" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="HorasExtras">
     <Key>
@@ -117,15 +123,15 @@
     <Property Name="hora_inicio" Type="time" Precision="7" Nullable="false" />
     <Property Name="hora_fin" Type="time" Precision="7" Nullable="false" />
     <Property Name="horas" Type="decimal" Precision="4" Scale="2" Nullable="false" />
-    <Property Name="valor_hora" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="valor_hora" Type="decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="recargo" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-    <Property Name="total" Type="decimal" Precision="28" Scale="10" StoreGeneratedPattern="Computed" />
-    <Property Name="motivo" Type="text" />
+    <Property Name="total" Type="decimal" Precision="26" Scale="10" StoreGeneratedPattern="Computed" />
+    <Property Name="motivo" Type="nvarchar" MaxLength="255" Nullable="false" />
     <Property Name="id_estado" Type="int" Nullable="false" />
     <Property Name="aprobado_por" Type="int" />
-    <Property Name="fecha_aprobacion" Type="datetime" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="fecha_aprobacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Incapacidades">
     <Key>
@@ -135,12 +141,14 @@
     <Property Name="id_empleado" Type="int" Nullable="false" />
     <Property Name="fecha_inicio" Type="date" Nullable="false" />
     <Property Name="fecha_fin" Type="date" Nullable="false" />
-    <Property Name="numero_boleta" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="id_tipo_incapacidad" Type="int" />
-    <Property Name="descripcion" Type="text" />
+    <Property Name="numero_boleta" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="id_tipo_incapacidad" Type="int" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
     <Property Name="id_estado" Type="int" Nullable="false" />
-    <Property Name="dias_incapacidad" Type="int" StoreGeneratedPattern="Computed" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
     <Property Name="fecha_registro" Type="datetime" />
+    <Property Name="dias_incapacidad" Type="int" />
   </EntityType>
   <EntityType Name="ISR">
     <Key>
@@ -148,15 +156,15 @@
     </Key>
     <Property Name="id_isr" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="anio" Type="int" Nullable="false" />
-    <Property Name="limite_inferior" Type="decimal" Precision="12" Scale="2" Nullable="false" />
-    <Property Name="limite_superior" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="limite_inferior" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+    <Property Name="limite_superior" Type="decimal" Precision="15" Scale="2" Nullable="false" />
     <Property Name="porcentaje" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-    <Property Name="exceso" Type="decimal" Precision="12" Scale="2" Nullable="false" />
-    <Property Name="credito_hijo" Type="decimal" Precision="10" Scale="2" />
-    <Property Name="credito_conyuge" Type="decimal" Precision="10" Scale="2" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="exceso" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+    <Property Name="credito_hijo" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+    <Property Name="credito_conyuge" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Liquidaciones">
     <Key>
@@ -166,17 +174,17 @@
     <Property Name="id_empleado" Type="int" Nullable="false" />
     <Property Name="id_tipo" Type="int" Nullable="false" />
     <Property Name="fecha_salida" Type="date" Nullable="false" />
-    <Property Name="preaviso" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="cesantia" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="vacaciones_pendientes" Type="decimal" Precision="12" Scale="2" />
+    <Property Name="total_liquidacion" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+    <Property Name="preaviso" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+    <Property Name="cesantia" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
     <Property Name="dias_vacaciones_pendientes" Type="int" />
-    <Property Name="aguinaldo_proporcional" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="total_liquidacion" Type="decimal" Precision="12" Scale="2" Nullable="false" />
-    <Property Name="isr_liquidacion" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="css_liquidacion" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="ivm_liquidacion" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="isr_liquidacion" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="css_liquidacion" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ivm_liquidacion" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="vacaciones_pendientes" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="aguinaldo_proporcional" Type="decimal" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="Nomina">
     <Key>
@@ -196,10 +204,30 @@
     <Property Name="credito_hijos" Type="decimal" Precision="12" Scale="2" />
     <Property Name="credito_conyuge" Type="decimal" Precision="12" Scale="2" />
     <Property Name="otros_descuentos" Type="decimal" Precision="12" Scale="2" />
-    <Property Name="base_imponible" Type="decimal" Precision="16" Scale="2" StoreGeneratedPattern="Computed" />
+    <Property Name="base_imponible" Type="decimal" Precision="12" Scale="2" />
     <Property Name="salario_neto" Type="decimal" Precision="12" Scale="2" Nullable="false" />
     <Property Name="fecha_creacion" Type="datetime" />
     <Property Name="fecha_actualizacion" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Notificaciones">
+    <Key>
+      <PropertyRef Name="id_notificacion" />
+    </Key>
+    <Property Name="id_notificacion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_destinatario" Type="int" Nullable="false" />
+    <Property Name="id_remitente" Type="int" />
+    <Property Name="titulo" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="mensaje" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="tipo" Type="nvarchar" MaxLength="50" />
+    <Property Name="prioridad" Type="nvarchar" MaxLength="20" />
+    <Property Name="leido" Type="bit" />
+    <Property Name="fecha_creacion" Type="datetime" />
+    <Property Name="fecha_leido" Type="datetime" />
+    <Property Name="referencia_tipo" Type="nvarchar" MaxLength="100" />
+    <Property Name="referencia_id" Type="int" />
+    <Property Name="icono" Type="nvarchar" MaxLength="50" />
+    <Property Name="color" Type="nvarchar" MaxLength="20" />
+    <Property Name="TiempoTranscurrido" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="Permisos">
     <Key>
@@ -208,38 +236,38 @@
     <Property Name="id_permiso" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="id_empleado" Type="int" Nullable="false" />
     <Property Name="fecha" Type="date" Nullable="false" />
-    <Property Name="horas" Type="decimal" Precision="4" Scale="2" />
+    <Property Name="horas" Type="decimal" Precision="4" Scale="2" Nullable="false" />
     <Property Name="id_tipo_permiso" Type="int" Nullable="false" />
-    <Property Name="motivo" Type="text" />
+    <Property Name="motivo" Type="nvarchar" MaxLength="255" Nullable="false" />
     <Property Name="id_estado" Type="int" Nullable="false" />
     <Property Name="aprobado_por" Type="int" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Puestos">
     <Key>
       <PropertyRef Name="id_puesto" />
     </Key>
     <Property Name="id_puesto" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre_puesto" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre_puesto" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="id_departamento" Type="int" Nullable="false" />
-    <Property Name="salario_base" Type="decimal" Precision="12" Scale="2" Nullable="false" />
-    <Property Name="descripcion" Type="text" />
+    <Property Name="salario_base" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
     <Property Name="horas_jornada" Type="int" Nullable="false" />
-    <Property Name="es_jefe" Type="bit" />
-    <Property Name="id_horario" Type="int" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="es_jefe" Type="bit" Nullable="false" />
+    <Property Name="id_horario" Type="int" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Roles">
     <Key>
       <PropertyRef Name="id_rol" />
     </Key>
     <Property Name="id_rol" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="SolicitudesVacaciones">
     <Key>
@@ -249,14 +277,14 @@
     <Property Name="id_vacacion" Type="int" Nullable="false" />
     <Property Name="fecha_inicio" Type="date" Nullable="false" />
     <Property Name="fecha_fin" Type="date" Nullable="false" />
+    <Property Name="aprobado_por" Type="int" />
+    <Property Name="comentario_solicitud" Type="nvarchar" MaxLength="255" />
+    <Property Name="comentario_respuesta" Type="nvarchar" MaxLength="255" />
+    <Property Name="id_estado" Type="int" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
     <Property Name="fecha_solicitud" Type="datetime" />
     <Property Name="fecha_aprobacion" Type="datetime" />
-    <Property Name="aprobado_por" Type="int" />
-    <Property Name="comentario_solicitud" Type="text" />
-    <Property Name="comentario_respuesta" Type="text" />
-    <Property Name="id_estado" Type="int" Nullable="false" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
   </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>
@@ -273,57 +301,57 @@
       <PropertyRef Name="id_tipo" />
     </Key>
     <Property Name="id_tipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="dias_maximos" Type="int" Nullable="false" />
     <Property Name="pago_planilla" Type="bit" Nullable="false" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="TipoLiquidacion">
     <Key>
       <PropertyRef Name="id_tipo" />
     </Key>
     <Property Name="id_tipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="TiposHoraExtra">
     <Key>
       <PropertyRef Name="id_tipo" />
     </Key>
     <Property Name="id_tipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="recargo" Type="decimal" Precision="5" Scale="2" Nullable="false" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="TiposPermiso">
     <Key>
       <PropertyRef Name="id_tipo_permiso" />
     </Key>
     <Property Name="id_tipo_permiso" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="con_goce" Type="bit" Nullable="false" />
-    <Property Name="descripcion" Type="text" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="descripcion" Type="nvarchar" MaxLength="255" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Usuarios">
     <Key>
       <PropertyRef Name="id_usuario" />
     </Key>
     <Property Name="id_usuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="id_empleado" Type="int" />
-    <Property Name="usuario" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="contrasena" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="id_empleado" Type="int" Nullable="false" />
+    <Property Name="usuario" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="contrasena" Type="nvarchar" MaxLength="255" Nullable="false" />
     <Property Name="id_rol" Type="int" Nullable="false" />
-    <Property Name="primer_ingreso" Type="bit" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="primer_ingreso" Type="bit" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="Vacaciones">
     <Key>
@@ -331,13 +359,13 @@
     </Key>
     <Property Name="id_vacacion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="id_empleado" Type="int" Nullable="false" />
-    <Property Name="periodo" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="periodo" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="dias_disponibles" Type="int" Nullable="false" />
-    <Property Name="dias_disfrutados" Type="int" />
-    <Property Name="fecha_creacion" Type="datetime" />
-    <Property Name="fecha_actualizacion" Type="datetime" />
+    <Property Name="dias_disfrutados" Type="int" Nullable="false" />
+    <Property Name="fecha_creacion" Type="datetime2" Precision="7" />
+    <Property Name="fecha_actualizacion" Type="datetime2" Precision="7" />
   </EntityType>
-  <Association Name="fk_aguinaldo_empleado">
+  <Association Name="FK_Aguinaldo_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Aguinaldo" Type="Self.Aguinaldo" Multiplicity="*" />
     <ReferentialConstraint>
@@ -349,7 +377,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_asistencia_empleado">
+  <Association Name="FK_Asistencia_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Asistencia" Type="Self.Asistencia" Multiplicity="*" />
     <ReferentialConstraint>
@@ -361,7 +389,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_asistencia_feriado">
+  <Association Name="FK_Asistencia_Feriados">
     <End Role="Feriados" Type="Self.Feriados" Multiplicity="0..1" />
     <End Role="Asistencia" Type="Self.Asistencia" Multiplicity="*" />
     <ReferentialConstraint>
@@ -373,7 +401,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_bitacora_usuario">
+  <Association Name="FK_Bitacora_Usuarios">
     <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
     <End Role="Bitacora" Type="Self.Bitacora" Multiplicity="*" />
     <ReferentialConstraint>
@@ -385,8 +413,8 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_empleado_estadocivil">
-    <End Role="EstadoCivil" Type="Self.EstadoCivil" Multiplicity="0..1" />
+  <Association Name="FK_Empleados_EstadoCivil">
+    <End Role="EstadoCivil" Type="Self.EstadoCivil" Multiplicity="1" />
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="EstadoCivil">
@@ -397,8 +425,8 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_empleado_horario">
-    <End Role="Horarios" Type="Self.Horarios" Multiplicity="0..1" />
+  <Association Name="FK_Empleados_Horarios">
+    <End Role="Horarios" Type="Self.Horarios" Multiplicity="1" />
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Horarios">
@@ -409,7 +437,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_empleado_puesto">
+  <Association Name="FK_Empleados_Puestos">
     <End Role="Puestos" Type="Self.Puestos" Multiplicity="1" />
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="*" />
     <ReferentialConstraint>
@@ -421,19 +449,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_horasextras_aprobador">
-    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
-    <End Role="HorasExtras" Type="Self.HorasExtras" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Usuarios">
-        <PropertyRef Name="id_usuario" />
-      </Principal>
-      <Dependent Role="HorasExtras">
-        <PropertyRef Name="aprobado_por" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_horasextras_empleado">
+  <Association Name="FK_HorasExtras_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="HorasExtras" Type="Self.HorasExtras" Multiplicity="*" />
     <ReferentialConstraint>
@@ -445,7 +461,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_horasextras_estado">
+  <Association Name="FK_HorasExtras_Estados">
     <End Role="Estados" Type="Self.Estados" Multiplicity="1" />
     <End Role="HorasExtras" Type="Self.HorasExtras" Multiplicity="*" />
     <ReferentialConstraint>
@@ -457,7 +473,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_horasextras_tipo">
+  <Association Name="FK_HorasExtras_TiposHoraExtra">
     <End Role="TiposHoraExtra" Type="Self.TiposHoraExtra" Multiplicity="1" />
     <End Role="HorasExtras" Type="Self.HorasExtras" Multiplicity="*" />
     <ReferentialConstraint>
@@ -469,19 +485,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_incapacidad_tipo">
-    <End Role="TipoIncapacidades" Type="Self.TipoIncapacidades" Multiplicity="0..1" />
-    <End Role="Incapacidades" Type="Self.Incapacidades" Multiplicity="*" />
+  <Association Name="FK_HorasExtras_Usuarios">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+    <End Role="HorasExtras" Type="Self.HorasExtras" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="TipoIncapacidades">
-        <PropertyRef Name="id_tipo" />
+      <Principal Role="Usuarios">
+        <PropertyRef Name="id_usuario" />
       </Principal>
-      <Dependent Role="Incapacidades">
-        <PropertyRef Name="id_tipo_incapacidad" />
+      <Dependent Role="HorasExtras">
+        <PropertyRef Name="aprobado_por" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_incapacidades_empleado">
+  <Association Name="FK_Incapacidades_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Incapacidades" Type="Self.Incapacidades" Multiplicity="*" />
     <ReferentialConstraint>
@@ -493,7 +509,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_incapacidades_estado">
+  <Association Name="FK_Incapacidades_Estados">
     <End Role="Estados" Type="Self.Estados" Multiplicity="1" />
     <End Role="Incapacidades" Type="Self.Incapacidades" Multiplicity="*" />
     <ReferentialConstraint>
@@ -505,7 +521,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_liquidaciones_empleado">
+  <Association Name="FK_Incapacidades_TipoIncapacidades">
+    <End Role="TipoIncapacidades" Type="Self.TipoIncapacidades" Multiplicity="1" />
+    <End Role="Incapacidades" Type="Self.Incapacidades" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TipoIncapacidades">
+        <PropertyRef Name="id_tipo" />
+      </Principal>
+      <Dependent Role="Incapacidades">
+        <PropertyRef Name="id_tipo_incapacidad" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Liquidaciones_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Liquidaciones" Type="Self.Liquidaciones" Multiplicity="*" />
     <ReferentialConstraint>
@@ -517,7 +545,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_liquidaciones_tipo">
+  <Association Name="FK_Liquidaciones_TipoLiquidacion">
     <End Role="TipoLiquidacion" Type="Self.TipoLiquidacion" Multiplicity="1" />
     <End Role="Liquidaciones" Type="Self.Liquidaciones" Multiplicity="*" />
     <ReferentialConstraint>
@@ -529,7 +557,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_nomina_empleado">
+  <Association Name="FK_Nomina_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Nomina" Type="Self.Nomina" Multiplicity="*" />
     <ReferentialConstraint>
@@ -541,7 +569,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_nomina_isr">
+  <Association Name="FK_Nomina_ISR">
     <End Role="ISR" Type="Self.ISR" Multiplicity="1" />
     <End Role="Nomina" Type="Self.Nomina" Multiplicity="*" />
     <ReferentialConstraint>
@@ -553,19 +581,31 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_permisos_aprobador">
-    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
-    <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
+  <Association Name="FK_Notificaciones_Destinatario">
+    <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
+    <End Role="Notificaciones" Type="Self.Notificaciones" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Usuarios">
-        <PropertyRef Name="id_usuario" />
+      <Principal Role="Empleados">
+        <PropertyRef Name="id_empleado" />
       </Principal>
-      <Dependent Role="Permisos">
-        <PropertyRef Name="aprobado_por" />
+      <Dependent Role="Notificaciones">
+        <PropertyRef Name="id_destinatario" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_permisos_empleado">
+  <Association Name="FK_Notificaciones_Remitente">
+    <End Role="Empleados" Type="Self.Empleados" Multiplicity="0..1" />
+    <End Role="Notificaciones" Type="Self.Notificaciones" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Empleados">
+        <PropertyRef Name="id_empleado" />
+      </Principal>
+      <Dependent Role="Notificaciones">
+        <PropertyRef Name="id_remitente" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Permisos_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
     <ReferentialConstraint>
@@ -577,7 +617,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_permisos_estado">
+  <Association Name="FK_Permisos_Estados">
     <End Role="Estados" Type="Self.Estados" Multiplicity="1" />
     <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
     <ReferentialConstraint>
@@ -589,7 +629,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_permisos_tipo">
+  <Association Name="FK_Permisos_TiposPermiso">
     <End Role="TiposPermiso" Type="Self.TiposPermiso" Multiplicity="1" />
     <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
     <ReferentialConstraint>
@@ -601,7 +641,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_puesto_departamento">
+  <Association Name="FK_Permisos_Usuarios">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+    <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="id_usuario" />
+      </Principal>
+      <Dependent Role="Permisos">
+        <PropertyRef Name="aprobado_por" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Puestos_Departamentos">
     <End Role="Departamentos" Type="Self.Departamentos" Multiplicity="1" />
     <End Role="Puestos" Type="Self.Puestos" Multiplicity="*" />
     <ReferentialConstraint>
@@ -613,8 +665,8 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_puesto_horario">
-    <End Role="Horarios" Type="Self.Horarios" Multiplicity="0..1" />
+  <Association Name="FK_Puestos_Horarios">
+    <End Role="Horarios" Type="Self.Horarios" Multiplicity="1" />
     <End Role="Puestos" Type="Self.Puestos" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Horarios">
@@ -625,19 +677,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_solicitud_aprobador">
-    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
-    <End Role="SolicitudesVacaciones" Type="Self.SolicitudesVacaciones" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Usuarios">
-        <PropertyRef Name="id_usuario" />
-      </Principal>
-      <Dependent Role="SolicitudesVacaciones">
-        <PropertyRef Name="aprobado_por" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_solicitud_estado">
+  <Association Name="FK_SolicitudesVacaciones_Estados">
     <End Role="Estados" Type="Self.Estados" Multiplicity="1" />
     <End Role="SolicitudesVacaciones" Type="Self.SolicitudesVacaciones" Multiplicity="*" />
     <ReferentialConstraint>
@@ -649,7 +689,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_solicitud_vacacion">
+  <Association Name="FK_SolicitudesVacaciones_Usuarios">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+    <End Role="SolicitudesVacaciones" Type="Self.SolicitudesVacaciones" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="id_usuario" />
+      </Principal>
+      <Dependent Role="SolicitudesVacaciones">
+        <PropertyRef Name="aprobado_por" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SolicitudesVacaciones_Vacaciones">
     <End Role="Vacaciones" Type="Self.Vacaciones" Multiplicity="1" />
     <End Role="SolicitudesVacaciones" Type="Self.SolicitudesVacaciones" Multiplicity="*" />
     <ReferentialConstraint>
@@ -661,8 +713,8 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_usuario_empleado">
-    <End Role="Empleados" Type="Self.Empleados" Multiplicity="0..1" />
+  <Association Name="FK_Usuarios_Empleados">
+    <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Empleados">
@@ -673,7 +725,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_usuario_rol">
+  <Association Name="FK_Usuarios_Roles">
     <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
     <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
     <ReferentialConstraint>
@@ -685,7 +737,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_vacaciones_empleado">
+  <Association Name="FK_Vacaciones_Empleados">
     <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
     <End Role="Vacaciones" Type="Self.Vacaciones" Multiplicity="*" />
     <ReferentialConstraint>
@@ -712,6 +764,7 @@
     <EntitySet Name="ISR" EntityType="Self.ISR" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Liquidaciones" EntityType="Self.Liquidaciones" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Nomina" EntityType="Self.Nomina" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Notificaciones" EntityType="Self.Notificaciones" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permisos" EntityType="Self.Permisos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Puestos" EntityType="Self.Puestos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
@@ -723,123 +776,131 @@
     <EntitySet Name="TiposPermiso" EntityType="Self.TiposPermiso" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Vacaciones" EntityType="Self.Vacaciones" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="fk_aguinaldo_empleado" Association="Self.fk_aguinaldo_empleado">
+    <AssociationSet Name="FK_Aguinaldo_Empleados" Association="Self.FK_Aguinaldo_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Aguinaldo" EntitySet="Aguinaldo" />
     </AssociationSet>
-    <AssociationSet Name="fk_asistencia_empleado" Association="Self.fk_asistencia_empleado">
+    <AssociationSet Name="FK_Asistencia_Empleados" Association="Self.FK_Asistencia_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Asistencia" EntitySet="Asistencia" />
     </AssociationSet>
-    <AssociationSet Name="fk_asistencia_feriado" Association="Self.fk_asistencia_feriado">
+    <AssociationSet Name="FK_Asistencia_Feriados" Association="Self.FK_Asistencia_Feriados">
       <End Role="Feriados" EntitySet="Feriados" />
       <End Role="Asistencia" EntitySet="Asistencia" />
     </AssociationSet>
-    <AssociationSet Name="fk_bitacora_usuario" Association="Self.fk_bitacora_usuario">
+    <AssociationSet Name="FK_Bitacora_Usuarios" Association="Self.FK_Bitacora_Usuarios">
       <End Role="Usuarios" EntitySet="Usuarios" />
       <End Role="Bitacora" EntitySet="Bitacora" />
     </AssociationSet>
-    <AssociationSet Name="fk_empleado_estadocivil" Association="Self.fk_empleado_estadocivil">
+    <AssociationSet Name="FK_Empleados_EstadoCivil" Association="Self.FK_Empleados_EstadoCivil">
       <End Role="EstadoCivil" EntitySet="EstadoCivil" />
       <End Role="Empleados" EntitySet="Empleados" />
     </AssociationSet>
-    <AssociationSet Name="fk_empleado_horario" Association="Self.fk_empleado_horario">
+    <AssociationSet Name="FK_Empleados_Horarios" Association="Self.FK_Empleados_Horarios">
       <End Role="Horarios" EntitySet="Horarios" />
       <End Role="Empleados" EntitySet="Empleados" />
     </AssociationSet>
-    <AssociationSet Name="fk_empleado_puesto" Association="Self.fk_empleado_puesto">
+    <AssociationSet Name="FK_Empleados_Puestos" Association="Self.FK_Empleados_Puestos">
       <End Role="Puestos" EntitySet="Puestos" />
       <End Role="Empleados" EntitySet="Empleados" />
     </AssociationSet>
-    <AssociationSet Name="fk_horasextras_aprobador" Association="Self.fk_horasextras_aprobador">
-      <End Role="Usuarios" EntitySet="Usuarios" />
-      <End Role="HorasExtras" EntitySet="HorasExtras" />
-    </AssociationSet>
-    <AssociationSet Name="fk_horasextras_empleado" Association="Self.fk_horasextras_empleado">
+    <AssociationSet Name="FK_HorasExtras_Empleados" Association="Self.FK_HorasExtras_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="HorasExtras" EntitySet="HorasExtras" />
     </AssociationSet>
-    <AssociationSet Name="fk_horasextras_estado" Association="Self.fk_horasextras_estado">
+    <AssociationSet Name="FK_HorasExtras_Estados" Association="Self.FK_HorasExtras_Estados">
       <End Role="Estados" EntitySet="Estados" />
       <End Role="HorasExtras" EntitySet="HorasExtras" />
     </AssociationSet>
-    <AssociationSet Name="fk_horasextras_tipo" Association="Self.fk_horasextras_tipo">
+    <AssociationSet Name="FK_HorasExtras_TiposHoraExtra" Association="Self.FK_HorasExtras_TiposHoraExtra">
       <End Role="TiposHoraExtra" EntitySet="TiposHoraExtra" />
       <End Role="HorasExtras" EntitySet="HorasExtras" />
     </AssociationSet>
-    <AssociationSet Name="fk_incapacidad_tipo" Association="Self.fk_incapacidad_tipo">
+    <AssociationSet Name="FK_HorasExtras_Usuarios" Association="Self.FK_HorasExtras_Usuarios">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="HorasExtras" EntitySet="HorasExtras" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Incapacidades_Empleados" Association="Self.FK_Incapacidades_Empleados">
+      <End Role="Empleados" EntitySet="Empleados" />
+      <End Role="Incapacidades" EntitySet="Incapacidades" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Incapacidades_Estados" Association="Self.FK_Incapacidades_Estados">
+      <End Role="Estados" EntitySet="Estados" />
+      <End Role="Incapacidades" EntitySet="Incapacidades" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Incapacidades_TipoIncapacidades" Association="Self.FK_Incapacidades_TipoIncapacidades">
       <End Role="TipoIncapacidades" EntitySet="TipoIncapacidades" />
       <End Role="Incapacidades" EntitySet="Incapacidades" />
     </AssociationSet>
-    <AssociationSet Name="fk_incapacidades_empleado" Association="Self.fk_incapacidades_empleado">
-      <End Role="Empleados" EntitySet="Empleados" />
-      <End Role="Incapacidades" EntitySet="Incapacidades" />
-    </AssociationSet>
-    <AssociationSet Name="fk_incapacidades_estado" Association="Self.fk_incapacidades_estado">
-      <End Role="Estados" EntitySet="Estados" />
-      <End Role="Incapacidades" EntitySet="Incapacidades" />
-    </AssociationSet>
-    <AssociationSet Name="fk_liquidaciones_empleado" Association="Self.fk_liquidaciones_empleado">
+    <AssociationSet Name="FK_Liquidaciones_Empleados" Association="Self.FK_Liquidaciones_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Liquidaciones" EntitySet="Liquidaciones" />
     </AssociationSet>
-    <AssociationSet Name="fk_liquidaciones_tipo" Association="Self.fk_liquidaciones_tipo">
+    <AssociationSet Name="FK_Liquidaciones_TipoLiquidacion" Association="Self.FK_Liquidaciones_TipoLiquidacion">
       <End Role="TipoLiquidacion" EntitySet="TipoLiquidacion" />
       <End Role="Liquidaciones" EntitySet="Liquidaciones" />
     </AssociationSet>
-    <AssociationSet Name="fk_nomina_empleado" Association="Self.fk_nomina_empleado">
+    <AssociationSet Name="FK_Nomina_Empleados" Association="Self.FK_Nomina_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Nomina" EntitySet="Nomina" />
     </AssociationSet>
-    <AssociationSet Name="fk_nomina_isr" Association="Self.fk_nomina_isr">
+    <AssociationSet Name="FK_Nomina_ISR" Association="Self.FK_Nomina_ISR">
       <End Role="ISR" EntitySet="ISR" />
       <End Role="Nomina" EntitySet="Nomina" />
     </AssociationSet>
-    <AssociationSet Name="fk_permisos_aprobador" Association="Self.fk_permisos_aprobador">
-      <End Role="Usuarios" EntitySet="Usuarios" />
-      <End Role="Permisos" EntitySet="Permisos" />
+    <AssociationSet Name="FK_Notificaciones_Destinatario" Association="Self.FK_Notificaciones_Destinatario">
+      <End Role="Empleados" EntitySet="Empleados" />
+      <End Role="Notificaciones" EntitySet="Notificaciones" />
     </AssociationSet>
-    <AssociationSet Name="fk_permisos_empleado" Association="Self.fk_permisos_empleado">
+    <AssociationSet Name="FK_Notificaciones_Remitente" Association="Self.FK_Notificaciones_Remitente">
+      <End Role="Empleados" EntitySet="Empleados" />
+      <End Role="Notificaciones" EntitySet="Notificaciones" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Permisos_Empleados" Association="Self.FK_Permisos_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Permisos" EntitySet="Permisos" />
     </AssociationSet>
-    <AssociationSet Name="fk_permisos_estado" Association="Self.fk_permisos_estado">
+    <AssociationSet Name="FK_Permisos_Estados" Association="Self.FK_Permisos_Estados">
       <End Role="Estados" EntitySet="Estados" />
       <End Role="Permisos" EntitySet="Permisos" />
     </AssociationSet>
-    <AssociationSet Name="fk_permisos_tipo" Association="Self.fk_permisos_tipo">
+    <AssociationSet Name="FK_Permisos_TiposPermiso" Association="Self.FK_Permisos_TiposPermiso">
       <End Role="TiposPermiso" EntitySet="TiposPermiso" />
       <End Role="Permisos" EntitySet="Permisos" />
     </AssociationSet>
-    <AssociationSet Name="fk_puesto_departamento" Association="Self.fk_puesto_departamento">
+    <AssociationSet Name="FK_Permisos_Usuarios" Association="Self.FK_Permisos_Usuarios">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Permisos" EntitySet="Permisos" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Puestos_Departamentos" Association="Self.FK_Puestos_Departamentos">
       <End Role="Departamentos" EntitySet="Departamentos" />
       <End Role="Puestos" EntitySet="Puestos" />
     </AssociationSet>
-    <AssociationSet Name="fk_puesto_horario" Association="Self.fk_puesto_horario">
+    <AssociationSet Name="FK_Puestos_Horarios" Association="Self.FK_Puestos_Horarios">
       <End Role="Horarios" EntitySet="Horarios" />
       <End Role="Puestos" EntitySet="Puestos" />
     </AssociationSet>
-    <AssociationSet Name="fk_solicitud_aprobador" Association="Self.fk_solicitud_aprobador">
-      <End Role="Usuarios" EntitySet="Usuarios" />
-      <End Role="SolicitudesVacaciones" EntitySet="SolicitudesVacaciones" />
-    </AssociationSet>
-    <AssociationSet Name="fk_solicitud_estado" Association="Self.fk_solicitud_estado">
+    <AssociationSet Name="FK_SolicitudesVacaciones_Estados" Association="Self.FK_SolicitudesVacaciones_Estados">
       <End Role="Estados" EntitySet="Estados" />
       <End Role="SolicitudesVacaciones" EntitySet="SolicitudesVacaciones" />
     </AssociationSet>
-    <AssociationSet Name="fk_solicitud_vacacion" Association="Self.fk_solicitud_vacacion">
+    <AssociationSet Name="FK_SolicitudesVacaciones_Usuarios" Association="Self.FK_SolicitudesVacaciones_Usuarios">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="SolicitudesVacaciones" EntitySet="SolicitudesVacaciones" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SolicitudesVacaciones_Vacaciones" Association="Self.FK_SolicitudesVacaciones_Vacaciones">
       <End Role="Vacaciones" EntitySet="Vacaciones" />
       <End Role="SolicitudesVacaciones" EntitySet="SolicitudesVacaciones" />
     </AssociationSet>
-    <AssociationSet Name="fk_usuario_empleado" Association="Self.fk_usuario_empleado">
+    <AssociationSet Name="FK_Usuarios_Empleados" Association="Self.FK_Usuarios_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Usuarios" EntitySet="Usuarios" />
     </AssociationSet>
-    <AssociationSet Name="fk_usuario_rol" Association="Self.fk_usuario_rol">
+    <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
       <End Role="Roles" EntitySet="Roles" />
       <End Role="Usuarios" EntitySet="Usuarios" />
     </AssociationSet>
-    <AssociationSet Name="fk_vacaciones_empleado" Association="Self.fk_vacaciones_empleado">
+    <AssociationSet Name="FK_Vacaciones_Empleados" Association="Self.FK_Vacaciones_Empleados">
       <End Role="Empleados" EntitySet="Empleados" />
       <End Role="Vacaciones" EntitySet="Vacaciones" />
     </AssociationSet>

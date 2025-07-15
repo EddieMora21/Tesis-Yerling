@@ -7,27 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class TiposPermiso
+    public partial class Permisos
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TiposPermiso()
-        {
-            this.Permisos = new HashSet<Permisos>();
-        }
-    
+        public int id_permiso { get; set; }
+        public int id_empleado { get; set; }
+        public System.DateTime fecha { get; set; }
+        public decimal horas { get; set; }
         public int id_tipo_permiso { get; set; }
-        public string nombre { get; set; }
-        public bool con_goce { get; set; }
-        public string descripcion { get; set; }
+        public string motivo { get; set; }
+        public int id_estado { get; set; }
+        public Nullable<int> aprobado_por { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Permisos> Permisos { get; set; }
+        public virtual Empleados Empleados { get; set; }
+        public virtual Estados Estados { get; set; }
+        public virtual TiposPermiso TiposPermiso { get; set; }
+        public virtual Usuarios Usuarios { get; set; }
     }
 }

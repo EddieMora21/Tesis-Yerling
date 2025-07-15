@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.DetalleColaboradorViewModel
+﻿@model SistemaNomina.DetalleColaboradorViewModel
 @{
     ViewBag.Title = "Detalle del Colaborador";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -385,7 +385,7 @@
                                                 <tr>
                                                     <td>@asistencia.fecha.ToString("dd/MM/yyyy")</td>
                                                     <td>
-                                                        @if (asistencia.hora_entrada.HasValue)
+                                                        @if (asistencia.hora_entrada!= null)
                                                         {
                                                             @asistencia.hora_entrada.Value.ToString(@"hh\:mm")
                                                         }
@@ -395,7 +395,7 @@
                                                         }
                                                     </td>
                                                     <td>
-                                                        @if (asistencia.hora_salida.HasValue)
+                                                        @if (asistencia.hora_salida!= null)
                                                         {
                                                             @asistencia.hora_salida.Value.ToString(@"hh\:mm")
                                                         }
@@ -405,7 +405,7 @@
                                                         }
                                                     </td>
                                                     <td>
-                                                        @if (asistencia.hora_entrada.HasValue && asistencia.hora_salida.HasValue)
+                                                        @if (asistencia.hora_entrada!= null && asistencia.hora_salida!= null)
                                                         {
                                                             @((asistencia.hora_salida.Value - asistencia.hora_entrada.Value).ToString(@"hh\:mm"))
                                                         }

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
@@ -19,9 +19,11 @@ namespace SistemaNomina.Models
         public System.DateTime fecha { get; set; }
         public Nullable<System.TimeSpan> hora_entrada { get; set; }
         public Nullable<System.TimeSpan> hora_salida { get; set; }
-        public Nullable<bool> es_feriado { get; set; }
-        public Nullable<System.DateTime> fecha_registro { get; set; }
+        public bool es_feriado { get; set; }
         public Nullable<int> id_feriado { get; set; }
+        public Nullable<System.DateTime> fecha_creacion { get; set; }
+        public Nullable<System.DateTime> fecha_actualizacion { get; set; }
+        public Nullable<System.DateTime> fecha_registro { get; set; }
     
         public virtual Empleados Empleados { get; set; }
         public virtual Feriados Feriados { get; set; }

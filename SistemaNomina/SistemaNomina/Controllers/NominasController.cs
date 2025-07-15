@@ -314,7 +314,7 @@ namespace SistemaNomina.Controllers
                 decimal salarioBruto = salarioBase + horasExtras + diasFeriados;
 
                 // 5. APLICAR DEDUCCIONES LEGALES
-                var deducciones = CalcularDeduccionesLegales(salarioBruto, empleado.cantidad_hijos ?? 0, anio);
+                var deducciones = CalcularDeduccionesLegales(salarioBruto, empleado.cantidad_hijos, anio);
 
                 // 6. CALCULAR SALARIO NETO
                 decimal salarioNeto = salarioBruto - deducciones.CCSS - deducciones.IVM - deducciones.ISR;
@@ -411,7 +411,7 @@ namespace SistemaNomina.Controllers
             // Aplicar créditos por hijos
             if (tramosISR.Any() && cantidadHijos > 0)
             {
-                decimal creditoHijos = (tramosISR.First().credito_hijo ?? 0m) * cantidadHijos;
+                decimal creditoHijos = cantidadHijos > 0 ? tramosISR.First().credito_hijo * cantidadHijos : 0m;
                 isrTotal = Math.Max(0, isrTotal - creditoHijos);
             }
 
@@ -434,7 +434,7 @@ namespace SistemaNomina.Controllers
                 var asistencia = db.Asistencia
                     .FirstOrDefault(a => a.id_empleado == idEmpleado &&
                                        a.fecha.Date == feriado.fecha.Date &&
-                                       a.hora_entrada.HasValue && a.hora_salida.HasValue);
+                                       a.hora_entrada!= null && a.hora_salida!= null);
 
                 if (asistencia != null && feriado.pago_obligatorio == true)
                 {
@@ -442,7 +442,7 @@ namespace SistemaNomina.Controllers
                     decimal salarioDiario = empleado.Puestos.salario_base / 30;
 
                     // Pago normal + recargo por feriado
-                    totalFeriados += salarioDiario * (1 + (feriado.recargo ?? 0) / 100);
+                    totalFeriados += salarioDiario * (1 + (feriado.recargo) / 100);
                 }
             }
 

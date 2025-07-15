@@ -1,4 +1,4 @@
-@model SistemaNomina.Models.Vacaciones
+@model SistemaNomina.Vacaciones
 
 @{
     ViewBag.Title = "Mis Días de Vacaciones";
@@ -362,7 +362,7 @@
 
         <!-- Solicitudes pendientes -->
         @{
-            var solicitudesPendientes = ViewBag.SolicitudesPendientes as List<SistemaNomina.Models.SolicitudesVacaciones>;
+            var solicitudesPendientes = ViewBag.SolicitudesPendientes as List<SistemaNomina.SolicitudesVacaciones>;
         }
         @if (solicitudesPendientes != null && solicitudesPendientes.Any())
         {
@@ -412,7 +412,7 @@
 
         <!-- Últimas solicitudes aprobadas -->
         @{
-            var solicitudesAprobadas = ViewBag.SolicitudesAprobadas as List<SistemaNomina.Models.SolicitudesVacaciones>;
+            var solicitudesAprobadas = ViewBag.SolicitudesAprobadas as List<SistemaNomina.SolicitudesVacaciones>;
         }
         @if (solicitudesAprobadas != null && solicitudesAprobadas.Any())
         {

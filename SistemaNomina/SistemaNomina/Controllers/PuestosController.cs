@@ -113,7 +113,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Puesto creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         var departamento = db.Departamentos.Find(puestos.id_departamento);
                         BitacoraHelper.RegistrarAccion("CREAR_PUESTO",
@@ -212,7 +212,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Puesto editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_PUESTO",
                             $"Editado puesto: {puestos.nombre_puesto} (ID: {puestos.id_puesto})",
@@ -296,7 +296,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO - Puesto eliminado
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_PUESTO",
                         $"Eliminado puesto: {puestos.nombre_puesto} (ID: {puestos.id_puesto})",

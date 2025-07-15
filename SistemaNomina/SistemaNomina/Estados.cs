@@ -7,39 +7,34 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Usuarios
+    public partial class Estados
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Usuarios()
+        public Estados()
         {
-            this.Bitacora = new HashSet<Bitacora>();
             this.HorasExtras = new HashSet<HorasExtras>();
+            this.Incapacidades = new HashSet<Incapacidades>();
             this.Permisos = new HashSet<Permisos>();
             this.SolicitudesVacaciones = new HashSet<SolicitudesVacaciones>();
         }
     
-        public int id_usuario { get; set; }
-        public Nullable<int> id_empleado { get; set; }
-        public string usuario { get; set; }
-        public string contrasena { get; set; }
-        public int id_rol { get; set; }
-        public Nullable<bool> primer_ingreso { get; set; }
+        public int id_estado { get; set; }
+        public string nombre { get; set; }
+        public string modulo { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Bitacora> Bitacora { get; set; }
-        public virtual Empleados Empleados { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HorasExtras> HorasExtras { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Incapacidades> Incapacidades { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Permisos> Permisos { get; set; }
-        public virtual Roles Roles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SolicitudesVacaciones> SolicitudesVacaciones { get; set; }
     }

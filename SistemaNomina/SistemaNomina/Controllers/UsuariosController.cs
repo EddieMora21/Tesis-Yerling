@@ -356,7 +356,7 @@ namespace SistemaNomina.Controllers
             var currentUserId = (int?)Session["UserId"];
             var currentUsername = Session["Usuario"] as string;
 
-            if (currentUserId.HasValue && !string.IsNullOrEmpty(currentUsername))
+            if (currentUserId!= null && !string.IsNullOrEmpty(currentUsername))
             {
                 BitacoraHelper.RegistrarLogout(currentUserId.Value, currentUsername);
             }
@@ -370,10 +370,10 @@ namespace SistemaNomina.Controllers
         public ActionResult CambiarContrasena(int? id)
         {
             // Si no hay ID, obtenerlo de la sesión
-            if (!id.HasValue)
+            if (id == null)
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     id = currentUserId.Value;
                 }
@@ -410,7 +410,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 // Validar que el ID no sea null
-                if (!id.HasValue)
+                if (id == null)
                 {
                     ViewBag.Error = "Error: ID de usuario no válido.";
                     return View();

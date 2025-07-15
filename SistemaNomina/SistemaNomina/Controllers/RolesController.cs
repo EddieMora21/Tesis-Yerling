@@ -68,7 +68,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Rol creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_ROL",
                             $"Creado rol: {roles.nombre} - {roles.descripcion}",
@@ -133,7 +133,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Rol editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_ROL",
                             $"Editado rol: {roles.nombre} (ID: {roles.id_rol})",
@@ -190,7 +190,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO - Rol eliminado
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_ROL",
                         $"Eliminado rol: {roles.nombre} (ID: {roles.id_rol})",

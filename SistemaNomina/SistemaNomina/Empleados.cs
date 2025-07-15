@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
@@ -23,6 +23,8 @@ namespace SistemaNomina.Models
             this.Incapacidades = new HashSet<Incapacidades>();
             this.Liquidaciones = new HashSet<Liquidaciones>();
             this.Nomina = new HashSet<Nomina>();
+            this.Notificaciones = new HashSet<Notificaciones>();
+            this.Notificaciones1 = new HashSet<Notificaciones>();
             this.Permisos = new HashSet<Permisos>();
             this.Usuarios = new HashSet<Usuarios>();
             this.Vacaciones = new HashSet<Vacaciones>();
@@ -34,14 +36,14 @@ namespace SistemaNomina.Models
         public string nombre2 { get; set; }
         public string apellido1 { get; set; }
         public string apellido2 { get; set; }
-        public Nullable<System.DateTime> fecha_nacimiento { get; set; }
+        public System.DateTime fecha_nacimiento { get; set; }
         public string direccion { get; set; }
         public string correo { get; set; }
         public string telefono { get; set; }
-        public Nullable<int> id_estado_civil { get; set; }
-        public Nullable<int> cantidad_hijos { get; set; }
+        public int id_estado_civil { get; set; }
+        public int cantidad_hijos { get; set; }
         public int id_puesto { get; set; }
-        public Nullable<int> id_horario { get; set; }
+        public int id_horario { get; set; }
         public System.DateTime fecha_ingreso { get; set; }
         public string estado { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
@@ -62,6 +64,10 @@ namespace SistemaNomina.Models
         public virtual ICollection<Liquidaciones> Liquidaciones { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Nomina> Nomina { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Notificaciones> Notificaciones { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Notificaciones> Notificaciones1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Permisos> Permisos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

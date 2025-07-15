@@ -1,5 +1,5 @@
 ﻿@* Views/Notificaciones/Index.cshtml *@
-@model List<SistemaNomina.Models.Notificaciones>
+@model List<SistemaNomina.Notificaciones>
 
 @{
     ViewBag.Title = "Mis Notificaciones";
@@ -8,6 +8,13 @@
 
 @section Styles {
     <style>
+        :root {
+            --azul-oscuro: #221d42;
+            --celeste: #1788ca;
+            --amarillo: #fab61b;
+            --gris-claro: #e7e8eb;
+        }
+
         .notifications-header {
             background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
             color: white;
@@ -159,7 +166,7 @@
             opacity: 0.7;
         }
 
-        @keyframes pulse-urgent {
+        @@keyframes pulse-urgent {
             0%, 100% { border-left-color: #dc3545; }
             50% { border-left-color: #ff6b7a; }
         }
@@ -238,7 +245,7 @@
             gap: 0.25rem;
         }
 
-        @media (max-width: 768px) {
+        @@media (max-width: 768px) {
             .notification-card .d-flex {
                 flex-direction: column;
                 text-align: center;
@@ -279,11 +286,11 @@
             </div>
             <div class="d-flex gap-2 flex-wrap">
                 <a href="/Notificaciones/NoLeidas" class="btn btn-outline-light">
-                    <i class="fas fa-filter me-2"></i>Solo No Le�das
+                    <i class="fas fa-filter me-2"></i>Solo No Leídas
                 </a>
                 <button type="button" class="btn btn-outline-light" id="markAllRead">
                     <i class="fas fa-check-double me-2"></i>
-                    <span class="d-none d-sm-inline">Marcar todas como le�das</span>
+                    <span class="d-none d-sm-inline">Marcar todas como leídas</span>
                 </button>
                 <button type="button" class="btn btn-warning" id="refreshNotifications">
                     <i class="fas fa-sync me-2"></i>
@@ -295,7 +302,7 @@
 </div>
 
 <div class="container-fluid">
-    <!-- Estad�sticas -->
+    <!-- Estadísticas -->
     <div class="row stats-cards">
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
@@ -305,58 +312,20 @@
         </div>
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-number text-warning" id="unreadNotifications">@Model.Count(n => !n.leido)</div>
-                <div class="stat-label">No Le�das</div>
+                <div class="stat-number text-warning" id="unreadNotifications">@Model.Count(n => !(n.leido ?? false))</div>
+                <div class="stat-label">No Leídas</div>
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-number text-success" id="readNotifications">@Model.Count(n => n.leido)</div>
-                <div class="stat-label">Le�das</div>
+                <div class="stat-number text-success" id="readNotifications">@Model.Count(n => n.leido ?? false)</div>
+                <div class="stat-label">Leídas</div>
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-number text-info" id="todayNotifications">@Model.Count(n => n.fecha_creacion.Date == DateTime.Today)</div>
+                <div class="stat-number text-info" id="todayNotifications">@Model.Count(n => n.fecha_creacion != null && n.fecha_creacion.Value.Date == DateTime.Today)</div>
                 <div class="stat-label">Hoy</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filtros -->
-    <div class="filters-card">
-        <div class="row">
-            <div class="col-md-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-filter me-2"></i>Filtrar por tipo
-                </label>
-                <select class="form-select custom-select" id="filterType">
-                    <option value="">Todos los tipos</option>
-                    <option value="solicitud">Solicitudes</option>
-                    <option value="aprobacion">Aprobaciones</option>
-                    <option value="rechazo">Rechazos</option>
-                    <option value="sistema">Sistema</option>
-                    <option value="informativa">Informativas</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Filtrar por prioridad
-                </label>
-                <select class="form-select custom-select" id="filterPriority">
-                    <option value="">Todas las prioridades</option>
-                    <option value="urgente">Urgente</option>
-                    <option value="alta">Alta</option>
-                    <option value="normal">Normal</option>
-                    <option value="baja">Baja</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-search me-2"></i>Buscar
-                </label>
-                <input type="text" class="form-control custom-input" id="searchNotifications"
-                       placeholder="Buscar en t�tulo o mensaje...">
             </div>
         </div>
     </div>
@@ -365,23 +334,56 @@
     <div id="notificationsList">
         @if (Model.Any())
         {
-            @foreach (var notificacion in Model)
+            foreach (var notificacion in Model)
             {
-                <div class="notification-card @(notificacion.leido ? "read" : "unread") @notificacion.ClasePrioridad"
+                string prioridadClass = "";
+                if (notificacion.prioridad == "urgente") { prioridadClass = "priority-urgent"; }
+                else if (notificacion.prioridad == "alta") { prioridadClass = "priority-high"; }
+                else if (notificacion.prioridad == "baja") { prioridadClass = "priority-low"; }
+
+                string iconoColor = "primary";
+                string icono = "fas fa-bell";
+
+                // Determinar icono y color según el tipo
+                switch (notificacion.tipo?.ToLower())
+                {
+                    case "solicitud":
+                        icono = "fas fa-paper-plane";
+                        iconoColor = "info";
+                        break;
+                    case "aprobacion":
+                        icono = "fas fa-check-circle";
+                        iconoColor = "success";
+                        break;
+                    case "rechazo":
+                        icono = "fas fa-times-circle";
+                        iconoColor = "danger";
+                        break;
+                    case "sistema":
+                        icono = "fas fa-cog";
+                        iconoColor = "secondary";
+                        break;
+                    default:
+                        icono = "fas fa-info-circle";
+                        iconoColor = "primary";
+                        break;
+                }
+
+                <div class="notification-card @((notificacion.leido ?? false) ? "read" : "unread") @prioridadClass"
                      data-id="@notificacion.id_notificacion"
-                     data-type="@notificacion.tipo"
-                     data-priority="@notificacion.prioridad"
-                     data-leido="@notificacion.leido.ToString().ToLower()">
+                     data-type="@(notificacion.tipo ?? "")"
+                     data-priority="@(notificacion.prioridad ?? "")"
+                     data-leido="@((notificacion.leido ?? false).ToString().ToLower())">
                     <div class="p-3">
                         <div class="d-flex align-items-start">
-                            <div class="notification-icon bg-@notificacion.color">
-                                <i class="@notificacion.icono"></i>
+                            <div class="notification-icon bg-@iconoColor">
+                                <i class="@icono"></i>
                             </div>
 
                             <div class="notification-content">
                                 <div class="notification-title">
-                                    @notificacion.titulo
-                                    @if (!notificacion.leido)
+                                    @(notificacion.titulo ?? "Sin título")
+                                    @if (!(notificacion.leido ?? false))
                                     {
                                         <span class="notification-badge">Nueva</span>
                                     }
@@ -396,24 +398,46 @@
                                 </div>
 
                                 <div class="notification-message">
-                                    @(notificacion.mensaje.Length > 150 ? notificacion.mensaje.Substring(0, 150) + "..." : notificacion.mensaje)
+                                    @{
+                                        var mensaje = notificacion.mensaje ?? "Sin mensaje";
+                                        var mensajeCorto = mensaje.Length > 150 ? mensaje.Substring(0, 150) + "..." : mensaje;
+                                    }
+                                    @mensajeCorto
                                 </div>
-
-                                @if (notificacion.Remitente != null)
-                                {
-                                    <div class="remitente-info mb-2">
-                                        <i class="fas fa-user me-1"></i>
-                                        <span>Enviado por: @notificacion.Remitente.nombre1 @notificacion.Remitente.apellido1</span>
-                                    </div>
-                                }
 
                                 <div class="notification-meta">
                                     <div class="d-flex align-items-center gap-3 flex-wrap">
                                         <span>
                                             <i class="fas fa-clock me-1"></i>
-                                            @notificacion.TiempoTranscurrido
+                                            @{
+                                                var fechaCreacion = notificacion.fecha_creacion ?? DateTime.Now;
+                                                var tiempoTranscurrido = DateTime.Now - fechaCreacion;
+                                                string tiempoTexto;
+
+                                                if (tiempoTranscurrido.TotalMinutes < 1)
+                                                {
+                                                    tiempoTexto = "Hace un momento";
+                                                }
+                                                else if (tiempoTranscurrido.TotalHours < 1)
+                                                {
+                                                    tiempoTexto = $"Hace {(int)tiempoTranscurrido.TotalMinutes} minutos";
+                                                }
+                                                else if (tiempoTranscurrido.TotalDays < 1)
+                                                {
+                                                    tiempoTexto = $"Hace {(int)tiempoTranscurrido.TotalHours} horas";
+                                                }
+                                                else if (tiempoTranscurrido.TotalDays < 7)
+                                                {
+                                                    tiempoTexto = $"Hace {(int)tiempoTranscurrido.TotalDays} días";
+                                                }
+                                                else
+                                                {
+                                                    tiempoTexto = fechaCreacion.ToString("dd/MM/yyyy");
+                                                }
+                                            }
+                                            @tiempoTexto
                                         </span>
-                                        <span class="badge bg-secondary">@notificacion.tipo</span>
+                                        <span class="badge bg-secondary">@(notificacion.tipo ?? "general")</span>
                                         @if (!string.IsNullOrEmpty(notificacion.referencia_tipo))
                                         {
                                             <span class="badge bg-info">@notificacion.referencia_tipo</span>
@@ -421,16 +445,16 @@
                                     </div>
 
                                     <div class="notification-actions">
-                                        <a href="/Notificaciones/Detalles/@notificacion.id_notificacion"
+                                        <a href="/Notificaciones/Details/@notificacion.id_notificacion"
                                            class="btn-notification btn-details">
                                             <i class="fas fa-eye"></i>Ver
                                         </a>
 
-                                        @if (!notificacion.leido)
+                                        @if (!(notificacion.leido ?? false))
                                         {
                                             <button type="button" class="btn-notification btn-mark-read"
                                                     onclick="markAsRead(@notificacion.id_notificacion)">
-                                                <i class="fas fa-check"></i>Marcar le�da
+                                                <i class="fas fa-check"></i>Marcar leída
                                             </button>
                                         }
 
@@ -451,79 +475,20 @@
             <div class="empty-notifications">
                 <i class="fas fa-bell-slash"></i>
                 <h4>No tienes notificaciones</h4>
-                <p>Cuando recibas nuevas notificaciones aparecer�n aqu�.</p>
+                <p>Cuando recibas nuevas notificaciones aparecerán aquí.</p>
                 <a href="/Home/Index" class="btn btn-primary">
                     <i class="fas fa-home me-2"></i>Volver al inicio
                 </a>
             </div>
         }
     </div>
-
-    @if (Model.Count > 10)
-    {
-        <div class="mt-4 text-center">
-            <button type="button" class="btn btn-outline-primary" id="loadMoreBtn">
-                <i class="fas fa-chevron-down me-2"></i>Cargar m�s notificaciones
-            </button>
-        </div>
-    }
 </div>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            // Actualizar contador en el men�
-            updateNotificationBadge();
-
-            // Filtros y b�squeda
-            $('#filterType, #filterPriority, #searchNotifications').on('change keyup', function () {
-                filterNotifications();
-            });
-
-            // Marcar todas como le�das
-            $('#markAllRead').click(function () {
-                markAllAsRead();
-            });
-
-            // Actualizar notificaciones
-            $('#refreshNotifications').click(function () {
-                location.reload();
-            });
-
-            // Auto-actualizar cada 60 segundos
-            setInterval(function () {
-                updateNotificationBadge();
-            }, 60000);
-
-            // Cargar m�s notificaciones
-            $('#loadMoreBtn').click(function () {
-                // Implementar paginaci�n si es necesario
-                showToast('Funcionalidad en desarrollo', 'info');
-            });
-        });
-
-        function updateNotificationBadge() {
-            $.get('/Notificaciones/GetNotificacionesCount')
-                .done(function (response) {
-                    const badge = $('#notificationBadge');
-                    if (response.count > 0) {
-                        badge.text(response.count).show();
-                    } else {
-                        badge.hide();
-                    }
-                })
-                .fail(function () {
-                    console.error('Error al obtener el contador de notificaciones');
-                });
-        }
-
         function markAsRead(notificationId) {
-            const token = $('input[name="__RequestVerificationToken"]').val() ||
-                $('meta[name="csrf-token"]').attr('content');
-
             $.post('/Notificaciones/MarcarComoLeida', {
-                id: notificationId,
-                __RequestVerificationToken: token
+                id: notificationId
             })
                 .done(function (response) {
                     if (response.success) {
@@ -533,203 +498,36 @@
                         card.find('.btn-mark-read').remove();
                         card.attr('data-leido', 'true');
 
-                        // Actualizar estad�sticas
+                        // Actualizar contadores
                         updateStats();
-                        updateNotificationBadge();
-
-                        showToast('Notificaci�n marcada como le�da', 'success');
-                    } else {
-                        showToast('Error al marcar la notificaci�n', 'error');
                     }
-                })
-                .fail(function () {
-                    showToast('Error de conexi�n', 'error');
                 });
         }
 
-        function markAllAsRead() {
-            const unreadCount = $('.notification-card.unread').length;
-
-            if (unreadCount === 0) {
-                showToast('No hay notificaciones sin leer', 'info');
-                return;
-            }
-
-            SwalBS.fire({
-                title: '�Marcar todas como le�das?',
-                text: `Esta acci�n marcar� ${unreadCount} notificaciones como le�das`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'S�, marcar todas',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const token = $('input[name="__RequestVerificationToken"]').val() ||
-                        $('meta[name="csrf-token"]').attr('content');
-
-                    $.post('/Notificaciones/MarcarTodasComoLeidas', {
-                        __RequestVerificationToken: token
-                    })
-                        .done(function (response) {
-                            if (response.success) {
-                                $('.notification-card.unread').removeClass('unread').addClass('read');
-                                $('.notification-badge').remove();
-                                $('.btn-mark-read').remove();
-                                $('.notification-card').attr('data-leido', 'true');
-
-                                updateStats();
-                                updateNotificationBadge();
-
-                                showToast(response.message || 'Todas las notificaciones han sido marcadas como le�das', 'success');
-                            } else {
-                                showToast(response.message || 'Error al marcar las notificaciones', 'error');
-                            }
-                        })
-                        .fail(function () {
-                            showToast('Error de conexi�n', 'error');
-                        });
-                }
-            });
-        }
-
         function deleteNotification(notificationId) {
-            SwalBS.fire({
-                title: '�Eliminar notificaci�n?',
-                text: "Esta acci�n no se puede deshacer",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'S�, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const token = $('input[name="__RequestVerificationToken"]').val() ||
-                        $('meta[name="csrf-token"]').attr('content');
-
-                    $.post('/Notificaciones/Eliminar', {
-                        id: notificationId,
-                        __RequestVerificationToken: token
-                    })
-                        .done(function (response) {
-                            if (response.success) {
-                                $(`[data-id="${notificationId}"]`).fadeOut(300, function () {
-                                    $(this).remove();
-                                    updateStats();
-                                    updateNotificationBadge();
-
-                                    // Verificar si no quedan notificaciones
-                                    if ($('.notification-card').length === 0) {
-                                        $('#notificationsList').html(`
-                                                <div class="empty-notifications">
-                                                    <i class="fas fa-bell-slash"></i>
-                                                    <h4>No tienes notificaciones</h4>
-                                                    <p>Cuando recibas nuevas notificaciones aparecer�n aqu�.</p>
-                                                    <a href="/Home/Index" class="btn btn-primary">
-                                                        <i class="fas fa-home me-2"></i>Volver al inicio
-                                                    </a>
-                                                </div>
-                                            `);
-                                    }
-                                });
-
-                                showToast(response.message || 'Notificaci�n eliminada', 'success');
-                            } else {
-                                showToast(response.message || 'Error al eliminar la notificaci�n', 'error');
-                            }
-                        })
-                        .fail(function () {
-                            showToast('Error de conexi�n', 'error');
-                        });
-                }
-            });
-        }
-
-        function filterNotifications() {
-            const typeFilter = $('#filterType').val().toLowerCase();
-            const priorityFilter = $('#filterPriority').val().toLowerCase();
-            const searchText = $('#searchNotifications').val().toLowerCase();
-
-            let visibleCount = 0;
-
-            $('.notification-card').each(function () {
-                const card = $(this);
-                const type = card.data('type').toLowerCase();
-                const priority = card.data('priority').toLowerCase();
-                const title = card.find('.notification-title').text().toLowerCase();
-                const message = card.find('.notification-message').text().toLowerCase();
-
-                const matchesType = !typeFilter || type === typeFilter;
-                const matchesPriority = !priorityFilter || priority === priorityFilter;
-                const matchesSearch = !searchText ||
-                    title.includes(searchText) ||
-                    message.includes(searchText);
-
-                if (matchesType && matchesPriority && matchesSearch) {
-                    card.show();
-                    visibleCount++;
-                } else {
-                    card.hide();
-                }
-            });
-
-            // Mostrar mensaje si no hay resultados
-            if (visibleCount === 0) {
-                if ($('.no-results-message').length === 0) {
-                    $('#notificationsList').append(`
-                            <div class="no-results-message p-4 text-center">
-                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                <h5>No se encontraron notificaciones</h5>
-                                <p class="text-muted">Intenta ajustar los filtros de b�squeda</p>
-                                <button type="button" class="btn btn-outline-primary" onclick="clearFilters()">
-                                    <i class="fas fa-times me-2"></i>Limpiar filtros
-                                </button>
-                            </div>
-                        `);
-                }
-            } else {
-                $('.no-results-message').remove();
+            if (confirm('¿Eliminar esta notificación?')) {
+                $.post('/Notificaciones/Delete', {
+                    id: notificationId
+                })
+                    .done(function (response) {
+                        if (response.success) {
+                            $(`[data-id="${notificationId}"]`).fadeOut(300, function () {
+                                $(this).remove();
+                                updateStats();
+                            });
+                        }
+                    });
             }
-        }
-
-        function clearFilters() {
-            $('#filterType').val('');
-            $('#filterPriority').val('');
-            $('#searchNotifications').val('');
-            $('.notification-card').show();
-            $('.no-results-message').remove();
         }
 
         function updateStats() {
             const total = $('.notification-card').length;
-            const unread = $('.notification-card.unread:visible').length;
-            const read = $('.notification-card.read:visible').length;
-
-            // Contar las de hoy (esto es aproximado, basado en el texto mostrado)
-            const today = $('.notification-card').filter(function () {
-                const timeText = $(this).find('.notification-meta .fas.fa-clock').parent().text();
-                return timeText.includes('Hace') && (timeText.includes('minutos') || timeText.includes('horas'));
-            }).length;
+            const unread = $('.notification-card.unread').length;
+            const read = $('.notification-card.read').length;
 
             $('#totalNotifications').text(total);
             $('#unreadNotifications').text(unread);
             $('#readNotifications').text(read);
-            $('#todayNotifications').text(today);
         }
-
-        // Funci�n para marcar como le�da al hacer hover (opcional)
-        $('.notification-card.unread').hover(function () {
-            const card = $(this);
-            if (!card.hasClass('hover-preview')) {
-                card.addClass('hover-preview');
-                setTimeout(() => {
-                    if (card.hasClass('hover-preview') && card.hasClass('unread')) {
-                        // Marcar como le�da despu�s de 3 segundos de hover
-                        const notifId = card.data('id');
-                        markAsRead(notifId);
-                    }
-                }, 3000);
-            }
-        }, function () {
-            $(this).removeClass('hover-preview');
-        });
     </script>
 }

@@ -244,7 +244,7 @@ public void BeginNamespace(CodeGenerationTools code)
     if (!String.IsNullOrEmpty(codeNamespace))
     {
 #>
-namespace <#=code.EscapeNamespace(codeNamespace)#>.Models
+namespace <#=code.EscapeNamespace(codeNamespace)#>
 {
 <#+
         PushIndent("    ");
@@ -337,7 +337,7 @@ public class CodeStringGenerator
         var parameters = FunctionImportParameter.Create(edmFunction.Parameters, _code, _ef);
         foreach (var parameter in parameters.Where(p => p.NeedsLocalVariable))
         {
-            var isNotNull = parameter.IsNullableOfT ? parameter.FunctionParameterName + ".HasValue" : parameter.FunctionParameterName + " != null";
+            var isNotNull = parameter.IsNullableOfT ? parameter.FunctionParameterName + "!= null" : parameter.FunctionParameterName + " != null";
             var notNullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", " + parameter.FunctionParameterName + ")";
             var nullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", typeof(" + TypeMapper.FixNamespaces(parameter.RawClrTypeName) + "))";
             writeParameter(parameter.LocalVariableName, isNotNull, notNullInit, nullInit);

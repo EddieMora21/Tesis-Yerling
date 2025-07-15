@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Asistencia>
+﻿@model IEnumerable<SistemaNomina.Asistencia>
 
 <style>
     .report-card {
@@ -204,14 +204,14 @@
                 </div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">@Model.Count(x => x.hora_entrada.HasValue && x.hora_salida.HasValue)</div>
+                <div class="stat-number">@Model.Count(x => x.hora_entrada!= null && x.hora_salida!= null)</div>
                 <div class="stat-label">
                     <i class="fa fa-check-circle" style="margin-right: 3px;"></i>
                     Completos
                 </div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">@Model.Count(x => x.hora_entrada.HasValue && x.hora_entrada.Value > new TimeSpan(8, 15, 0))</div>
+                <div class="stat-number">@Model.Count(x => x.hora_entrada!= null && x.hora_entrada.Value > new TimeSpan(8, 15, 0))</div>
                 <div class="stat-label">
                     <i class="fa fa-clock" style="margin-right: 3px;"></i>
                     Tardanzas
@@ -250,7 +250,7 @@
                             </td>
                             <td style="font-family: monospace; font-size: 13px;">@item.Empleados.cedula</td>
                             <td>
-                                @if (item.hora_entrada.HasValue)
+                                @if (item.hora_entrada!= null)
                                 {
                                     <span class="time-display">@item.hora_entrada.Value.ToString(@"hh\:mm")</span>
                                     if (item.hora_entrada.Value > new TimeSpan(8, 15, 0))
@@ -264,7 +264,7 @@
                                 }
                             </td>
                             <td>
-                                @if (item.hora_salida.HasValue)
+                                @if (item.hora_salida!= null)
                                 {
                                     <span class="time-display">@item.hora_salida.Value.ToString(@"hh\:mm")</span>
                                 }
@@ -274,7 +274,7 @@
                                 }
                             </td>
                             <td>
-                                @if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                                @if (item.hora_entrada!= null && item.hora_salida!= null)
                                 {
                                     var horas = (item.hora_salida.Value - item.hora_entrada.Value).TotalHours;
                                     <span class="time-display">@Math.Round(horas, 2) hrs</span>
@@ -285,11 +285,11 @@
                                 }
                             </td>
                             <td>
-                                @if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                                @if (item.hora_entrada!= null && item.hora_salida!= null)
                                 {
                                     <span class="status-badge status-completo">Completo</span>
                                 }
-                                else if (item.hora_entrada.HasValue)
+                                else if (item.hora_entrada!= null)
                                 {
                                     <span class="status-badge status-sin-salida">Sin Salida</span>
                                 }

@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.Asistencia
+﻿@model SistemaNomina.Asistencia
 
 @{
     ViewBag.Title = "Eliminar Asistencia";
@@ -198,7 +198,7 @@
                     Hora de Entrada:
                 </div>
                 <div class="detail-value">
-                    @if (Model.hora_entrada.HasValue)
+                    @if (Model.hora_entrada!= null)
                     {
                         <span class="time-display">@Model.hora_entrada.Value.ToString(@"hh\:mm")</span>
                     }
@@ -215,7 +215,7 @@
                     Hora de Salida:
                 </div>
                 <div class="detail-value">
-                    @if (Model.hora_salida.HasValue)
+                    @if (Model.hora_salida!= null)
                     {
                         <span class="time-display">@Model.hora_salida.Value.ToString(@"hh\:mm")</span>
                     }

@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.SolicitudesVacaciones
+﻿@model SistemaNomina.SolicitudesVacaciones
 
 @{
     ViewBag.Title = "Detalle de Solicitud";
@@ -163,7 +163,7 @@
                     <span class="info-value">@Model.fecha_solicitud?.ToString("dd/MM/yyyy HH:mm")</span>
                 </div>
 
-                @if (Model.fecha_aprobacion.HasValue)
+                @if (Model.fecha_aprobacion!= null)
                 {
                     <div class="info-row">
                         <span class="info-label">Fecha de Respuesta:</span>
@@ -171,7 +171,7 @@
                     </div>
                 }
 
-                @if (Model.aprobado_por.HasValue)
+                @if (Model.aprobado_por!= null)
                 {
                     <div class="info-row">
                         <span class="info-label">Aprobado/Rechazado por:</span>
@@ -186,7 +186,7 @@
             <div class="cadena-aprobacion">
                 <h5><i class="fas fa-route"></i> Cadena de Aprobación</h5>
                 <div class="row">
-                    @foreach (var aprobador in (List<SistemaNomina.Models.Empleados>)ViewBag.CadenaAprobacion)
+                    @foreach (var aprobador in (List<SistemaNomina.Empleados>)ViewBag.CadenaAprobacion)
                     {
                         <div class="col-md-4">
                             <div class="aprobador-card">

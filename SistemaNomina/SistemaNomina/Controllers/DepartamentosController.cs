@@ -106,7 +106,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Departamento creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_DEPARTAMENTO",
                             $"Creado departamento: {departamento.nombre}",
@@ -200,7 +200,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Departamento editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_DEPARTAMENTO",
                             $"Editado departamento: {departamento.nombre} (ID: {departamento.id_departamento})",
@@ -287,7 +287,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO - Departamento eliminado
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_DEPARTAMENTO",
                         $"Eliminado departamento: {departamento.nombre} (ID: {departamento.id_departamento})",

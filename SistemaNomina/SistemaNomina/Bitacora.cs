@@ -7,21 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Aguinaldo
+    public partial class Bitacora
     {
-        public int id_aguinaldo { get; set; }
-        public int id_empleado { get; set; }
-        public decimal monto_total { get; set; }
-        public int meses_laborados { get; set; }
-        public int anio { get; set; }
-        public Nullable<System.DateTime> fecha_creacion { get; set; }
-        public Nullable<System.DateTime> fecha_actualizacion { get; set; }
+        public int id_log { get; set; }
+        public Nullable<int> id_usuario { get; set; }
+        public string accion { get; set; }
+        public string detalle { get; set; }
+        public Nullable<System.DateTime> fecha_hora { get; set; }
     
-        public virtual Empleados Empleados { get; set; }
+        public virtual Usuarios Usuarios { get; set; }
     }
 }

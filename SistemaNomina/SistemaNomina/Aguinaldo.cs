@@ -7,26 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Roles
+    public partial class Aguinaldo
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Roles()
-        {
-            this.Usuarios = new HashSet<Usuarios>();
-        }
-    
-        public int id_rol { get; set; }
-        public string nombre { get; set; }
-        public string descripcion { get; set; }
+        public int id_aguinaldo { get; set; }
+        public int id_empleado { get; set; }
+        public decimal monto_total { get; set; }
+        public int meses_laborados { get; set; }
+        public int anio { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Usuarios> Usuarios { get; set; }
+        public virtual Empleados Empleados { get; set; }
     }
 }

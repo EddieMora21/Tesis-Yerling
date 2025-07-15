@@ -76,10 +76,10 @@ namespace SistemaNomina.Controllers
             try
             {
                 // ✅ VALIDACIÓN DE EDAD - Debe ser mayor de 18 años
-                if (empleado.fecha_nacimiento.HasValue)
+                if (empleado.fecha_nacimiento != null)
                 {
-                    var edad = DateTime.Today.Year - empleado.fecha_nacimiento.Value.Year;
-                    if (empleado.fecha_nacimiento.Value.Date > DateTime.Today.AddYears(-edad)) edad--;
+                    var edad = DateTime.Today.Year - empleado.fecha_nacimiento.Year;
+                    if (empleado.fecha_nacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
 
                     if (edad < 18)
                     {
@@ -205,7 +205,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Empleado creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId != null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_EMPLEADO",
                             $"Creado empleado: {empleado.nombre1} {empleado.apellido1} (Cédula: {empleado.cedula})",
@@ -292,10 +292,10 @@ namespace SistemaNomina.Controllers
             try
             {
                 // ✅ VALIDACIÓN DE EDAD - Debe ser mayor de 18 años
-                if (empleado.fecha_nacimiento.HasValue)
+                if (empleado.fecha_nacimiento != null)
                 {
-                    var edad = DateTime.Today.Year - empleado.fecha_nacimiento.Value.Year;
-                    if (empleado.fecha_nacimiento.Value.Date > DateTime.Today.AddYears(-edad)) edad--;
+                    var edad = DateTime.Today.Year - empleado.fecha_nacimiento.Year;
+                    if (empleado.fecha_nacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
 
                     if (edad < 18)
                     {
@@ -414,7 +414,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Empleado editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId != null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_EMPLEADO",
                             $"Editado empleado: {empleado.nombre1} {empleado.apellido1} (ID: {empleado.id_empleado})",
@@ -503,7 +503,7 @@ namespace SistemaNomina.Controllers
 
             // 📋 LOG AUTOMÁTICO - Empleado inactivado
             var currentUserId = (int?)Session["UserId"];
-            if (currentUserId.HasValue)
+            if (currentUserId != null)
             {
                 BitacoraHelper.RegistrarAccion("INACTIVAR_EMPLEADO",
                     $"Empleado inactivado: {empleado.nombre1} {empleado.apellido1} (ID: {empleado.id_empleado})",
@@ -592,7 +592,7 @@ namespace SistemaNomina.Controllers
                     var diasAcumuladosPorLeyEmpleado = (int)(semanasTrabajadasEmpleado / 50 * 12); // cada 50 semanas = 12 días
 
                     // Días restantes según registro
-                    var diasDisfrutados = vacaciones.dias_disfrutados ?? 0;
+                    var diasDisfrutados = vacaciones.dias_disfrutados;
                     var saldoDisponible = vacaciones.dias_disponibles - diasDisfrutados;
 
                     ViewBag.NombreEmpleado = $"{empleado.nombre1} {empleado.apellido1}";

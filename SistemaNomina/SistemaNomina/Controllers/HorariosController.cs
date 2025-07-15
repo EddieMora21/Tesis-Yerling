@@ -76,7 +76,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Horario creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_HORARIO",
                             $"Creado horario: {horario.nombre} ({horario.hora_entrada:HH\\:mm} - {horario.hora_salida:HH\\:mm})",
@@ -146,7 +146,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Horario editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_HORARIO",
                             $"Editado horario: {horario.nombre} ({horario.hora_entrada:HH\\:mm} - {horario.hora_salida:HH\\:mm}) (ID: {horario.id_horario})",
@@ -224,7 +224,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO - Horario eliminado
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_HORARIO",
                         $"Eliminado horario: {horario.nombre} ({horario.hora_entrada:HH\\:mm} - {horario.hora_salida:HH\\:mm}) (ID: {horario.id_horario})",

@@ -65,12 +65,12 @@ namespace SistemaNomina.Controllers
                                      .Include(n => n.Empleados.Puestos.Departamentos)
                                      .Where(n => n.mes == mes && n.anio == anio);
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     query = query.Where(n => n.id_empleado == empleadoId.Value);
                 }
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                 {
                     query = query.Where(n => n.Empleados.Puestos.id_departamento == departamentoId.Value);
                 }
@@ -81,7 +81,7 @@ namespace SistemaNomina.Controllers
                 ViewBag.Anio = anio;
                 ViewBag.NombreMes = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mes);
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     var empleado = db.Empleados.Find(empleadoId.Value);
                     ViewBag.EmpleadoSeleccionado = empleado != null ? empleado.nombre1 + " " + empleado.apellido1 : "No encontrado";
@@ -91,7 +91,7 @@ namespace SistemaNomina.Controllers
                     ViewBag.EmpleadoSeleccionado = "Todos";
                 }
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                 {
                     var departamento = db.Departamentos.Find(departamentoId.Value);
                     ViewBag.DepartamentoSeleccionado = departamento != null ? departamento.nombre : "No encontrado";
@@ -121,7 +121,7 @@ namespace SistemaNomina.Controllers
                                         .Include(a => a.Empleados.Puestos.Departamentos)
                                         .Where(a => a.fecha >= fechaInicio && a.fecha <= fechaFin);
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     query = query.Where(a => a.id_empleado == empleadoId.Value);
                 }
@@ -131,7 +131,7 @@ namespace SistemaNomina.Controllers
                 ViewBag.FechaInicio = fechaInicio.ToString("dd/MM/yyyy");
                 ViewBag.FechaFin = fechaFin.ToString("dd/MM/yyyy");
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     var empleado = db.Empleados.Find(empleadoId.Value);
                     ViewBag.EmpleadoSeleccionado = empleado != null ? empleado.nombre1 + " " + empleado.apellido1 : "No encontrado";
@@ -167,12 +167,12 @@ namespace SistemaNomina.Controllers
                     query = query.Where(v => v.periodo == periodo);
                 }
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     query = query.Where(v => v.id_empleado == empleadoId.Value);
                 }
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                 {
                     query = query.Where(v => v.Empleados.Puestos.id_departamento == departamentoId.Value);
                 }
@@ -181,7 +181,7 @@ namespace SistemaNomina.Controllers
 
                 ViewBag.Periodo = periodo ?? "Todos";
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     var empleado = db.Empleados.Find(empleadoId.Value);
                     ViewBag.EmpleadoSeleccionado = empleado != null ? empleado.nombre1 + " " + empleado.apellido1 : "No encontrado";
@@ -191,7 +191,7 @@ namespace SistemaNomina.Controllers
                     ViewBag.EmpleadoSeleccionado = "Todos";
                 }
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                 {
                     var departamento = db.Departamentos.Find(departamentoId.Value);
                     ViewBag.DepartamentoSeleccionado = departamento != null ? departamento.nombre : "No encontrado";
@@ -223,12 +223,12 @@ namespace SistemaNomina.Controllers
                                          .Include(h => h.Estados)
                                          .Where(h => h.fecha >= fechaInicio && h.fecha <= fechaFin);
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     query = query.Where(h => h.id_empleado == empleadoId.Value);
                 }
 
-                if (tipoHoraExtra.HasValue)
+                if (tipoHoraExtra!= null)
                 {
                     query = query.Where(h => h.id_tipo == tipoHoraExtra.Value);
                 }
@@ -238,7 +238,7 @@ namespace SistemaNomina.Controllers
                 ViewBag.FechaInicio = fechaInicio.ToString("dd/MM/yyyy");
                 ViewBag.FechaFin = fechaFin.ToString("dd/MM/yyyy");
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     var empleado = db.Empleados.Find(empleadoId.Value);
                     ViewBag.EmpleadoSeleccionado = empleado != null ? empleado.nombre1 + " " + empleado.apellido1 : "No encontrado";
@@ -248,7 +248,7 @@ namespace SistemaNomina.Controllers
                     ViewBag.EmpleadoSeleccionado = "Todos";
                 }
 
-                if (tipoHoraExtra.HasValue)
+                if (tipoHoraExtra!= null)
                 {
                     var tipo = db.TiposHoraExtra.Find(tipoHoraExtra.Value);
                     ViewBag.TipoSeleccionado = tipo != null ? tipo.nombre : "No encontrado";
@@ -280,12 +280,12 @@ namespace SistemaNomina.Controllers
                                            .Include(i => i.Estados)
                                            .Where(i => i.fecha_inicio >= fechaInicio && i.fecha_fin <= fechaFin);
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     query = query.Where(i => i.id_empleado == empleadoId.Value);
                 }
 
-                if (tipoIncapacidad.HasValue)
+                if (tipoIncapacidad!= null)
                 {
                     query = query.Where(i => i.id_tipo_incapacidad == tipoIncapacidad.Value);
                 }
@@ -295,7 +295,7 @@ namespace SistemaNomina.Controllers
                 ViewBag.FechaInicio = fechaInicio.ToString("dd/MM/yyyy");
                 ViewBag.FechaFin = fechaFin.ToString("dd/MM/yyyy");
 
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     var empleado = db.Empleados.Find(empleadoId.Value);
                     ViewBag.EmpleadoSeleccionado = empleado != null ? empleado.nombre1 + " " + empleado.apellido1 : "No encontrado";
@@ -305,7 +305,7 @@ namespace SistemaNomina.Controllers
                     ViewBag.EmpleadoSeleccionado = "Todos";
                 }
 
-                if (tipoIncapacidad.HasValue)
+                if (tipoIncapacidad!= null)
                 {
                     var tipo = db.TipoIncapacidades.Find(tipoIncapacidad.Value);
                     ViewBag.TipoSeleccionado = tipo != null ? tipo.nombre : "No encontrado";

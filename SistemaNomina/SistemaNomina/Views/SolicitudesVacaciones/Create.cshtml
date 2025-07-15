@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.SolicitudesVacaciones
+﻿@model SistemaNomina.SolicitudesVacaciones
 
 @{
     ViewBag.Title = "Solicitar Vacaciones";
@@ -120,7 +120,7 @@
             <h5><i class="fas fa-route"></i> Flujo de Aprobación</h5>
             <p>Su solicitud seguirá esta ruta de aprobación:</p>
             <ol>
-                @foreach (var aprobador in (List<SistemaNomina.Models.Empleados>)ViewBag.CadenaAprobacion)
+                @foreach (var aprobador in (List<SistemaNomina.Empleados>)ViewBag.CadenaAprobacion)
                 {
                     <li class="aprobador-item">
                         <div class="aprobador-icon">

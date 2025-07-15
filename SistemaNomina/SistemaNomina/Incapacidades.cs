@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
@@ -19,11 +19,13 @@ namespace SistemaNomina.Models
         public System.DateTime fecha_inicio { get; set; }
         public System.DateTime fecha_fin { get; set; }
         public string numero_boleta { get; set; }
-        public Nullable<int> id_tipo_incapacidad { get; set; }
+        public int id_tipo_incapacidad { get; set; }
         public string descripcion { get; set; }
         public int id_estado { get; set; }
-        public Nullable<int> dias_incapacidad { get; set; }
+        public Nullable<System.DateTime> fecha_creacion { get; set; }
+        public Nullable<System.DateTime> fecha_actualizacion { get; set; }
         public Nullable<System.DateTime> fecha_registro { get; set; }
+        public Nullable<int> dias_incapacidad { get; set; }
     
         public virtual Empleados Empleados { get; set; }
         public virtual Estados Estados { get; set; }

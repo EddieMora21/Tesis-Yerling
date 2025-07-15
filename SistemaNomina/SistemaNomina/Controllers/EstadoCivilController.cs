@@ -69,7 +69,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Estado civil creado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("CREAR_ESTADO_CIVIL",
                             $"Creado estado civil: {estadoCivil.nombre}",
@@ -132,7 +132,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO - Estado civil editado
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_ESTADO_CIVIL",
                             $"Editado estado civil: {estadoCivil.nombre} (ID: {estadoCivil.id_estado_civil})",
@@ -198,7 +198,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO - Estado civil eliminado
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_ESTADO_CIVIL",
                         $"Eliminado estado civil: {estadoCivil.nombre} (ID: {estadoCivil.id_estado_civil})",

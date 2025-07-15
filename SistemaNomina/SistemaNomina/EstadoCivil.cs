@@ -7,28 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class TipoIncapacidades
+    public partial class EstadoCivil
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TipoIncapacidades()
+        public EstadoCivil()
         {
-            this.Incapacidades = new HashSet<Incapacidades>();
+            this.Empleados = new HashSet<Empleados>();
         }
     
-        public int id_tipo { get; set; }
+        public int id_estado_civil { get; set; }
         public string nombre { get; set; }
-        public int dias_maximos { get; set; }
-        public bool pago_planilla { get; set; }
-        public string descripcion { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Incapacidades> Incapacidades { get; set; }
+        public virtual ICollection<Empleados> Empleados { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿@{
     ViewBag.Title = "Inicio";
-    var empleado = ViewBag.Empleado as SistemaNomina.Models.Empleados;
-    var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Models.Asistencia;
+    var empleado = ViewBag.Empleado as SistemaNomina.Empleados;
+    var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Asistencia;
     var esFeriado = (bool)(ViewBag.EsFeriado ?? false);
-    var feriado = ViewBag.Feriado as SistemaNomina.Models.Feriados;
+    var feriado = ViewBag.Feriado as SistemaNomina.Feriados;
 }
 
 <style>
@@ -568,13 +568,13 @@
                                     <i class="fa fa-info-circle" style="margin-right: 8px;"></i>
                                     Estado de Hoy
                                 </h5>
-                                @if (asistenciaHoy.hora_entrada.HasValue)
+                                @if (asistenciaHoy.hora_entrada!= null)
                                 {
                                     <p style="margin-bottom: 5px;">
                                         <strong>Entrada:</strong> @asistenciaHoy.hora_entrada.Value.ToString(@"hh\:mm")
                                     </p>
                                 }
-                                @if (asistenciaHoy.hora_salida.HasValue)
+                                @if (asistenciaHoy.hora_salida!= null)
                                 {
                                     <p style="margin: 0;">
                                         <strong>Salida:</strong> @asistenciaHoy.hora_salida.Value.ToString(@"hh\:mm")
@@ -591,7 +591,7 @@
                                 Marcar Entrada
                             </button>
                         }
-                        else if (!asistenciaHoy.hora_salida.HasValue)
+                        else if (asistenciaHoy.hora_salida!= null)
                         {
                             <button class="btn-marcar btn-salida" id="btnSalida">
                                 <i class="fa fa-sign-out" style="margin-right: 10px; font-size: 20px;"></i>

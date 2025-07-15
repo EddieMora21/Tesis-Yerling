@@ -24,7 +24,7 @@ namespace SistemaNomina.Controllers
 
                 // Solo si hay sesión válida, buscar datos
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     var empleado = db.Empleados
                         .Include(e => e.Puestos)
@@ -75,7 +75,7 @@ namespace SistemaNomina.Controllers
                 {
                     // Obtener el ID del usuario logueado desde la sesión
                     var currentUserId = (int?)Session["UserId"];
-                    if (!currentUserId.HasValue)
+                    if (currentUserId == null)
                     {
                         return RedirectToAction("Login", "Usuarios");
                     }
@@ -127,7 +127,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return Json(new { success = false, message = "No hay sesión activa" });
                 }
@@ -182,7 +182,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return Json(new { success = false, message = "No hay sesión activa" });
                 }
@@ -205,7 +205,7 @@ namespace SistemaNomina.Controllers
                     return Json(new { success = false, message = "Debe marcar entrada primero" });
                 }
 
-                if (asistencia.hora_salida.HasValue)
+                if (asistencia.hora_salida!= null)
                 {
                     return Json(new { success = false, message = "Ya marcó salida hoy" });
                 }

@@ -7,32 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class ISR
+    public partial class TiposHoraExtra
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ISR()
+        public TiposHoraExtra()
         {
-            this.Nomina = new HashSet<Nomina>();
+            this.HorasExtras = new HashSet<HorasExtras>();
         }
     
-        public int id_isr { get; set; }
-        public int anio { get; set; }
-        public decimal limite_inferior { get; set; }
-        public decimal limite_superior { get; set; }
-        public decimal porcentaje { get; set; }
-        public decimal exceso { get; set; }
-        public Nullable<decimal> credito_hijo { get; set; }
-        public Nullable<decimal> credito_conyuge { get; set; }
+        public int id_tipo { get; set; }
+        public string nombre { get; set; }
+        public decimal recargo { get; set; }
         public string descripcion { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Nomina> Nomina { get; set; }
+        public virtual ICollection<HorasExtras> HorasExtras { get; set; }
     }
 }

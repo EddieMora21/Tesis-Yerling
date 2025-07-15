@@ -7,19 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Bitacora
+    public partial class sysdiagrams
     {
-        public int id_log { get; set; }
-        public Nullable<int> id_usuario { get; set; }
-        public string accion { get; set; }
-        public string detalle { get; set; }
-        public Nullable<System.DateTime> fecha_hora { get; set; }
-    
-        public virtual Usuarios Usuarios { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

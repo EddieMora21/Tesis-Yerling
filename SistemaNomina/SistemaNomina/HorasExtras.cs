@@ -7,27 +7,33 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Permisos
+    public partial class HorasExtras
     {
-        public int id_permiso { get; set; }
+        public int id_hora_extra { get; set; }
         public int id_empleado { get; set; }
+        public int id_tipo { get; set; }
         public System.DateTime fecha { get; set; }
-        public Nullable<decimal> horas { get; set; }
-        public int id_tipo_permiso { get; set; }
+        public System.TimeSpan hora_inicio { get; set; }
+        public System.TimeSpan hora_fin { get; set; }
+        public decimal horas { get; set; }
+        public decimal valor_hora { get; set; }
+        public decimal recargo { get; set; }
+        public Nullable<decimal> total { get; set; }
         public string motivo { get; set; }
         public int id_estado { get; set; }
         public Nullable<int> aprobado_por { get; set; }
+        public Nullable<System.DateTime> fecha_aprobacion { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
         public virtual Empleados Empleados { get; set; }
         public virtual Estados Estados { get; set; }
+        public virtual TiposHoraExtra TiposHoraExtra { get; set; }
         public virtual Usuarios Usuarios { get; set; }
-        public virtual TiposPermiso TiposPermiso { get; set; }
     }
 }

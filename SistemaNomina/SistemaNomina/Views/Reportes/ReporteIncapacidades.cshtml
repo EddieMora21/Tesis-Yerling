@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Incapacidades>
+﻿@model IEnumerable<SistemaNomina.Incapacidades>
 
 @{
     ViewBag.Title = "Reporte de Incapacidades";
@@ -161,7 +161,7 @@
                                                 }
                                             </td>
                                             <td class="text-center">
-                                                @if (incapacidad.fecha_registro.HasValue)
+                                                @if (incapacidad.fecha_registro!= null)
                                                 {
                                                     <small>@incapacidad.fecha_registro.Value.ToString("dd/MM/yyyy")</small>
                                                 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Nomina>
+﻿@model IEnumerable<SistemaNomina.Nomina>
 
 @{
     ViewBag.Title = "Mi Historial de Planillas";
@@ -140,7 +140,7 @@
             @if (Model.Any())
             {
                 <div class="table-responsive">
-                    <table class="table table-hover" id="tablaPlanillas">
+                    <table class="table-hover table" id="tablaPlanillas">
                         <thead class="table-dark">
                             <tr>
                                 <th>📅 Período</th>
@@ -228,7 +228,7 @@
             }
             else
             {
-                <div class="text-center py-5">
+                <div class="py-5 text-center">
                     <i class="bi bi-inbox display-1 text-muted"></i>
                     <h4 class="text-muted mt-3">No tienes planillas registradas</h4>
                     <p class="text-muted">Las planillas aparecerán aquí cuando sean procesadas por el departamento de RRHH</p>

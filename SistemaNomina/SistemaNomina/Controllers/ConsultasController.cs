@@ -48,7 +48,7 @@ namespace SistemaNomina.Controllers
                     .Include(e => e.Horarios);
 
                 // 🔍 Filtros de búsqueda
-                if (idEmpleado.HasValue && idEmpleado.Value > 0)
+                if (idEmpleado!= null && idEmpleado.Value > 0)
                 {
                     query = query.Where(e => e.id_empleado == idEmpleado.Value);
                 }
@@ -72,7 +72,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("CONSULTA_EMPLEADOS",
                         $"Consultó empleados - Filtros: ID:{idEmpleado}, Cédula:{cedula}, Nombre:{nombre}",
@@ -163,7 +163,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("VER_DETALLE_COLABORADOR",
                         $"Consultó detalle completo de {empleado.nombre1} {empleado.apellido1} (ID: {empleado.id_empleado})",
@@ -209,22 +209,22 @@ namespace SistemaNomina.Controllers
                     .Include(n => n.ISR1);
 
                 // 🔍 Aplicar filtros
-                if (mes.HasValue && mes.Value > 0)
+                if (mes!= null && mes.Value > 0)
                 {
                     query = query.Where(n => n.mes == mes.Value);
                 }
 
-                if (anio.HasValue && anio.Value > 0)
+                if (anio!= null && anio.Value > 0)
                 {
                     query = query.Where(n => n.anio == anio.Value);
                 }
 
-                if (idEmpleado.HasValue && idEmpleado.Value > 0)
+                if (idEmpleado!= null && idEmpleado.Value > 0)
                 {
                     query = query.Where(n => n.id_empleado == idEmpleado.Value);
                 }
 
-                if (idDepartamento.HasValue && idDepartamento.Value > 0)
+                if (idDepartamento!= null && idDepartamento.Value > 0)
                 {
                     query = query.Where(n => n.Empleados.Puestos.id_departamento == idDepartamento.Value);
                 }
@@ -257,7 +257,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("CONSULTA_HISTORICO_PLANILLAS",
                         $"Consultó histórico - Mes:{mes}, Año:{anio}, Empleado:{idEmpleado}, Depto:{idDepartamento} - {planillas.Count} resultados",

@@ -94,7 +94,7 @@ namespace SistemaNomina.Controllers
 
                     // 📋 LOG AUTOMÁTICO
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         var empleado = db.Empleados.Find(horasExtras.id_empleado);
                         BitacoraHelper.RegistrarAccion("CREAR_HORAS_EXTRAS",
@@ -308,7 +308,7 @@ namespace SistemaNomina.Controllers
                 {
                     // 📋 LOG AUTOMÁTICO
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_HORAS_EXTRAS",
                             $"Editadas horas extras para {empleado?.nombre1} {empleado?.apellido1} (ID: {id})",
@@ -387,7 +387,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     var empleado = db.Empleados.Find(horasExtras.id_empleado);
                     BitacoraHelper.RegistrarAccion("ELIMINAR_HORAS_EXTRAS",
@@ -434,7 +434,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     var empleado = db.Empleados.Find(horasExtras.id_empleado);
                     BitacoraHelper.RegistrarAccion("APROBAR_HORAS_EXTRAS",
@@ -471,7 +471,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     var empleado = db.Empleados.Find(horasExtras.id_empleado);
                     BitacoraHelper.RegistrarAccion("RECHAZAR_HORAS_EXTRAS",

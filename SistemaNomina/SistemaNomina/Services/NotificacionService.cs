@@ -59,7 +59,7 @@ namespace SistemaNomina.Services
 
             if (soloNoLeidas)
             {
-                query = query.Where(n => !n.leido);
+                query = query.Where(n => n.leido.HasValue && !n.leido.Value);
             }
 
             return await query
@@ -71,7 +71,7 @@ namespace SistemaNomina.Services
         public async Task<int> ContarNotificacionesNoLeidas(int empleadoId)
         {
             return await _context.Set<Notificaciones>()
-                .CountAsync(n => n.id_destinatario == empleadoId && !n.leido);
+                .CountAsync(n => n.id_destinatario == empleadoId && (n.leido.HasValue && !n.leido.Value));
         }
 
         public async Task<bool> MarcarComoLeida(int notificacionId, int usuarioId)
@@ -81,7 +81,7 @@ namespace SistemaNomina.Services
                 var notificacion = await _context.Set<Notificaciones>()
                     .FirstOrDefaultAsync(n => n.id_notificacion == notificacionId && n.id_destinatario == usuarioId);
 
-                if (notificacion != null && !notificacion.leido)
+                if (notificacion != null && notificacion.leido.HasValue && !notificacion.leido.Value)
                 {
                     notificacion.leido = true;
                     notificacion.fecha_leido = DateTime.Now;
@@ -101,8 +101,8 @@ namespace SistemaNomina.Services
             try
             {
                 var notificaciones = await _context.Set<Notificaciones>()
-                    .Where(n => n.id_destinatario == empleadoId && !n.leido)
-                    .ToListAsync();
+     .Where(n => n.id_destinatario == empleadoId && n.leido.HasValue && !n.leido.Value)
+     .ToListAsync();
 
                 foreach (var notificacion in notificaciones)
                 {

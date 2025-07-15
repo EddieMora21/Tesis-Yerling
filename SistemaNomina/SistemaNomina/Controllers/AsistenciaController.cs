@@ -46,16 +46,16 @@ namespace SistemaNomina.Controllers
                                        .AsQueryable();
 
                 // Aplicar filtros
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                     query = query.Where(a => a.id_empleado == empleadoId.Value);
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                     query = query.Where(a => a.Empleados.Puestos.id_departamento == departamentoId.Value);
 
-                if (fechaInicio.HasValue)
+                if (fechaInicio!= null)
                     query = query.Where(a => a.fecha >= fechaInicio.Value);
 
-                if (fechaFin.HasValue)
+                if (fechaFin!= null)
                     query = query.Where(a => a.fecha <= fechaFin.Value);
 
                 var asistencias = query.OrderBy(a => a.fecha)
@@ -118,13 +118,13 @@ namespace SistemaNomina.Controllers
                     table.AddCell(new PdfPCell(new Phrase(item.hora_entrada?.ToString(@"hh\:mm") ?? "-", normalFont)));
                     table.AddCell(new PdfPCell(new Phrase(item.hora_salida?.ToString(@"hh\:mm") ?? "-", normalFont)));
 
-                    var horas = item.hora_entrada.HasValue && item.hora_salida.HasValue
+                    var horas = item.hora_entrada!= null && item.hora_salida!= null
                                ? Math.Round((item.hora_salida.Value - item.hora_entrada.Value).TotalHours, 2).ToString()
                                : "-";
                     table.AddCell(new PdfPCell(new Phrase(horas, normalFont)));
 
-                    var estado = item.hora_entrada.HasValue && item.hora_salida.HasValue ? "Completo"
-                               : item.hora_entrada.HasValue ? "Sin Salida" : "Sin Entrada";
+                    var estado = item.hora_entrada!= null && item.hora_salida!= null ? "Completo"
+                               : item.hora_entrada!= null ? "Sin Salida" : "Sin Entrada";
                     table.AddCell(new PdfPCell(new Phrase(estado, normalFont)));
 
                     table.AddCell(new PdfPCell(new Phrase(item.es_feriado == true ? "Sí" : "No", normalFont)));
@@ -135,7 +135,7 @@ namespace SistemaNomina.Controllers
                 // Estadísticas al final
                 var stats = new Paragraph($"\n\nResumen:\n", subtitleFont);
                 stats.Add(new Chunk($"Total de registros: {asistencias.Count}\n", normalFont));
-                stats.Add(new Chunk($"Asistencias completas: {asistencias.Count(x => x.hora_entrada.HasValue && x.hora_salida.HasValue)}\n", normalFont));
+                stats.Add(new Chunk($"Asistencias completas: {asistencias.Count(x => x.hora_entrada!= null && x.hora_salida!= null)}\n", normalFont));
                 stats.Add(new Chunk($"Días feriados: {asistencias.Count(x => x.es_feriado == true)}\n", normalFont));
                 document.Add(stats);
 
@@ -165,16 +165,16 @@ namespace SistemaNomina.Controllers
                                        .AsQueryable();
 
                 // Aplicar filtros
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                     query = query.Where(a => a.id_empleado == empleadoId.Value);
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                     query = query.Where(a => a.Empleados.Puestos.id_departamento == departamentoId.Value);
 
-                if (fechaInicio.HasValue)
+                if (fechaInicio!= null)
                     query = query.Where(a => a.fecha >= fechaInicio.Value);
 
-                if (fechaFin.HasValue)
+                if (fechaFin!= null)
                     query = query.Where(a => a.fecha <= fechaFin.Value);
 
                 var asistencias = query.OrderBy(a => a.fecha)
@@ -265,7 +265,7 @@ namespace SistemaNomina.Controllers
                         worksheet.Cells[excelRow, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                         // Horas trabajadas
-                        if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                        if (item.hora_entrada!= null && item.hora_salida!= null)
                         {
                             var horas = Math.Round((item.hora_salida.Value - item.hora_entrada.Value).TotalHours, 2);
                             worksheet.Cells[excelRow, 7].Value = horas;
@@ -274,8 +274,8 @@ namespace SistemaNomina.Controllers
                         worksheet.Cells[excelRow, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                         // Estado con colores
-                        var estado = item.hora_entrada.HasValue && item.hora_salida.HasValue ? "Completo"
-                                   : item.hora_entrada.HasValue ? "Sin Salida" : "Sin Entrada";
+                        var estado = item.hora_entrada!= null && item.hora_salida!= null ? "Completo"
+                                   : item.hora_entrada!= null ? "Sin Salida" : "Sin Entrada";
                         worksheet.Cells[excelRow, 8].Value = estado;
                         worksheet.Cells[excelRow, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
@@ -334,7 +334,7 @@ namespace SistemaNomina.Controllers
                     worksheet.Cells[statsRow, 1].Style.Font.Color.SetColor(System.Drawing.Color.FromArgb(33, 29, 66));
 
                     worksheet.Cells[statsRow + 1, 1].Value = $"Total de registros: {asistencias.Count}";
-                    worksheet.Cells[statsRow + 2, 1].Value = $"Asistencias completas: {asistencias.Count(x => x.hora_entrada.HasValue && x.hora_salida.HasValue)}";
+                    worksheet.Cells[statsRow + 2, 1].Value = $"Asistencias completas: {asistencias.Count(x => x.hora_entrada!= null && x.hora_salida!= null)}";
                     worksheet.Cells[statsRow + 3, 1].Value = $"Días feriados: {asistencias.Count(x => x.es_feriado == true)}";
 
                     // ✅ Auto-ajustar columnas
@@ -367,7 +367,7 @@ namespace SistemaNomina.Controllers
         public ActionResult Marcar()
         {
             var currentUserId = (int?)Session["UserId"];
-            if (!currentUserId.HasValue)
+            if (currentUserId == null)
             {
                 return RedirectToAction("Login", "Usuarios");
             }
@@ -408,7 +408,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return Json(new { success = false, message = "Sesión expirada" });
                 }
@@ -474,7 +474,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return Json(new { success = false, message = "Sesión expirada" });
                 }
@@ -496,7 +496,7 @@ namespace SistemaNomina.Controllers
                     return Json(new { success = false, message = "Debe marcar entrada primero" });
                 }
 
-                if (asistenciaHoy.hora_salida.HasValue)
+                if (asistenciaHoy.hora_salida!= null)
                 {
                     return Json(new { success = false, message = "Ya marcó salida hoy" });
                 }
@@ -551,22 +551,22 @@ namespace SistemaNomina.Controllers
                                        .AsQueryable();
 
                 // Filtros
-                if (empleadoId.HasValue)
+                if (empleadoId!= null)
                 {
                     query = query.Where(a => a.id_empleado == empleadoId.Value);
                 }
 
-                if (departamentoId.HasValue)
+                if (departamentoId!= null)
                 {
                     query = query.Where(a => a.Empleados.Puestos.id_departamento == departamentoId.Value);
                 }
 
-                if (fechaInicio.HasValue)
+                if (fechaInicio!= null)
                 {
                     query = query.Where(a => a.fecha >= fechaInicio.Value);
                 }
 
-                if (fechaFin.HasValue)
+                if (fechaFin!= null)
                 {
                     query = query.Where(a => a.fecha <= fechaFin.Value);
                 }

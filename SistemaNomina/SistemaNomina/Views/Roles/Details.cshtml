@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.Roles
+﻿@model SistemaNomina.Roles
 
 @{
     ViewBag.Title = "Detalles del Rol";
@@ -232,7 +232,7 @@
                             @Html.DisplayNameFor(model => model.fecha_creacion):
                         </div>
                         <div class="detail-value">
-                            @if (Model.fecha_creacion.HasValue)
+                            @if (Model.fecha_creacion!= null)
                             {
                                 <span>@Model.fecha_creacion.Value.ToString("dd/MM/yyyy HH:mm")</span>
                             }
@@ -249,7 +249,7 @@
                             @Html.DisplayNameFor(model => model.fecha_actualizacion):
                         </div>
                         <div class="detail-value">
-                            @if (Model.fecha_actualizacion.HasValue)
+                            @if (Model.fecha_actualizacion!= null)
                             {
                                 <span>@Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")</span>
                             }

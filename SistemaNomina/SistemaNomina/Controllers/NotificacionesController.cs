@@ -23,7 +23,7 @@ namespace SistemaNomina.Controllers
         private int? GetEmpleadoId()
         {
             var userId = (int?)Session["UserId"];
-            if (userId.HasValue)
+            if (userId!= null)
             {
                 // Buscar el empleado asociado al usuario
                 var usuario = db.Usuarios.FirstOrDefault(u => u.id_usuario == userId.Value);
@@ -143,7 +143,8 @@ namespace SistemaNomina.Controllers
                 return HttpNotFound();
 
             // Marcar como leída automáticamente al ver los detalles
-            if (!notificacion.leido)
+            // Marcar como leída automáticamente al ver los detalles
+            if (notificacion.leido.HasValue && !notificacion.leido.Value)
             {
                 await _notificacionService.MarcarComoLeida(id, empleadoId.Value);
             }

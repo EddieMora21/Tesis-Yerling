@@ -7,26 +7,28 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class TipoLiquidacion
+    public partial class TipoIncapacidades
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TipoLiquidacion()
+        public TipoIncapacidades()
         {
-            this.Liquidaciones = new HashSet<Liquidaciones>();
+            this.Incapacidades = new HashSet<Incapacidades>();
         }
     
         public int id_tipo { get; set; }
         public string nombre { get; set; }
+        public int dias_maximos { get; set; }
+        public bool pago_planilla { get; set; }
         public string descripcion { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Liquidaciones> Liquidaciones { get; set; }
+        public virtual ICollection<Incapacidades> Incapacidades { get; set; }
     }
 }

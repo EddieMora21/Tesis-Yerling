@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
@@ -18,17 +18,17 @@ namespace SistemaNomina.Models
         public int id_empleado { get; set; }
         public int id_tipo { get; set; }
         public System.DateTime fecha_salida { get; set; }
-        public Nullable<decimal> preaviso { get; set; }
-        public Nullable<decimal> cesantia { get; set; }
-        public Nullable<decimal> vacaciones_pendientes { get; set; }
-        public Nullable<int> dias_vacaciones_pendientes { get; set; }
-        public Nullable<decimal> aguinaldo_proporcional { get; set; }
         public decimal total_liquidacion { get; set; }
+        public decimal preaviso { get; set; }
+        public decimal cesantia { get; set; }
+        public Nullable<System.DateTime> fecha_creacion { get; set; }
+        public Nullable<System.DateTime> fecha_actualizacion { get; set; }
+        public Nullable<int> dias_vacaciones_pendientes { get; set; }
         public Nullable<decimal> isr_liquidacion { get; set; }
         public Nullable<decimal> css_liquidacion { get; set; }
         public Nullable<decimal> ivm_liquidacion { get; set; }
-        public Nullable<System.DateTime> fecha_creacion { get; set; }
-        public Nullable<System.DateTime> fecha_actualizacion { get; set; }
+        public Nullable<decimal> vacaciones_pendientes { get; set; }
+        public Nullable<decimal> aguinaldo_proporcional { get; set; }
     
         public virtual Empleados Empleados { get; set; }
         public virtual TipoLiquidacion TipoLiquidacion { get; set; }

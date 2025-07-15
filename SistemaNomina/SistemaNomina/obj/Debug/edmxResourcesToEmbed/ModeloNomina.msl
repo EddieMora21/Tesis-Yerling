@@ -23,8 +23,10 @@
           <ScalarProperty Name="hora_entrada" ColumnName="hora_entrada" />
           <ScalarProperty Name="hora_salida" ColumnName="hora_salida" />
           <ScalarProperty Name="es_feriado" ColumnName="es_feriado" />
-          <ScalarProperty Name="fecha_registro" ColumnName="fecha_registro" />
           <ScalarProperty Name="id_feriado" ColumnName="id_feriado" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+          <ScalarProperty Name="fecha_registro" ColumnName="fecha_registro" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -78,6 +80,8 @@
         <MappingFragment StoreEntitySet="EstadoCivil">
           <ScalarProperty Name="id_estado_civil" ColumnName="id_estado_civil" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -87,6 +91,8 @@
           <ScalarProperty Name="id_estado" ColumnName="id_estado" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
           <ScalarProperty Name="modulo" ColumnName="modulo" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -141,6 +147,8 @@
     <EntitySetMapping Name="Incapacidades">
       <EntityTypeMapping TypeName="smartbuilding_rhModel.Incapacidades">
         <MappingFragment StoreEntitySet="Incapacidades">
+          <ScalarProperty Name="dias_incapacidad" ColumnName="dias_incapacidad" />
+          <ScalarProperty Name="fecha_registro" ColumnName="fecha_registro" />
           <ScalarProperty Name="id_incapacidad" ColumnName="id_incapacidad" />
           <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
           <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
@@ -149,8 +157,8 @@
           <ScalarProperty Name="id_tipo_incapacidad" ColumnName="id_tipo_incapacidad" />
           <ScalarProperty Name="descripcion" ColumnName="descripcion" />
           <ScalarProperty Name="id_estado" ColumnName="id_estado" />
-          <ScalarProperty Name="dias_incapacidad" ColumnName="dias_incapacidad" />
-          <ScalarProperty Name="fecha_registro" ColumnName="fecha_registro" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -174,21 +182,21 @@
     <EntitySetMapping Name="Liquidaciones">
       <EntityTypeMapping TypeName="smartbuilding_rhModel.Liquidaciones">
         <MappingFragment StoreEntitySet="Liquidaciones">
+          <ScalarProperty Name="aguinaldo_proporcional" ColumnName="aguinaldo_proporcional" />
+          <ScalarProperty Name="vacaciones_pendientes" ColumnName="vacaciones_pendientes" />
           <ScalarProperty Name="id_liquidacion" ColumnName="id_liquidacion" />
           <ScalarProperty Name="id_empleado" ColumnName="id_empleado" />
           <ScalarProperty Name="id_tipo" ColumnName="id_tipo" />
           <ScalarProperty Name="fecha_salida" ColumnName="fecha_salida" />
+          <ScalarProperty Name="total_liquidacion" ColumnName="total_liquidacion" />
           <ScalarProperty Name="preaviso" ColumnName="preaviso" />
           <ScalarProperty Name="cesantia" ColumnName="cesantia" />
-          <ScalarProperty Name="vacaciones_pendientes" ColumnName="vacaciones_pendientes" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
           <ScalarProperty Name="dias_vacaciones_pendientes" ColumnName="dias_vacaciones_pendientes" />
-          <ScalarProperty Name="aguinaldo_proporcional" ColumnName="aguinaldo_proporcional" />
-          <ScalarProperty Name="total_liquidacion" ColumnName="total_liquidacion" />
           <ScalarProperty Name="isr_liquidacion" ColumnName="isr_liquidacion" />
           <ScalarProperty Name="css_liquidacion" ColumnName="css_liquidacion" />
           <ScalarProperty Name="ivm_liquidacion" ColumnName="ivm_liquidacion" />
-          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
-          <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -213,6 +221,27 @@
           <ScalarProperty Name="salario_neto" ColumnName="salario_neto" />
           <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
           <ScalarProperty Name="fecha_actualizacion" ColumnName="fecha_actualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Notificaciones">
+      <EntityTypeMapping TypeName="smartbuilding_rhModel.Notificaciones">
+        <MappingFragment StoreEntitySet="Notificaciones">
+          <ScalarProperty Name="TiempoTranscurrido" ColumnName="TiempoTranscurrido" />
+          <ScalarProperty Name="color" ColumnName="color" />
+          <ScalarProperty Name="icono" ColumnName="icono" />
+          <ScalarProperty Name="id_notificacion" ColumnName="id_notificacion" />
+          <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+          <ScalarProperty Name="id_remitente" ColumnName="id_remitente" />
+          <ScalarProperty Name="titulo" ColumnName="titulo" />
+          <ScalarProperty Name="mensaje" ColumnName="mensaje" />
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+          <ScalarProperty Name="prioridad" ColumnName="prioridad" />
+          <ScalarProperty Name="leido" ColumnName="leido" />
+          <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+          <ScalarProperty Name="fecha_leido" ColumnName="fecha_leido" />
+          <ScalarProperty Name="referencia_tipo" ColumnName="referencia_tipo" />
+          <ScalarProperty Name="referencia_id" ColumnName="referencia_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -262,12 +291,12 @@
     <EntitySetMapping Name="SolicitudesVacaciones">
       <EntityTypeMapping TypeName="smartbuilding_rhModel.SolicitudesVacaciones">
         <MappingFragment StoreEntitySet="SolicitudesVacaciones">
+          <ScalarProperty Name="fecha_aprobacion" ColumnName="fecha_aprobacion" />
+          <ScalarProperty Name="fecha_solicitud" ColumnName="fecha_solicitud" />
           <ScalarProperty Name="id_solicitud" ColumnName="id_solicitud" />
           <ScalarProperty Name="id_vacacion" ColumnName="id_vacacion" />
           <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
           <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
-          <ScalarProperty Name="fecha_solicitud" ColumnName="fecha_solicitud" />
-          <ScalarProperty Name="fecha_aprobacion" ColumnName="fecha_aprobacion" />
           <ScalarProperty Name="aprobado_por" ColumnName="aprobado_por" />
           <ScalarProperty Name="comentario_solicitud" ColumnName="comentario_solicitud" />
           <ScalarProperty Name="comentario_respuesta" ColumnName="comentario_respuesta" />

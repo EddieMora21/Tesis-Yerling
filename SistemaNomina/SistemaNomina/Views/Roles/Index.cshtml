@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Roles>
+﻿@model IEnumerable<SistemaNomina.Roles>
 
 @{
     ViewBag.Title = "Gestión de Roles";
@@ -230,8 +230,8 @@
                                 <tbody>
                                     @foreach (var item in Model)
                                     {
-                                        var fechaCreacion = item.fecha_creacion.HasValue ? item.fecha_creacion.Value.ToString("dd/MM/yyyy") : "-";
-                                        var fechaActualizacion = item.fecha_actualizacion.HasValue ? item.fecha_actualizacion.Value.ToString("dd/MM/yyyy") : "-";
+                                        var fechaCreacion = item.fecha_creacion!= null ? item.fecha_creacion.Value.ToString("dd/MM/yyyy") : "-";
+                                        var fechaActualizacion = item.fecha_actualizacion!= null ? item.fecha_actualizacion.Value.ToString("dd/MM/yyyy") : "-";
 
                                         <tr>
                                             <td>

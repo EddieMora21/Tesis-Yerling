@@ -16,7 +16,7 @@ namespace SistemaNomina.Helpers
                 using (var db = new smartbuilding_rhEntities())
                 {
                     // Si no se proporciona userId, intentar obtenerlo de la sesión
-                    if (!userId.HasValue && HttpContext.Current?.Session["UserId"] != null)
+                    if (userId == null && HttpContext.Current?.Session["UserId"] != null)
                     {
                         userId = (int?)HttpContext.Current.Session["UserId"];
                     }

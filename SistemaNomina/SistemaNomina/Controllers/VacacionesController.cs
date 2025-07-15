@@ -46,7 +46,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return RedirectToAction("Login", "Usuarios");
                 }
@@ -86,7 +86,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return RedirectToAction("Login", "Usuarios");
                 }
@@ -109,7 +109,7 @@ namespace SistemaNomina.Controllers
                 var vacacionesActuales = ObtenerOCrearVacaciones(empleado.id_empleado);
 
                 // Calcular información adicional
-                var diasDisfrutados = vacacionesActuales.dias_disfrutados ?? 0;
+                var diasDisfrutados = vacacionesActuales.dias_disfrutados;
                 var diasDisponibles = vacacionesActuales.dias_disponibles - diasDisfrutados;
                 var antiguedadEnDias = (DateTime.Now - empleado.fecha_ingreso).Days;
                 var antiguedadEnAnios = Math.Floor(antiguedadEnDias / 365.25);
@@ -166,7 +166,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return RedirectToAction("Login", "Usuarios");
                 }
@@ -183,7 +183,7 @@ namespace SistemaNomina.Controllers
                 // Obtener o crear registro de vacaciones
                 var vacaciones = ObtenerOCrearVacaciones(empleado.id_empleado);
 
-                ViewBag.DiasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados ?? 0);
+                ViewBag.DiasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados);
                 ViewBag.NombreEmpleado = $"{empleado.nombre1} {empleado.apellido1}";
                 ViewBag.IdVacacion = vacaciones.id_vacacion;
 
@@ -205,7 +205,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return Json(new { success = false, message = "Sesión expirada" });
                 }
@@ -317,14 +317,14 @@ namespace SistemaNomina.Controllers
                     // 📅 Fechas automáticas
                     vacaciones.fecha_creacion = DateTime.Now;
                     vacaciones.fecha_actualizacion = DateTime.Now;
-                    vacaciones.dias_disfrutados = vacaciones.dias_disfrutados ?? 0;
+                    vacaciones.dias_disfrutados = vacaciones.dias_disfrutados;
 
                     db.Vacaciones.Add(vacaciones);
                     db.SaveChanges();
 
                     // 📋 LOG AUTOMÁTICO
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         var empleado = db.Empleados.Find(vacaciones.id_empleado);
                         BitacoraHelper.RegistrarAccion("CREAR_VACACIONES",
@@ -388,14 +388,14 @@ namespace SistemaNomina.Controllers
 
                     // 📅 Actualizar fecha de modificación
                     vacaciones.fecha_actualizacion = DateTime.Now;
-                    vacaciones.dias_disfrutados = vacaciones.dias_disfrutados ?? 0;
+                    vacaciones.dias_disfrutados = vacaciones.dias_disfrutados;
 
                     db.Entry(vacaciones).State = EntityState.Modified;
                     db.SaveChanges();
 
                     // 📋 LOG AUTOMÁTICO
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_VACACIONES",
                             $"Editado registro de vacaciones (ID: {vacaciones.id_vacacion})",
@@ -467,7 +467,7 @@ namespace SistemaNomina.Controllers
 
                 // 📋 LOG AUTOMÁTICO
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_VACACIONES",
                         $"Eliminado registro de vacaciones (ID: {vacaciones.id_vacacion})",
@@ -564,7 +564,7 @@ namespace SistemaNomina.Controllers
 
             // Verificar días disponibles
             var vacaciones = ObtenerOCrearVacaciones(idEmpleado);
-            var diasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados ?? 0);
+            var diasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados);
 
             if (diasSolicitados > diasDisponibles)
                 return (false, $"Solo tiene {diasDisponibles} día(s) disponible(s). Está solicitando {diasSolicitados} día(s).", diasSolicitados);

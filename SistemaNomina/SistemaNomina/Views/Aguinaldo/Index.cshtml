@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Aguinaldo>
+﻿@model IEnumerable<SistemaNomina.Aguinaldo>
 
 @{
     ViewBag.Title = "Gestion de Aguinaldos";
@@ -261,7 +261,7 @@
                         <strong style="color: var(--verde);">₡@item.monto_total.ToString("#,##0.00")</strong>
                     </td>
                     <td>
-                        @if (item.fecha_creacion.HasValue)
+                        @if (item.fecha_creacion!= null)
                         {
                             @item.fecha_creacion.Value.ToString("dd/MM/yyyy")
                         }

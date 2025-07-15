@@ -7,29 +7,32 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SistemaNomina.Models
+namespace SistemaNomina
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Vacaciones
+    public partial class ISR
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Vacaciones()
+        public ISR()
         {
-            this.SolicitudesVacaciones = new HashSet<SolicitudesVacaciones>();
+            this.Nomina = new HashSet<Nomina>();
         }
     
-        public int id_vacacion { get; set; }
-        public int id_empleado { get; set; }
-        public string periodo { get; set; }
-        public int dias_disponibles { get; set; }
-        public Nullable<int> dias_disfrutados { get; set; }
+        public int id_isr { get; set; }
+        public int anio { get; set; }
+        public decimal limite_inferior { get; set; }
+        public decimal limite_superior { get; set; }
+        public decimal porcentaje { get; set; }
+        public decimal exceso { get; set; }
+        public decimal credito_hijo { get; set; }
+        public decimal credito_conyuge { get; set; }
+        public string descripcion { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_actualizacion { get; set; }
     
-        public virtual Empleados Empleados { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SolicitudesVacaciones> SolicitudesVacaciones { get; set; }
+        public virtual ICollection<Nomina> Nomina { get; set; }
     }
 }

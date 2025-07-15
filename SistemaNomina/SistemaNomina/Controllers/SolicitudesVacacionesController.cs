@@ -136,7 +136,7 @@ namespace SistemaNomina.Controllers
 
                 // 🔍 VALIDACIÓN: Verificar días disponibles nuevamente
                 var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-                var diasDisponibles = solicitud.Vacaciones.dias_disponibles - (solicitud.Vacaciones.dias_disfrutados ?? 0);
+                var diasDisponibles = solicitud.Vacaciones.dias_disponibles - solicitud.Vacaciones.dias_disfrutados;
 
                 if (diasSolicitados > diasDisponibles)
                 {
@@ -154,13 +154,13 @@ namespace SistemaNomina.Controllers
                     solicitud.fecha_actualizacion = DateTime.Now;
 
                     // 📊 Actualizar días disfrutados
-                    solicitud.Vacaciones.dias_disfrutados = (solicitud.Vacaciones.dias_disfrutados ?? 0) + diasSolicitados;
+                    solicitud.Vacaciones.dias_disfrutados = solicitud.Vacaciones.dias_disfrutados + diasSolicitados;
                     solicitud.Vacaciones.fecha_actualizacion = DateTime.Now;
 
                     db.SaveChanges();
 
                     // 📋 LOG AUTOMÁTICO
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("APROBAR_VACACIONES",
                             $"Aprobadas vacaciones de {solicitud.Vacaciones.Empleados.nombre1} {solicitud.Vacaciones.Empleados.apellido1} del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy} ({diasSolicitados} días)",
@@ -222,7 +222,7 @@ namespace SistemaNomina.Controllers
                     db.SaveChanges();
 
                     // 📋 LOG AUTOMÁTICO
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
                         BitacoraHelper.RegistrarAccion("RECHAZAR_VACACIONES",
@@ -306,7 +306,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return RedirectToAction("Login", "Usuarios");
                 }
@@ -329,7 +329,7 @@ namespace SistemaNomina.Controllers
                 ViewBag.CadenaAprobacion = cadenaAprobacion;
                 ViewBag.EmpleadoActual = empleadoActual;
 
-                if (id_vacacion.HasValue)
+                if (id_vacacion!= null)
                 {
                     var vacacion = db.Vacaciones.Find(id_vacacion.Value);
                     if (vacacion != null)
@@ -357,7 +357,7 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
-                if (!currentUserId.HasValue)
+                if (currentUserId == null)
                 {
                     return RedirectToAction("Login", "Usuarios");
                 }
@@ -461,7 +461,7 @@ namespace SistemaNomina.Controllers
                     db.SaveChanges();
 
                     var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId.HasValue)
+                    if (currentUserId!= null)
                     {
                         BitacoraHelper.RegistrarAccion("EDITAR_SOLICITUD_VACACIONES",
                             $"Editada solicitud de vacaciones (ID: {solicitud.id_solicitud})",
@@ -536,7 +536,7 @@ namespace SistemaNomina.Controllers
                 }
 
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId.HasValue)
+                if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_SOLICITUD_VACACIONES",
                         $"Eliminada solicitud de vacaciones (ID: {solicitud.id_solicitud})",
@@ -685,8 +685,8 @@ namespace SistemaNomina.Controllers
                         // Verificar que es jefe del departamento
                         var esJefe = usuarioAprobador.Empleados?.Puestos?.es_jefe == true;
 
-                        return departamentoAprobador.HasValue &&
-                               departamentoSolicitante.HasValue &&
+                        return departamentoAprobador!= null &&
+                               departamentoSolicitante!= null &&
                                departamentoAprobador.Value == departamentoSolicitante.Value &&
                                esJefe;
 
@@ -808,7 +808,7 @@ namespace SistemaNomina.Controllers
             var vacaciones = db.Vacaciones.Find(solicitud.id_vacacion);
             if (vacaciones != null)
             {
-                var diasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados ?? 0);
+                var diasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados);
                 if (diasSolicitados > diasDisponibles)
                     return (false, $"Solo hay {diasDisponibles} día(s) disponible(s). Se están solicitando {diasSolicitados} día(s).");
             }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Asistencia>
+﻿@model IEnumerable<SistemaNomina.Asistencia>
 
 @{
     ViewBag.Title = "Gestión de Asistencias";
@@ -244,7 +244,7 @@
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">@Model.Count(x => x.hora_entrada.HasValue && x.hora_salida.HasValue)</div>
+            <div class="stat-number">@Model.Count(x => x.hora_entrada!= null && x.hora_salida!= null)</div>
             <div class="stat-label">
                 <i class="fa fa-check-circle" style="margin-right: 5px;"></i>
                 Asistencias Completas
@@ -299,7 +299,7 @@
                                 <br><small style="color: #6c757d;">@item.Empleados.cedula</small>
                             </td>
                             <td>
-                                @if (item.hora_entrada.HasValue)
+                                @if (item.hora_entrada!= null)
                                 {
                                     <span style="font-family: monospace; font-weight: 600; color: #28a745;">
                                         @item.hora_entrada.Value.ToString(@"hh\:mm")
@@ -311,7 +311,7 @@
                                 }
                             </td>
                             <td>
-                                @if (item.hora_salida.HasValue)
+                                @if (item.hora_salida!= null)
                                 {
                                     <span style="font-family: monospace; font-weight: 600; color: #dc3545;">
                                         @item.hora_salida.Value.ToString(@"hh\:mm")
@@ -323,7 +323,7 @@
                                 }
                             </td>
                             <td>
-                                @if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                                @if (item.hora_entrada!= null && item.hora_salida!= null)
                                 {
                                     var horas = (item.hora_salida.Value - item.hora_entrada.Value).TotalHours;
                                     <span style="font-weight: 600; color: #1788ca;">
@@ -336,11 +336,11 @@
                                 }
                             </td>
                             <td>
-                                @if (item.hora_entrada.HasValue && item.hora_salida.HasValue)
+                                @if (item.hora_entrada!= null && item.hora_salida!= null)
                                 {
                                     <span class="status-badge status-completo">Completo</span>
                                 }
-                                else if (item.hora_entrada.HasValue)
+                                else if (item.hora_entrada!= null)
                                 {
                                     <span class="status-badge status-sin-salida">Sin Salida</span>
                                 }

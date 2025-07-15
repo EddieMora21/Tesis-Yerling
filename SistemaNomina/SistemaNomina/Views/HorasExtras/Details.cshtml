@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.Models.HorasExtras
+﻿@model SistemaNomina.HorasExtras
 
 @{
     ViewBag.Title = "Detalles de Horas Extras";
@@ -376,7 +376,7 @@
                                 <div class="info-value">@Model.Usuarios.Empleados.nombre1 @Model.Usuarios.Empleados.apellido1</div>
                             </div>
                         }
-                        @if (Model.fecha_aprobacion.HasValue)
+                        @if (Model.fecha_aprobacion!= null)
                         {
                             <div class="info-card">
                                 <div class="info-label">Fecha de @(Model.Estados?.nombre == "Aprobado" ? "Aprobación" : "Rechazo")</div>

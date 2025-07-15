@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.Usuarios>
+﻿@model IEnumerable<SistemaNomina.Usuarios>
 
 @{
     ViewBag.Title = "Gestión de Usuarios";
@@ -8,7 +8,7 @@
     var rolSesion = Session["RolUsuario"] as string;
     var userId = Session["UserId"] as int?;
 
-    if (string.IsNullOrEmpty(usuarioSesion) || string.IsNullOrEmpty(rolSesion) || !userId.HasValue)
+    if (string.IsNullOrEmpty(usuarioSesion) || string.IsNullOrEmpty(rolSesion) || !userId!= null)
     {
         Response.Redirect("~/Usuarios/Login");
     }
@@ -256,7 +256,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @if (item.primer_ingreso.HasValue)
+                                        @if (item.primer_ingreso!= null)
                                         {
                                             if (item.primer_ingreso.Value)
                                             {
@@ -288,7 +288,7 @@
                                     </td>
                                     <td>
                                         <div class="date-info">
-                                            @if (item.fecha_actualizacion.HasValue)
+                                            @if (item.fecha_actualizacion!= null)
                                             {
                                                 <strong>@Html.DisplayFor(modelItem => item.fecha_actualizacion)</strong>
                                             }

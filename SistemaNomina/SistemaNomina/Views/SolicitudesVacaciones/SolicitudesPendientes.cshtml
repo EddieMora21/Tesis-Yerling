@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SistemaNomina.Models.SolicitudesVacaciones>
+﻿@model IEnumerable<SistemaNomina.SolicitudesVacaciones>
 
 @{
     ViewBag.Title = "Solicitudes Pendientes";
@@ -30,14 +30,14 @@
         <div class="stat-card urgent">
             <div class="stat-icon">🚨</div>
             <div class="stat-content">
-                <div class="stat-number">@Model.Count(s => s.fecha_solicitud.HasValue && (DateTime.Now - s.fecha_solicitud.Value).TotalDays > 7)</div>
+                <div class="stat-number">@Model.Count(s => s.fecha_solicitud!= null && (DateTime.Now - s.fecha_solicitud.Value).TotalDays > 7)</div>
                 <div class="stat-label">Más de 7 días</div>
             </div>
         </div>
         <div class="stat-card warning">
             <div class="stat-icon">⚠️</div>
             <div class="stat-content">
-                <div class="stat-number">@Model.Count(s => s.fecha_solicitud.HasValue && (DateTime.Now - s.fecha_solicitud.Value).TotalDays > 3)</div>
+                <div class="stat-number">@Model.Count(s => s.fecha_solicitud!= null && (DateTime.Now - s.fecha_solicitud.Value).TotalDays > 3)</div>
                 <div class="stat-label">Más de 3 días</div>
             </div>
         </div>
@@ -54,8 +54,8 @@
     <div class="filter-bar">
         <div class="filter-left">
             <button class="filter-btn active" data-filter="all">📊 Todas (@Model.Count())</button>
-            <button class="filter-btn" data-filter="urgent">🚨 Urgentes (@Model.Count(s => s.fecha_solicitud.HasValue && (DateTime.Now - s.fecha_solicitud.Value).TotalDays > 7))</button>
-            <button class="filter-btn" data-filter="recent">🆕 Recientes (@Model.Count(s => s.fecha_solicitud.HasValue && (DateTime.Now - s.fecha_solicitud.Value).TotalDays <= 1))</button>
+            <button class="filter-btn" data-filter="urgent">🚨 Urgentes (@Model.Count(s => s.fecha_solicitud!= null && (DateTime.Now - s.fecha_solicitud.Value).TotalDays > 7))</button>
+            <button class="filter-btn" data-filter="recent">🆕 Recientes (@Model.Count(s => s.fecha_solicitud!= null && (DateTime.Now - s.fecha_solicitud.Value).TotalDays <= 1))</button>
         </div>
         <div class="filter-right">
             <input type="text" id="filtroEmpleado" placeholder="Buscar empleado..." class="search-input">
@@ -69,7 +69,7 @@
             foreach (var solicitud in Model.OrderByDescending(s => s.fecha_solicitud))
             {
                 var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-                var diasEspera = solicitud.fecha_solicitud.HasValue ? (DateTime.Now - solicitud.fecha_solicitud.Value).TotalDays : 0;
+                var diasEspera = solicitud.fecha_solicitud!= null ? (DateTime.Now - solicitud.fecha_solicitud.Value).TotalDays : 0;
                 var urgenciaClass = diasEspera > 7 ? "urgent" : diasEspera > 3 ? "warning" : "normal";
 
                 <div class="solicitud-card @urgenciaClass"
@@ -131,7 +131,7 @@
                                 <div class="detail-item">
                                     <span class="detail-label">📝 Solicitud:</span>
                                     <span class="detail-value">
-                                        @if (solicitud.fecha_solicitud.HasValue)
+                                        @if (solicitud.fecha_solicitud!= null)
                                         {
                                             @solicitud.fecha_solicitud.Value.ToString("dd/MM/yyyy HH:mm")
                                         }

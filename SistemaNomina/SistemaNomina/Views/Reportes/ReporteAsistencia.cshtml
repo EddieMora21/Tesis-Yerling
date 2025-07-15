@@ -1,11 +1,11 @@
-﻿@model IEnumerable<SistemaNomina.Models.Asistencia>
+﻿@model IEnumerable<SistemaNomina.Asistencia>
 
 @{
     ViewBag.Title = "Reporte de Asistencia";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     // Ordenar la coleccion aqui en lugar de en el foreach
-    var asistenciasOrdenadas = Model?.OrderBy(a => a.fecha).ThenBy(a => a.Empleados.apellido1).ToList() ?? new List<SistemaNomina.Models.Asistencia>();
+    var asistenciasOrdenadas = Model?.OrderBy(a => a.fecha).ThenBy(a => a.Empleados.apellido1).ToList() ?? new List<SistemaNomina.Asistencia>();
 }
 
 <div class="container-fluid mt-4">
@@ -48,7 +48,7 @@
                                 <div class="card bg-success text-white h-100 border-0">
                                     <div class="card-body text-center">
                                         <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                        <h4>@asistenciasOrdenadas.Count(a => a.hora_entrada.HasValue && a.hora_salida.HasValue)</h4>
+                                        <h4>@asistenciasOrdenadas.Count(a => a.hora_entrada!= null && a.hora_salida!= null)</h4>
                                         <p class="mb-0">Dias Completos</p>
                                     </div>
                                 </div>
@@ -57,7 +57,7 @@
                                 <div class="card bg-warning text-white h-100 border-0">
                                     <div class="card-body text-center">
                                         <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
-                                        <h4>@asistenciasOrdenadas.Count(a => !a.hora_entrada.HasValue || !a.hora_salida.HasValue)</h4>
+                                        <h4>@asistenciasOrdenadas.Count(a => !a.hora_entrada!= null || !a.hora_salida!= null)</h4>
                                         <p class="mb-0">Dias Incompletos</p>
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                                         var estadoAsistencia = "";
                                         var claseEstado = "";
 
-                                        if (asistencia.hora_entrada.HasValue && asistencia.hora_salida.HasValue)
+                                        if (asistencia.hora_entrada!= null && asistencia.hora_salida!= null)
                                         {
                                             var totalMinutos = (horasSalida * 60 + minutosSalida) - (horasEntrada * 60 + minutosEntrada);
                                             if (totalMinutos > 0)
@@ -112,12 +112,12 @@
                                             estadoAsistencia = "Completo";
                                             claseEstado = "badge bg-success";
                                         }
-                                        else if (asistencia.hora_entrada.HasValue)
+                                        else if (asistencia.hora_entrada!= null)
                                         {
                                             estadoAsistencia = "Sin Salida";
                                             claseEstado = "badge bg-warning";
                                         }
-                                        else if (asistencia.hora_salida.HasValue)
+                                        else if (asistencia.hora_salida!= null)
                                         {
                                             estadoAsistencia = "Sin Entrada";
                                             claseEstado = "badge bg-warning";
@@ -139,7 +139,7 @@
                                             </td>
                                             <td><span class="badge bg-primary">@asistencia.Empleados.Puestos.Departamentos.nombre</span></td>
                                             <td class="text-center">
-                                                @if (asistencia.hora_entrada.HasValue)
+                                                @if (asistencia.hora_entrada!= null)
                                                 {
                                                     <span class="fw-bold">@asistencia.hora_entrada.Value.ToString(@"hh\:mm")</span>
                                                 }
@@ -149,7 +149,7 @@
                                                 }
                                             </td>
                                             <td class="text-center">
-                                                @if (asistencia.hora_salida.HasValue)
+                                                @if (asistencia.hora_salida!= null)
                                                 {
                                                     <span class="fw-bold">@asistencia.hora_salida.Value.ToString(@"hh\:mm")</span>
                                                 }

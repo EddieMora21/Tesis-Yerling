@@ -846,7 +846,7 @@
                                    var pendingCount = 0;
                                    try
                                    {
-                                       using (var db = new SistemaNomina.Models.smartbuilding_rhEntities())
+                                       using (var db = new SistemaNomina.smartbuilding_rhEntities())
                                        {
                                            var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente" && e.modulo == "Vacaciones");
                                            if (estadoPendiente != null)
