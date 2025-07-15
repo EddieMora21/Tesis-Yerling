@@ -151,8 +151,8 @@
                         <div class="card-body">
                             <h6 class="text-primary">📊 Deducciones Legales:</h6>
                             <ul class="list-unstyled">
-                                <li><strong>CCSS:</strong> 9.34% del salario bruto</li>
-                                <li><strong>IVM:</strong> 2.75% del salario bruto</li>
+                                <li><strong>CCSS:</strong> 10.67% del salario bruto</li>
+                                <li><strong>IVM:</strong> 4.17% del salario bruto</li>
                                 <li><strong>ISR:</strong> Según tabla progresiva</li>
                             </ul>
 
@@ -194,14 +194,15 @@
             var salarioBruto = parseFloat($('#salario_bruto').val()) || 0;
 
             if (salarioBruto > 0) {
-                var ccss = salarioBruto * 0.0934;
-                var ivm = salarioBruto * 0.0275;
+                var ccss = salarioBruto * 0.1067; // 10.67%
+                var ivm = salarioBruto * 0.0417;  // 4.17%
 
-                alert(`Deducciones calculadas:\n\nCCSS (9.34%): ₡${ccss.toFixed(2)}\nIVM (2.75%): ₡${ivm.toFixed(2)}\n\nEstos valores se aplicarán automáticamente.`);
+                alert(`Deducciones calculadas:\n\nCCSS (10.67%): ₡${ccss.toFixed(2)}\nIVM (4.17%): ₡${ivm.toFixed(2)}\n\nEstos valores se aplicarán automáticamente.`);
             } else {
                 alert('Por favor ingrese primero el salario bruto.');
                 $('#salario_bruto').focus();
             }
+
         }
 
         // Validación en tiempo real

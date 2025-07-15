@@ -382,32 +382,40 @@ namespace SistemaNomina.Controllers
         /// </summary>
         private decimal CalcularISR(decimal salarioBruto, int cantidadHijos, int anio)
         {
-            var tablaISR = db.ISR.Where(i => i.anio == anio).OrderBy(i => i.limite_inferior).ToList();
+            var tramosISR = db.ISR
+                .Where(i => i.anio == anio)
+                .OrderBy(i => i.limite_inferior)
+                .ToList();
 
-            if (!tablaISR.Any()) return 0;
+            if (!tramosISR.Any()) return 0;
 
-            decimal isrCalculado = 0;
-            decimal salarioParaISR = salarioBruto;
+            decimal isrTotal = 0;
 
-            foreach (var tramo in tablaISR)
+            foreach (var tramo in tramosISR)
             {
-                if (salarioParaISR <= tramo.limite_inferior) break;
+                if (salarioBruto <= tramo.limite_inferior)
+                    continue;
 
-                decimal salarioEnTramo = Math.Min(salarioParaISR, tramo.limite_superior) - tramo.limite_inferior;
-                if (salarioEnTramo > 0)
+                decimal montoEnTramo = Math.Min(salarioBruto, tramo.limite_superior) - tramo.limite_inferior;
+
+                if (montoEnTramo > 0)
                 {
-                    isrCalculado += (salarioEnTramo * tramo.porcentaje / 100) + tramo.exceso;
+                    decimal impuestoTramo = (montoEnTramo * tramo.porcentaje / 100) + (tramo.exceso);
+                    isrTotal += impuestoTramo;
                 }
+
+                if (salarioBruto <= tramo.limite_superior)
+                    break;
             }
 
             // Aplicar créditos por hijos
-            if (tablaISR.Any() && cantidadHijos > 0)
+            if (tramosISR.Any() && cantidadHijos > 0)
             {
-                decimal creditoHijos = (tablaISR.First().credito_hijo ?? 0) * cantidadHijos;
-                isrCalculado = Math.Max(0, isrCalculado - creditoHijos);
+                decimal creditoHijos = (tramosISR.First().credito_hijo ?? 0m) * cantidadHijos;
+                isrTotal = Math.Max(0, isrTotal - creditoHijos);
             }
 
-            return isrCalculado;
+            return Math.Round(isrTotal, 2);
         }
 
         /// <summary>
