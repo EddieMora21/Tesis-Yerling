@@ -5,13 +5,30 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     .page-header-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
         color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
         .page-header-custom h1 {
@@ -21,10 +38,10 @@
         }
 
     .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
         padding: 2rem;
         margin-bottom: 2rem;
     }
@@ -33,8 +50,8 @@
         display: flex;
         align-items: flex-start;
         padding: 1rem 0;
-        border-bottom: 1px solid #e7e8eb;
-        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--neutral-color);
+        transition: var(--transition);
     }
 
         .detail-row:last-child {
@@ -43,7 +60,7 @@
 
         .detail-row:hover {
             background: rgba(23, 136, 202, 0.03);
-            border-radius: 8px;
+            border-radius: var(--border-radius-sm);
             margin: 0 -1rem;
             padding-left: 2rem;
             padding-right: 2rem;
@@ -51,7 +68,7 @@
 
     .detail-label {
         font-weight: 600;
-        color: #221d42;
+        color: var(--primary-color);
         min-width: 220px;
         display: flex;
         align-items: center;
@@ -61,17 +78,17 @@
 
     .detail-value {
         flex: 1;
-        color: #495057;
+        color: var(--text-color);
         font-size: 1.1rem;
     }
 
         .detail-value strong {
-            color: #221d42;
+            color: var(--primary-color);
         }
 
     .badge-year {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
+        color: var(--white);
         padding: 12px 20px;
         border-radius: 25px;
         font-size: 1.3rem;
@@ -82,8 +99,8 @@
     }
 
     .badge-percentage {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--success-color) 0%, #20a53a 100%);
+        color: var(--white);
         padding: 10px 16px;
         border-radius: 25px;
         font-size: 1.2rem;
@@ -95,18 +112,18 @@
 
     .currency-highlight {
         background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
-        color: #1788ca;
+        color: var(--secondary-color);
         padding: 8px 16px;
         border-radius: 20px;
         font-size: 1.1rem;
         font-weight: 600;
-        border: 2px solid #1788ca;
+        border: 2px solid var(--secondary-color);
         display: inline-block;
     }
 
     .date-badge {
-        background: linear-gradient(135deg, #e7e8eb 0%, #e7e8eb 100%);
-        color: #6c757d;
+        background: linear-gradient(135deg, var(--neutral-color) 0%, #d6d8db 100%);
+        color: var(--text-muted);
         padding: 6px 12px;
         border-radius: 20px;
         font-size: 0.9rem;
@@ -116,21 +133,21 @@
 
     .description-box {
         background: #f8f9fa;
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
         padding: 1.5rem;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         font-style: italic;
         line-height: 1.6;
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #0f6da3 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -141,18 +158,18 @@
         .btn-primary-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
-            color: white;
+            color: var(--white);
             text-decoration: none;
         }
 
     .btn-secondary-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -162,28 +179,28 @@
         .btn-secondary-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
-            color: white;
+            color: var(--white);
             text-decoration: none;
         }
 
     .stats-card {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
+        border-radius: var(--border-radius);
         padding: 1.5rem;
         text-align: center;
-        border: 1px solid #e7e8eb;
+        border: 1px solid var(--neutral-color);
         margin-bottom: 1rem;
     }
 
     .stats-icon {
         font-size: 2.5rem;
-        color: #fab61b;
+        color: var(--accent-color);
         margin-bottom: 1rem;
     }
 
     .stats-title {
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--text-muted);
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 1px;
@@ -193,14 +210,14 @@
     .stats-value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #221d42;
+        color: var(--primary-color);
     }
 
     .calculation-example {
         background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-        border-left: 4px solid #fab61b;
+        border-left: 4px solid var(--accent-color);
         padding: 1.5rem;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         margin-top: 1rem;
     }
 
@@ -210,7 +227,7 @@
         }
 
             .page-header-custom h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
 
         .card-custom {
@@ -264,7 +281,7 @@
         <!-- Información principal -->
         <div class="col-lg-8">
             <div class="card-custom">
-                <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                <h4 style="color: var(--primary-color); margin-bottom: 1.5rem; font-weight: 600;">
                     <i class="fas fa-clipboard-list"></i>
                     Información del Tramo Fiscal
                 </h4>
@@ -272,7 +289,7 @@
                 <div class="detail-row">
                     <div class="detail-label">
                         <i class="fas fa-calendar-alt"></i>
-                        @Html.DisplayNameFor(model => model.anio)
+                        Año Fiscal
                     </div>
                     <div class="detail-value">
                         <span class="badge-year">
@@ -297,7 +314,7 @@
                 <div class="detail-row">
                     <div class="detail-label">
                         <i class="fas fa-percentage"></i>
-                        @Html.DisplayNameFor(model => model.porcentaje)
+                        Porcentaje de Impuesto
                     </div>
                     <div class="detail-value">
                         <span class="badge-percentage">
@@ -310,7 +327,7 @@
                 <div class="detail-row">
                     <div class="detail-label">
                         <i class="fas fa-plus-circle"></i>
-                        @Html.DisplayNameFor(model => model.exceso)
+                        Exceso Base
                     </div>
                     <div class="detail-value">
                         <span class="currency-highlight">
@@ -346,7 +363,7 @@
                 <div class="detail-row">
                     <div class="detail-label">
                         <i class="fas fa-calendar-plus"></i>
-                        @Html.DisplayNameFor(model => model.fecha_creacion)
+                        Fecha de Creación
                     </div>
                     <div class="detail-value">
                         <span class="date-badge">
@@ -358,7 +375,7 @@
                 <div class="detail-row">
                     <div class="detail-label">
                         <i class="fas fa-calendar-edit"></i>
-                        @Html.DisplayNameFor(model => model.fecha_actualizacion)
+                        Última Actualización
                     </div>
                     <div class="detail-value">
                         <span class="date-badge">
@@ -371,9 +388,9 @@
             @if (!string.IsNullOrEmpty(Model.descripcion))
             {
                 <div class="card-custom">
-                    <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
+                    <h4 style="color: var(--primary-color); margin-bottom: 1.5rem; font-weight: 600;">
                         <i class="fas fa-align-left"></i>
-                        Descripción
+                        Descripción del Tramo
                     </h4>
                     <div class="description-box">
                         @Html.DisplayFor(model => model.descripcion)
@@ -382,74 +399,17 @@
             }
 
             <!-- Ejemplo de cálculo -->
-            <div class="card-custom">
-                <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
-                    <i class="fas fa-calculator"></i>
-                    Ejemplo de Cálculo
-                </h4>
-                <div class="calculation-example">
-                    <h6 style="color: #221d42; margin-bottom: 1rem;">
-                        <i class="fas fa-lightbulb" style="color: #fab61b;"></i>
-                        Fórmula de cálculo para este tramo:
-                    </h6>
-                    <div style="font-family: monospace; background: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <strong>ISR = ((Salario - @Html.DisplayFor(model => model.limite_inferior)) × @Html.DisplayFor(model => model.porcentaje)%) + @Html.DisplayFor(model => model.exceso)</strong>
-                    </div>
-                    <p class="mb-0" style="font-size: 0.9rem; color: #6c757d;">
-                        <strong>Nota:</strong> Los créditos por hijo (¢@Html.DisplayFor(model => model.credito_hijo)) y cónyuge (¢@Html.DisplayFor(model => model.credito_conyuge)) se restan del ISR calculado.
-                    </p>
-                </div>
-            </div>
+            
         </div>
 
-        <!-- Panel lateral con estadísticas -->
-        <div class="col-lg-4">
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stats-title">Rango del Tramo</div>
-                <div class="stats-value" style="font-size: 1.2rem;">
-                    ¢@((Model.limite_superior - Model.limite_inferior).ToString("N0"))
-                </div>
-                <small class="text-muted mt-2 d-block">
-                    Amplitud salarial
-                </small>
-            </div>
-
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="fas fa-family"></i>
-                </div>
-                <div class="stats-title">Créditos Familiares</div>
-                <div class="stats-value" style="font-size: 1.2rem;">
-                    ¢@((Model.credito_hijo + Model.credito_conyuge).Value.ToString("N0"))
-                </div>
-                <small class="text-muted mt-2 d-block">
-                    Máxima reducción mensual
-                </small>
-            </div>
-
-            <div class="card-custom" style="padding: 1.5rem;">
-                <h6 style="color: #221d42; margin-bottom: 1rem;">
-                    <i class="fas fa-info-circle text-info"></i>
-                    Información del Sistema
-                </h6>
-                <small class="text-muted">
-                    <strong>ID del Registro:</strong> @Model.id_isr<br>
-                    <strong>Estado:</strong> <span class="text-success">Activo</span><br>
-                    <strong>Categoría:</strong> Tramo ISR<br>
-                    <strong>Año Fiscal:</strong> @Model.anio
-                </small>
-            </div>
-        </div>
+        
     </div>
 
     <!-- Botones de acción -->
     <div class="row mt-4">
         <div class="col-12 text-center">
-            <hr style="margin: 2rem 0; border-color: #e7e8eb;">
-            @Html.ActionLink("Editar", "Edit", new { id = Model.id_isr }, new
+            <hr style="margin: 2rem 0; border-color: var(--neutral-color);">
+            @Html.ActionLink("Editar Tramo", "Edit", new { id = Model.id_isr }, new
             {
                 @class = "btn btn-primary-custom"
             })
@@ -461,12 +421,12 @@
     </div>
 
     <!-- Información adicional -->
-    <div class="mt-4 p-3" style="background: #e7f3ff; border-radius: 10px; border-left: 4px solid #1788ca;">
-        <h6 style="color: #221d42; margin-bottom: 0.5rem;">
+    <div class="mt-4 p-3" style="background: #e7f3ff; border-radius: 10px; border-left: 4px solid var(--secondary-color);">
+        <h6 style="color: var(--primary-color); margin-bottom: 0.5rem;">
             <i class="fas fa-lightbulb text-info"></i>
-            Información sobre el ISR
+            Información sobre este tramo de ISR
         </h6>
-        <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
+        <ul class="mb-0" style="font-size: 0.875rem; color: var(--text-muted);">
             <li>Este tramo aplica a salarios entre ¢@Html.DisplayFor(model => model.limite_inferior) y ¢@Html.DisplayFor(model => model.limite_superior)</li>
             <li>Se aplica un @Html.DisplayFor(model => model.porcentaje)% sobre el excedente del límite inferior</li>
             <li>Los créditos familiares reducen el impuesto final calculado</li>

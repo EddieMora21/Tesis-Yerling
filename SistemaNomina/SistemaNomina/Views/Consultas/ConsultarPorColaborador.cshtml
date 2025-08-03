@@ -3,185 +3,603 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="page-header">
-                <h2><i class="fa fa-user-search"></i> Consultar por Colaborador</h2>
-                <p class="text-muted">Busque informaci�n detallada de cualquier colaborador</p>
+<style>
+    /* ✅ TIPOGRAFÍA MODERNA */
+    * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-header-custom {
+        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
+        color: white;
+        padding: 2.5rem 0;
+        border-radius: 0 0 20px 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header-custom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,0 1000,0 1000,80 0,100"/></svg>');
+        background-size: cover;
+    }
+
+    .page-header-custom .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header-custom h2 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    .page-header-custom p {
+        opacity: 0.9;
+        font-size: 1.2rem;
+        font-weight: 300;
+        margin: 0;
+    }
+
+    .page-header-custom i {
+        margin-right: 0.5rem;
+        font-size: 2rem;
+    }
+
+    /* ✅ CARDS MODERNOS */
+    .card-modern {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(34, 29, 66, 0.1);
+        border: 1px solid rgba(231, 232, 235, 0.8);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .card-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 50px rgba(34, 29, 66, 0.15);
+    }
+
+    .card-header-modern {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #e7e8eb;
+    }
+
+    .card-header-modern h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.3rem;
+        color: #221d42;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-header-modern i {
+        color: #1788ca;
+        font-size: 1.2rem;
+    }
+
+    .card-body-modern {
+        padding: 2rem;
+    }
+
+    /* ✅ FORMULARIOS MEJORADOS */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        font-weight: 600;
+        color: #221d42;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-control-modern {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e7e8eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafbfc;
+    }
+
+    .form-control-modern:focus {
+        outline: none;
+        border-color: #1788ca;
+        box-shadow: 0 0 0 4px rgba(23, 136, 202, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .form-control-modern::placeholder {
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    /* ✅ BOTONES MODERNOS */
+    .btn-modern {
+        padding: 0.875rem 2rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #1788ca 0%, #0d7ab0 100%);
+        color: white;
+    }
+
+    .btn-primary-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+    }
+
+    .btn-secondary-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-large {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+    }
+
+    /* ✅ GRID MODERNO */
+    .search-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    /* ✅ ALERTAS MODERNAS */
+    .alert-modern {
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 500;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-warning-modern {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        border-left: 4px solid #ffc107;
+    }
+
+    .alert-danger-modern {
+        background: linear-gradient(135deg, #f8d7da 0%, #ff7675 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .alert-info-modern {
+        background: linear-gradient(135deg, #d1ecf1 0%, #74b9ff 100%);
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .alert-success-modern {
+        background: linear-gradient(135deg, #d4edda 0%, #00b894 100%);
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-close-btn {
+        margin-left: auto;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+
+    .alert-close-btn:hover {
+        opacity: 1;
+    }
+
+    /* ✅ LOADING SPINNER MODERNO */
+    .loading-container {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #e7e8eb;
+        border-top: 4px solid #1788ca;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+        color: #1788ca;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    /* ✅ RESULTADOS CONTAINER */
+    .results-container {
+        margin-top: 2rem;
+    }
+
+    /* ✅ RESPONSIVE */
+    @@media (max-width: 768px) {
+        .page-header-custom {
+            padding: 1.5rem 0;
+        }
+
+        .page-header-custom h2 {
+            font-size: 2rem;
+        }
+
+        .search-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        .btn-modern {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .card-body-modern {
+            padding: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .page-header-custom h2 {
+            font-size: 1.8rem;
+        }
+
+        .card-header-modern,
+        .card-body-modern {
+            padding: 1rem;
+        }
+    }
+
+    /* ✅ ANIMACIONES */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ✅ FOCUS STATES MEJORADOS */
+    .form-control-modern:focus + .form-label-modern {
+        color: #1788ca;
+    }
+
+    /* ✅ VALIDACIÓN VISUAL */
+    .form-control-error {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+    }
+
+    .form-control-success {
+        border-color: #28a745;
+        box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+    }
+</style>
+
+<div class="page-header-custom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2><i class="fas fa-user-search"></i> Consultar por Colaborador</h2>
+                <p>Busque información detallada de cualquier colaborador de forma rápida y eficiente</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Panel de b�squeda -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-search"></i> Criterios de B�squeda</h3>
+<div class="container-fluid" style="max-width: 1400px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <!-- Panel de búsqueda -->
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h3><i class="fas fa-search"></i> Criterios de Búsqueda</h3>
                 </div>
-                <div class="panel-body">
-                    <form id="formBusqueda" class="form-horizontal">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Empleado:</label>
-                                    <div class="col-sm-8">
-                                        @Html.DropDownList("idEmpleado", (SelectList)ViewBag.Empleados,
-                                            "-- Seleccionar empleado --",
-                                            new { @class = "form-control", @id = "ddlEmpleado" })
-                                    </div>
-                                </div>
+                <div class="card-body-modern">
+                    <form id="formBusqueda">
+                        <div class="search-grid">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Empleado:</label>
+                                @Html.DropDownList("idEmpleado", (SelectList)ViewBag.Empleados,
+                                    "-- Seleccionar empleado --",
+                                    new { @class = "form-control-modern", @id = "ddlEmpleado" })
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">C�dula:</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="txtCedula" name="cedula" class="form-control"
-                                               placeholder="Ingrese n�mero de c�dula" />
-                                    </div>
-                                </div>
+
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Cédula:</label>
+                                <input type="text"
+                                       id="txtCedula"
+                                       name="cedula"
+                                       class="form-control-modern"
+                                       placeholder="Ingrese número de cédula"
+                                       oninput="validarSoloNumeros(this)"
+                                       onkeypress="return validarTeclaNumeros(event)" />
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Nombre:</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="txtNombre" name="nombre" class="form-control"
-                                               placeholder="Ingrese nombre o apellido" />
-                                    </div>
-                                </div>
+
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Nombre:</label>
+                                <input type="text"
+                                       id="txtNombre"
+                                       name="nombre"
+                                       class="form-control-modern"
+                                       placeholder="Ingrese nombre o apellido"
+                                       oninput="validarSoloLetras(this)"
+                                       onkeypress="return validarTeclaLetras(event)" />
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fa fa-search"></i> Buscar
-                                </button>
-                                <button type="button" class="btn btn-default btn-lg" onclick="limpiarFormulario()">
-                                    <i class="fa fa-eraser"></i> Limpiar
-                                </button>
-                            </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn-modern btn-primary-modern btn-large">
+                                <i class="fas fa-search"></i> Buscar Colaborador
+                            </button>
+                            <button type="button" class="btn-modern btn-secondary-modern btn-large" onclick="limpiarFormulario()">
+                                <i class="fas fa-eraser"></i> Limpiar Campos
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- �rea de resultados -->
-    <div class="row">
-        <div class="col-md-12">
-            <div id="resultadosContainer" style="display: none;">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fa fa-list"></i> Resultados de la B�squeda</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div id="resultadosContent">
-                            <!-- Aqu� se cargar�n los resultados -->
+            <!-- Loading spinner -->
+            <div id="loadingSpinner" style="display: none;" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Buscando colaboradores...</p>
+            </div>
+
+            <!-- Área de resultados -->
+            <div class="results-container">
+                <div id="resultadosContainer" style="display: none;">
+                    <div class="card-modern fade-in">
+                        <div class="card-header-modern">
+                            <h3><i class="fas fa-list-alt"></i> Resultados de la Búsqueda</h3>
+                        </div>
+                        <div class="card-body-modern">
+                            <div id="resultadosContent">
+                                <!-- Aquí se cargarán los resultados -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Loading spinner -->
-    <div id="loadingSpinner" style="display: none;" class="text-center">
-        <div class="alert alert-info">
-            <i class="fa fa-spinner fa-spin"></i> Buscando colaboradores...
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-$(document).ready(function() {
-    // Manejar env�o del formulario
-    $('#formBusqueda').on('submit', function(e) {
-        e.preventDefault();
-        buscarColaboradores();
-    });
-
-    // Limpiar otros campos cuando se selecciona empleado
-    $('#ddlEmpleado').on('change', function() {
-        if ($(this).val()) {
-            $('#txtCedula, #txtNombre').val('');
-        }
-    });
-
-    // Limpiar dropdown cuando se escribe en otros campos
-    $('#txtCedula, #txtNombre').on('input', function() {
-        if ($(this).val()) {
-            $('#ddlEmpleado').val('');
-        }
-    });
-});
-
-function buscarColaboradores() {
-    var idEmpleado = $('#ddlEmpleado').val();
-    var cedula = $('#txtCedula').val().trim();
-    var nombre = $('#txtNombre').val().trim();
-
-    // Validar que al menos un campo est� lleno
-    if (!idEmpleado && !cedula && !nombre) {
-        mostrarAlerta('warning', 'Debe especificar al menos un criterio de b�squeda.');
-        return;
-    }
-
-    // Mostrar loading
-    $('#loadingSpinner').show();
-    $('#resultadosContainer').hide();
-
-    // Realizar b�squeda
-    $.ajax({
-        url: '@Url.Action("BuscarColaborador", "Consultas")',
-        type: 'POST',
-        data: {
-            idEmpleado: idEmpleado || null,
-            cedula: cedula || null,
-            nombre: nombre || null
-        },
-        success: function(response) {
-            $('#loadingSpinner').hide();
-
-            if (response.success === false) {
-                mostrarAlerta('warning', response.message);
-            } else {
-                $('#resultadosContent').html(response);
-                $('#resultadosContainer').show();
+        // ✅ VALIDACIONES DE INPUT
+        function validarTeclaNumeros(event) {
+            const key = event.key;
+            // Solo permitir números y teclas de control
+            if (!/[0-9]/.test(key) &&
+                !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+                event.preventDefault();
+                return false;
             }
-        },
-        error: function() {
-            $('#loadingSpinner').hide();
-            mostrarAlerta('danger', 'Error al realizar la b�squeda. Int�ntelo de nuevo.');
+            return true;
         }
-    });
-}
 
-function limpiarFormulario() {
-    $('#formBusqueda')[0].reset();
-    $('#ddlEmpleado').val('');
-    $('#resultadosContainer').hide();
-}
+        function validarSoloNumeros(input) {
+            // Remover caracteres no numéricos
+            input.value = input.value.replace(/[^0-9]/g, '');
 
-function mostrarAlerta(tipo, mensaje) {
-    var alertHtml = '<div class="alert alert-'+ tipo +' alert-dismissible">' +
-                   '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-                   '<i class="fa fa-exclamation-triangle"></i> ' + mensaje +
-                   '</div>';
+            // Validación visual
+            if (input.value && !/^[0-9]+$/.test(input.value)) {
+                input.classList.add('form-control-error');
+                input.classList.remove('form-control-success');
+            } else if (input.value) {
+                input.classList.add('form-control-success');
+                input.classList.remove('form-control-error');
+            } else {
+                input.classList.remove('form-control-error', 'form-control-success');
+            }
+        }
 
-    // Remover alertas anteriores
-    $('.alert').remove();
+        function validarTeclaLetras(event) {
+            const key = event.key;
+            // Solo permitir letras, espacios, acentos y teclas de control
+            if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(key) &&
+                !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
 
-    // Agregar nueva alerta
-    $('#formBusqueda').before(alertHtml);
+        function validarSoloLetras(input) {
+            // Remover caracteres no válidos
+            input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
 
-    // Auto-ocultar despu�s de 5 segundos
-    setTimeout(function() {
-        $('.alert').fadeOut();
-    }, 5000);
-}
+            // Validación visual
+            if (input.value && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(input.value)) {
+                input.classList.add('form-control-error');
+                input.classList.remove('form-control-success');
+            } else if (input.value) {
+                input.classList.add('form-control-success');
+                input.classList.remove('form-control-error');
+            } else {
+                input.classList.remove('form-control-error', 'form-control-success');
+            }
+        }
+
+        $(document).ready(function() {
+            // Manejar envío del formulario
+            $('#formBusqueda').on('submit', function(e) {
+                e.preventDefault();
+                buscarColaboradores();
+            });
+
+            // Limpiar otros campos cuando se selecciona empleado
+            $('#ddlEmpleado').on('change', function() {
+                if ($(this).val()) {
+                    $('#txtCedula, #txtNombre').val('').removeClass('form-control-error form-control-success');
+                }
+            });
+
+            // Limpiar dropdown cuando se escribe en otros campos
+            $('#txtCedula, #txtNombre').on('input', function() {
+                if ($(this).val()) {
+                    $('#ddlEmpleado').val('');
+                }
+            });
+        });
+
+        function buscarColaboradores() {
+            var idEmpleado = $('#ddlEmpleado').val();
+            var cedula = $('#txtCedula').val().trim();
+            var nombre = $('#txtNombre').val().trim();
+
+            // Validar que al menos un campo esté lleno
+            if (!idEmpleado && !cedula && !nombre) {
+                mostrarAlerta('warning', 'Debe especificar al menos un criterio de búsqueda.');
+                return;
+            }
+
+            // Mostrar loading con animación
+            $('#loadingSpinner').fadeIn(300);
+            $('#resultadosContainer').fadeOut(300);
+
+            // Realizar búsqueda
+            $.ajax({
+                url: '@Url.Action("BuscarColaborador", "Consultas")',
+                type: 'POST',
+                data: {
+                    idEmpleado: idEmpleado || null,
+                    cedula: cedula || null,
+                    nombre: nombre || null
+                },
+                success: function(response) {
+                    $('#loadingSpinner').fadeOut(300);
+
+                    if (response.success === false) {
+                        mostrarAlerta('warning', response.message);
+                    } else {
+                        $('#resultadosContent').html(response);
+                        $('#resultadosContainer').fadeIn(500);
+
+                        // Scroll suave hacia los resultados
+                        $('html, body').animate({
+                            scrollTop: $('#resultadosContainer').offset().top - 100
+                        }, 800);
+                    }
+                },
+                error: function() {
+                    $('#loadingSpinner').fadeOut(300);
+                    mostrarAlerta('danger', 'Error al realizar la búsqueda. Inténtelo de nuevo.');
+                }
+            });
+        }
+
+        function limpiarFormulario() {
+            $('#formBusqueda')[0].reset();
+            $('#ddlEmpleado').val('');
+            $('.form-control-modern').removeClass('form-control-error form-control-success');
+            $('#resultadosContainer').fadeOut(300);
+            $('.alert-modern').fadeOut(300);
+        }
+
+        function mostrarAlerta(tipo, mensaje) {
+            // Mapear tipos a clases modernas
+            var tipoClass = 'alert-' + tipo + '-modern';
+            var icono = tipo === 'warning' ? 'fa-exclamation-triangle' :
+                       tipo === 'danger' ? 'fa-times-circle' :
+                       tipo === 'info' ? 'fa-info-circle' : 'fa-check-circle';
+
+            var alertHtml = '<div class="alert-modern '+ tipoClass +' fade-in">' +
+                           '<i class="fas '+ icono +'"></i>' +
+                           '<span>' + mensaje + '</span>' +
+                           '<button type="button" class="alert-close-btn" onclick="cerrarAlerta(this)">' +
+                           '<i class="fas fa-times"></i>' +
+                           '</button>' +
+                           '</div>';
+
+            // Remover alertas anteriores
+            $('.alert-modern').fadeOut(300, function() {
+                $(this).remove();
+            });
+
+            // Agregar nueva alerta
+            $('#formBusqueda').before(alertHtml);
+
+            // Auto-ocultar después de 5 segundos
+            setTimeout(function() {
+                $('.alert-modern').fadeOut(500, function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+
+        function cerrarAlerta(button) {
+            $(button).closest('.alert-modern').fadeOut(300, function() {
+                $(this).remove();
+            });
+        }
     </script>
 }

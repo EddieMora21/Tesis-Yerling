@@ -6,12 +6,32 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --purple-color: #6f42c1;
+        --orange-color: #fd7e14;
+        --info-color: #17a2b8;
+        --nomina-color: #20c997;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
+    }
+
     .page-header {
-        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
     .page-title {
@@ -19,101 +39,208 @@
         font-weight: 600;
         margin: 0;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
 
+    /* LEYENDA DE COLORES */
+    .color-legend {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
+    }
+
+    .legend-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .legend-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--neutral-color);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--white);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .legend-color.vacaciones { background: var(--secondary-color); }
+    .legend-color.asistencia { background: var(--success-color); }
+    .legend-color.permisos { background: var(--accent-color); }
+    .legend-color.horasextras { background: var(--purple-color); }
+    .legend-color.incapacidades { background: var(--danger-color); }
+    .legend-color.liquidaciones { background: var(--orange-color); }
+    .legend-color.nomina { background: var(--nomina-color); }
+    .legend-color.general { background: var(--info-color); }
+
     .btn-create {
-        background: #fab61b;
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
         border: none;
-        color: #221d42;
+        color: var(--primary-color);
         font-weight: 600;
         padding: 12px 24px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        border: 2px solid transparent;
     }
 
-        .btn-create:hover {
-            background: #e09f15;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
-            color: #221d42;
-            text-decoration: none;
-        }
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+        color: var(--primary-color);
+        text-decoration: none;
+    }
 
     .estados-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
         overflow: hidden;
-        border: 1px solid #e7e8eb;
+        border: 1px solid var(--neutral-color);
     }
 
     .table-responsive {
-        border-radius: 15px;
+        border-radius: var(--border-radius);
     }
 
     .custom-table {
         margin: 0;
-        background: white;
+        background: var(--white);
+        border-collapse: collapse;
     }
 
-        .custom-table thead th {
-            background: #221d42;
-            color: white;
-            border: none;
-            padding: 1.2rem 1rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .custom-table thead th {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 1.2rem 1rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .custom-table tbody td {
-            padding: 1rem;
-            border-bottom: 1px solid #e7e8eb;
-            vertical-align: middle;
-        }
+    .custom-table thead th i {
+        opacity: 0.8;
+    }
 
-        .custom-table tbody tr:hover {
-            background: rgba(23, 136, 202, 0.05);
-        }
+    .custom-table tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--neutral-color);
+        vertical-align: middle;
+    }
 
-        .custom-table tbody tr:last-child td {
-            border-bottom: none;
-        }
+    .custom-table tbody tr:hover {
+        background: rgba(23, 136, 202, 0.05);
+    }
+
+    .custom-table tbody tr:last-child td {
+        border-bottom: none;
+    }
 
     .estado-name {
         font-weight: 600;
-        color: #221d42;
+        color: var(--primary-color);
         font-size: 1rem;
     }
 
+    /* BADGES DE MÓDULO CON COLORES ÚNICOS */
     .badge-modulo {
         padding: 8px 16px;
         border-radius: 20px;
         font-size: 0.85rem;
         font-weight: 600;
         display: inline-block;
-        min-width: 80px;
+        min-width: 100px;
         text-align: center;
+        text-transform: capitalize;
+        transition: var(--transition);
+        border: 2px solid transparent;
+        color: var(--white);
     }
 
+    /* Colores específicos para cada módulo */
     .modulo-vacaciones {
-        background: linear-gradient(135deg, #1788ca, #0f6da3);
-        color: white;
-    }
-
-    .modulo-permisos {
-        background: linear-gradient(135deg, #fab61b, #e09f15);
-        color: #221d42;
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
     }
 
     .modulo-asistencia {
-        background: linear-gradient(135deg, #221d42, #1a1536);
-        color: white;
+        background: linear-gradient(135deg, var(--success-color), #1e7e34);
+        color: var(--white);
+    }
+
+    .modulo-permisos {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+    }
+
+    .modulo-horasextras {
+        background: linear-gradient(135deg, var(--purple-color), #5a2d91);
+        color: var(--white);
+    }
+
+    .modulo-incapacidades {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+    .modulo-liquidaciones {
+        background: linear-gradient(135deg, var(--orange-color), #e55d00);
+        color: var(--white);
+    }
+
+    .modulo-general {
+        background: linear-gradient(135deg, var(--info-color), #138496);
+        color: var(--white);
+    }
+
+    /* NUEVA CLASE PARA NÓMINA */
+    .modulo-nomina, .modulo-nómina {
+        background: linear-gradient(135deg, var(--nomina-color), #17a085);
+        color: var(--white);
+    }
+
+    /* Para módulos que no tienen clase específica */
+    .badge-modulo:not([class*="modulo-"]) {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: var(--white);
+    }
+
+    /* Hover effects para badges */
+    .badge-modulo:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     .action-buttons {
@@ -130,49 +257,50 @@
         font-size: 0.85rem;
         font-weight: 500;
         border: none;
-        transition: all 0.3s ease;
+        transition: var(--transition);
         display: inline-flex;
         align-items: center;
         gap: 4px;
         min-width: 70px;
         justify-content: center;
+        border: 2px solid transparent;
     }
 
     .btn-view {
-        background: #1788ca;
-        color: white;
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
     }
 
-        .btn-view:hover {
-            background: #0f6da3;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
+    .btn-view:hover {
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
 
     .btn-edit {
-        background: #fab61b;
-        color: #221d42;
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
     }
 
-        .btn-edit:hover {
-            background: #e09f15;
-            color: #221d42;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
+    .btn-edit:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.3);
+    }
 
     .btn-delete {
-        background: #dc3545;
-        color: white;
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
     }
 
-        .btn-delete:hover {
-            background: #c82333;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
+    .btn-delete:hover {
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
 
     .alert-custom {
         border-radius: 10px;
@@ -185,13 +313,13 @@
     .alert-success-custom {
         background: linear-gradient(135deg, #d4edda, #c3e6cb);
         color: #155724;
-        border-left: 4px solid #28a745;
+        border-left: 4px solid var(--success-color);
     }
 
     .alert-error-custom {
         background: linear-gradient(135deg, #f8d7da, #f5c6cb);
         color: #721c24;
-        border-left: 4px solid #dc3545;
+        border-left: 4px solid var(--danger-color);
     }
 
     .empty-state {
@@ -200,17 +328,19 @@
         color: #6c757d;
     }
 
-        .empty-state i {
-            font-size: 4rem;
-            color: #e7e8eb;
-            margin-bottom: 1rem;
-        }
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--neutral-color);
+        margin-bottom: 1rem;
+    }
 
-        .empty-state h4 {
-            color: #221d42;
-            margin-bottom: 1rem;
-        }
+    .empty-state h4 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
 
+    /* Responsive Design */
     @@media (max-width: 768px) {
         .page-header {
             padding: 1.5rem 0;
@@ -218,6 +348,19 @@
 
         .page-title {
             font-size: 1.8rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .legend-items {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .legend-item {
+            justify-content: center;
+            min-width: 200px;
         }
 
         .action-buttons {
@@ -227,7 +370,7 @@
 
         .btn-action {
             width: 100%;
-            padding: 6px 12px;
+            padding: 8px 12px;
         }
 
         .custom-table thead th {
@@ -238,6 +381,17 @@
         .custom-table tbody td {
             padding: 0.8rem 0.5rem;
         }
+
+        .badge-modulo {
+            min-width: 90px;
+            font-size: 0.8rem;
+        }
+
+        .btn-create {
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+        }
     }
 </style>
 
@@ -246,7 +400,7 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <h1 class="page-title">
-                    <i class="fas fa-toggle-on me-3"></i>
+                    <i class="fas fa-toggle-on"></i>
                     Gestión de Estados
                 </h1>
             </div>
@@ -261,6 +415,48 @@
 </div>
 
 <div class="container">
+    <!-- LEYENDA DE COLORES -->
+    <div class="color-legend">
+        <div class="legend-title">
+            <i class="fas fa-palette"></i>
+            Códigos de Color por Módulo
+        </div>
+        <div class="legend-items">
+            <div class="legend-item">
+                <div class="legend-color vacaciones"></div>
+                <span>Vacaciones</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color asistencia"></div>
+                <span>Asistencia</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color permisos"></div>
+                <span>Permisos</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color horasextras"></div>
+                <span>Horas Extras</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color incapacidades"></div>
+                <span>Incapacidades</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color liquidaciones"></div>
+                <span>Liquidaciones</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color nomina"></div>
+                <span>Nómina</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color general"></div>
+                <span>General</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Alertas -->
     @if (TempData["Success"] != null)
     {
@@ -301,8 +497,8 @@
                                     <div class="estado-name">@item.nombre</div>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge-modulo modulo-@item.modulo.ToLower().Replace(" ", "")">
-                                        @item.modulo
+                                    <span class="badge-modulo modulo-@(item.modulo?.ToLower().Replace(" ", "").Replace("á", "a").Replace("é", "e").Replace("í", "i").Replace("ó", "o").Replace("ú", "u") ?? "default")">
+                                        @(item.modulo ?? "N/A")
                                     </span>
                                 </td>
                                 <td>
@@ -321,7 +517,8 @@
                                         </a>
                                         <a href="@Url.Action("Delete", new { id = item.id_estado })"
                                            class="btn-action btn-delete"
-                                           title="Eliminar">
+                                           title="Eliminar"
+                                           onclick="return confirm('¿Está seguro de eliminar este estado?');">
                                             <i class="fas fa-trash"></i>
                                             Eliminar
                                         </a>

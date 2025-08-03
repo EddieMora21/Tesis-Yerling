@@ -5,123 +5,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="vacaciones-container">
-    <!-- Header -->
-    <div class="page-header">
-        <h2><i class="fa fa-calendar"></i> Gestión de Vacaciones</h2>
-        <p class="subtitle">Administra los registros de vacaciones de todos los empleados</p>
-    </div>
-
-    <!-- Barra de acciones -->
-    <div class="action-bar">
-        <div class="action-left">
-            <a href="@Url.Action("Create")" class="btn btn-success">
-                <i class="fa fa-plus"></i> Nuevo Registro
-            </a>
-            <a href="@Url.Action("Index", "SolicitudesVacaciones")" class="btn btn-info">
-                <i class="fa fa-list"></i> Ver Solicitudes
-            </a>
-        </div>
-        <div class="action-right">
-            <div class="search-box">
-                <input type="text" id="filtro" placeholder="Buscar empleado..." />
-                <i class="fa fa-search search-icon"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Panel principal -->
-    <div class="main-panel">
-        <div class="panel-header">
-            <h3><i class="fa fa-table"></i> Registros de Vacaciones</h3>
-        </div>
-        <div class="panel-body">
-            @if (Model != null && Model.Any())
-            {
-                <div class="table-container">
-                    <table class="vacaciones-table" id="tablaVacaciones">
-                        <thead>
-                            <tr>
-                                <th><i class="fa fa-user"></i> Empleado</th>
-                                <th><i class="fa fa-id-card"></i> Cédula</th>
-                                <th><i class="fa fa-calendar"></i> Período</th>
-                                <th><i class="fa fa-calendar-plus-o"></i> Días Disponibles</th>
-                                <th><i class="fa fa-calendar-check-o"></i> Días Disfrutados</th>
-                                <th><i class="fa fa-calculator"></i> Días Restantes</th>
-                                <th><i class="fa fa-clock-o"></i> Última Actualización</th>
-                                <th><i class="fa fa-cogs"></i> Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                var diasRestantes = item.dias_disponibles - (item.dias_disfrutados ?? 0);
-
-                                <tr>
-                                    <td>
-                                        <strong>@(item.Empleados?.nombre1) @(item.Empleados?.apellido1)</strong>
-                                    </td>
-                                    <td>@(item.Empleados?.cedula)</td>
-                                    <td>
-                                        <span class="badge badge-info">@item.periodo</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge badge-blue">@item.dias_disponibles</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge badge-green">@(item.dias_disfrutados ?? 0)</span>
-                                    </td>
-                                    <td class="text-center">
-                                        @if (diasRestantes > 0)
-                                        {
-                                            <span class="badge badge-orange">@diasRestantes</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge badge-red">0</span>
-                                        }
-                                    </td>
-                                    <td class="text-muted">
-                                        @(item.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="@Url.Action("Details", new { id = item.id_vacacion })"
-                                               class="btn-action btn-info" title="Ver detalles">
-                                                Ver
-                                            </a>
-                                            <a href="@Url.Action("Edit", new { id = item.id_vacacion })"
-                                               class="btn-action btn-warning" title="Editar">
-                                                Edit
-                                            </a>
-                                            <a href="@Url.Action("Delete", new { id = item.id_vacacion })"
-                                               class="btn-action btn-danger" title="Eliminar">
-                                                Del
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <i class="fa fa-info-circle fa-3x"></i>
-                    <h4>No hay registros de vacaciones</h4>
-                    <p>Comienza creando un nuevo registro de vacaciones para un empleado.</p>
-                    <a href="@Url.Action("Create")" class="btn btn-success">
-                        <i class="fa fa-plus"></i> Crear Primer Registro
-                    </a>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     /* Contenedor principal */
     .vacaciones-container {
         max-width: 1200px;
@@ -336,101 +237,69 @@
         background-color: #dc3545;
     }
 
-    /* Botones de acción - VERSIÓN MEJORADA */
+    /* === BOTONES DE ACCIÓN ESTÁNDAR === */
     .action-buttons {
         display: flex;
-        gap: 12px;
+        gap: 4px;
         justify-content: center;
-        align-items: center;
-        padding: 5px 0;
+        flex-wrap: nowrap;
+        min-width: 210px;
     }
 
     .btn-action {
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        transition: var(--transition);
         display: inline-flex;
         align-items: center;
+        gap: 4px;
+        min-width: 65px;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
+    }
+
+    .btn-view:hover {
+        background: linear-gradient(135deg, #0f6da3, #0c5a87);
+        color: var(--white);
         text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        position: relative;
-        overflow: hidden;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
     }
 
-        .btn-action::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.2);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-
-        .btn-action:hover::before {
-            transform: translateX(0);
-        }
-
-        .btn-action:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
-
-        .btn-action:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-action.btn-info {
-            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-            color: white;
-        }
-
-        .btn-action.btn-warning {
-            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-            color: #212529;
-        }
-
-        .btn-action.btn-danger {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-        }
-
-    /* Tooltips para botones */
-    .btn-action {
-        position: relative;
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
     }
 
-        .btn-action::after {
-            content: attr(title);
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.3);
+    }
 
-        .btn-action:hover::after {
-            opacity: 1;
-            visibility: visible;
-            bottom: -30px;
-        }
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
 
     /* Estado vacío */
     .empty-state {
@@ -453,7 +322,45 @@
             margin-bottom: 30px;
         }
 
-    /* Responsive */
+    /* === RESPONSIVE DESIGN === */
+    @@media (max-width: 1200px) {
+        .action-buttons {
+            min-width: 190px;
+        }
+
+        .btn-action {
+            min-width: 60px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .vacaciones-table th {
+            padding: 1rem 0.7rem;
+            font-size: 0.85rem;
+        }
+
+        .vacaciones-table td {
+            padding: 0.8rem 0.7rem;
+        }
+
+        .action-buttons {
+            min-width: 170px;
+            gap: 3px;
+        }
+
+        .btn-action {
+            min-width: 55px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action .btn-text {
+            display: none; /* Oculta el texto, solo muestra iconos */
+        }
+    }
+
     @@media (max-width: 768px) {
         .action-bar {
             flex-direction: column;
@@ -467,25 +374,31 @@
 
         .vacaciones-table {
             font-size: 12px;
+            min-width: 850px;
         }
 
-            .vacaciones-table th,
-            .vacaciones-table td {
-                padding: 8px 4px;
-            }
+        .vacaciones-table th,
+        .vacaciones-table td {
+            padding: 0.8rem 0.5rem;
+        }
 
         .action-buttons {
-            gap: 8px;
+            min-width: 160px;
+            gap: 2px;
         }
 
         .btn-action {
-            width: 30px;
-            height: 30px;
-            font-size: 12px;
+            min-width: 50px;
+            padding: 5px 6px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action i {
+            font-size: 0.8rem;
         }
     }
 
-    @@media (max-width: 480px) {
+    @@media (max-width: 576px) {
         .vacaciones-container {
             padding: 10px;
         }
@@ -494,21 +407,166 @@
             font-size: 24px;
         }
 
+        .vacaciones-table {
+            min-width: 800px;
+        }
+
         .action-buttons {
-            gap: 6px;
+            flex-direction: column;
+            min-width: 80px;
+            gap: 2px;
         }
 
         .btn-action {
-            width: 28px;
-            height: 28px;
-            font-size: 11px;
+            width: 100%;
+            min-width: auto;
+            padding: 4px;
+            font-size: 0.65rem;
         }
+    }
 
-            .btn-action::after {
-                display: none;
-            }
+    /* Scroll horizontal personalizado */
+    .table-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: var(--secondary-color);
+        border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-color);
     }
 </style>
+
+<div class="vacaciones-container">
+    <!-- Header -->
+    <div class="page-header">
+        <h2><i class="fa fa-calendar"></i> Gestión de Vacaciones</h2>
+        <p class="subtitle">Administra los registros de vacaciones de todos los empleados</p>
+    </div>
+
+    <!-- Barra de acciones -->
+    <div class="action-bar">
+        <div class="action-left">
+            <a href="@Url.Action("Create")" class="btn btn-success">
+                <i class="fa fa-plus"></i> Nuevo Registro
+            </a>
+            <a href="@Url.Action("Index", "SolicitudesVacaciones")" class="btn btn-info">
+                <i class="fa fa-list"></i> Ver Solicitudes
+            </a>
+        </div>
+        <div class="action-right">
+            <div class="search-box">
+                <input type="text" id="filtro" placeholder="Buscar empleado..." />
+                <i class="fa fa-search search-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel principal -->
+    <div class="main-panel">
+        <div class="panel-header">
+            <h3><i class="fa fa-table"></i> Registros de Vacaciones</h3>
+        </div>
+        <div class="panel-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-container">
+                    <table class="vacaciones-table" id="tablaVacaciones">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-user"></i> Empleado</th>
+                                <th><i class="fa fa-id-card"></i> Cédula</th>
+                                <th><i class="fa fa-calendar"></i> Período</th>
+                                <th><i class="fa fa-calendar-plus-o"></i> Días Disponibles</th>
+                                <th><i class="fa fa-calendar-check-o"></i> Días Disfrutados</th>
+                                <th><i class="fa fa-calculator"></i> Días Restantes</th>
+                                <th><i class="fa fa-clock-o"></i> Última Actualización</th>
+                                <th><i class="fa fa-cogs"></i> Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var diasRestantes = item.dias_disponibles - (item.dias_disfrutados);
+
+                                <tr>
+                                    <td>
+                                        <strong>@(item.Empleados?.nombre1) @(item.Empleados?.apellido1)</strong>
+                                    </td>
+                                    <td>@(item.Empleados?.cedula)</td>
+                                    <td>
+                                        <span class="badge badge-info">@item.periodo</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-blue">@item.dias_disponibles</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-green">@(item.dias_disfrutados)</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (diasRestantes > 0)
+                                        {
+                                            <span class="badge badge-orange">@diasRestantes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-red">0</span>
+                                        }
+                                    </td>
+                                    <td class="text-muted">
+                                        @(item.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="@Url.Action("Details", new { id = item.id_vacacion })"
+                                               class="btn-action btn-view"
+                                               title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                                <span class="btn-text">Ver</span>
+                                            </a>
+                                            <a href="@Url.Action("Edit", new { id = item.id_vacacion })"
+                                               class="btn-action btn-edit"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                                <span class="btn-text">Editar</span>
+                                            </a>
+                                            <a href="@Url.Action("Delete", new { id = item.id_vacacion })"
+                                               class="btn-action btn-delete"
+                                               title="Eliminar"
+                                               onclick="return confirm('¿Está seguro de eliminar este registro de vacaciones?');">
+                                                <i class="fas fa-trash"></i>
+                                                <span class="btn-text">Eliminar</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fa fa-info-circle fa-3x"></i>
+                    <h4>No hay registros de vacaciones</h4>
+                    <p>Comienza creando un nuevo registro de vacaciones para un empleado.</p>
+                    <a href="@Url.Action("Create")" class="btn btn-success">
+                        <i class="fa fa-plus"></i> Crear Primer Registro
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

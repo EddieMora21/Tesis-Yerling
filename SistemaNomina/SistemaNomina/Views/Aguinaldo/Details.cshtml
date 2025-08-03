@@ -7,25 +7,30 @@
 
 <style>
     :root {
-        --azul-oscuro: #221d42;
-        --celeste: #1788ca;
-        --amarillo: #fab61b;
-        --gris-claro: #e7e8eb;
-        --blanco: #ffffff;
-        --verde: #28a745;
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
     }
 
     .details-container {
-        background: var(--blanco);
-        border-radius: 15px;
+        background: var(--white);
+        border-radius: var(--border-radius);
         padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-main);
         margin-bottom: 2rem;
     }
 
     .details-header {
-        background: linear-gradient(135deg, var(--celeste) 0%, var(--azul-oscuro) 100%);
-        color: var(--blanco);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: var(--white);
         padding: 2rem;
         border-radius: 10px;
         margin-bottom: 2rem;
@@ -35,7 +40,7 @@
     .amount-display {
         font-size: 3rem;
         font-weight: bold;
-        color: var(--amarillo);
+        color: var(--accent-color);
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         margin: 1rem 0;
     }
@@ -45,7 +50,7 @@
         border-radius: 10px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-        border-left: 5px solid var(--celeste);
+        border-left: 5px solid var(--secondary-color);
     }
 
     .info-grid {
@@ -56,7 +61,7 @@
     }
 
     .info-card {
-        background: var(--blanco);
+        background: var(--white);
         border-radius: 8px;
         padding: 1.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -64,13 +69,13 @@
         transition: transform 0.3s ease;
     }
 
-        .info-card:hover {
-            transform: translateY(-5px);
-        }
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
 
     .info-icon {
         font-size: 2rem;
-        color: var(--celeste);
+        color: var(--secondary-color);
         margin-bottom: 0.5rem;
     }
 
@@ -84,43 +89,19 @@
     .info-value {
         font-size: 1.2rem;
         font-weight: bold;
-        color: var(--azul-oscuro);
+        color: var(--primary-color);
     }
 
-    .calculation-breakdown {
-        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-        border-radius: 10px;
-        padding: 1.5rem;
-        margin: 1.5rem 0;
+    .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, var(--success-color), #229954);
+        color: var(--white);
+        margin-top: 1rem;
     }
-
-    .formula-display {
-        background: var(--azul-oscuro);
-        color: var(--blanco);
-        padding: 1rem;
-        border-radius: 8px;
-        font-family: 'Courier New', monospace;
-        text-align: center;
-        margin: 1rem 0;
-    }
-
-    .timeline-item {
-        border-left: 3px solid var(--celeste);
-        padding-left: 1rem;
-        margin-bottom: 1rem;
-        position: relative;
-    }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -6px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--celeste);
-        }
 
     .action-buttons {
         display: flex;
@@ -132,52 +113,72 @@
 
     .btn-custom {
         padding: 12px 24px;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition: var(--transition);
         border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .btn-edit {
-        background: var(--amarillo);
-        color: var(--azul-oscuro);
+        background: linear-gradient(135deg, var(--accent-color), #e09900);
+        color: var(--primary-color);
     }
 
-        .btn-edit:hover {
-            background: #e09900;
-            color: var(--blanco);
-            transform: translateY(-2px);
-        }
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+        color: var(--primary-color);
+        text-decoration: none;
+    }
 
     .btn-delete {
-        background: #dc3545;
-        color: var(--blanco);
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: var(--white);
     }
 
-        .btn-delete:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-        }
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        color: var(--white);
+        text-decoration: none;
+    }
 
     .btn-back {
-        background: var(--gris-claro);
-        color: var(--azul-oscuro);
+        background: var(--neutral-color);
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
     }
 
-        .btn-back:hover {
-            background: #d1d3d4;
-            transform: translateY(-2px);
+    .btn-back:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
         }
 
-    .status-badge {
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: bold;
-        background: var(--verde);
-        color: var(--blanco);
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-custom {
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .amount-display {
+            font-size: 2rem;
+        }
     }
 </style>
 
@@ -187,20 +188,20 @@
         <h2><i class="fas fa-file-invoice-dollar"></i> Detalles del Aguinaldo</h2>
         <div class="amount-display">₡@Model.monto_total.ToString("#,##0.00")</div>
         <p class="mb-0">
-            <strong>@Model.Empleados.nombre1 @Model.Empleados.apellido1</strong> - Ano @Model.anio
+            <strong>@Model.Empleados.nombre1 @Model.Empleados.apellido1</strong> - Año @Model.anio
         </p>
         <span class="status-badge">
             <i class="fas fa-check-circle"></i> Registrado
         </span>
     </div>
 
-    <!-- Informacion Principal -->
+    <!-- Información Principal -->
     <div class="info-section">
-        <h4 class="mb-3"><i class="fas fa-user-tie"></i> Informacion del Empleado</h4>
+        <h4 class="mb-3"><i class="fas fa-user-tie"></i> Información del Empleado</h4>
         <div class="info-grid">
             <div class="info-card">
                 <div class="info-icon"><i class="fas fa-id-card"></i></div>
-                <div class="info-label">Cedula</div>
+                <div class="info-label">Cédula</div>
                 <div class="info-value">@Html.DisplayFor(model => model.Empleados.cedula)</div>
             </div>
             <div class="info-card">
@@ -226,7 +227,7 @@
 
     <!-- Detalles del Aguinaldo -->
     <div class="info-section">
-        <h4 class="mb-3"><i class="fas fa-calculator"></i> Detalles del Calculo</h4>
+        <h4 class="mb-3"><i class="fas fa-calculator"></i> Detalles del Cálculo</h4>
         <div class="info-grid">
             <div class="info-card">
                 <div class="info-icon"><i class="fas fa-calendar-check"></i></div>
@@ -234,123 +235,14 @@
                 <div class="info-value">@Html.DisplayFor(model => model.meses_laborados) meses</div>
             </div>
             <div class="info-card">
-                <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
-                <div class="info-label">Ano Fiscal</div>
-                <div class="info-value">@Html.DisplayFor(model => model.anio)</div>
-            </div>
-            <div class="info-card">
-                <div class="info-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="info-icon"><i class="fas fa-coins"></i></div>
                 <div class="info-label">Monto Total</div>
                 <div class="info-value">₡@Model.monto_total.ToString("#,##0.00")</div>
             </div>
-            <div class="info-card">
-                <div class="info-icon"><i class="fas fa-percentage"></i></div>
-                <div class="info-label">Promedio Mensual</div>
-                <div class="info-value">₡@((Model.monto_total / Math.Max(Model.meses_laborados, 1)).ToString("#,##0.00"))</div>
-            </div>
         </div>
     </div>
 
-    <!-- Desglose del Calculo -->
-    <div class="calculation-breakdown">
-        <h4 class="mb-3"><i class="fas fa-chart-line"></i> Desglose Legal del Calculo</h4>
-
-        <div class="row">
-            <div class="col-md-6">
-                <h6><strong>Periodo de Calculo Legal:</strong></h6>
-                <p class="mb-2">
-                    <i class="fas fa-calendar-week"></i>
-                    Del 1 de diciembre de @(Model.anio - 1) al 30 de noviembre de @Model.anio
-                </p>
-
-                <h6><strong>Base Legal:</strong></h6>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-gavel text-primary"></i> Codigo de Trabajo de Costa Rica</li>
-                    <li><i class="fas fa-book text-primary"></i> Articulos relacionados con aguinaldo</li>
-                    <li><i class="fas fa-balance-scale text-primary"></i> Ministerio de Trabajo (MTSS)</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h6><strong>Formula Aplicada:</strong></h6>
-                <div class="formula-display">
-                    Aguinaldo = (Suma de Salarios del Periodo) dividido 12
-                </div>
-
-                <h6><strong>Consideraciones:</strong></h6>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-check text-success"></i> Calculo proporcional por meses laborados</li>
-                    <li><i class="fas fa-check text-success"></i> Ausencias injustificadas descontadas</li>
-                    <li><i class="fas fa-check text-success"></i> Conforme a normativa vigente</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Informacion de Auditoria -->
-    <div class="info-section">
-        <h4 class="mb-3"><i class="fas fa-history"></i> Informacion de Auditoria</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="timeline-item">
-                    <h6><strong>Creacion del Registro</strong></h6>
-                    <p class="mb-1">
-                        <i class="fas fa-calendar-plus"></i>
-                        @if (Model.fecha_creacion!= null)
-                        {
-                            @Model.fecha_creacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm")
-                        }
-                        else
-                        {
-                            <span class="text-muted">Fecha no registrada</span>
-                        }
-                    </p>
-                </div>
-
-                @if (Model.fecha_actualizacion!= null)
-                {
-                    <div class="timeline-item">
-                        <h6><strong>Ultima Actualizacion</strong></h6>
-                        <p class="mb-1">
-                            <i class="fas fa-calendar-edit"></i>
-                            @Model.fecha_actualizacion.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy 'a las' HH:mm")
-                        </p>
-                    </div>
-                }
-            </div>
-            <div class="col-md-6">
-                <div class="info-card">
-                    <div class="info-icon"><i class="fas fa-fingerprint"></i></div>
-                    <div class="info-label">ID del Registro</div>
-                    <div class="info-value">#@Model.id_aguinaldo</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Informacion Adicional -->
-    <div class="info-section">
-        <h4 class="mb-3"><i class="fas fa-info-circle"></i> Informacion Legal Importante</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <h6><i class="fas fa-exclamation-triangle text-warning"></i> Obligaciones del Empleador:</h6>
-                <ul>
-                    <li>Pago obligatorio antes del 20 de diciembre</li>
-                    <li>No puede ser sustituido por otros beneficios</li>
-                    <li>Debe pagarse en efectivo o deposito bancario</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h6><i class="fas fa-shield-alt text-success"></i> Derechos del Trabajador:</h6>
-                <ul>
-                    <li>Derecho irrenunciable del trabajador</li>
-                    <li>Proporcional al tiempo laborado</li>
-                    <li>No afectado por permisos justificados</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Botones de Accion -->
+    <!-- Botones de Acción -->
     <div class="action-buttons">
         <a href="@Url.Action("Edit", new { id = Model.id_aguinaldo })" class="btn-custom btn-edit">
             <i class="fas fa-edit"></i> Editar Registro

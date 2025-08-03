@@ -227,8 +227,8 @@ namespace SistemaNomina.Controllers
                 if (currentUserId!= null)
                 {
                     BitacoraHelper.RegistrarAccion("ELIMINAR_HORARIO",
-                        $"Eliminado horario: {horario.nombre} ({horario.hora_entrada:HH\\:mm} - {horario.hora_salida:HH\\:mm}) (ID: {horario.id_horario})",
-                        currentUserId.Value);
+    $"Eliminado horario: {horario.nombre} ({horario.hora_entrada.ToString(@"hh\:mm")} - {horario.hora_salida.ToString(@"hh\:mm")}) (ID: {horario.id_horario})",
+    currentUserId.Value);
                 }
 
                 db.Horarios.Remove(horario);

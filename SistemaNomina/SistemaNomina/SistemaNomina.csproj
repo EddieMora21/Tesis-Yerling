@@ -352,6 +352,7 @@
     </Compile>
     <Compile Include="Filters\RoleAuthorizeAttribute.cs" />
     <Compile Include="Helpers\BitacoraHelper.cs" />
+    <Compile Include="Helpers\NotificacionesHelper.cs" />
     <Compile Include="Helpers\RoleHelper.cs" />
     <Compile Include="Helpers\SecurityHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
@@ -386,9 +387,11 @@
       <DependentUpon>ModeloNomina.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\CalculoNominaViewModel.cs" />
+    <Compile Include="Models\DeduccionesViewModel.cs" />
     <Compile Include="Models\DetalleColaboradorViewModel.cs" />
     <Compile Include="Models\LiquidacionViewModel.cs" />
     <Compile Include="Models\Notificacion.cs" />
+    <Compile Include="Models\SolicitudVacacionesViewModel.cs" />
     <Compile Include="Nomina.cs">
       <DependentUpon>ModeloNomina.tt</DependentUpon>
     </Compile>
@@ -662,6 +665,7 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>

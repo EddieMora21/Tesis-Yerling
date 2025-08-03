@@ -17,6 +17,7 @@ namespace SistemaNomina.Controllers
         private smartbuilding_rhEntities db = new smartbuilding_rhEntities();
 
         // GET: Permisos
+        // GET: Permisos
         public ActionResult Index()
         {
             try
@@ -29,11 +30,18 @@ namespace SistemaNomina.Controllers
                     .OrderByDescending(p => p.fecha_creacion)
                     .ToList();
 
+                // ✅ AGREGAR ESTA LÍNEA - Cargar tipos de permiso para el filtro
+                ViewBag.TiposPermiso = db.TiposPermiso.OrderBy(t => t.nombre).ToList();
+
                 return View(permisos);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al cargar permisos: " + ex.Message;
+
+                // ✅ AGREGAR TAMBIÉN AQUÍ para el caso de error
+                ViewBag.TiposPermiso = db.TiposPermiso.OrderBy(t => t.nombre).ToList();
+
                 return View(new List<Permisos>());
             }
         }
@@ -331,8 +339,11 @@ namespace SistemaNomina.Controllers
                 "id_estado", "nombre", permiso?.id_estado);
 
             ViewBag.id_tipo_permiso = new SelectList(
-                db.TiposPermiso,
+                db.TiposPermiso.OrderBy(t => t.nombre),
                 "id_tipo_permiso", "nombre", permiso?.id_tipo_permiso);
+
+            // ✅ AGREGAR ESTA LÍNEA para los filtros
+            ViewBag.TiposPermiso = db.TiposPermiso.OrderBy(t => t.nombre).ToList();
 
             ViewBag.aprobado_por = new SelectList(
                 db.Usuarios.Where(u => u.primer_ingreso == true),

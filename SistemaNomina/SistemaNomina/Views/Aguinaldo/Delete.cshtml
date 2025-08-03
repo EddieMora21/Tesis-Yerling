@@ -7,26 +7,31 @@
 
 <style>
     :root {
-        --azul-oscuro: #221d42;
-        --celeste: #1788ca;
-        --amarillo: #fab61b;
-        --gris-claro: #e7e8eb;
-        --blanco: #ffffff;
-        --rojo: #dc3545;
-        --rojo-oscuro: #c82333;
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --danger-color: #dc3545;
+        --danger-dark: #c82333;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
     }
 
     .delete-container {
-        background: var(--blanco);
-        border-radius: 15px;
+        background: var(--white);
+        border-radius: var(--border-radius);
         padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-main);
         margin-bottom: 2rem;
     }
 
     .delete-header {
-        background: linear-gradient(135deg, var(--rojo) 0%, var(--rojo-oscuro) 100%);
-        color: var(--blanco);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem;
         border-radius: 10px;
         margin-bottom: 2rem;
@@ -45,7 +50,7 @@
     .danger-section {
         background: #f8d7da;
         border: 1px solid #f5c6cb;
-        border-left: 5px solid var(--rojo);
+        border-left: 5px solid var(--danger-color);
         border-radius: 8px;
         padding: 1.5rem;
         margin-bottom: 2rem;
@@ -67,13 +72,13 @@
         border-bottom: 1px solid #dee2e6;
     }
 
-        .detail-grid:last-child {
-            border-bottom: none;
-        }
+    .detail-grid:last-child {
+        border-bottom: none;
+    }
 
     .detail-label {
         font-weight: bold;
-        color: var(--azul-oscuro);
+        color: var(--primary-color);
     }
 
     .detail-value {
@@ -83,7 +88,7 @@
     .amount-highlight {
         font-size: 1.5rem;
         font-weight: bold;
-        color: var(--rojo);
+        color: var(--danger-color);
         text-align: center;
         padding: 1rem;
         background: #f8f9fa;
@@ -108,38 +113,46 @@
     }
 
     .btn-danger-custom {
-        background: linear-gradient(135deg, var(--rojo) 0%, var(--rojo-oscuro) 100%);
+        background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);
         border: none;
-        color: var(--blanco);
+        color: var(--white);
         padding: 12px 30px;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: var(--transition);
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-        .btn-danger-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
-        }
+    .btn-danger-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        color: var(--white);
+        text-decoration: none;
+    }
 
     .btn-secondary-custom {
-        background: var(--gris-claro);
-        border: 2px solid #6c757d;
-        color: var(--azul-oscuro);
+        background: var(--neutral-color);
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
         padding: 10px 28px;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-        .btn-secondary-custom:hover {
-            background: #6c757d;
-            color: var(--blanco);
-            text-decoration: none;
-            transform: translateY(-2px);
-        }
+    .btn-secondary-custom:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
 
     .consequences-list {
         background: #f8d7da;
@@ -148,41 +161,55 @@
         margin: 1rem 0;
     }
 
-        .consequences-list ul {
-            margin: 0;
-            padding-left: 1.5rem;
+    .consequences-list ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    .consequences-list li {
+        margin-bottom: 0.5rem;
+        color: #721c24;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+            gap: 0.25rem;
         }
 
-        .consequences-list li {
-            margin-bottom: 0.5rem;
-            color: #721c24;
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
         }
+
+        .btn-danger-custom,
+        .btn-secondary-custom {
+            width: 100%;
+            max-width: 280px;
+        }
+    }
 </style>
 
 <div class="container">
-    <!-- Header de Advertencia -->
+    <!-- Header Simple -->
     <div class="delete-header">
-        <h2><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminacion</h2>
-        <p class="mb-0">Esta accion <strong>NO PUEDE SER REVERTIDA</strong></p>
+        <h2><i class="fas fa-trash-alt"></i> Eliminar Aguinaldo</h2>
+        <p class="mb-0">Confirme la eliminación del registro seleccionado</p>
     </div>
 
     <!-- Advertencia Principal -->
     <div class="danger-section">
-        <h4><i class="fas fa-skull-crossbones"></i> ¡PELIGRO!</h4>
+        <h4><i class="fas fa-exclamation-triangle"></i> Advertencia</h4>
         <p class="mb-0">
-            Esta a punto de eliminar <strong>PERMANENTEMENTE</strong> el registro de aguinaldo.
-            Esta accion borrara toda la informacion relacionada y no puede ser deshecha.
+            Esta acción eliminará <strong>permanentemente</strong> el registro de aguinaldo.
+            Esta acción no puede ser deshecha.
         </p>
     </div>
 
     <!-- Detalles del Registro a Eliminar -->
     <div class="record-details">
-        <h4 class="mb-3"><i class="fas fa-file-invoice-dollar"></i> Registro a Eliminar</h4>
-
-        <div class="detail-grid">
-            <div class="detail-label"><i class="fas fa-fingerprint"></i> ID del Registro:</div>
-            <div class="detail-value">#@Model.id_aguinaldo</div>
-        </div>
+        <h4 class="mb-3"> Registro a Eliminar</h4>
 
         <div class="detail-grid">
             <div class="detail-label"><i class="fas fa-user"></i> Empleado:</div>
@@ -193,7 +220,7 @@
         </div>
 
         <div class="detail-grid">
-            <div class="detail-label"><i class="fas fa-calendar"></i> Ano Fiscal:</div>
+            <div class="detail-label"><i class="fas fa-calendar"></i> Año Fiscal:</div>
             <div class="detail-value">@Html.DisplayFor(model => model.anio)</div>
         </div>
 
@@ -203,9 +230,9 @@
         </div>
 
         <div class="detail-grid">
-            <div class="detail-label"><i class="fas fa-calendar-plus"></i> Fecha de Creacion:</div>
+            <div class="detail-label"><i class="fas fa-calendar-plus"></i> Fecha de Creación:</div>
             <div class="detail-value">
-                @if (Model.fecha_creacion!= null)
+                @if (Model.fecha_creacion != null)
                 {
                     @Model.fecha_creacion.Value.ToString("dd/MM/yyyy HH:mm")
                 }
@@ -216,30 +243,28 @@
             </div>
         </div>
 
-        @if (Model.fecha_actualizacion!= null)
+        @if (Model.fecha_actualizacion != null)
         {
             <div class="detail-grid">
-                <div class="detail-label"><i class="fas fa-calendar-edit"></i> Ultima Actualizacion:</div>
+                <div class="detail-label"><i class="fas fa-calendar-edit"></i> Última Actualización:</div>
                 <div class="detail-value">@Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy HH:mm")</div>
             </div>
         }
 
         <!-- Monto Destacado -->
         <div class="amount-highlight">
-            <i class="fas fa-dollar-sign"></i> Monto a Eliminar: ₡@Model.monto_total.ToString("#,##0.00")
+            <i class="fas fa-coins"></i> Monto a Eliminar: ₡@Model.monto_total.ToString("#,##0.00")
         </div>
     </div>
 
-    <!-- Consecuencias de la Eliminacion -->
+    <!-- Consecuencias de la Eliminación -->
     <div class="warning-section">
-        <h4><i class="fas fa-list-ul"></i> Consecuencias de Esta Accion</h4>
+        <h4><i class="fas fa-list-ul"></i> Consecuencias de Esta Acción</h4>
         <div class="consequences-list">
             <ul>
-                <li><i class="fas fa-times-circle"></i> Se perdera <strong>PERMANENTEMENTE</strong> toda la informacion del aguinaldo</li>
-                <li><i class="fas fa-times-circle"></i> Los reportes contables se veran afectados</li>
-                <li><i class="fas fa-times-circle"></i> El historial del empleado quedara incompleto</li>
-                <li><i class="fas fa-times-circle"></i> Puede requerirse recalculo de otros procesos</li>
-                <li><i class="fas fa-times-circle"></i> La accion quedara registrada en auditoria</li>
+                <li><i class="fas fa-times-circle"></i> Se perderá <strong>permanentemente</strong> toda la información del aguinaldo</li>
+                <li><i class="fas fa-times-circle"></i> Los reportes contables se verán afectados</li>
+                <li><i class="fas fa-times-circle"></i> El historial del empleado quedará incompleto</li>
             </ul>
         </div>
     </div>
@@ -250,18 +275,16 @@
         <p><strong>Antes de eliminar, considere:</strong></p>
         <ul>
             <li><i class="fas fa-edit text-warning"></i> <strong>Editar el registro</strong> si solo necesita corregir datos</li>
-            <li><i class="fas fa-calculator text-info"></i> <strong>Recalcular automaticamente</strong> si hay errores en el monto</li>
-            <li><i class="fas fa-archive text-secondary"></i> <strong>Marcar como inactivo</strong> en lugar de eliminar</li>
-            <li><i class="fas fa-user-shield text-success"></i> <strong>Consultar con supervision</strong> antes de proceder</li>
+            <li><i class="fas fa-calculator text-info"></i> <strong>Recalcular automáticamente</strong> si hay errores en el monto</li>
+            <li><i class="fas fa-user-shield text-success"></i> <strong>Consultar con supervisión</strong> antes de proceder</li>
         </ul>
     </div>
 
-    <!-- Seccion de Confirmacion -->
+    <!-- Sección de Confirmación -->
     <div class="confirmation-section">
-        <h4><i class="fas fa-question-circle"></i> ¿Esta completamente seguro?</h4>
+        <h4><i class="fas fa-question-circle"></i> ¿Está completamente seguro?</h4>
         <p class="mb-3">
-            Para confirmar la eliminacion, debe hacer clic en el boton <strong>"ELIMINAR DEFINITIVAMENTE"</strong> a continuacion.
-            Esta accion es <span style="color: var(--rojo); font-weight: bold;">IRREVERSIBLE</span>.
+            Para confirmar la eliminación, debe hacer clic en el botón <strong>"Eliminar Definitivamente"</strong> a continuación.
         </p>
 
         @using (Html.BeginForm("Delete", "Aguinaldo", FormMethod.Post))
@@ -271,7 +294,7 @@
 
             <div class="action-buttons">
                 <button type="submit" class="btn-danger-custom" onclick="return confirmarEliminacion()">
-                    <i class="fas fa-trash-alt"></i> ELIMINAR DEFINITIVAMENTE
+                    <i class="fas fa-trash-alt"></i> Eliminar Definitivamente
                 </button>
                 <a href="@Url.Action("Details", new { id = Model.id_aguinaldo })" class="btn-secondary-custom">
                     <i class="fas fa-eye"></i> Ver Detalles
@@ -282,78 +305,12 @@
             </div>
         }
     </div>
-
-    <!-- Informacion Legal -->
-    <div class="record-details mt-4">
-        <h5><i class="fas fa-gavel"></i> Consideraciones Legales</h5>
-        <p class="mb-2">
-            <i class="fas fa-info-circle text-info"></i>
-            <strong>Importante:</strong> La eliminacion de registros de aguinaldo puede tener implicaciones legales y contables.
-        </p>
-        <p class="mb-0">
-            <i class="fas fa-shield-alt text-success"></i>
-            Se recomienda mantener respaldo de la informacion antes de proceder con la eliminacion.
-        </p>
-    </div>
 </div>
 
 @section Scripts {
     <script>
         function confirmarEliminacion() {
-            // Primera confirmacion
-            if (!confirm('¿Esta ABSOLUTAMENTE SEGURO de que desea eliminar este registro de aguinaldo?')) {
-                return false;
-            }
-
-            // Segunda confirmacion con mas detalles
-            var mensaje = '⚠️ ULTIMA ADVERTENCIA ⚠️\n\n' +
-                         'Esta a punto de eliminar PERMANENTEMENTE:\n' +
-                         '• Aguinaldo de @Model.Empleados.nombre1 @Model.Empleados.apellido1\n' +
-                         '• Ano: @Model.anio\n' +
-                         '• Monto: ₡@Model.monto_total.ToString("#,##0.00")\n\n' +
-                         'Esta accion NO PUEDE SER REVERTIDA.\n\n' +
-                         '¿Confirma que desea proceder?';
-
-            if (!confirm(mensaje)) {
-                return false;
-            }
-
-            // Tercera confirmacion final
-            var confirmacionFinal = prompt(
-                'Para confirmar la eliminacion, escriba exactamente la palabra: ELIMINAR\n\n' +
-                '(Esto es una medida de seguridad adicional)'
-            );
-
-            if (confirmacionFinal !== 'ELIMINAR') {
-                alert('❌ Eliminacion cancelada. La palabra de confirmacion no coincide.');
-                return false;
-            }
-
-            // Si llego hasta aqui, mostrar mensaje final
-            alert('🗑️ Procediendo con la eliminacion...\n\nLa accion sera registrada en auditoria.');
-            return true;
+            return confirm('¿Está seguro de que desea eliminar este registro de aguinaldo?\n\nEsta acción no puede ser revertida.');
         }
-
-        // Prevenir eliminacion accidental con teclas
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Delete' && e.ctrlKey) {
-                e.preventDefault();
-                alert('❌ La eliminacion debe realizarse unicamente a traves del boton correspondiente.');
-            }
-        });
-
-        // Agregar efecto visual al boton de eliminar
-        document.addEventListener('DOMContentLoaded', function() {
-            var deleteBtn = document.querySelector('.btn-danger-custom');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('mouseenter', function() {
-                    this.innerHTML = '<i class="fas fa-skull-crossbones"></i> ¡ELIMINAR PARA SIEMPRE!';
-                });
-
-                deleteBtn.addEventListener('mouseleave', function() {
-                    this.innerHTML = '<i class="fas fa-trash-alt"></i> ELIMINAR DEFINITIVAMENTE';
-                });
-            }
-        });
     </script>
 }

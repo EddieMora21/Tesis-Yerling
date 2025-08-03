@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
-using SistemaNomina.Filters;
-using SistemaNomina.Helpers;
 using SistemaNomina.Models;
+using SistemaNomina.Helpers;
 
 namespace SistemaNomina.Controllers
 {
-    [RoleAuthorize("Admin", "RRHH", "Supervisor", "Empleado")]
     public class SolicitudesVacacionesController : Controller
     {
         private smartbuilding_rhEntities db = new smartbuilding_rhEntities();
+
+        // =====================================================
+        // ACCIONES PRINCIPALES
+        // =====================================================
 
         // GET: SolicitudesVacaciones
         public ActionResult Index()
@@ -25,223 +28,71 @@ namespace SistemaNomina.Controllers
                 var currentUserId = (int?)Session["UserId"];
                 var currentUserRole = Session["RolUsuario"] as string;
 
-                IQueryable<SolicitudesVacaciones> query = db.SolicitudesVacaciones
+                if (currentUserId == null)
+                {
+                    return RedirectToAction("Login", "Usuarios");
+                }
+
+                IQueryable<SolicitudesVacaciones> solicitudesQuery = db.SolicitudesVacaciones
                     .Include(s => s.Estados)
-                    .Include(s => s.Usuarios)
-                    .Include(s => s.Usuarios.Empleados)
                     .Include(s => s.Vacaciones)
                     .Include(s => s.Vacaciones.Empleados)
                     .Include(s => s.Vacaciones.Empleados.Puestos)
-                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos);
+                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
+                    .Include(s => s.Usuarios)
+                    .Include(s => s.Usuarios.Empleados);
 
-                // 🔒 FILTRO POR ROL
-                if (currentUserRole == "Empleado")
+                // Filtrar según rol
+                switch (currentUserRole)
                 {
-                    // Los empleados solo ven sus propias solicitudes
-                    var empleado = db.Usuarios.Include(u => u.Empleados)
-                                             .FirstOrDefault(u => u.id_usuario == currentUserId)?.Empleados;
-                    if (empleado != null)
-                    {
-                        query = query.Where(s => s.Vacaciones.id_empleado == empleado.id_empleado);
-                    }
+                    case "Empleado":
+                        // Solo sus propias solicitudes
+                        var usuarioEmpleado = db.Usuarios.FirstOrDefault(u => u.id_usuario == currentUserId);
+                        if (usuarioEmpleado != null)
+                        {
+                            solicitudesQuery = solicitudesQuery
+                                .Where(s => s.Vacaciones.id_empleado == usuarioEmpleado.id_empleado);
+                        }
+                        break;
+
+                    case "Supervisor":
+                        // Solicitudes de su departamento
+                        var usuarioSupervisor = db.Usuarios
+                            .Include(u => u.Empleados)
+                            .Include(u => u.Empleados.Puestos)
+                            .FirstOrDefault(u => u.id_usuario == currentUserId);
+
+                        if (usuarioSupervisor != null)
+                        {
+                            var idDepartamento = usuarioSupervisor.Empleados.Puestos.id_departamento;
+                            solicitudesQuery = solicitudesQuery
+                                .Where(s => s.Vacaciones.Empleados.Puestos.id_departamento == idDepartamento);
+                        }
+                        break;
+
+                    case "Administrador":
+                    case "RRHH":
+                        // Todas las solicitudes
+                        break;
+
+                    default:
+                        return RedirectToAction("Unauthorized", "Home");
                 }
 
-                var solicitudes = query.OrderByDescending(s => s.fecha_solicitud)
-                                     .ThenByDescending(s => s.fecha_creacion)
-                                     .ToList();
+                var solicitudes = solicitudesQuery
+                    .OrderByDescending(s => s.fecha_solicitud)
+                    .ToList();
+
+                ViewBag.CurrentUserRole = currentUserRole;
+                ViewBag.CurrentUserId = currentUserId;
 
                 return View(solicitudes);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Error al cargar solicitudes de vacaciones.";
                 LogExceptionDetails(ex);
+                TempData["Error"] = "Error al cargar las solicitudes: " + ex.Message;
                 return View(new List<SolicitudesVacaciones>());
-            }
-        }
-
-        // 🔥 MEJORADA: Solicitudes pendientes con jerarquía
-        [RoleAuthorize("Admin", "RRHH", "Supervisor")]
-        public ActionResult SolicitudesPendientes()
-        {
-            try
-            {
-                var currentUserId = (int?)Session["UserId"];
-                var currentUserRole = Session["RolUsuario"] as string;
-
-                var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente" && e.modulo == "Vacaciones");
-                if (estadoPendiente == null)
-                {
-                    TempData["Error"] = "No se encontró el estado 'Pendiente' para vacaciones.";
-                    return View(new List<SolicitudesVacaciones>());
-                }
-
-                IQueryable<SolicitudesVacaciones> query = db.SolicitudesVacaciones
-                    .Include(s => s.Estados)
-                    .Include(s => s.Usuarios)
-                    .Include(s => s.Usuarios.Empleados)
-                    .Include(s => s.Vacaciones)
-                    .Include(s => s.Vacaciones.Empleados)
-                    .Include(s => s.Vacaciones.Empleados.Puestos)
-                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
-                    .Where(s => s.id_estado == estadoPendiente.id_estado);
-
-                // 🔒 FILTRO JERÁRQUICO MEJORADO
-                var solicitudesFiltradas = new List<SolicitudesVacaciones>();
-
-                foreach (var solicitud in query.ToList())
-                {
-                    if (PuedeAprobarSolicitud(solicitud.id_solicitud, currentUserId.Value))
-                    {
-                        solicitudesFiltradas.Add(solicitud);
-                    }
-                }
-
-                return View(solicitudesFiltradas.OrderBy(s => s.fecha_solicitud).ToList());
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Error al cargar solicitudes pendientes.";
-                LogExceptionDetails(ex);
-                return View(new List<SolicitudesVacaciones>());
-            }
-        }
-
-        // 🎯 CASO DE USO 3: Aprobar solicitud (con validación jerárquica)
-        [HttpPost]
-        [RoleAuthorize("Admin", "RRHH", "Supervisor")]
-        public ActionResult Aprobar(int id, string comentario_respuesta = "")
-        {
-            try
-            {
-                var solicitud = db.SolicitudesVacaciones
-                    .Include(s => s.Vacaciones)
-                    .Include(s => s.Vacaciones.Empleados)
-                    .Include(s => s.Vacaciones.Empleados.Puestos)
-                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
-                    .FirstOrDefault(s => s.id_solicitud == id);
-
-                if (solicitud == null)
-                {
-                    return Json(new { success = false, message = "Solicitud no encontrada." });
-                }
-
-                var currentUserId = (int?)Session["UserId"];
-
-                // 🔒 VALIDACIÓN JERÁRQUICA
-                if (!PuedeAprobarSolicitud(id, currentUserId.Value))
-                {
-                    return Json(new { success = false, message = "No tiene permisos para aprobar esta solicitud según la jerarquía organizacional." });
-                }
-
-                // 🔍 VALIDACIÓN: Verificar días disponibles nuevamente
-                var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-                var diasDisponibles = solicitud.Vacaciones.dias_disponibles - solicitud.Vacaciones.dias_disfrutados;
-
-                if (diasSolicitados > diasDisponibles)
-                {
-                    return Json(new { success = false, message = $"El empleado no tiene suficientes días disponibles. Disponibles: {diasDisponibles}, Solicitados: {diasSolicitados}" });
-                }
-
-                // Aprobar solicitud
-                var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado" && e.modulo == "Vacaciones");
-                if (estadoAprobado != null)
-                {
-                    solicitud.id_estado = estadoAprobado.id_estado;
-                    solicitud.aprobado_por = currentUserId;
-                    solicitud.fecha_aprobacion = DateTime.Now;
-                    solicitud.comentario_respuesta = comentario_respuesta?.Trim();
-                    solicitud.fecha_actualizacion = DateTime.Now;
-
-                    // 📊 Actualizar días disfrutados
-                    solicitud.Vacaciones.dias_disfrutados = solicitud.Vacaciones.dias_disfrutados + diasSolicitados;
-                    solicitud.Vacaciones.fecha_actualizacion = DateTime.Now;
-
-                    db.SaveChanges();
-
-                    // 📋 LOG AUTOMÁTICO
-                    if (currentUserId!= null)
-                    {
-                        BitacoraHelper.RegistrarAccion("APROBAR_VACACIONES",
-                            $"Aprobadas vacaciones de {solicitud.Vacaciones.Empleados.nombre1} {solicitud.Vacaciones.Empleados.apellido1} del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy} ({diasSolicitados} días)",
-                            currentUserId.Value);
-                    }
-
-                    // 🔔 NOTIFICACIÓN USANDO BITÁCORA (mientras no exista tabla Notificaciones)
-                    NotificarDecisionVacaciones(solicitud, "APROBADA");
-
-                    return Json(new { success = true, message = "Solicitud aprobada exitosamente. El empleado ha sido notificado." });
-                }
-
-                return Json(new { success = false, message = "No se pudo actualizar el estado." });
-            }
-            catch (Exception ex)
-            {
-                LogExceptionDetails(ex);
-                return Json(new { success = false, message = "Error al aprobar solicitud: " + ex.Message });
-            }
-        }
-
-        // 🎯 CASO DE USO 3: Rechazar solicitud (con validación jerárquica)
-        [HttpPost]
-        [RoleAuthorize("Admin", "RRHH", "Supervisor")]
-        public ActionResult Rechazar(int id, string comentario_respuesta = "")
-        {
-            try
-            {
-                var solicitud = db.SolicitudesVacaciones
-                    .Include(s => s.Vacaciones)
-                    .Include(s => s.Vacaciones.Empleados)
-                    .Include(s => s.Vacaciones.Empleados.Puestos)
-                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
-                    .FirstOrDefault(s => s.id_solicitud == id);
-
-                if (solicitud == null)
-                {
-                    return Json(new { success = false, message = "Solicitud no encontrada." });
-                }
-
-                var currentUserId = (int?)Session["UserId"];
-
-                // 🔒 VALIDACIÓN JERÁRQUICA
-                if (!PuedeAprobarSolicitud(id, currentUserId.Value))
-                {
-                    return Json(new { success = false, message = "No tiene permisos para rechazar esta solicitud según la jerarquía organizacional." });
-                }
-
-                // Rechazar solicitud
-                var estadoRechazado = db.Estados.FirstOrDefault(e => e.nombre == "Rechazado" && e.modulo == "Vacaciones");
-                if (estadoRechazado != null)
-                {
-                    solicitud.id_estado = estadoRechazado.id_estado;
-                    solicitud.aprobado_por = currentUserId;
-                    solicitud.fecha_aprobacion = DateTime.Now;
-                    solicitud.comentario_respuesta = comentario_respuesta?.Trim();
-                    solicitud.fecha_actualizacion = DateTime.Now;
-
-                    db.SaveChanges();
-
-                    // 📋 LOG AUTOMÁTICO
-                    if (currentUserId!= null)
-                    {
-                        var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-                        BitacoraHelper.RegistrarAccion("RECHAZAR_VACACIONES",
-                            $"Rechazadas vacaciones de {solicitud.Vacaciones.Empleados.nombre1} {solicitud.Vacaciones.Empleados.apellido1} del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy} ({diasSolicitados} días)",
-                            currentUserId.Value);
-                    }
-
-                    // 🔔 NOTIFICACIÓN USANDO BITÁCORA
-                    NotificarDecisionVacaciones(solicitud, "RECHAZADA");
-
-                    return Json(new { success = true, message = "Solicitud rechazada. El empleado ha sido notificado." });
-                }
-
-                return Json(new { success = false, message = "No se pudo actualizar el estado." });
-            }
-            catch (Exception ex)
-            {
-                LogExceptionDetails(ex);
-                return Json(new { success = false, message = "Error al rechazar solicitud: " + ex.Message });
             }
         }
 
@@ -251,53 +102,43 @@ namespace SistemaNomina.Controllers
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            SolicitudesVacaciones solicitud = db.SolicitudesVacaciones
-                .Include(s => s.Estados)
-                .Include(s => s.Usuarios)
-                .Include(s => s.Usuarios.Empleados)
-                .Include(s => s.Vacaciones)
-                .Include(s => s.Vacaciones.Empleados)
-                .Include(s => s.Vacaciones.Empleados.Puestos)
-                .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
-                .FirstOrDefault(s => s.id_solicitud == id);
-
-            if (solicitud == null)
-                return HttpNotFound();
-
-            // 🔒 VALIDACIÓN DE ACCESO
-            var currentUserId = (int?)Session["UserId"];
-            var currentUserRole = Session["RolUsuario"] as string;
-
-            // Verificar acceso
-            bool tieneAcceso = false;
-            if (currentUserRole == "Admin" || currentUserRole == "RRHH")
+            try
             {
-                tieneAcceso = true;
+                var solicitud = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
+                    .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
+                    .Include(s => s.Vacaciones.Empleados.Puestos)
+                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
+                    .Include(s => s.Usuarios)
+                    .Include(s => s.Usuarios.Empleados)
+                    .FirstOrDefault(s => s.id_solicitud == id);
+
+                if (solicitud == null)
+                    return HttpNotFound();
+
+                // Verificar acceso
+                var currentUserId = (int?)Session["UserId"];
+                var currentUserRole = Session["RolUsuario"] as string;
+
+                if (!TieneAccesoSolicitud(solicitud, currentUserId, currentUserRole))
+                {
+                    TempData["Error"] = "No tiene permisos para ver esta solicitud.";
+                    return RedirectToAction("Index");
+                }
+
+                // Información adicional para la vista
+                ViewBag.DiasCalculados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
+                ViewBag.PuedeAprobar = PuedeAprobarSolicitud(solicitud.id_solicitud, currentUserId.Value);
+
+                return View(solicitud);
             }
-            else if (currentUserRole == "Empleado")
+            catch (Exception ex)
             {
-                // Solo puede ver sus propias solicitudes a través de la relación con Usuarios
-                var usuarioActual = db.Usuarios.FirstOrDefault(u => u.id_usuario == currentUserId);
-                tieneAcceso = usuarioActual != null && solicitud.Usuarios.id_usuario == usuarioActual.id_usuario;
-            }
-            else if (currentUserRole == "Supervisor")
-            {
-                // Puede ver solicitudes que puede aprobar
-                tieneAcceso = PuedeAprobarSolicitud(solicitud.id_solicitud, currentUserId.Value);
-            }
-
-            if (!tieneAcceso)
-            {
-                TempData["Error"] = "No tiene permisos para ver esta solicitud.";
+                LogExceptionDetails(ex);
+                TempData["Error"] = "Error al cargar los detalles: " + ex.Message;
                 return RedirectToAction("Index");
             }
-
-            // 📊 Información adicional para la vista
-            ViewBag.DiasCalculados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-            ViewBag.PuedeAprobar = PuedeAprobarSolicitud(solicitud.id_solicitud, currentUserId.Value);
-            ViewBag.CadenaAprobacion = ObtenerCadenaAprobacion(solicitud.Vacaciones.id_empleado);
-
-            return View(solicitud);
         }
 
         // GET: SolicitudesVacaciones/Create
@@ -306,45 +147,57 @@ namespace SistemaNomina.Controllers
             try
             {
                 var currentUserId = (int?)Session["UserId"];
+                var currentUserRole = Session["RolUsuario"] as string;
+
                 if (currentUserId == null)
-                {
                     return RedirectToAction("Login", "Usuarios");
-                }
 
-                // Obtener empleado actual
-                var empleadoActual = db.Usuarios
-                    .Include(u => u.Empleados)
-                    .Include(u => u.Empleados.Puestos)
-                    .Include(u => u.Empleados.Puestos.Departamentos)
-                    .FirstOrDefault(u => u.id_usuario == currentUserId.Value)?.Empleados;
-
-                if (empleadoActual == null)
+                if (currentUserRole != "Empleado" && currentUserRole != "Administrador" && currentUserRole != "RRHH")
                 {
-                    TempData["Error"] = "No se encontró información del empleado.";
+                    TempData["Error"] = "No tiene permisos para crear solicitudes.";
                     return RedirectToAction("Index");
                 }
 
-                // 🔍 MOSTRAR CADENA DE APROBACIÓN
-                var cadenaAprobacion = ObtenerCadenaAprobacion(empleadoActual.id_empleado);
-                ViewBag.CadenaAprobacion = cadenaAprobacion;
-                ViewBag.EmpleadoActual = empleadoActual;
-
-                if (id_vacacion!= null)
+                // Obtener empleado del usuario actual
+                var usuario = db.Usuarios.FirstOrDefault(u => u.id_usuario == currentUserId);
+                if (usuario == null)
                 {
-                    var vacacion = db.Vacaciones.Find(id_vacacion.Value);
-                    if (vacacion != null)
-                    {
-                        ViewBag.VacacionSeleccionada = vacacion;
-                    }
+                    TempData["Error"] = "Usuario no encontrado.";
+                    return RedirectToAction("Index");
                 }
 
-                CargarListasDesplegables();
-                return View();
+                // Obtener o crear vacaciones para el empleado
+                var vacaciones = ObtenerOCrearVacaciones(usuario.id_empleado);
+                if (vacaciones == null)
+                {
+                    TempData["Error"] = "No se pudieron obtener las vacaciones del empleado.";
+                    return RedirectToAction("Index");
+                }
+
+                // Verificar que tenga días disponibles
+                if (vacaciones.dias_disponibles <= 0)
+                {
+                    TempData["Error"] = "No tiene días de vacaciones disponibles.";
+                    return RedirectToAction("Index");
+                }
+
+                var model = new SolicitudVacacionesViewModel
+                {
+                    id_vacacion = vacaciones.id_vacacion,
+                    fecha_inicio = DateTime.Today.AddDays(1),
+                    fecha_fin = DateTime.Today.AddDays(2)
+                };
+
+                ViewBag.DiasDisponibles = vacaciones.dias_disponibles;
+                ViewBag.EmpleadoNombre = $"{usuario.Empleados.nombre1} {usuario.Empleados.apellido1}";
+                ViewBag.Periodo = vacaciones.periodo;
+
+                return View(model);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Error al cargar formulario de solicitud.";
                 LogExceptionDetails(ex);
+                TempData["Error"] = "Error al cargar el formulario: " + ex.Message;
                 return RedirectToAction("Index");
             }
         }
@@ -352,347 +205,760 @@ namespace SistemaNomina.Controllers
         // POST: SolicitudesVacaciones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id_vacacion,fecha_inicio,fecha_fin,comentario_solicitud")] SolicitudesVacaciones solicitud)
+        public ActionResult Create(SolicitudVacacionesViewModel model)
         {
             try
             {
-                var currentUserId = (int?)Session["UserId"];
-                if (currentUserId == null)
+                if (!ModelState.IsValid)
                 {
-                    return RedirectToAction("Login", "Usuarios");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
                 }
 
-                // Validar solicitud
-                var (esValida, mensaje) = ValidarSolicitud(solicitud);
-                if (!esValida)
+                // Validar que el usuario tenga vacaciones
+                var vacaciones = db.Vacaciones.Find(model.id_vacacion);
+                if (vacaciones == null)
                 {
-                    ModelState.AddModelError("", mensaje);
-                    CargarListasDesplegables();
-                    return View(solicitud);
+                    ModelState.AddModelError("", "No se encontraron vacaciones para el empleado.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
                 }
 
-                if (ModelState.IsValid)
+                // Validar fechas
+                if (model.fecha_inicio <= DateTime.Today)
                 {
-                    var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente" && e.modulo == "Vacaciones");
-                    if (estadoPendiente == null)
-                    {
-                        ModelState.AddModelError("", "Error: Estado 'Pendiente' no encontrado.");
-                        CargarListasDesplegables();
-                        return View(solicitud);
-                    }
-
-                    // Completar información
-                    solicitud.id_estado = estadoPendiente.id_estado;
-                    solicitud.fecha_solicitud = DateTime.Now;
-                    solicitud.fecha_creacion = DateTime.Now;
-                    solicitud.fecha_actualizacion = DateTime.Now;
-
-                    // Crear relación con el usuario actual
-                    var usuarioActual = db.Usuarios.FirstOrDefault(u => u.id_usuario == currentUserId.Value);
-                    if (usuarioActual != null)
-                    {
-                        solicitud.Usuarios = usuarioActual;
-                    }
-
-                    db.SolicitudesVacaciones.Add(solicitud);
-                    db.SaveChanges();
-
-                    // 📋 LOG AUTOMÁTICO
-                    var vacacion = db.Vacaciones.Include(v => v.Empleados).FirstOrDefault(v => v.id_vacacion == solicitud.id_vacacion);
-                    var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-
-                    BitacoraHelper.RegistrarAccion("CREAR_SOLICITUD_VACACIONES",
-                        $"Solicitud de {diasSolicitados} días del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy}",
-                        currentUserId.Value);
-
-                    // 🔔 NOTIFICAR A LA CADENA DE APROBACIÓN
-                    NotificarSolicitudCreada(solicitud);
-
-                    TempData["Success"] = "Solicitud de vacaciones enviada exitosamente. Los aprobadores han sido notificados.";
-                    return RedirectToAction("Index");
+                    ModelState.AddModelError("fecha_inicio", "La fecha de inicio debe ser posterior a hoy.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
                 }
-            }
-            catch (DbUpdateException ex)
-            {
-                HandleDbUpdateException(ex);
+
+                if (model.fecha_fin <= model.fecha_inicio)
+                {
+                    ModelState.AddModelError("fecha_fin", "La fecha de fin debe ser posterior a la fecha de inicio.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Calcular días solicitados
+                var diasSolicitados = CalcularDiasLaborales(model.fecha_inicio, model.fecha_fin);
+
+                // Validar días disponibles
+                if (diasSolicitados > vacaciones.dias_disponibles)
+                {
+                    ModelState.AddModelError("", $"No tiene suficientes días disponibles. Disponibles: {vacaciones.dias_disponibles}, Solicitados: {diasSolicitados}");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Verificar que no haya solicitudes pendientes en el mismo período
+                var solicitudExistente = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
+                    .Where(s => s.id_vacacion == model.id_vacacion)
+                    .Where(s => s.Estados.nombre == "Pendiente")
+                    .Where(s => (s.fecha_inicio <= model.fecha_fin && s.fecha_fin >= model.fecha_inicio))
+                    .FirstOrDefault();
+
+                if (solicitudExistente != null)
+                {
+                    ModelState.AddModelError("", "Ya existe una solicitud pendiente que se traslapa con estas fechas.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Crear la solicitud
+                var estadoPendiente = db.Estados.FirstOrDefault(e => e.nombre == "Pendiente" && e.modulo == "Vacaciones");
+                if (estadoPendiente == null)
+                {
+                    ModelState.AddModelError("", "Error de configuración: Estado 'Pendiente' no encontrado.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                var solicitud = new SolicitudesVacaciones
+                {
+                    id_vacacion = model.id_vacacion,
+                    fecha_inicio = model.fecha_inicio,
+                    fecha_fin = model.fecha_fin,
+                    comentario_solicitud = model.comentario_solicitud,
+                    id_estado = estadoPendiente.id_estado,
+                    fecha_creacion = DateTime.Now,
+                    fecha_solicitud = DateTime.Now,
+                    fecha_actualizacion = DateTime.Now
+                };
+
+                db.SolicitudesVacaciones.Add(solicitud);
+                db.SaveChanges();
+
+                // Notificar al jefe del departamento
+                NotificarSolicitudAlJefe(solicitud, vacaciones.id_empleado, diasSolicitados);
+
+                // Registrar en bitácora
+                var currentUserId = (int)Session["UserId"];
+                BitacoraHelper.RegistrarAccion("SOLICITUD_VACACIONES_CREADA",
+                    $"Solicitud de {diasSolicitados} días del {model.fecha_inicio:dd/MM/yyyy} al {model.fecha_fin:dd/MM/yyyy}",
+                    currentUserId);
+
+                TempData["Success"] = "Solicitud de vacaciones creada exitosamente. Se ha notificado a su jefe para revisión.";
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
                 LogExceptionDetails(ex);
+                ModelState.AddModelError("", "Error al crear la solicitud: " + ex.Message);
+                CargarDatosVista(model.id_vacacion);
+                return View(model);
             }
+        }
 
-            CargarListasDesplegables();
-            return View(solicitud);
+        // GET: Contador de solicitudes pendientes
+        [HttpGet]
+        public ActionResult GetContadorSolicitudes()
+        {
+            try
+            {
+                var currentUserId = (int)Session["UserId"];
+                var currentUserRole = Session["RolUsuario"] as string;
+
+                if (currentUserRole != "Supervisor" && currentUserRole != "Administrador" && currentUserRole != "RRHH")
+                {
+                    return Json(new { success = false, count = 0 }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Contar solicitudes pendientes
+                IQueryable<SolicitudesVacaciones> solicitudesQuery = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
+                    .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
+                    .Include(s => s.Vacaciones.Empleados.Puestos)
+                    .Where(s => s.Estados.nombre == "Pendiente");
+
+                // Filtrar según rol
+                if (currentUserRole == "Supervisor")
+                {
+                    var usuarioActual = db.Usuarios
+                        .Include(u => u.Empleados)
+                        .Include(u => u.Empleados.Puestos)
+                        .FirstOrDefault(u => u.id_usuario == currentUserId);
+
+                    if (usuarioActual != null)
+                    {
+                        var idDepartamento = usuarioActual.Empleados.Puestos.id_departamento;
+                        solicitudesQuery = solicitudesQuery
+                            .Where(s => s.Vacaciones.Empleados.Puestos.id_departamento == idDepartamento);
+                    }
+                }
+
+                var count = solicitudesQuery.Count();
+
+                return Json(new { success = true, count = count }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+                return Json(new { success = false, count = 0 }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         // GET: SolicitudesVacaciones/Edit/5
-        [RoleAuthorize("Admin", "RRHH")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            SolicitudesVacaciones solicitud = db.SolicitudesVacaciones
-                .Include(s => s.Estados)
-                .Include(s => s.Usuarios)
-                .Include(s => s.Vacaciones)
-                .FirstOrDefault(s => s.id_solicitud == id);
-
-            if (solicitud == null)
-                return HttpNotFound();
-
-            CargarListasDesplegables(solicitud);
-            return View(solicitud);
-        }
-
-        // POST: SolicitudesVacaciones/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [RoleAuthorize("Admin", "RRHH")]
-        public ActionResult Edit([Bind(Include = "id_solicitud,id_vacacion,fecha_inicio,fecha_fin,comentario_solicitud,id_estado,comentario_respuesta,fecha_solicitud,fecha_creacion")] SolicitudesVacaciones solicitud)
-        {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    solicitud.fecha_actualizacion = DateTime.Now;
-                    db.Entry(solicitud).State = EntityState.Modified;
-                    db.SaveChanges();
-
-                    var currentUserId = (int?)Session["UserId"];
-                    if (currentUserId!= null)
-                    {
-                        BitacoraHelper.RegistrarAccion("EDITAR_SOLICITUD_VACACIONES",
-                            $"Editada solicitud de vacaciones (ID: {solicitud.id_solicitud})",
-                            currentUserId.Value);
-                    }
-
-                    TempData["Success"] = "Solicitud de vacaciones actualizada exitosamente.";
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                ModelState.AddModelError("", "Otro usuario modificó este registro. Recarga la página.");
-            }
-            catch (DbUpdateException ex)
-            {
-                HandleDbUpdateException(ex);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
-                LogExceptionDetails(ex);
-            }
-
-            CargarListasDesplegables(solicitud);
-            return View(solicitud);
-        }
-
-        // GET: SolicitudesVacaciones/Delete/5
-        [RoleAuthorize("Admin", "RRHH")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            SolicitudesVacaciones solicitud = db.SolicitudesVacaciones
-                .Include(s => s.Estados)
-                .Include(s => s.Usuarios)
-                .Include(s => s.Vacaciones)
-                .Include(s => s.Vacaciones.Empleados)
-                .FirstOrDefault(s => s.id_solicitud == id);
-
-            if (solicitud == null)
-                return HttpNotFound();
-
-            var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado" && e.modulo == "Vacaciones");
-            ViewBag.EsAprobada = solicitud.id_estado == estadoAprobado?.id_estado;
-
-            return View(solicitud);
-        }
-
-        // POST: SolicitudesVacaciones/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [RoleAuthorize("Admin", "RRHH")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            try
-            {
-                SolicitudesVacaciones solicitud = db.SolicitudesVacaciones
+                var solicitud = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
                     .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
                     .FirstOrDefault(s => s.id_solicitud == id);
 
                 if (solicitud == null)
                     return HttpNotFound();
 
-                var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado" && e.modulo == "Vacaciones");
-                if (solicitud.id_estado == estadoAprobado?.id_estado)
+                // Solo se pueden editar solicitudes pendientes
+                if (solicitud.Estados.nombre != "Pendiente")
                 {
-                    TempData["Error"] = "No se pueden eliminar solicitudes ya aprobadas que afectaron los días de vacaciones.";
+                    TempData["Error"] = "Solo se pueden editar solicitudes pendientes.";
                     return RedirectToAction("Index");
                 }
 
+                // Verificar acceso
                 var currentUserId = (int?)Session["UserId"];
-                if (currentUserId!= null)
+                var currentUserRole = Session["RolUsuario"] as string;
+
+                if (!TieneAccesoSolicitud(solicitud, currentUserId, currentUserRole))
                 {
-                    BitacoraHelper.RegistrarAccion("ELIMINAR_SOLICITUD_VACACIONES",
-                        $"Eliminada solicitud de vacaciones (ID: {solicitud.id_solicitud})",
-                        currentUserId.Value);
+                    TempData["Error"] = "No tiene permisos para editar esta solicitud.";
+                    return RedirectToAction("Index");
+                }
+
+                var model = new SolicitudVacacionesViewModel
+                {
+                    id_solicitud = solicitud.id_solicitud,
+                    id_vacacion = solicitud.id_vacacion,
+                    fecha_inicio = solicitud.fecha_inicio,
+                    fecha_fin = solicitud.fecha_fin,
+                    comentario_solicitud = solicitud.comentario_solicitud
+                };
+
+                CargarDatosVista(solicitud.id_vacacion);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+                TempData["Error"] = "Error al cargar la solicitud: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        // POST: SolicitudesVacaciones/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(SolicitudVacacionesViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                var solicitud = db.SolicitudesVacaciones.Find(model.id_solicitud);
+                if (solicitud == null)
+                {
+                    ModelState.AddModelError("", "Solicitud no encontrada.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Verificar que siga siendo editable
+                var estado = db.Estados.Find(solicitud.id_estado);
+                if (estado?.nombre != "Pendiente")
+                {
+                    ModelState.AddModelError("", "Solo se pueden editar solicitudes pendientes.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Validar fechas
+                if (model.fecha_inicio <= DateTime.Today)
+                {
+                    ModelState.AddModelError("fecha_inicio", "La fecha de inicio debe ser posterior a hoy.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                if (model.fecha_fin <= model.fecha_inicio)
+                {
+                    ModelState.AddModelError("fecha_fin", "La fecha de fin debe ser posterior a la fecha de inicio.");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Validar días disponibles
+                var vacaciones = db.Vacaciones.Find(model.id_vacacion);
+                var diasSolicitados = CalcularDiasLaborales(model.fecha_inicio, model.fecha_fin);
+
+                if (diasSolicitados > vacaciones.dias_disponibles)
+                {
+                    ModelState.AddModelError("", $"No tiene suficientes días disponibles. Disponibles: {vacaciones.dias_disponibles}, Solicitados: {diasSolicitados}");
+                    CargarDatosVista(model.id_vacacion);
+                    return View(model);
+                }
+
+                // Actualizar la solicitud
+                solicitud.fecha_inicio = model.fecha_inicio;
+                solicitud.fecha_fin = model.fecha_fin;
+                solicitud.comentario_solicitud = model.comentario_solicitud;
+                solicitud.fecha_actualizacion = DateTime.Now;
+
+                db.SaveChanges();
+
+                // Registrar en bitácora
+                var currentUserId = (int)Session["UserId"];
+                BitacoraHelper.RegistrarAccion("SOLICITUD_VACACIONES_EDITADA",
+                    $"Solicitud actualizada: {diasSolicitados} días del {model.fecha_inicio:dd/MM/yyyy} al {model.fecha_fin:dd/MM/yyyy}",
+                    currentUserId);
+
+                TempData["Success"] = "Solicitud actualizada exitosamente.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+                ModelState.AddModelError("", "Error al actualizar la solicitud: " + ex.Message);
+                CargarDatosVista(model.id_vacacion);
+                return View(model);
+            }
+        }
+
+        // GET: SolicitudesVacaciones/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            try
+            {
+                var solicitud = db.SolicitudesVacaciones
+                    .Include(s => s.Estados)
+                    .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
+                    .FirstOrDefault(s => s.id_solicitud == id);
+
+                if (solicitud == null)
+                    return HttpNotFound();
+
+                // Solo se pueden eliminar solicitudes pendientes
+                if (solicitud.Estados.nombre != "Pendiente")
+                {
+                    TempData["Error"] = "Solo se pueden eliminar solicitudes pendientes.";
+                    return RedirectToAction("Index");
+                }
+
+                // Verificar acceso
+                var currentUserId = (int?)Session["UserId"];
+                var currentUserRole = Session["RolUsuario"] as string;
+
+                if (!TieneAccesoSolicitud(solicitud, currentUserId, currentUserRole))
+                {
+                    TempData["Error"] = "No tiene permisos para eliminar esta solicitud.";
+                    return RedirectToAction("Index");
+                }
+
+                ViewBag.DiasCalculados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
+                return View(solicitud);
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+                TempData["Error"] = "Error al cargar la solicitud: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        // POST: SolicitudesVacaciones/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            try
+            {
+                var solicitud = db.SolicitudesVacaciones.Find(id);
+                if (solicitud == null)
+                {
+                    TempData["Error"] = "Solicitud no encontrada.";
+                    return RedirectToAction("Index");
+                }
+
+                // Verificar que siga siendo eliminable
+                var estado = db.Estados.Find(solicitud.id_estado);
+                if (estado?.nombre != "Pendiente")
+                {
+                    TempData["Error"] = "Solo se pueden eliminar solicitudes pendientes.";
+                    return RedirectToAction("Index");
                 }
 
                 db.SolicitudesVacaciones.Remove(solicitud);
                 db.SaveChanges();
 
-                TempData["Success"] = "Solicitud de vacaciones eliminada exitosamente.";
-            }
-            catch (DbUpdateException ex)
-            {
-                HandleDbUpdateException(ex);
-                TempData["Error"] = "Error al eliminar la solicitud.";
+                // Registrar en bitácora
+                var currentUserId = (int)Session["UserId"];
+                BitacoraHelper.RegistrarAccion("SOLICITUD_VACACIONES_ELIMINADA",
+                    $"Solicitud eliminada: {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy}",
+                    currentUserId);
+
+                TempData["Success"] = "Solicitud eliminada exitosamente.";
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error inesperado al eliminar: {ex.Message}";
                 LogExceptionDetails(ex);
+                TempData["Error"] = "Error al eliminar la solicitud: " + ex.Message;
+                return RedirectToAction("Index");
             }
-
-            return RedirectToAction("Index");
         }
 
-        #region Métodos Jerárquicos
+        // =====================================================
+        // ACCIONES ESPECÍFICAS PARA APROBACIÓN
+        // =====================================================
 
-        // 🔑 MÉTODO CLAVE: Obtener jefe directo del empleado
-        private Empleados ObtenerJefeDirecto(int idEmpleado)
+        // GET: SolicitudesVacaciones/SolicitudesPendientes
+        public ActionResult SolicitudesPendientes()
         {
             try
             {
-                var empleado = db.Empleados
-                    .Include(e => e.Puestos)
-                    .Include(e => e.Puestos.Departamentos)
-                    .FirstOrDefault(e => e.id_empleado == idEmpleado);
+                var currentUserId = (int)Session["UserId"];
+                var currentUserRole = Session["RolUsuario"] as string;
 
-                if (empleado?.Puestos?.id_departamento == null)
-                    return null;
+                // Solo supervisores, admin y RRHH pueden ver solicitudes pendientes
+                if (currentUserRole != "Supervisor" && currentUserRole != "Administrador" && currentUserRole != "RRHH")
+                {
+                    TempData["Error"] = "No tiene permisos para ver solicitudes pendientes.";
+                    return RedirectToAction("Index");
+                }
 
-                // Buscar el jefe del departamento del empleado
-                var jefeDepartamento = db.Empleados
-                    .Include(e => e.Puestos)
-                    .Include(e => e.Usuarios)
-                    .FirstOrDefault(e => e.Puestos.id_departamento == empleado.Puestos.id_departamento
-                                      && e.Puestos.es_jefe == true
-                                      && e.estado == "Activo");
+                // Obtener solicitudes pendientes
+                IQueryable<SolicitudesVacaciones> solicitudesQuery = db.SolicitudesVacaciones
+                    .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
+                    .Include(s => s.Vacaciones.Empleados.Puestos)
+                    .Include(s => s.Vacaciones.Empleados.Puestos.Departamentos)
+                    .Include(s => s.Estados)
+                    .Where(s => s.Estados.nombre == "Pendiente");
 
-                return jefeDepartamento;
+                // Filtrar según rol
+                if (currentUserRole == "Supervisor")
+                {
+                    // Solo solicitudes de su departamento
+                    var usuarioActual = db.Usuarios
+                        .Include(u => u.Empleados)
+                        .Include(u => u.Empleados.Puestos)
+                        .FirstOrDefault(u => u.id_usuario == currentUserId);
+
+                    if (usuarioActual != null)
+                    {
+                        var idDepartamento = usuarioActual.Empleados.Puestos.id_departamento;
+                        solicitudesQuery = solicitudesQuery
+                            .Where(s => s.Vacaciones.Empleados.Puestos.id_departamento == idDepartamento);
+                    }
+                }
+                // Admin y RRHH ven todas las solicitudes
+
+                var solicitudes = solicitudesQuery
+                    .OrderByDescending(s => s.fecha_solicitud)
+                    .ToList();
+
+                return View(solicitudes);
             }
             catch (Exception ex)
             {
                 LogExceptionDetails(ex);
-                return null;
+                TempData["Error"] = "Error al cargar solicitudes pendientes: " + ex.Message;
+                return RedirectToAction("Index");
             }
         }
 
-        // 🔑 MÉTODO CLAVE: Obtener cadena completa de aprobación
-        private List<Empleados> ObtenerCadenaAprobacion(int idEmpleado)
-        {
-            var cadenaAprobacion = new List<Empleados>();
-
-            try
-            {
-                // 1. Jefe directo (del departamento)
-                var jefeDirecto = ObtenerJefeDirecto(idEmpleado);
-                if (jefeDirecto != null)
-                {
-                    cadenaAprobacion.Add(jefeDirecto);
-                }
-
-                // 2. RRHH (siempre puede aprobar)
-                var rrhh = db.Usuarios
-                    .Include(u => u.Empleados)
-                    .Include(u => u.Roles)
-                    .Where(u => u.Roles.nombre == "RRHH" && u.Empleados.estado == "Activo")
-                    .Select(u => u.Empleados)
-                    .FirstOrDefault();
-
-                if (rrhh != null && !cadenaAprobacion.Any(c => c.id_empleado == rrhh.id_empleado))
-                {
-                    cadenaAprobacion.Add(rrhh);
-                }
-
-                // 3. Admin (siempre puede aprobar)
-                var admin = db.Usuarios
-                    .Include(u => u.Empleados)
-                    .Include(u => u.Roles)
-                    .Where(u => u.Roles.nombre == "Admin" && u.Empleados.estado == "Activo")
-                    .Select(u => u.Empleados)
-                    .FirstOrDefault();
-
-                if (admin != null && !cadenaAprobacion.Any(c => c.id_empleado == admin.id_empleado))
-                {
-                    cadenaAprobacion.Add(admin);
-                }
-
-                return cadenaAprobacion;
-            }
-            catch (Exception ex)
-            {
-                LogExceptionDetails(ex);
-                return new List<Empleados>();
-            }
-        }
-
-        // 🔑 MÉTODO CLAVE: Validar si el usuario puede aprobar la solicitud
-        private bool PuedeAprobarSolicitud(int idSolicitud, int idUsuarioAprobador)
+        // POST: SolicitudesVacaciones/Aprobar
+        [HttpPost]
+        public ActionResult Aprobar(int id, string comentario = "")
         {
             try
             {
                 var solicitud = db.SolicitudesVacaciones
                     .Include(s => s.Vacaciones)
                     .Include(s => s.Vacaciones.Empleados)
-                    .Include(s => s.Vacaciones.Empleados.Puestos)
+                    .FirstOrDefault(s => s.id_solicitud == id);
+
+                if (solicitud == null)
+                    return Json(new { success = false, message = "Solicitud no encontrada." });
+
+                // Verificar permisos
+                var currentUserId = (int)Session["UserId"];
+                if (!PuedeAprobarSolicitud(id, currentUserId))
+                    return Json(new { success = false, message = "No tiene permisos para aprobar esta solicitud." });
+
+                // Verificar que esté pendiente
+                var estadoActual = db.Estados.Find(solicitud.id_estado);
+                if (estadoActual?.nombre != "Pendiente")
+                    return Json(new { success = false, message = "Solo se pueden aprobar solicitudes pendientes." });
+
+                // Actualizar estado
+                var estadoAprobado = db.Estados.FirstOrDefault(e => e.nombre == "Aprobado" && e.modulo == "Vacaciones");
+                solicitud.id_estado = estadoAprobado.id_estado;
+                solicitud.aprobado_por = currentUserId;
+                solicitud.fecha_aprobacion = DateTime.Now;
+                solicitud.comentario_respuesta = comentario;
+                solicitud.fecha_actualizacion = DateTime.Now;
+
+                // Actualizar días de vacaciones
+                var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
+                solicitud.Vacaciones.dias_disponibles -= diasSolicitados;
+                solicitud.Vacaciones.dias_disfrutados += diasSolicitados;
+                solicitud.Vacaciones.fecha_actualizacion = DateTime.Now;
+
+                db.SaveChanges();
+
+                // Notificar al empleado
+                NotificarDecisionAlEmpleado(solicitud, "APROBADA", diasSolicitados);
+
+                // Registrar en bitácora
+                BitacoraHelper.RegistrarAccion("SOLICITUD_VACACIONES_APROBADA",
+                    $"Solicitud aprobada para {solicitud.Vacaciones.Empleados.nombre1} {solicitud.Vacaciones.Empleados.apellido1} - {diasSolicitados} días",
+                    currentUserId);
+
+                return Json(new { success = true, message = "Solicitud aprobada exitosamente. El empleado ha sido notificado." });
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+                return Json(new { success = false, message = "Error al aprobar solicitud: " + ex.Message });
+            }
+        }
+
+        // POST: SolicitudesVacaciones/Rechazar
+        [HttpPost]
+        public ActionResult Rechazar(int id, string comentario = "")
+        {
+            try
+            {
+                var solicitud = db.SolicitudesVacaciones
+                    .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
+                    .FirstOrDefault(s => s.id_solicitud == id);
+
+                if (solicitud == null)
+                    return Json(new { success = false, message = "Solicitud no encontrada." });
+
+                // Verificar permisos
+                var currentUserId = (int)Session["UserId"];
+                if (!PuedeAprobarSolicitud(id, currentUserId))
+                    return Json(new { success = false, message = "No tiene permisos para rechazar esta solicitud." });
+
+                // Verificar que esté pendiente
+                var estadoActual = db.Estados.Find(solicitud.id_estado);
+                if (estadoActual?.nombre != "Pendiente")
+                    return Json(new { success = false, message = "Solo se pueden rechazar solicitudes pendientes." });
+
+                // Actualizar estado
+                var estadoRechazado = db.Estados.FirstOrDefault(e => e.nombre == "Rechazado" && e.modulo == "Vacaciones");
+                solicitud.id_estado = estadoRechazado.id_estado;
+                solicitud.aprobado_por = currentUserId;
+                solicitud.fecha_aprobacion = DateTime.Now;
+                solicitud.comentario_respuesta = comentario;
+                solicitud.fecha_actualizacion = DateTime.Now;
+
+                db.SaveChanges();
+
+                // Notificar al empleado
+                var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
+                NotificarDecisionAlEmpleado(solicitud, "RECHAZADA", diasSolicitados);
+
+                // Registrar en bitácora
+                BitacoraHelper.RegistrarAccion("SOLICITUD_VACACIONES_RECHAZADA",
+                    $"Solicitud rechazada para {solicitud.Vacaciones.Empleados.nombre1} {solicitud.Vacaciones.Empleados.apellido1} - Motivo: {comentario}",
+                    currentUserId);
+
+                return Json(new { success = true, message = "Solicitud rechazada exitosamente. El empleado ha sido notificado." });
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+                return Json(new { success = false, message = "Error al rechazar solicitud: " + ex.Message });
+            }
+        }
+
+        // =====================================================
+        // MÉTODOS AUXILIARES
+        // =====================================================
+
+        /// <summary>
+        /// Obtiene o crea vacaciones para un empleado en el período actual
+        /// </summary>
+        private Vacaciones ObtenerOCrearVacaciones(int idEmpleado)
+        {
+            var periodoActual = DateTime.Now.Year.ToString();
+            var vacacionesExistentes = db.Vacaciones.FirstOrDefault(v => v.id_empleado == idEmpleado && v.periodo == periodoActual);
+
+            if (vacacionesExistentes != null)
+            {
+                return vacacionesExistentes;
+            }
+
+            // Crear nuevo registro calculando días automáticamente
+            var empleado = db.Empleados.Find(idEmpleado);
+            if (empleado == null) return null;
+
+            var diasCalculados = CalcularDiasVacaciones(empleado.fecha_ingreso);
+
+            var nuevasVacaciones = new Vacaciones
+            {
+                id_empleado = idEmpleado,
+                periodo = periodoActual,
+                dias_disponibles = diasCalculados,
+                dias_disfrutados = 0,
+                fecha_creacion = DateTime.Now,
+                fecha_actualizacion = DateTime.Now
+            };
+
+            db.Vacaciones.Add(nuevasVacaciones);
+            db.SaveChanges();
+
+            return nuevasVacaciones;
+        }
+
+        /// <summary>
+        /// Calcula días de vacaciones según antigüedad (Código de Trabajo CR)
+        /// </summary>
+        private int CalcularDiasVacaciones(DateTime fechaIngreso)
+        {
+            var semanasTranscurridas = (DateTime.Now - fechaIngreso).TotalDays / 7;
+            var ciclosCompletos = (int)(semanasTranscurridas / 50);
+            var diasAcumulados = ciclosCompletos * 12;
+            return Math.Max(0, Math.Min(24, diasAcumulados));
+        }
+
+        /// <summary>
+        /// Calcula días laborales entre dos fechas (excluyendo fines de semana)
+        /// </summary>
+        private int CalcularDiasLaborales(DateTime fechaInicio, DateTime fechaFin)
+        {
+            int diasLaborales = 0;
+            var fechaActual = fechaInicio;
+
+            while (fechaActual <= fechaFin)
+            {
+                if (fechaActual.DayOfWeek != DayOfWeek.Saturday && fechaActual.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    diasLaborales++;
+                }
+                fechaActual = fechaActual.AddDays(1);
+            }
+
+            return diasLaborales;
+        }
+
+        /// <summary>
+        /// Notifica la solicitud de vacaciones al jefe del departamento
+        /// </summary>
+        private void NotificarSolicitudAlJefe(SolicitudesVacaciones solicitud, int idEmpleado, int diasSolicitados)
+        {
+            try
+            {
+                // Obtener datos del empleado solicitante
+                var empleado = db.Empleados
+                    .Include(e => e.Puestos)
+                    .Include(e => e.Puestos.Departamentos)
+                    .FirstOrDefault(e => e.id_empleado == idEmpleado);
+
+                if (empleado == null) return;
+
+                // Obtener el jefe del departamento
+                var jefeDepartamento = NotificacionesHelper.ObtenerJefeDepartamento(idEmpleado);
+                if (jefeDepartamento == null)
+                {
+                    // Si no hay jefe, notificar a RRHH
+                    var usuarioRRHH = db.Usuarios
+                        .Include(u => u.Roles)
+                        .FirstOrDefault(u => u.Roles.nombre == "RRHH");
+
+                    if (usuarioRRHH != null)
+                    {
+                        NotificacionesHelper.CrearNotificacion(
+                            usuarioRRHH.id_empleado,
+                            idEmpleado,
+                            "Nueva Solicitud de Vacaciones",
+                            $"{empleado.nombre1} {empleado.apellido1} ({empleado.Puestos.Departamentos.nombre}) ha solicitado {diasSolicitados} días de vacaciones del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy}. Revisar y aprobar.",
+                            "solicitud",
+                            "SolicitudVacaciones",
+                            solicitud.id_solicitud
+                        );
+                    }
+                    return;
+                }
+
+                // Crear notificación al jefe
+                var notificacionExitosa = NotificacionesHelper.CrearNotificacion(
+                    jefeDepartamento.id_empleado,
+                    idEmpleado,
+                    "Nueva Solicitud de Vacaciones",
+                    $"{empleado.nombre1} {empleado.apellido1} ha solicitado {diasSolicitados} días de vacaciones del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy}. Comentario: {solicitud.comentario_solicitud ?? "Sin comentarios"}",
+                    "solicitud",
+                    "SolicitudVacaciones",
+                    solicitud.id_solicitud
+                );
+
+                if (notificacionExitosa)
+                {
+                    // Registrar en bitácora
+                    BitacoraHelper.RegistrarAccion("NOTIFICACION_JEFE_ENVIADA",
+                        $"Notificación enviada a {jefeDepartamento.nombre1} {jefeDepartamento.apellido1} sobre solicitud de {empleado.nombre1} {empleado.apellido1}",
+                        (int)Session["UserId"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+            }
+        }
+
+        /// <summary>
+        /// Notifica al empleado sobre la decisión de su solicitud
+        /// </summary>
+        private void NotificarDecisionAlEmpleado(SolicitudesVacaciones solicitud, string decision, int diasSolicitados)
+        {
+            try
+            {
+                var empleado = solicitud.Vacaciones.Empleados;
+                var usuarioAprobador = db.Usuarios
+                    .Include(u => u.Empleados)
+                    .FirstOrDefault(u => u.id_usuario == solicitud.aprobado_por);
+
+                string mensaje = $"Su solicitud de {diasSolicitados} días de vacaciones del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy} ha sido {decision}.";
+
+                if (!string.IsNullOrEmpty(solicitud.comentario_respuesta))
+                {
+                    mensaje += $"\n\nComentario del supervisor: {solicitud.comentario_respuesta}";
+                }
+
+                if (usuarioAprobador != null)
+                {
+                    mensaje += $"\n\nAprobado por: {usuarioAprobador.Empleados.nombre1} {usuarioAprobador.Empleados.apellido1}";
+                }
+
+                // Crear notificación
+                NotificacionesHelper.CrearNotificacion(
+                    empleado.id_empleado,
+                    solicitud.aprobado_por,
+                    $"Solicitud de Vacaciones {decision}",
+                    mensaje,
+                    decision == "APROBADA" ? "aprobacion" : "rechazo",
+                    "SolicitudVacaciones",
+                    solicitud.id_solicitud
+                );
+            }
+            catch (Exception ex)
+            {
+                LogExceptionDetails(ex);
+            }
+        }
+
+        /// <summary>
+        /// Verifica si el usuario actual puede aprobar una solicitud
+        /// </summary>
+        private bool PuedeAprobarSolicitud(int idSolicitud, int idUsuario)
+        {
+            try
+            {
+                var solicitud = db.SolicitudesVacaciones
+                    .Include(s => s.Vacaciones)
+                    .Include(s => s.Vacaciones.Empleados)
                     .FirstOrDefault(s => s.id_solicitud == idSolicitud);
 
                 if (solicitud == null) return false;
 
-                var usuarioAprobador = db.Usuarios
-                    .Include(u => u.Empleados)
-                    .Include(u => u.Empleados.Puestos)
+                var usuario = db.Usuarios
                     .Include(u => u.Roles)
-                    .FirstOrDefault(u => u.id_usuario == idUsuarioAprobador);
+                    .Include(u => u.Empleados)
+                    .FirstOrDefault(u => u.id_usuario == idUsuario);
 
-                if (usuarioAprobador == null) return false;
+                if (usuario == null) return false;
 
-                var rolAprobador = usuarioAprobador.Roles.nombre;
-                var empleadoSolicitante = solicitud.Vacaciones.Empleados;
+                // Administrador y RRHH pueden aprobar cualquier solicitud
+                if (usuario.Roles.nombre == "Administrador" || usuario.Roles.nombre == "RRHH")
+                    return true;
 
-                // 🔐 REGLAS DE APROBACIÓN JERÁRQUICA
-                switch (rolAprobador)
+                // Supervisor puede aprobar solicitudes de su departamento
+                if (usuario.Roles.nombre == "Supervisor")
                 {
-                    case "Admin":
-                        return true; // Admin puede aprobar cualquier solicitud
-
-                    case "RRHH":
-                        return true; // RRHH puede aprobar cualquier solicitud
-
-                    case "Supervisor":
-                    case "Jefe Departamento":
-                        // Solo puede aprobar empleados de su departamento
-                        var departamentoAprobador = usuarioAprobador.Empleados?.Puestos?.id_departamento;
-                        var departamentoSolicitante = empleadoSolicitante?.Puestos?.id_departamento;
-
-                        // Verificar que es jefe del departamento
-                        var esJefe = usuarioAprobador.Empleados?.Puestos?.es_jefe == true;
-
-                        return departamentoAprobador!= null &&
-                               departamentoSolicitante!= null &&
-                               departamentoAprobador.Value == departamentoSolicitante.Value &&
-                               esJefe;
-
-                    default:
-                        return false; // Empleados regulares no pueden aprobar
+                    var jefeDepartamento = NotificacionesHelper.ObtenerJefeDepartamento(solicitud.Vacaciones.id_empleado);
+                    return jefeDepartamento != null && jefeDepartamento.id_empleado == usuario.id_empleado;
                 }
+
+                return false;
             }
             catch (Exception ex)
             {
@@ -701,177 +967,60 @@ namespace SistemaNomina.Controllers
             }
         }
 
-        // 🔔 MÉTODO CLAVE: Notificar solicitud creada a la cadena de aprobación
-        private void NotificarSolicitudCreada(SolicitudesVacaciones solicitud)
+        /// <summary>
+        /// Verifica si el usuario tiene acceso a una solicitud específica
+        /// </summary>
+        private bool TieneAccesoSolicitud(SolicitudesVacaciones solicitud, int? currentUserId, string currentUserRole)
         {
-            try
-            {
-                var empleadoSolicitante = db.Empleados
-                    .Include(e => e.Puestos)
-                    .Include(e => e.Puestos.Departamentos)
-                    .FirstOrDefault(e => e.id_empleado == solicitud.Vacaciones.id_empleado);
+            if (currentUserId == null) return false;
 
-                if (empleadoSolicitante == null) return;
+            // Administrador y RRHH tienen acceso total
+            if (currentUserRole == "Administrador" || currentUserRole == "RRHH")
+                return true;
 
-                var cadenaAprobacion = ObtenerCadenaAprobacion(empleadoSolicitante.id_empleado);
-                var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-
-                // 📧 Registrar notificación en bitácora para cada aprobador
-                foreach (var aprobador in cadenaAprobacion)
-                {
-                    var usuarioAprobador = aprobador.Usuarios.FirstOrDefault();
-                    if (usuarioAprobador != null)
-                    {
-                        BitacoraHelper.RegistrarAccion("NOTIFICACION_SOLICITUD_VACACIONES",
-                            $"PARA:{aprobador.nombre1} {aprobador.apellido1} - Nueva solicitud de {empleadoSolicitante.nombre1} {empleadoSolicitante.apellido1} ({empleadoSolicitante.Puestos?.Departamentos?.nombre}) - {diasSolicitados} días del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy}",
-                            usuarioAprobador.id_usuario);
-                    }
-                }
-
-                // LOG general de notificaciones enviadas
-                BitacoraHelper.RegistrarAccion("NOTIFICAR_SOLICITUD_CREADA",
-                    $"Notificaciones enviadas a {cadenaAprobacion.Count} aprobadores para solicitud de {empleadoSolicitante.nombre1} {empleadoSolicitante.apellido1}",
-                    solicitud.Usuarios.id_usuario);
-            }
-            catch (Exception ex)
-            {
-                LogExceptionDetails(ex);
-            }
-        }
-
-        #endregion
-
-        #region Métodos auxiliares
-
-        // 🔔 MÉTODO MEJORADO: Notificación automática usando bitácora
-        private void NotificarDecisionVacaciones(SolicitudesVacaciones solicitud, string decision)
-        {
-            try
-            {
-                var empleado = solicitud.Vacaciones.Empleados;
-                var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-
-                // Obtener usuario del empleado
-                var usuarioEmpleado = empleado.Usuarios.FirstOrDefault();
-                if (usuarioEmpleado != null)
-                {
-                    var mensaje = $"Su solicitud de {diasSolicitados} días de vacaciones del {solicitud.fecha_inicio:dd/MM/yyyy} al {solicitud.fecha_fin:dd/MM/yyyy} ha sido {decision.ToLower()}.";
-
-                    if (!string.IsNullOrEmpty(solicitud.comentario_respuesta))
-                    {
-                        mensaje += $" Comentario: {solicitud.comentario_respuesta}";
-                    }
-
-                    // 🔔 REGISTRAR NOTIFICACIÓN EN BITÁCORA
-                    BitacoraHelper.RegistrarAccion($"NOTIFICACION_VACACIONES_{decision}",
-                        $"PARA:{empleado.nombre1} {empleado.apellido1} - {mensaje}",
-                        usuarioEmpleado.id_usuario);
-                }
-
-                // 📋 Registrar la notificación en bitácora general
-                BitacoraHelper.RegistrarAccion("NOTIFICAR_DECISION_VACACIONES",
-                    $"Notificación enviada a {empleado.nombre1} {empleado.apellido1}: Solicitud {decision}",
-                    solicitud.aprobado_por ?? 0);
-            }
-            catch (Exception ex)
-            {
-                LogExceptionDetails(ex);
-            }
-        }
-
-        private int CalcularDiasLaborales(DateTime fechaInicio, DateTime fechaFin)
-        {
-            int dias = 0;
-            for (var fecha = fechaInicio; fecha <= fechaFin; fecha = fecha.AddDays(1))
-            {
-                if (fecha.DayOfWeek != DayOfWeek.Saturday && fecha.DayOfWeek != DayOfWeek.Sunday)
-                    dias++;
-            }
-            return dias;
-        }
-
-        private (bool esValida, string mensaje) ValidarSolicitud(SolicitudesVacaciones solicitud)
-        {
-            // Validar fechas
-            if (solicitud.fecha_inicio < DateTime.Today)
-                return (false, "La fecha de inicio no puede ser anterior a hoy.");
-
-            if (solicitud.fecha_fin <= solicitud.fecha_inicio)
-                return (false, "La fecha de fin debe ser posterior a la fecha de inicio.");
-
-            // Calcular días solicitados
-            var diasSolicitados = CalcularDiasLaborales(solicitud.fecha_inicio, solicitud.fecha_fin);
-            if (diasSolicitados == 0)
-                return (false, "Debe solicitar al menos un día laboral.");
-
-            // Verificar días disponibles
-            var vacaciones = db.Vacaciones.Find(solicitud.id_vacacion);
-            if (vacaciones != null)
-            {
-                var diasDisponibles = vacaciones.dias_disponibles - (vacaciones.dias_disfrutados);
-                if (diasSolicitados > diasDisponibles)
-                    return (false, $"Solo hay {diasDisponibles} día(s) disponible(s). Se están solicitando {diasSolicitados} día(s).");
-            }
-
-            return (true, "");
-        }
-
-        private void CargarListasDesplegables(SolicitudesVacaciones solicitud = null)
-        {
-            var currentUserId = (int?)Session["UserId"];
-            var currentUserRole = Session["RolUsuario"] as string;
-
+            // Empleado puede ver sus propias solicitudes
             if (currentUserRole == "Empleado")
             {
-                var empleado = db.Usuarios.Include(u => u.Empleados)
-                    .FirstOrDefault(u => u.id_usuario == currentUserId)?.Empleados;
-
-                if (empleado != null)
-                {
-                    ViewBag.id_vacacion = new SelectList(
-                        db.Vacaciones.Where(v => v.id_empleado == empleado.id_empleado),
-                        "id_vacacion", "periodo", solicitud?.id_vacacion);
-                }
+                var usuarioActual = db.Usuarios.FirstOrDefault(u => u.id_usuario == currentUserId);
+                return usuarioActual != null && solicitud.Vacaciones.id_empleado == usuarioActual.id_empleado;
             }
-            else
+
+            // Supervisor puede ver solicitudes de su departamento
+            if (currentUserRole == "Supervisor")
             {
-                ViewBag.id_vacacion = new SelectList(db.Vacaciones.Include(v => v.Empleados)
-                    .Select(v => new {
-                        v.id_vacacion,
-                        Display = v.Empleados.nombre1 + " " + v.Empleados.apellido1 + " - " + v.periodo
-                    }), "id_vacacion", "Display", solicitud?.id_vacacion);
+                return PuedeAprobarSolicitud(solicitud.id_solicitud, currentUserId.Value);
             }
 
-            ViewBag.id_estado = new SelectList(
-                db.Estados.Where(e => e.modulo == "Vacaciones"),
-                "id_estado", "nombre", solicitud?.id_estado);
+            return false;
         }
 
-        private void HandleDbUpdateException(DbUpdateException ex)
+        /// <summary>
+        /// Carga datos necesarios para las vistas
+        /// </summary>
+        private void CargarDatosVista(int idVacacion)
         {
-            var sqlEx = ex.GetBaseException() as System.Data.SqlClient.SqlException;
-            if (sqlEx != null)
+            try
             {
-                switch (sqlEx.Number)
+                var vacaciones = db.Vacaciones
+                    .Include(v => v.Empleados)
+                    .FirstOrDefault(v => v.id_vacacion == idVacacion);
+
+                if (vacaciones != null)
                 {
-                    case 547:
-                        ModelState.AddModelError("", "No se puede eliminar porque existen registros relacionados.");
-                        break;
-                    case 2:
-                        ModelState.AddModelError("", "Error de conexión con la base de datos.");
-                        break;
-                    default:
-                        ModelState.AddModelError("", "Error en la base de datos: " + sqlEx.Message);
-                        break;
+                    ViewBag.DiasDisponibles = vacaciones.dias_disponibles;
+                    ViewBag.EmpleadoNombre = $"{vacaciones.Empleados.nombre1} {vacaciones.Empleados.apellido1}";
+                    ViewBag.Periodo = vacaciones.periodo;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Error al actualizar la base de datos.");
+                LogExceptionDetails(ex);
             }
-            LogExceptionDetails(ex);
         }
 
+        /// <summary>
+        /// Registra detalles de excepción para debugging
+        /// </summary>
         private void LogExceptionDetails(Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error en SolicitudesVacacionesController: {ex.Message}");
@@ -883,8 +1032,9 @@ namespace SistemaNomina.Controllers
             }
         }
 
-        #endregion
-
+        /// <summary>
+        /// Libera recursos
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

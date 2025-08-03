@@ -527,11 +527,23 @@ namespace SistemaNomina.Controllers
         }
 
         // 🔥 NUEVA: Reportes de asistencia
+        // 🔥 NUEVA: Reportes de asistencia
         [RoleAuthorize("Admin", "RRHH", "Supervisor")]
         public ActionResult Reportes()
         {
-            ViewBag.Empleados = new SelectList(db.Empleados.Where(e => e.estado == "ACTIVO"),
-                                             "id_empleado", "cedula");
+            // ✅ MODIFICACIÓN: Cargar empleados con cédula y nombre completo
+            var empleados = db.Empleados.Where(e => e.estado == "ACTIVO")
+                                       .Select(e => new {
+                                           id_empleado = e.id_empleado,
+                                           display = e.cedula + " - " + e.nombre1 + " " +
+                                                   (e.nombre2 != null ? e.nombre2 + " " : "") +
+                                                   e.apellido1 + " " +
+                                                   (e.apellido2 != null ? e.apellido2 : "")
+                                       })
+                                       .OrderBy(e => e.display)
+                                       .ToList();
+
+            ViewBag.Empleados = new SelectList(empleados, "id_empleado", "display");
             ViewBag.Departamentos = new SelectList(db.Departamentos, "id_departamento", "nombre");
             return View();
         }

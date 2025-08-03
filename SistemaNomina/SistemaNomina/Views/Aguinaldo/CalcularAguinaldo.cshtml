@@ -5,19 +5,45 @@
 
 <style>
     :root {
-        --azul-oscuro: #221d42;
-        --celeste: #1788ca;
-        --amarillo: #fab61b;
-        --gris-claro: #e7e8eb;
-        --blanco: #ffffff;
-        --verde: #28a745;
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-main);
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
     }
 
     .calculator-container {
-        background: var(--blanco);
-        border-radius: 15px;
+        background: var(--white);
+        border-radius: var(--border-radius);
         padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-main);
         margin-bottom: 2rem;
     }
 
@@ -25,103 +51,355 @@
         display: flex;
         justify-content: center;
         margin-bottom: 2rem;
-    }
-
-    .step {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: var(--gris-claro);
-        color: var(--azul-oscuro);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 10px;
-        font-weight: bold;
         position: relative;
     }
 
-        .step.active {
-            background-color: var(--celeste);
-            color: var(--blanco);
-        }
+    .step {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--neutral-color);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 15px;
+        font-weight: bold;
+        position: relative;
+        transition: var(--transition);
+        font-size: 1.1rem;
+        border: 3px solid var(--neutral-color);
+    }
 
-        .step.completed {
-            background-color: var(--verde);
-            color: var(--blanco);
-        }
+    .step.active {
+        background-color: var(--secondary-color);
+        color: var(--white);
+        border-color: var(--secondary-color);
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
 
-        .step::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            width: 20px;
-            height: 2px;
-            background-color: var(--gris-claro);
-            transform: translateY(-50%);
-        }
+    .step.completed {
+        background-color: var(--success-color);
+        color: var(--white);
+        border-color: var(--success-color);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
 
-        .step:last-child::after {
-            display: none;
-        }
+    .step::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: 30px;
+        height: 3px;
+        background-color: var(--neutral-color);
+        transform: translateY(-50%);
+        z-index: -1;
+    }
+
+    .step:last-child::after {
+        display: none;
+    }
+
+    .step.completed::after {
+        background-color: var(--success-color);
+    }
 
     .calculation-result {
-        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
-        color: var(--blanco);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         border-radius: 10px;
-        padding: 1.5rem;
+        padding: 2rem;
         margin-top: 2rem;
+        box-shadow: var(--shadow-main);
     }
 
     .detail-card {
-        background: var(--gris-claro);
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 10px 0;
+        background: var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border: 1px solid #dee2e6;
+    }
+
+    .detail-card h5 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .amount-display {
-        font-size: 2.5rem;
+        font-size: 3rem;
         font-weight: bold;
-        color: var(--amarillo);
+        color: var(--accent-color);
         text-align: center;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
     }
 
     .info-item {
-        background: rgba(255,255,255,0.1);
-        padding: 1rem;
-        border-radius: 8px;
+        background: rgba(255,255,255,0.15);
+        padding: 1.25rem;
+        border-radius: var(--border-radius-sm);
         text-align: center;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: var(--transition);
+    }
+
+    .info-item:hover {
+        background: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
     }
 
     .info-label {
         font-size: 0.9rem;
         opacity: 0.8;
         margin-bottom: 0.5rem;
+        font-weight: 500;
     }
 
     .info-value {
         font-size: 1.2rem;
         font-weight: bold;
     }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-select, .form-control {
+        border: 2px solid #dee2e6;
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        font-size: 1rem;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .form-select-lg {
+        padding: 1rem 1.25rem;
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(34, 29, 66, 0.3);
+        color: var(--white);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success-color), #20c997);
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        color: var(--white);
+    }
+
+    .btn-outline-primary {
+        background: transparent;
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--secondary-color);
+        color: var(--white);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-outline-secondary:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.3);
+    }
+
+    .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    .alert {
+        border-radius: var(--border-radius-sm);
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        color: #0c5460;
+        border-left: 4px solid var(--secondary-color);
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+        background-color: rgba(255,255,255,0.2);
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, var(--accent-color) 0%, #ffd93d 100%);
+        border-radius: 4px;
+    }
+
+    .table {
+        color: var(--primary-color);
+        margin-bottom: 0;
+    }
+
+    .table th {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        font-weight: 600;
+        padding: 0.75rem;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(23, 136, 202, 0.05);
+    }
+
+    /* Animaciones */
+    .step-content {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fa-spin {
+        color: var(--secondary-color);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .calculator-container {
+            padding: 1.5rem;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+
+        .step::after {
+            width: 20px;
+        }
+
+        .amount-display {
+            font-size: 2.5rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .amount-display {
+            font-size: 2rem;
+        }
+    }
 </style>
 
-<div class="container">
+<div class="container" style="max-width: 1200px;">
     <!-- Header -->
-    <div class="mb-4 text-center">
-        <h2 style="color: var(--azul-oscuro);">
-            <i class="fas fa-calculator"></i> Calculadora de Aguinaldo
-        </h2>
-        <p class="text-muted">Calculo automatico segun el Codigo de Trabajo de Costa Rica</p>
+    <div class="page-header">
+        <h2><i class="fas fa-calculator"></i> Calculadora de Aguinaldo</h2>
+        <p>Cálculo automático según el Código de Trabajo de Costa Rica</p>
     </div>
 
     <!-- Indicador de Pasos -->
@@ -133,13 +411,15 @@
 
     <!-- Contenedor Principal -->
     <div class="calculator-container">
-        <!-- Paso 1: Seleccion de Empleado y Ano -->
+        <!-- Paso 1: Selección de Empleado y Año -->
         <div id="paso1" class="step-content">
-            <h4 class="mb-4"><i class="fas fa-user-check"></i> Seleccione Empleado y Periodo</h4>
+            <h4 class="mb-4"><i class="fas fa-user-check"></i> Seleccione Empleado y Período</h4>
 
             <div class="row">
                 <div class="col-md-6">
-                    <label for="empleadoSelect" class="form-label fw-bold">Empleado:</label>
+                    <label for="empleadoSelect" class="form-label">
+                        <i class="fas fa-user"></i> Empleado:
+                    </label>
                     <select id="empleadoSelect" class="form-select form-select-lg">
                         <option value="">Seleccione un empleado...</option>
                         @foreach (var empleado in ViewBag.EmpleadosActivos as List<SelectListItem>)
@@ -149,7 +429,9 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="anioSelect" class="form-label fw-bold">Ano Fiscal:</label>
+                    <label for="anioSelect" class="form-label">
+                        <i class="fas fa-calendar"></i> Año Fiscal:
+                    </label>
                     <select id="anioSelect" class="form-select form-select-lg">
                         <option value="@ViewBag.AnioActual">@ViewBag.AnioActual</option>
                         <option value="@(ViewBag.AnioActual - 1)">@(ViewBag.AnioActual - 1)</option>
@@ -160,45 +442,45 @@
 
             <div class="alert alert-info mt-3">
                 <i class="fas fa-info-circle"></i>
-                <strong>Informacion del Calculo:</strong>
+                <strong>Información del Cálculo:</strong>
                 <ul class="mb-0 mt-2">
-                    <li>Periodo legal: 1 de diciembre del ano anterior al 30 de noviembre del ano actual</li>
-                    <li>Formula: (Suma de salarios devengados en el periodo) dividido 12</li>
-                    <li>Se consideran ausencias injustificadas para ajustar el calculo</li>
+                    <li>Período legal: 1 de diciembre del año anterior al 30 de noviembre del año actual</li>
+                    <li>Fórmula: (Suma de salarios devengados en el período) dividido entre 12</li>
+                    <li>Se consideran ausencias injustificadas para ajustar el cálculo</li>
+                    <li>Base legal: Código de Trabajo de Costa Rica, Artículo 177</li>
                 </ul>
             </div>
 
             <div class="mt-4 text-center">
-                <button type="button" class="btn btn-lg"
-                        style="background-color: var(--celeste); color: var(--blanco); padding: 12px 30px;"
-                        onclick="ejecutarCalculo()">
+                <button type="button" class="btn btn-primary btn-lg" onclick="ejecutarCalculo()">
                     <i class="fas fa-play"></i> Calcular Aguinaldo
                 </button>
             </div>
         </div>
 
-        <!-- Paso 2: Calculo en Progreso -->
+        <!-- Paso 2: Cálculo en Progreso -->
         <div id="paso2" class="step-content" style="display: none;">
             <div class="py-5 text-center">
-                <i class="fas fa-cog fa-spin fa-5x text-primary mb-3"></i>
+                <i class="fas fa-cog fa-spin fa-5x mb-4"></i>
                 <h4>Calculando Aguinaldo...</h4>
-                <p class="text-muted">Analizando registros de nomina y considerando ausencias</p>
-                <div class="progress" style="max-width: 400px; margin: 0 auto;">
+                <p class="text-muted">Analizando registros de nómina y considerando ausencias</p>
+                <div class="progress" style="max-width: 400px; margin: 1rem auto;">
                     <div class="progress-bar progress-bar-striped progress-bar-animated"
                          role="progressbar" style="width: 100%"></div>
                 </div>
+                <small class="text-muted">Este proceso puede tomar unos segundos...</small>
             </div>
         </div>
 
-        <!-- Paso 3: Resultado del Calculo -->
+        <!-- Paso 3: Resultado del Cálculo -->
         <div id="paso3" class="step-content" style="display: none;">
             <div id="resultadoCalculo">
-                <!-- El resultado se cargara aqui dinamicamente -->
+                <!-- El resultado se cargará aquí dinámicamente -->
             </div>
         </div>
     </div>
 
-    <!-- Botones de Navegacion -->
+    <!-- Botones de Navegación -->
     <div class="text-center">
         <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Volver al Listado
@@ -211,171 +493,224 @@
 
 @section Scripts {
     <script>
-    function ejecutarCalculo() {
-        var empleadoId = $('#empleadoSelect').val();
-        var anio = $('#anioSelect').val();
-
-        if (!empleadoId) {
-            alert('Por favor seleccione un empleado');
-            return;
-        }
-
-        // Cambiar a paso 2
-        cambiarPaso(2);
-
-        // Ejecutar calculo
-        $.post('@Url.Action("CalcularAguinaldoAutomatico")', {
-            idEmpleado: empleadoId,
-            anio: anio
-        })
-        .done(function(response) {
-            setTimeout(function() {
-                if (response.success) {
-                    mostrarResultado(response);
-                    cambiarPaso(3);
-                } else {
-                    alert('Error: ' + response.message);
-                    cambiarPaso(1);
-                }
-            }, 2000); // Simular tiempo de calculo
-        })
-        .fail(function() {
-            alert('Error de conexion. Intente nuevamente.');
-            cambiarPaso(1);
+        $(document).ready(function() {
+            console.log('=== CALCULADORA AGUINALDO INICIADA ===');
         });
-    }
 
-    function cambiarPaso(numeroStep) {
-        // Ocultar todos los pasos
-        $('.step-content').hide();
+        function ejecutarCalculo() {
+            var empleadoId = $('#empleadoSelect').val();
+            var anio = $('#anioSelect').val();
 
-        // Resetear clases de steps
-        $('.step').removeClass('active completed');
+            console.log('=== EJECUTAR CÁLCULO ===');
+            console.log('Empleado ID:', empleadoId);
+            console.log('Año:', anio);
 
-        // Mostrar el paso actual
-        $('#paso' + numeroStep).show();
-        $('#step' + numeroStep).addClass('active');
+            if (!empleadoId || empleadoId === '') {
+                alert('Por favor seleccione un empleado');
+                $('#empleadoSelect').focus();
+                return;
+            }
 
-        // Marcar pasos anteriores como completados
-        for (var i = 1; i < numeroStep; i++) {
-            $('#step' + i).addClass('completed');
-        }
-    }
+            if (!anio) {
+                alert('Por favor seleccione un año fiscal');
+                $('#anioSelect').focus();
+                return;
+            }
 
-    function mostrarResultado(data) {
-        var html = `
-            <div class="calculation-result">
-                <div class="text-center">
-                    <h3><i class="fas fa-check-circle"></i> Calculo Completado</h3>
-                    <div class="amount-display">${data.montoAguinaldo}</div>
-                    <p class="mb-0">Aguinaldo calculado para <strong>${data.empleado}</strong></p>
-                </div>
+            // Cambiar a paso 2
+            cambiarPaso(2);
 
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Cedula</div>
-                        <div class="info-value">${data.cedula}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Fecha Ingreso</div>
-                        <div class="info-value">${data.fechaIngreso}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Meses Laborados</div>
-                        <div class="info-value">${data.mesesLaborados}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Periodo Calculo</div>
-                        <div class="info-value">${data.periodoInicio} - ${data.periodoFin}</div>
-                    </div>
-                </div>
-            </div>
+            // Ejecutar cálculo
+            $.post('@Url.Action("CalcularAguinaldoAutomatico", "Aguinaldo")', {
+                idEmpleado: empleadoId,
+                anio: anio
+            })
+            .done(function(response) {
+                console.log('Respuesta del cálculo:', response);
 
-            <div class="detail-card">
-                <h5><i class="fas fa-chart-line"></i> Detalles del Calculo</h5>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Suma de Salarios del Periodo:</strong> ${data.sumaSalarios}
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Dias de Ausencias:</strong> ${data.diasAusencias}
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <strong>Monto Descontado por Ausencias:</strong> ${data.montoDescontadoAusencias}
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Formula Aplicada:</strong> (Suma Salarios dividido 12)
-                    </div>
-                </div>
-            </div>`;
-
-        if (data.detalleCalculo && data.detalleCalculo.salariosIncluidos.length > 0) {
-            html += `
-                <div class="detail-card">
-                    <h5><i class="fas fa-list"></i> Salarios Incluidos en el Calculo</h5>
-                    <div class="table-responsive">
-                        <table class="table-sm table">
-                            <thead>
-                                <tr><th>Mes</th><th>Ano</th><th>Salario</th></tr>
-                            </thead>
-                            <tbody>`;
-
-            data.detalleCalculo.salariosIncluidos.forEach(function(salario) {
-                html += `<tr><td>${salario.mes}</td><td>${salario.anio}</td><td>${salario.salario}</td></tr>`;
+                setTimeout(function() {
+                    if (response && response.success) {
+                        mostrarResultado(response);
+                        cambiarPaso(3);
+                    } else {
+                        alert('Error en el cálculo: ' + (response.message || 'Error desconocido'));
+                        cambiarPaso(1);
+                    }
+                }, 2000); // Simular tiempo de cálculo para mejor UX
+            })
+            .fail(function(xhr, status, error) {
+                console.error('Error en petición AJAX:', error);
+                setTimeout(function() {
+                    alert('Error de conexión. Intente nuevamente.');
+                    cambiarPaso(1);
+                }, 1000);
             });
-
-            html += `</tbody></table></div></div>`;
         }
 
-        if (data.aguinaldoExistente) {
-            html += `
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Advertencia:</strong> Ya existe un aguinaldo registrado para este empleado en el ano seleccionado.
+        function cambiarPaso(numeroStep) {
+            console.log('Cambiando a paso:', numeroStep);
+
+            // Ocultar todos los pasos
+            $('.step-content').hide();
+
+            // Resetear clases de steps
+            $('.step').removeClass('active completed');
+
+            // Mostrar el paso actual
+            $('#paso' + numeroStep).show();
+            $('#step' + numeroStep).addClass('active');
+
+            // Marcar pasos anteriores como completados
+            for (var i = 1; i < numeroStep; i++) {
+                $('#step' + i).addClass('completed');
+            }
+        }
+
+        function mostrarResultado(data) {
+            var html = `
+                <div class="calculation-result">
+                    <div class="text-center">
+                        <h3><i class="fas fa-check-circle"></i> Cálculo Completado</h3>
+                        <div class="amount-display">${data.montoAguinaldo}</div>
+                        <p class="mb-0">Aguinaldo calculado para <strong>${data.empleado}</strong></p>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-id-card"></i> Cédula</div>
+                            <div class="info-value">${data.cedula}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-calendar-alt"></i> Fecha Ingreso</div>
+                            <div class="info-value">${data.fechaIngreso}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-calendar-check"></i> Meses Laborados</div>
+                            <div class="info-value">${data.mesesLaborados} meses</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-clock"></i> Período Cálculo</div>
+                            <div class="info-value">${data.periodoInicio} - ${data.periodoFin}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h5><i class="fas fa-chart-line"></i> Detalles del Cálculo</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-money-bill-wave"></i> Suma de Salarios del Período:</strong> ${data.sumaSalarios}
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-exclamation-circle"></i> Días de Ausencias:</strong> ${data.diasAusencias} días
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-minus-circle"></i> Monto Descontado por Ausencias:</strong> ${data.montoDescontadoAusencias}
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-calculator"></i> Fórmula Aplicada:</strong> (Suma Salarios ÷ 12)
+                        </div>
+                    </div>
                 </div>`;
-        } else {
-            html += `
-                <div class="mt-4 text-center">
-                    <button type="button" class="btn btn-success btn-lg" onclick="guardarAguinaldo()">
-                        <i class="fas fa-save"></i> Guardar Aguinaldo
-                    </button>
-                    <button type="button" class="btn btn-outline-primary" onclick="recalcular()">
-                        <i class="fas fa-redo"></i> Recalcular
-                    </button>
-                </div>`;
+
+            if (data.detalleCalculo && data.detalleCalculo.salariosIncluidos.length > 0) {
+                html += `
+                    <div class="detail-card">
+                        <h5><i class="fas fa-list"></i> Salarios Incluidos en el Cálculo</h5>
+                        <div class="table-responsive">
+                            <table class="table-sm table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-calendar"></i> Mes</th>
+                                        <th><i class="fas fa-calendar-alt"></i> Año</th>
+                                        <th><i class="fas fa-coins"></i> Salario</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                data.detalleCalculo.salariosIncluidos.forEach(function(salario) {
+                    html += `<tr><td>${salario.mes}</td><td>${salario.anio}</td><td>${salario.salario}</td></tr>`;
+                });
+
+                html += `</tbody></table></div></div>`;
+            } else if (data.detalleCalculo && data.detalleCalculo.usandoSalarioBase) {
+                html += `
+                    <div class="detail-card">
+                        <h5><i class="fas fa-info-circle"></i> Información del Cálculo</h5>
+                        <div class="alert alert-info">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Nota:</strong> Se utilizó el salario base del puesto (${data.detalleCalculo.salarioBasePuesto})
+                            ya que no se encontraron registros de nómina para el período especificado.
+                        </div>
+                    </div>`;
+            }
+
+            if (data.aguinaldoExistente) {
+                html += `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Advertencia:</strong> Ya existe un aguinaldo registrado para este empleado en el año seleccionado.
+                        No se puede guardar un aguinaldo duplicado.
+                    </div>`;
+            } else {
+                html += `
+                    <div class="mt-4 text-center">
+                        <button type="button" class="btn btn-success btn-lg me-3" onclick="guardarAguinaldo()">
+                            <i class="fas fa-save"></i> Guardar Aguinaldo
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-lg" onclick="recalcular()">
+                            <i class="fas fa-redo"></i> Recalcular
+                        </button>
+                    </div>`;
+            }
+
+            $('#resultadoCalculo').html(html);
+
+            // Guardar datos para uso posterior
+            window.datosAguinaldo = {
+                idEmpleado: $('#empleadoSelect').val(),
+                montoTotal: parseFloat(data.montoAguinaldo.replace(/[^\d.-]/g, '')),
+                mesesLaborados: data.mesesLaborados,
+                anio: $('#anioSelect').val()
+            };
+
+            console.log('Datos del aguinaldo guardados:', window.datosAguinaldo);
         }
 
-        $('#resultadoCalculo').html(html);
+        function guardarAguinaldo() {
+            if (!window.datosAguinaldo) {
+                alert('Error: No hay datos para guardar');
+                return;
+            }
 
-        // Guardar datos para uso posterior
-        window.datosAguinaldo = {
-            idEmpleado: $('#empleadoSelect').val(),
-            montoTotal: parseFloat(data.montoAguinaldo.replace(/[^\d.-]/g, '')),
-            mesesLaborados: data.mesesLaborados,
-            anio: $('#anioSelect').val()
-        };
-    }
+            console.log('Guardando aguinaldo con datos:', window.datosAguinaldo);
 
-    function guardarAguinaldo() {
-        if (!window.datosAguinaldo) {
-            alert('Error: No hay datos para guardar');
-            return;
+            // Redirigir a Create con parámetros
+            var url = '@Url.Action("Create", "Aguinaldo")' +
+                     '?id_empleado=' + encodeURIComponent(window.datosAguinaldo.idEmpleado) +
+                     '&monto_total=' + encodeURIComponent(window.datosAguinaldo.montoTotal) +
+                     '&meses_laborados=' + encodeURIComponent(window.datosAguinaldo.mesesLaborados) +
+                     '&anio=' + encodeURIComponent(window.datosAguinaldo.anio);
+
+            console.log('Redirigiendo a:', url);
+            window.location.href = url;
         }
 
-        // Redirigir a Create con parametros
-        var url = '@Url.Action("Create")' +
-                 '?id_empleado=' + window.datosAguinaldo.idEmpleado +
-                 '&monto_total=' + window.datosAguinaldo.montoTotal +
-                 '&meses_laborados=' + window.datosAguinaldo.mesesLaborados +
-                 '&anio=' + window.datosAguinaldo.anio;
+        function recalcular() {
+            console.log('Recalculando...');
+            cambiarPaso(1);
+            // Limpiar selecciones si se desea
+            // $('#empleadoSelect').val('');
+        }
 
-        window.location.href = url;
-    }
-
-    function recalcular() {
-        cambiarPaso(1);
-    }
+        // Función para formatear números como moneda
+        function formatearMoneda(numero) {
+            return '₡' + parseFloat(numero).toLocaleString('es-CR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
     </script>
 }

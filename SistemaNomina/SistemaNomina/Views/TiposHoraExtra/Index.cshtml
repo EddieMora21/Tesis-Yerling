@@ -5,328 +5,602 @@
 }
 
 <style>
-    .page-header-custom {
-        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
-        color: white;
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --purple-color: #6f42c1;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
-        .page-header-custom h1 {
-            margin: 0;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-    .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
-        overflow: hidden;
+    .page-header * {
+        color: var(--white) !important;
     }
 
-    .btn-primary-custom {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
         border: none;
-        border-radius: 8px;
+        color: var(--primary-color);
+        font-weight: 600;
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
     }
 
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-secondary-custom {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        color: white;
-        transition: all 0.3s ease;
+    .btn-create:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+        color: var(--primary-color);
         text-decoration: none;
-        margin: 0 2px;
     }
 
-        .btn-secondary-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-info-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        margin: 0 2px;
-    }
-
-        .btn-info-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-danger-custom {
-        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        margin: 0 2px;
-    }
-
-        .btn-danger-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-    .table-custom {
-        margin: 0;
-        border-radius: 15px;
+    .tipos-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
         overflow: hidden;
+        border: 1px solid var(--neutral-color);
     }
 
-        .table-custom thead th {
-            background: #221d42;
-            color: white;
-            border: none;
-            padding: 1rem;
-            font-weight: 600;
-            border-bottom: none;
-        }
+    .table-responsive {
+        border-radius: var(--border-radius);
+    }
 
-        .table-custom tbody tr {
-            transition: all 0.3s ease;
-            border-bottom: 1px solid #e7e8eb;
-        }
+    .custom-table {
+        margin: 0;
+        background: var(--white);
+        border-collapse: collapse;
+    }
 
-            .table-custom tbody tr:hover {
-                background: rgba(23, 136, 202, 0.05);
-                transform: translateY(-1px);
-            }
+    .custom-table thead th {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 1.2rem 1rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
 
-        .table-custom tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border: none;
-            color: #495057;
-        }
+    .custom-table tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--neutral-color);
+        vertical-align: middle;
+    }
 
-    .badge-custom {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
-        padding: 4px 12px;
+    .custom-table tbody tr:hover {
+        background: rgba(23, 136, 202, 0.05);
+    }
+
+    .custom-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tipo-name {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tipo-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--purple-color), #5a32a3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: bold;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .badge-recargo {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+        padding: 6px 16px;
         border-radius: 20px;
-        font-size: 0.875rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 80px;
+        justify-content: center;
+    }
+
+    .descripcion-text {
+        max-width: 250px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--text-color);
+        font-style: italic;
+    }
+
+    .fecha-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        min-width: 210px;
+    }
+
+    .btn-action {
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
         font-weight: 500;
+        border: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 65px;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
+    }
+
+    .btn-view:hover {
+        background: linear-gradient(135deg, #0f6da3, #0c5a87);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.3);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .alert-error-custom {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border-left: 4px solid var(--danger-color);
     }
 
     .empty-state {
         text-align: center;
-        padding: 3rem 2rem;
-        color: #6c757d;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
     }
 
-        .empty-state i {
-            font-size: 4rem;
-            color: #e7e8eb;
-            margin-bottom: 1rem;
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--neutral-color);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h4 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    /* === RESPONSIVE DESIGN === */
+    @@media (max-width: 1200px) {
+        .descripcion-text {
+            max-width: 200px;
         }
 
+        .action-buttons {
+            min-width: 190px;
+        }
+
+        .btn-action {
+            min-width: 60px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .custom-table thead th {
+            padding: 1rem 0.7rem;
+            font-size: 0.85rem;
+        }
+
+        .custom-table tbody td {
+            padding: 0.8rem 0.7rem;
+        }
+
+        .descripcion-text {
+            max-width: 150px;
+        }
+
+        .action-buttons {
+            min-width: 170px;
+            gap: 3px;
+        }
+
+        .btn-action {
+            min-width: 55px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action .btn-text {
+            display: none; /* Oculta el texto, solo muestra iconos */
+        }
+    }
+
     @@media (max-width: 768px) {
-        .page-header-custom {
+        .page-header {
             padding: 1.5rem 0;
         }
 
-            .page-header-custom h1 {
-                font-size: 1.5rem;
-            }
-
-        .btn-primary-custom {
-            padding: 10px 20px;
-            font-size: 0.875rem;
+        .page-title {
+            font-size: 1.8rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
         }
 
+        .btn-create {
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        /* TABLA RESPONSIVE */
         .table-responsive {
-            border-radius: 15px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .custom-table {
+            min-width: 900px; /* Fuerza scroll horizontal */
+        }
+
+        .custom-table thead th {
+            padding: 0.8rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .custom-table tbody td {
+            padding: 0.8rem 0.5rem;
+        }
+
+        .tipo-name {
+            font-size: 0.9rem;
+            min-width: 120px;
+        }
+
+        .tipo-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 1rem;
+        }
+
+        .descripcion-text {
+            max-width: 120px;
+            font-size: 0.85rem;
+        }
+
+        .badge-recargo {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            min-width: 70px;
+        }
+
+        .fecha-text {
+            font-size: 0.8rem;
+        }
+
+        .action-buttons {
+            min-width: 160px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            min-width: 50px;
+            padding: 5px 6px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action i {
+            font-size: 0.8rem;
         }
     }
 
     @@media (max-width: 576px) {
-        .btn-primary-custom {
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 1rem;
+        .page-title {
+            font-size: 1.5rem;
         }
+
+        .custom-table {
+            min-width: 850px;
+        }
+
+        .tipo-name {
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .tipo-icon {
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+        }
+
+        .descripcion-text {
+            max-width: 100px;
+            font-size: 0.8rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            min-width: 80px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            width: 100%;
+            min-width: auto;
+            padding: 4px;
+            font-size: 0.65rem;
+        }
+    }
+
+    /* Scroll horizontal personalizado */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: var(--secondary-color);
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-color);
     }
 </style>
 
-<!-- Header de la página -->
-<div class="page-header-custom">
+<div class="page-header">
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1>
-                    <i class="fas fa-clock" style="font-size: 2rem; margin-right: 15px;"></i>
-                    Gestión de Tipos de Hora Extra
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-clock"></i>
+                    Tipos de Hora Extra
                 </h1>
-                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
-                    Administra los diferentes tipos de horas extra y sus recargos
-                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("Create")" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Nuevo Tipo de Hora Extra
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Contenido principal -->
-<div class="container" style="max-width: 1200px;">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <!-- Botón de crear nuevo -->
-            <div class="mb-4 text-right">
-                @Html.ActionLink("Crear Nuevo Tipo", "Create", null, new
-                {
-                    @class = "btn btn-primary-custom",
-                    title = "Agregar un nuevo tipo de hora extra"
-                })
-            </div>
+<div class="container">
+    <!-- Alertas -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
-            <!-- Card principal con la tabla -->
-            <div class="card-custom">
-                @if (Model != null && Model.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table-custom table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <i class="fas fa-tag mr-2"></i>
-                                        @Html.DisplayNameFor(model => model.nombre)
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-percentage mr-2"></i>
-                                        @Html.DisplayNameFor(model => model.recargo)
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-align-left mr-2"></i>
-                                        @Html.DisplayNameFor(model => model.descripcion)
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-calendar mr-2"></i>
-                                        Fecha Creación
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-edit mr-2"></i>
-                                        Última Actualización
-                                    </th>
-                                    <th class="text-center">
-                                        <i class="fas fa-cogs mr-2"></i>
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            <strong>@Html.DisplayFor(modelItem => item.nombre)</strong>
-                                        </td>
-                                        <td>
-                                            <span class="badge-custom">
-                                                @Html.DisplayFor(modelItem => item.recargo)%
-                                            </span>
-                                        </td>
-                                        <td style="max-width: 200px;">
-                                            @if (!string.IsNullOrEmpty(item.descripcion))
-                                            {
-                                                @(item.descripcion.Length > 50 ? item.descripcion.Substring(0, 50) + "..." : item.descripcion)
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">Sin descripción</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">
-                                                @Html.DisplayFor(modelItem => item.fecha_creacion)
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">
-                                                @Html.DisplayFor(modelItem => item.fecha_actualizacion)
-                                            </small>
-                                        </td>
-                                        <td class="text-center">
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.id_tipo }, new
-                                            {
-                                                @class = "btn btn-secondary-custom",
-                                                title = "Editar tipo de hora extra"
-                                            })
-                                            @Html.ActionLink("Details", "Details", new { id = item.id_tipo }, new
-                                            {
-                                                @class = "btn btn-info-custom",
-                                                title = "Ver detalles"
-                                            })
-                                            @Html.ActionLink("Delete", "Delete", new { id = item.id_tipo }, new
-                                            {
-                                                @class = "btn btn-danger-custom",
-                                                title = "Eliminar tipo de hora extra",
-                                                onclick = "return confirm('¿Está seguro de que desea eliminar este tipo de hora extra?');"
-                                            })
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="empty-state">
-                        <i class="fas fa-clock"></i>
-                        <h4>No hay tipos de hora extra registrados</h4>
-                        <p class="text-muted">Comience agregando un nuevo tipo de hora extra para gestionar los recargos salariales.</p>
-                        @Html.ActionLink("Crear Primer Tipo", "Create", null, new
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Contenido principal -->
+    <div class="tipos-card">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="custom-table table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tag me-2"></i>Nombre</th>
+                            <th class="text-center"><i class="fas fa-percentage me-2"></i>Recargo</th>
+                            <th><i class="fas fa-align-left me-2"></i>Descripción</th>
+                            <th class="text-center"><i class="fas fa-calendar me-2"></i>Creado</th>
+                            <th class="text-center"><i class="fas fa-edit me-2"></i>Actualizado</th>
+                            <th class="text-center"><i class="fas fa-cogs me-2"></i>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
                         {
-                            @class = "btn btn-primary-custom mt-3"
-                        })
-                    </div>
-                }
+                            <tr>
+                                <td>
+                                    <div class="tipo-name">
+                                        <div class="tipo-icon">
+                                            HE
+                                        </div>
+                                        <span>@item.nombre</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge-recargo">
+                                        <i class="fas fa-plus"></i>
+                                        @item.recargo%
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="descripcion-text" title="@item.descripcion">
+                                        @if (!string.IsNullOrEmpty(item.descripcion))
+                                        {
+                                            @item.descripcion
+                                        }
+                                        else
+                                        {
+                                            <span style="color: #6c757d;">Sin descripción</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="fecha-text">
+                                        @if (item.fecha_creacion.HasValue)
+                                        {
+                                            @item.fecha_creacion.Value.ToString("dd/MM/yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span>No registrada</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="fecha-text">
+                                        @if (item.fecha_actualizacion.HasValue)
+                                        {
+                                            @item.fecha_actualizacion.Value.ToString("dd/MM/yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span>No registrada</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("Details", new { id = item.id_tipo })"
+                                           class="btn-action btn-view"
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                            <span class="btn-text">Ver</span>
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = item.id_tipo })"
+                                           class="btn-action btn-edit"
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                            <span class="btn-text">Editar</span>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.id_tipo })"
+                                           class="btn-action btn-delete"
+                                           title="Eliminar"
+                                           onclick="return confirm('¿Está seguro de eliminar este tipo de hora extra?');">
+                                            <i class="fas fa-trash"></i>
+                                            <span class="btn-text">Eliminar</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-clock"></i>
+                <h4>No hay tipos de hora extra registrados</h4>
+                <p class="mb-3">Comience creando el primer tipo de hora extra para gestionar los recargos salariales.</p>
+                <a href="@Url.Action("Create")" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Crear primer tipo
+                </a>
+            </div>
+        }
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-        // Los tooltips se pueden activar si tienes Bootstrap JS cargado
-        // $('[title]').tooltip();
-    });
-</script>

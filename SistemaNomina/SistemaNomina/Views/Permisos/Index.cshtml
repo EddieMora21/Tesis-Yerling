@@ -116,77 +116,119 @@
         overflow: hidden;
     }
 
+    /* ✅ TABLA MEJORADA */
+    .table-container {
+        overflow-x: auto;
+        border-radius: 15px;
+    }
+
     .table-custom {
         margin: 0;
         width: 100%;
+        min-width: 1200px; /* Ancho mínimo para evitar compresión */
+        table-layout: fixed; /* Fija las columnas */
     }
 
     .table-custom thead {
         background: #221d42;
         color: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
 
     .table-custom thead th {
         border: none;
-        padding: 1rem;
+        padding: 1rem 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 0.875rem;
+        font-size: 0.8rem;
         letter-spacing: 0.5px;
+        white-space: nowrap;
     }
+
+    /* ✅ ANCHOS ESPECÍFICOS DE COLUMNAS */
+    .table-custom .col-empleado { width: 200px; }
+    .table-custom .col-fecha { width: 110px; }
+    .table-custom .col-horas { width: 80px; }
+    .table-custom .col-tipo { width: 150px; }
+    .table-custom .col-motivo { width: 200px; }
+    .table-custom .col-estado { width: 120px; }
+    .table-custom .col-aprobado { width: 130px; }
+    .table-custom .col-acciones { width: 200px; }
 
     .table-custom tbody tr {
         transition: all 0.3s ease;
+        border-bottom: 1px solid #e7e8eb;
     }
 
     .table-custom tbody tr:hover {
         background-color: rgba(23, 136, 202, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .table-custom td {
-        padding: 1rem;
-        border-color: #e7e8eb;
+        padding: 1rem 0.75rem;
+        border: none;
         vertical-align: middle;
+        word-wrap: break-word;
+        overflow: hidden;
     }
 
     .employee-info {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
 
     .employee-avatar {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .employee-details {
+        min-width: 0;
+        flex: 1;
     }
 
     .employee-details h6 {
         margin: 0;
         font-weight: 600;
         color: #221d42;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .employee-id {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         color: #6c757d;
         margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .status-badge {
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.8rem;
         border-radius: 20px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        white-space: nowrap;
+        display: inline-block;
     }
 
     .status-pendiente {
@@ -204,19 +246,34 @@
         color: white;
     }
 
+    /* ✅ BOTONES DE ACCIÓN MEJORADOS */
+    .actions-group {
+        display: flex;
+        gap: 0.3rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
     .btn-action-custom {
-        padding: 6px 12px;
+        padding: 0.4rem 0.6rem;
         border-radius: 6px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 500;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.25rem;
+        justify-content: center;
+        gap: 0.2rem;
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
-        margin: 0 2px;
+        min-width: 35px;
+        height: 32px;
+        position: relative;
+    }
+
+    .btn-action-custom i {
+        font-size: 0.8rem;
     }
 
     .btn-details {
@@ -245,16 +302,62 @@
     }
 
     .btn-action-custom:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
         text-decoration: none;
         color: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-    .actions-group {
-        display: flex;
-        gap: 0.25rem;
-        justify-content: center;
-        flex-wrap: wrap;
+    /* ✅ TOOLTIP PARA BOTONES */
+    .btn-action-custom::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        margin-bottom: 5px;
+    }
+
+    .btn-action-custom:hover::after {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* ✅ TRUNCAR TEXTO LARGO */
+    .text-truncate-custom {
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: help;
+    }
+
+    .tipo-permiso {
+        color: #1788ca;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .fecha-info {
+        font-weight: 600;
+        color: #221d42;
+        font-size: 0.9rem;
+    }
+
+    .horas-info {
+        font-weight: 600;
+        color: #e67e22;
+        font-size: 0.9rem;
     }
 
     .alert-success {
@@ -293,23 +396,50 @@
         color: #e7e8eb;
     }
 
+    /* ✅ RESPONSIVE MEJORADO */
     @@media (max-width: 768px) {
         .filters-grid {
             grid-template-columns: 1fr;
         }
 
-        .table-responsive {
-            border-radius: 15px;
+        .table-custom {
+            min-width: 800px;
         }
 
         .actions-group {
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.2rem;
         }
 
         .btn-action-custom {
             width: 100%;
             justify-content: center;
+        }
+
+        .employee-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .employee-avatar {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .container {
+            max-width: 100% !important;
+            padding: 0 10px;
+        }
+
+        .filters-container {
+            padding: 1rem;
+        }
+
+        .page-header-custom {
+            padding: 1rem 0;
         }
     }
 </style>
@@ -371,7 +501,8 @@
 
                     <div class="filter-group">
                         <label class="filter-label">Buscar:</label>
-                        <input type="text" id="filtroEmpleado" class="filter-input" placeholder="Buscar por empleado o motivo...">
+                        <input type="text" id="filtroEmpleado" class="filter-input" placeholder="Buscar por empleado o motivo..."
+                               oninput="validarSoloLetras(this)" onkeypress="return validarTeclaLetras(event)">
                     </div>
 
                     <div class="filter-group">
@@ -390,23 +521,23 @@
                 </div>
             </div>
 
-            <!-- Tabla de permisos -->
+            <!-- ✅ TABLA MEJORADA -->
             <div class="card-custom">
                 <div class="card-body p-0">
                     @if (Model != null && Model.Any())
                     {
-                        <div class="table-responsive">
+                        <div class="table-container">
                             <table class="table-custom table" id="tablaPermisos">
                                 <thead>
                                     <tr>
-                                        <th><i class="fas fa-user"></i> Empleado</th>
-                                        <th><i class="fas fa-calendar"></i> Fecha</th>
-                                        <th><i class="fas fa-clock"></i> Horas</th>
-                                        <th><i class="fas fa-tag"></i> Tipo</th>
-                                        <th><i class="fas fa-comment"></i> Motivo</th>
-                                        <th><i class="fas fa-info-circle"></i> Estado</th>
-                                        <th><i class="fas fa-user-check"></i> Aprobado por</th>
-                                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                                        <th class="col-empleado"><i class="fas fa-user"></i> Empleado</th>
+                                        <th class="col-fecha"><i class="fas fa-calendar"></i> Fecha</th>
+                                        <th class="col-horas"><i class="fas fa-clock"></i> Horas</th>
+                                        <th class="col-tipo"><i class="fas fa-tag"></i> Tipo</th>
+                                        <th class="col-motivo"><i class="fas fa-comment"></i> Motivo</th>
+                                        <th class="col-estado"><i class="fas fa-info-circle"></i> Estado</th>
+                                        <th class="col-aprobado"><i class="fas fa-user-check"></i> Aprobado por</th>
+                                        <th class="col-acciones"><i class="fas fa-cogs"></i> Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -415,34 +546,38 @@
                                         <tr class="permiso-row"
                                             data-estado="@item.Estados.nombre.ToLower()"
                                             data-tipo="@item.TiposPermiso.nombre.ToLower()">
-                                            <td>
+                                            <td class="col-empleado">
                                                 <div class="employee-info">
                                                     <div class="employee-avatar">
                                                         <i class="fas fa-user"></i>
                                                     </div>
                                                     <div class="employee-details">
-                                                        <h6>@item.Empleados.nombre1 @item.Empleados.apellido1</h6>
-                                                        <p class="employee-id">Cédula: @item.Empleados.cedula</p>
+                                                        <h6 title="@item.Empleados.nombre1 @item.Empleados.apellido1">
+                                                            @item.Empleados.nombre1 @item.Empleados.apellido1
+                                                        </h6>
+                                                        <p class="employee-id" title="@item.Empleados.cedula">
+                                                            @item.Empleados.cedula
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <strong>@item.fecha.ToString("dd/MM/yyyy")</strong>
+                                            <td class="col-fecha">
+                                                <span class="fecha-info">@item.fecha.ToString("dd/MM/yyyy")</span>
                                             </td>
-                                            <td>
-                                                <strong>@item.horas horas</strong>
+                                            <td class="col-horas">
+                                                <span class="horas-info">@item.horas h</span>
                                             </td>
-                                            <td>
-                                                <span style="color: #1788ca; font-weight: 600;">
-                                                    @item.TiposPermiso.nombre
+                                            <td class="col-tipo">
+                                                <span class="tipo-permiso" title="@item.TiposPermiso.nombre">
+                                                    @(item.TiposPermiso.nombre.Length > 15 ? item.TiposPermiso.nombre.Substring(0, 15) + "..." : item.TiposPermiso.nombre)
                                                 </span>
                                             </td>
-                                            <td>
-                                                <span title="@item.motivo">
-                                                    @(item.motivo.Length > 50 ? item.motivo.Substring(0, 50) + "..." : item.motivo)
+                                            <td class="col-motivo">
+                                                <span class="text-truncate-custom" title="@item.motivo">
+                                                    @(item.motivo.Length > 30 ? item.motivo.Substring(0, 30) + "..." : item.motivo)
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="col-estado">
                                                 @{
                                                     var estadoClass = item.Estados.nombre.ToLower() == "pendiente" ? "status-pendiente" :
                                                                      item.Estados.nombre.ToLower() == "aprobado" ? "status-aprobado" : "status-rechazado";
@@ -451,23 +586,47 @@
                                                     @item.Estados.nombre
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="col-aprobado">
                                                 @if (item.Usuarios != null)
                                                 {
-                                                    <span>@item.Usuarios.usuario</span>
+                                                    <span title="@item.Usuarios.usuario">
+                                                        @(item.Usuarios.usuario.Length > 12 ? item.Usuarios.usuario.Substring(0, 12) + "..." : item.Usuarios.usuario)
+                                                    </span>
                                                 }
                                                 else
                                                 {
                                                     <span class="text-muted">-</span>
                                                 }
                                             </td>
-                                            <td>
+                                            <td class="col-acciones">
                                                 <div class="actions-group">
-                                                    @Html.ActionLink("Ver", "Details", new { id = item.id_permiso }, new { @class = "btn-action-custom btn-details", title = "Ver detalles" })
+                                                    @Html.ActionLink("Detalles", "Details", new { id = item.id_permiso }, new
+                                                    {
+                                                        @class = "btn-action-custom btn-details",
+                                                        title = "Ver detalles",
+                                                        @style = "text-decoration: none;"
+                                                    })
+                                                    <script>
+                                                        document.addEventListener('DOMContentLoaded', function() {
+                                                            const detailsBtn = document.querySelector('a[href*="Details/@item.id_permiso"]');
+                                                            if (detailsBtn) detailsBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                                                        });
+                                                    </script>
 
                                                     @if (item.Estados.nombre.ToLower() == "pendiente")
                                                     {
-                                                        @Html.ActionLink("Editar", "Edit", new { id = item.id_permiso }, new { @class = "btn-action-custom btn-edit", title = "Editar" })
+                                                        @Html.ActionLink("Editar", "Edit", new { id = item.id_permiso }, new
+                                                        {
+                                                            @class = "btn-action-custom btn-edit",
+                                                            title = "Editar",
+                                                            @style = "text-decoration: none;"
+                                                        })
+                                                        <script>
+                                                            document.addEventListener('DOMContentLoaded', function() {
+                                                                const editBtn = document.querySelector('a[href*="Edit/@item.id_permiso"]');
+                                                                if (editBtn) editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                                                            });
+                                                        </script>
 
                                                         <button class="btn-action-custom btn-approve" onclick="cambiarEstado(@item.id_permiso, 'aprobar')" title="Aprobar">
                                                             <i class="fas fa-check"></i>
@@ -478,7 +637,18 @@
                                                         </button>
                                                     }
 
-                                                    @Html.ActionLink("Eliminar", "Delete", new { id = item.id_permiso }, new { @class = "btn-action-custom btn-delete", title = "Eliminar" })
+                                                    @Html.ActionLink("Eliminar", "Delete", new { id = item.id_permiso }, new
+                                                    {
+                                                        @class = "btn-action-custom btn-delete",
+                                                        title = "Eliminar",
+                                                        @style = "text-decoration: none;"
+                                                    })
+                                                    <script>
+                                                        document.addEventListener('DOMContentLoaded', function() {
+                                                            const deleteBtn = document.querySelector('a[href*="Delete/@item.id_permiso"]');
+                                                            if (deleteBtn) deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                                                        });
+                                                    </script>
                                                 </div>
                                             </td>
                                         </tr>
@@ -503,6 +673,23 @@
 </div>
 
 <script>
+    // ✅ VALIDACIONES DE INPUT - Solo letras para búsqueda
+    function validarTeclaLetras(event) {
+        const key = event.key;
+        // Permitir letras, espacios, acentos y teclas de control
+        if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(key) &&
+            !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+
+    function validarSoloLetras(input) {
+        // Remover caracteres no válidos del valor
+        input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         // Elementos del DOM
         const filtroEstado = document.getElementById('filtroEstado');
@@ -523,7 +710,7 @@
                 const estado = row.getAttribute('data-estado');
                 const tipo = row.getAttribute('data-tipo');
                 const empleado = row.querySelector('.employee-details h6').textContent.toLowerCase();
-                const motivo = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+                const motivo = row.querySelector('.col-motivo').textContent.toLowerCase();
 
                 let mostrar = true;
 

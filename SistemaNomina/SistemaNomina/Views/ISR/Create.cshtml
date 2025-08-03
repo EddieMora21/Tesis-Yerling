@@ -5,13 +5,30 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     .page-header-custom {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
         color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
         .page-header-custom h1 {
@@ -21,16 +38,35 @@
         }
 
     .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
-        padding: 2rem;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--secondary-color);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .form-row-custom {
         display: flex;
-        gap: 1rem;
+        gap: 1.5rem;
         margin-bottom: 1.5rem;
     }
 
@@ -40,23 +76,24 @@
     }
 
     .form-label-custom {
-        color: #221d42;
+        color: var(--primary-color);
         font-weight: 600;
         margin-bottom: 0.5rem;
         display: block;
+        font-size: 1rem;
     }
 
     .form-control-custom {
-        border: 2px solid #e7e8eb;
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.875rem 1rem;
+        transition: var(--transition);
         font-size: 1rem;
         width: 100%;
     }
 
         .form-control-custom:focus {
-            border-color: #1788ca;
+            border-color: var(--secondary-color);
             box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
             outline: none;
         }
@@ -70,9 +107,10 @@
         left: 15px;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
+        color: var(--text-muted);
         font-weight: 600;
         z-index: 5;
+        font-size: 1rem;
     }
 
     .input-suffix {
@@ -80,9 +118,10 @@
         right: 15px;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
+        color: var(--text-muted);
         font-weight: 600;
         z-index: 5;
+        font-size: 1rem;
     }
 
     .form-control-with-prefix {
@@ -94,77 +133,101 @@
     }
 
     .btn-success-custom {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        background: linear-gradient(135deg, var(--success-color) 0%, #20a53a 100%);
         border: none;
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        border-radius: var(--border-radius-sm);
+        padding: 14px 28px;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        font-size: 1rem;
     }
 
         .btn-success-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-            color: white;
+            color: var(--white);
+            text-decoration: none;
         }
 
     .btn-secondary-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
         border: none;
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        border-radius: var(--border-radius-sm);
+        padding: 14px 28px;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        font-size: 1rem;
     }
 
         .btn-secondary-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
-            color: white;
+            color: var(--white);
             text-decoration: none;
         }
 
     .help-text {
-        color: #6c757d;
+        color: var(--text-muted);
         font-size: 0.875rem;
         font-style: italic;
-        margin-top: 0.25rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .validation-summary-custom {
         background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-        border-left: 4px solid #dc3545;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--danger-color);
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 2rem;
     }
 
     .text-danger {
-        color: #dc3545 !important;
+        color: var(--danger-color) !important;
         font-size: 0.875rem;
+        font-weight: 500;
     }
 
     .required-field::after {
         content: " *";
-        color: #dc3545;
+        color: var(--danger-color);
+        font-weight: bold;
     }
 
     .info-card {
         background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
-        border-left: 4px solid #1788ca;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--secondary-color);
+        padding: 1.5rem;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 2rem;
+    }
+
+    .info-card h6 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .info-card ul {
+        margin: 0;
+        padding-left: 1.2rem;
+    }
+
+    .info-card li {
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
     }
 
     @@media (max-width: 768px) {
@@ -173,7 +236,7 @@
         }
 
             .page-header-custom h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
 
         .card-custom {
@@ -201,10 +264,10 @@
             <div class="col-12">
                 <h1>
                     <i class="fas fa-plus-circle" style="font-size: 2rem; margin-right: 15px;"></i>
-                    Crear Tramo ISR
+                    Registrar Nuevo Tramo ISR
                 </h1>
                 <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
-                    Configure un nuevo tramo de Impuesto Sobre la Renta
+                    Configure un nuevo tramo de Impuesto Sobre la Renta con sus parámetros fiscales
                 </p>
             </div>
         </div>
@@ -212,9 +275,24 @@
 </div>
 
 <!-- Contenido principal -->
-<div class="container" style="max-width: 900px;">
+<div class="container" style="max-width: 1000px;">
     <div class="row justify-content-center">
         <div class="col-12">
+
+            <!-- Información sobre ISR -->
+            <div class="info-card">
+                <h6>
+                    <i class="fas fa-lightbulb text-info"></i>
+                    Información sobre los tramos de ISR
+                </h6>
+                <ul>
+                    <li><strong>Tramos progresivos:</strong> A mayor salario, mayor porcentaje de impuesto aplicado</li>
+                    <li><strong>Límites salariales:</strong> Definen el rango al que aplica cada porcentaje de impuesto</li>
+                    <li><strong>Exceso base:</strong> Monto fijo que se suma al cálculo porcentual del impuesto</li>
+                    <li><strong>Créditos fiscales:</strong> Reducciones mensuales por carga familiar (hijo/cónyuge)</li>
+                </ul>
+            </div>
+
             <div class="card-custom">
                 @using (Html.BeginForm())
                 {
@@ -222,222 +300,228 @@
 
                     @Html.ValidationSummary(true, "", new { @class = "validation-summary-custom" })
 
-                    <!-- Año fiscal -->
-                    <div class="form-group-custom">
-                        @Html.LabelFor(model => model.anio, new { @class = "form-label-custom required-field" })
-                        @Html.EditorFor(model => model.anio, new
-                   {
-                       htmlAttributes = new
-                       {
-                           @class = "form-control form-control-custom",
-                           placeholder = "Ej: 2025",
-                           type = "number",
-                           min = "2020",
-                           max = "2050",
-                           value = DateTime.Now.Year
-                       }
-                   })
-                        @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
-                        <div class="help-text">
-                            <i class="fas fa-calendar-alt"></i>
-                            Año fiscal al que aplica este tramo de ISR
-                        </div>
-                    </div>
-
-                    <!-- Límites del tramo -->
-                    <div class="form-row-custom">
-                        <div class="form-group-custom">
-                            @Html.LabelFor(model => model.limite_inferior, new { @class = "form-label-custom required-field" })
-                            <div class="input-group-custom">
-                                <span class="input-prefix">¢</span>
-                                @Html.EditorFor(model => model.limite_inferior, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control form-control-custom form-control-with-prefix",
-                                   placeholder = "0.00",
-                                   type = "number",
-                                   step = "0.01",
-                                   min = "0"
-                               }
-                           })
-                            </div>
-                            @Html.ValidationMessageFor(model => model.limite_inferior, "", new { @class = "text-danger" })
-                            <div class="help-text">
-                                <i class="fas fa-arrow-down"></i>
-                                Salario mínimo del tramo
-                            </div>
+                    <!-- Configuración General -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-cog"></i>
+                            Configuración General del Tramo
                         </div>
 
                         <div class="form-group-custom">
-                            @Html.LabelFor(model => model.limite_superior, new { @class = "form-label-custom required-field" })
-                            <div class="input-group-custom">
-                                <span class="input-prefix">¢</span>
-                                @Html.EditorFor(model => model.limite_superior, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control form-control-custom form-control-with-prefix",
-                                   placeholder = "999999.99",
-                                   type = "number",
-                                   step = "0.01",
-                                   min = "0"
-                               }
-                           })
-                            </div>
-                            @Html.ValidationMessageFor(model => model.limite_superior, "", new { @class = "text-danger" })
-                            <div class="help-text">
-                                <i class="fas fa-arrow-up"></i>
-                                Salario máximo del tramo
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Porcentaje y exceso -->
-                    <div class="form-row-custom">
-                        <div class="form-group-custom">
-                            @Html.LabelFor(model => model.porcentaje, new { @class = "form-label-custom required-field" })
-                            <div class="input-group-custom">
-                                @Html.EditorFor(model => model.porcentaje, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control form-control-custom form-control-with-suffix",
-                                   placeholder = "15.00",
-                                   type = "number",
-                                   step = "0.01",
-                                   min = "0",
-                                   max = "100"
-                               }
-                           })
-                                <span class="input-suffix">%</span>
-                            </div>
-                            @Html.ValidationMessageFor(model => model.porcentaje, "", new { @class = "text-danger" })
-                            <div class="help-text">
-                                <i class="fas fa-percentage"></i>
-                                % de impuesto sobre el excedente
-                            </div>
-                        </div>
-
-                        <div class="form-group-custom">
-                            @Html.LabelFor(model => model.exceso, new { @class = "form-label-custom required-field" })
-                            <div class="input-group-custom">
-                                <span class="input-prefix">¢</span>
-                                @Html.EditorFor(model => model.exceso, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control form-control-custom form-control-with-prefix",
-                                   placeholder = "0.00",
-                                   type = "number",
-                                   step = "0.01",
-                                   min = "0"
-                               }
-                           })
-                            </div>
-                            @Html.ValidationMessageFor(model => model.exceso, "", new { @class = "text-danger" })
-                            <div class="help-text">
-                                <i class="fas fa-plus-circle"></i>
-                                Monto base para el cálculo
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Créditos fiscales -->
-                    <div class="form-row-custom">
-                        <div class="form-group-custom">
-                            @Html.LabelFor(model => model.credito_hijo, new { @class = "form-label-custom" })
-                            <div class="input-group-custom">
-                                <span class="input-prefix">¢</span>
-                                @Html.EditorFor(model => model.credito_hijo, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control form-control-custom form-control-with-prefix",
-                                   placeholder = "1720.00",
-                                   type = "number",
-                                   step = "0.01",
-                                   min = "0",
-                                   value = "1720.00"
-                               }
-                           })
-                            </div>
-                            @Html.ValidationMessageFor(model => model.credito_hijo, "", new { @class = "text-danger" })
-                            <div class="help-text">
-                                <i class="fas fa-child"></i>
-                                Reducción mensual por hijo
-                            </div>
-                        </div>
-
-                        <div class="form-group-custom">
-                            @Html.LabelFor(model => model.credito_conyuge, new { @class = "form-label-custom" })
-                            <div class="input-group-custom">
-                                <span class="input-prefix">¢</span>
-                                @Html.EditorFor(model => model.credito_conyuge, new
-                           {
-                               htmlAttributes = new
-                               {
-                                   @class = "form-control form-control-custom form-control-with-prefix",
-                                   placeholder = "2600.00",
-                                   type = "number",
-                                   step = "0.01",
-                                   min = "0",
-                                   value = "2600.00"
-                               }
-                           })
-                            </div>
-                            @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "text-danger" })
-                            <div class="help-text">
-                                <i class="fas fa-heart"></i>
-                                Reducción mensual por cónyuge
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Descripción -->
-                    <div class="form-group-custom">
-                        @Html.LabelFor(model => model.descripcion, new { @class = "form-label-custom" })
-                        @Html.TextAreaFor(model => model.descripcion, new
-                        {
-                            @class = "form-control form-control-custom",
-                            rows = "3",
-                            placeholder = "Descripción opcional del tramo fiscal, cambios legales, notas especiales...",
-                            maxlength = "500"
-                        })
-                        @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-                        <div class="help-text">
-                            <i class="fas fa-info-circle"></i>
-                            Descripción opcional con detalles legales o cambios fiscales
-                        </div>
-                    </div>
-
-                    <!-- Fecha de creación EDITABLE -->
-                    <div class="form-group-custom">
-                        @Html.LabelFor(model => model.fecha_creacion, new { @class = "form-label-custom required-field" })
-                        @Html.EditorFor(model => model.fecha_creacion, new
-                        {
-                            htmlAttributes = new
+                            @Html.LabelFor(model => model.anio, "Año Fiscal", new { @class = "form-label-custom required-field" })
+                            @Html.EditorFor(model => model.anio, new
                             {
-                            @class = "form-control form-control-custom",
-                           type = "datetime-local",
-                           value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm")
-                       }
-                        })
-                        @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
-                        <div class="help-text">
-                            <i class="fas fa-calendar-plus"></i>
-                            Fecha y hora de creación del registro
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control form-control-custom",
+                                    placeholder = "Ejemplo: 2025",
+                                    type = "number",
+                                    min = "2020",
+                                    max = "2050",
+                                    value = DateTime.Now.Year
+                                }
+                            })
+                            @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-calendar-alt"></i>
+                                Año fiscal al que pertenece este tramo de impuestos
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            @Html.LabelFor(model => model.descripcion, "Descripción del Tramo", new { @class = "form-label-custom" })
+                            @Html.TextAreaFor(model => model.descripcion, new
+                            {
+                                @class = "form-control form-control-custom",
+                                rows = "3",
+                                placeholder = "Descripción opcional: cambios legales, notas especiales, referencias normativas...",
+                                maxlength = "500"
+                            })
+                            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                            <div class="help-text">
+                                <i class="fas fa-file-alt"></i>
+                                Descripción opcional con detalles legales o cambios fiscales (máximo 500 caracteres)
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Campo de fecha de actualización oculto -->
-                    @Html.HiddenFor(model => model.fecha_actualizacion)
+                    <!-- Límites Salariales -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-arrows-alt-h"></i>
+                            Límites Salariales del Tramo
+                        </div>
 
+                        <div class="form-row-custom">
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.limite_inferior, "Límite Inferior (Salario Mínimo)", new { @class = "form-label-custom required-field" })
+                                <div class="input-group-custom">
+                                    <span class="input-prefix">¢</span>
+                                    @Html.EditorFor(model => model.limite_inferior, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control form-control-custom form-control-with-prefix",
+                                            placeholder = "0.00",
+                                            type = "number",
+                                            step = "0.01",
+                                            min = "0"
+                                        }
+                                    })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.limite_inferior, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-arrow-down"></i>
+                                    Salario mínimo desde el cual aplica este tramo de impuesto
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.limite_superior, "Límite Superior (Salario Máximo)", new { @class = "form-label-custom required-field" })
+                                <div class="input-group-custom">
+                                    <span class="input-prefix">¢</span>
+                                    @Html.EditorFor(model => model.limite_superior, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control form-control-custom form-control-with-prefix",
+                                            placeholder = "999999.99",
+                                            type = "number",
+                                            step = "0.01",
+                                            min = "0"
+                                        }
+                                    })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.limite_superior, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Salario máximo hasta el cual aplica este tramo de impuesto
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cálculo de Impuestos -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-calculator"></i>
+                            Parámetros de Cálculo del Impuesto
+                        </div>
+
+                        <div class="form-row-custom">
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.porcentaje, "Porcentaje de Impuesto", new { @class = "form-label-custom required-field" })
+                                <div class="input-group-custom">
+                                    @Html.EditorFor(model => model.porcentaje, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control form-control-custom form-control-with-suffix",
+                                            placeholder = "15.00",
+                                            type = "number",
+                                            step = "0.01",
+                                            min = "0",
+                                            max = "100"
+                                        }
+                                    })
+                                    <span class="input-suffix">%</span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.porcentaje, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-percentage"></i>
+                                    Porcentaje de impuesto que se aplica sobre el excedente del límite inferior
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.exceso, "Exceso Base para Cálculo", new { @class = "form-label-custom required-field" })
+                                <div class="input-group-custom">
+                                    <span class="input-prefix">¢</span>
+                                    @Html.EditorFor(model => model.exceso, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control form-control-custom form-control-with-prefix",
+                                            placeholder = "0.00",
+                                            type = "number",
+                                            step = "0.01",
+                                            min = "0"
+                                        }
+                                    })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.exceso, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Monto base fijo que se suma al cálculo porcentual del impuesto
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Créditos Fiscales -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-users"></i>
+                            Créditos Fiscales por Carga Familiar
+                        </div>
+
+                        <div class="form-row-custom">
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.credito_hijo, "Crédito por Hijo", new { @class = "form-label-custom" })
+                                <div class="input-group-custom">
+                                    <span class="input-prefix">¢</span>
+                                    @Html.EditorFor(model => model.credito_hijo, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control form-control-custom form-control-with-prefix",
+                                            placeholder = "1720.00",
+                                            type = "number",
+                                            step = "0.01",
+                                            min = "0",
+                                            value = "1720.00"
+                                        }
+                                    })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.credito_hijo, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-child"></i>
+                                    Reducción mensual del impuesto por cada hijo menor de edad
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                @Html.LabelFor(model => model.credito_conyuge, "Crédito por Cónyuge", new { @class = "form-label-custom" })
+                                <div class="input-group-custom">
+                                    <span class="input-prefix">¢</span>
+                                    @Html.EditorFor(model => model.credito_conyuge, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control form-control-custom form-control-with-prefix",
+                                            placeholder = "2600.00",
+                                            type = "number",
+                                            step = "0.01",
+                                            min = "0",
+                                            value = "2600.00"
+                                        }
+                                    })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.credito_conyuge, "", new { @class = "text-danger" })
+                                <div class="help-text">
+                                    <i class="fas fa-heart"></i>
+                                    Reducción mensual del impuesto por cónyuge sin ingresos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
                     <div class="form-group-custom text-center">
-                        <hr style="margin: 2rem 0; border-color: #e7e8eb;">
+                        <hr style="margin: 2rem 0; border-color: var(--neutral-color);">
                         <button type="submit" class="btn btn-success-custom mr-3">
                             <i class="fas fa-save"></i>
-                            Crear Tramo ISR
+                            Registrar Tramo ISR
                         </button>
                         @Html.ActionLink("Cancelar", "Index", null, new
                         {
@@ -445,20 +529,6 @@
                         })
                     </div>
                 }
-            </div>
-
-            <!-- Información sobre ISR -->
-            <div class="info-card">
-                <h6 style="color: #221d42; margin-bottom: 0.5rem;">
-                    <i class="fas fa-calculator text-info"></i>
-                    Información sobre el cálculo de ISR
-                </h6>
-                <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
-                    <li><strong>Tramos progresivos:</strong> A mayor salario, mayor porcentaje de impuesto</li>
-                    <li><strong>Límites:</strong> Definen el rango salarial al que aplica cada porcentaje</li>
-                    <li><strong>Exceso:</strong> Monto fijo que se suma al cálculo porcentual</li>
-                    <li><strong>Créditos:</strong> Reducciones por carga familiar (hijo/cónyuge)</li>
-                </ul>
             </div>
         </div>
     </div>
@@ -468,56 +538,81 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script>
-       $(document).ready(function() {
-           // Validación de límites
-           $('#limite_superior').on('blur', function() {
-               var inferior = parseFloat($('#limite_inferior').val()) || 0;
-               var superior = parseFloat($(this).val()) || 0;
+        $(document).ready(function () {
+            // Validación de límites
+            $('#limite_superior').on('blur', function () {
+                var inferior = parseFloat($('#limite_inferior').val()) || 0;
+                var superior = parseFloat($(this).val()) || 0;
 
-               if (superior <= inferior && superior > 0) {
-                   alert('El límite superior debe ser mayor al límite inferior');
-                   $(this).focus();
-               }
-           });
+                if (superior <= inferior && superior > 0) {
+                    alert('El límite superior debe ser mayor al límite inferior');
+                    $(this).focus();
+                }
+            });
 
-           // Validación de porcentaje
-           $('#porcentaje').on('input', function() {
-               var value = parseFloat($(this).val());
-               if (value < 0) {
-                   $(this).val(0);
-               }
-               if (value > 100) {
-                   $(this).val(100);
-               }
-           });
+            // Validación de porcentaje
+            $('#porcentaje').on('input', function () {
+                var value = parseFloat($(this).val());
+                if (value < 0) {
+                    $(this).val(0);
+                }
+                if (value > 100) {
+                    $(this).val(100);
+                    alert('El porcentaje máximo permitido es 100%');
+                }
+            });
 
-           // Contador de caracteres para descripción
-           var maxLength = 500;
-           $('#descripcion').on('input', function() {
-               var currentLength = $(this).val().length;
-               var remaining = maxLength - currentLength;
+            // Contador de caracteres para descripción
+            var maxLength = 500;
+            $('#descripcion').on('input', function () {
+                var currentLength = $(this).val().length;
+                var remaining = maxLength - currentLength;
 
-               if (!$('#char-counter').length) {
-                   $(this).after('<div id="char-counter" class="help-text mt-1"></div>');
-               }
+                if (!$('#char-counter').length) {
+                    $(this).after('<div id="char-counter" class="help-text mt-1"></div>');
+                }
 
-               $('#char-counter').text(remaining + ' caracteres restantes')
-                   .removeClass('text-danger')
-                   .addClass(remaining < 50 ? 'text-danger' : '');
-           });
+                $('#char-counter').html('<i class="fas fa-edit"></i> ' + remaining + ' caracteres restantes')
+                    .removeClass('text-danger')
+                    .addClass(remaining < 50 ? 'text-danger' : '');
+            });
 
-           // Validación de año
-           $('#anio').on('input', function() {
-               var year = parseInt($(this).val());
-               var currentYear = new Date().getFullYear();
+            // Validación de año
+            $('#anio').on('input', function () {
+                var year = parseInt($(this).val());
+                var currentYear = new Date().getFullYear();
 
-               if (year < 2020) {
-                   $(this).val(2020);
-               }
-               if (year > currentYear + 5) {
-                   $(this).val(currentYear + 5);
-               }
-           });
-       });
+                if (year < 2020) {
+                    $(this).val(2020);
+                }
+                if (year > currentYear + 5) {
+                    $(this).val(currentYear + 5);
+                }
+            });
+
+            // Validación solo números para campos monetarios
+            $('.form-control-with-prefix, .form-control-with-suffix').on('input', function () {
+                var value = $(this).val();
+                // Solo números, punto decimal y comas
+                var regex = /^[0-9.,]*$/;
+
+                if (value && !regex.test(value)) {
+                    $(this).val(value.replace(/[^0-9.,]/g, ''));
+                }
+            });
+
+            // Información contextual en focus
+            $('#porcentaje').on('focus', function () {
+                if (!$('#porcentaje-info').length) {
+                    $(this).parent().after('<div id="porcentaje-info" class="help-text mt-1" style="color: #1788ca;"><i class="fas fa-lightbulb"></i> Ejemplos comunes: 10%, 15%, 20%, 25%</div>');
+                }
+            });
+
+            $('#exceso').on('focus', function () {
+                if (!$('#exceso-info').length) {
+                    $(this).parent().after('<div id="exceso-info" class="help-text mt-1" style="color: #1788ca;"><i class="fas fa-lightbulb"></i> Este monto se suma al resultado del cálculo porcentual</div>');
+                }
+            });
+        });
     </script>
 }

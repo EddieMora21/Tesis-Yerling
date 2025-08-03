@@ -6,35 +6,52 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     .page-header-custom {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #0f6da3 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
-    .page-header-custom h1 {
-        margin: 0;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
     .details-card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
         overflow: hidden;
     }
 
     .detail-header {
         background: rgba(23, 136, 202, 0.1);
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
         padding: 1.5rem;
         margin-bottom: 2rem;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -43,45 +60,45 @@
     .job-icon {
         width: 60px;
         height: 60px;
-        background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
-        color: white;
+        color: var(--white);
     }
 
     .job-info h4 {
-        color: #221d42;
+        color: var(--primary-color);
         margin-bottom: 0.5rem;
         font-weight: 600;
     }
 
     .job-info p {
         margin: 0;
-        color: #6c757d;
+        color: var(--text-muted);
     }
 
     .detail-row {
         display: flex;
         padding: 1.5rem;
-        border-bottom: 1px solid #e7e8eb;
-        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--neutral-color);
+        transition: var(--transition);
     }
 
-    .detail-row:last-child {
-        border-bottom: none;
-    }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
 
-    .detail-row:hover {
-        background-color: rgba(23, 136, 202, 0.02);
-    }
+        .detail-row:hover {
+            background-color: rgba(23, 136, 202, 0.02);
+        }
 
     .detail-label {
         flex: 0 0 200px;
         font-weight: 600;
-        color: #221d42;
+        color: var(--primary-color);
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -89,7 +106,7 @@
 
     .detail-value {
         flex: 1;
-        color: #495057;
+        color: var(--text-color);
         font-size: 1.1rem;
     }
 
@@ -106,30 +123,30 @@
     }
 
     .badge-primary {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #0f6da3 100%);
+        color: var(--white);
     }
 
     .badge-success {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--success-color) 0%, #20a53a 100%);
+        color: var(--white);
     }
 
     .badge-warning {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
+        color: var(--white);
     }
 
     .badge-secondary {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
-        color: white;
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: var(--white);
     }
 
     .salary-display {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--success-color) 0%, #20a53a 100%);
+        color: var(--white);
         padding: 1rem 1.5rem;
-        border-radius: 15px;
+        border-radius: var(--border-radius);
         font-size: 1.2rem;
         font-weight: 600;
         text-align: center;
@@ -150,71 +167,71 @@
     .hours-number {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1788ca;
+        color: var(--secondary-color);
     }
 
     .hours-label {
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--text-muted);
         margin-top: 0.25rem;
     }
 
     .description-box {
         background: #f8f9fa;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 1.5rem;
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
         font-style: italic;
         line-height: 1.6;
     }
 
     .empty-description {
-        color: #6c757d;
+        color: var(--text-muted);
         font-style: italic;
         opacity: 0.7;
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
     }
 
-    .btn-primary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
-        color: white;
-        text-decoration: none;
-    }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+            color: var(--white);
+            text-decoration: none;
+        }
 
     .btn-secondary-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
     }
 
-    .btn-secondary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
-        color: white;
-        text-decoration: none;
-    }
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            color: var(--white);
+            text-decoration: none;
+        }
 
     @@media (max-width: 768px) {
         .detail-row {
@@ -270,7 +287,7 @@
                 </div>
                 <div class="job-info">
                     <h4>@Model.nombre_puesto</h4>
-                    <p>Puesto ID: @Model.id_puesto | Departamento: @Html.DisplayFor(model => model.Departamentos.nombre)</p>
+                    <p>Departamento: @Html.DisplayFor(model => model.Departamentos.nombre)</p>
                 </div>
             </div>
 
@@ -300,12 +317,11 @@
 
                 <div class="detail-row">
                     <div class="detail-label">
-                        <i class="fas fa-dollar-sign"></i>
+                        <i class="fas fa-coins"></i>
                         Salario Base
                     </div>
                     <div class="detail-value">
                         <div class="salary-display">
-                            <i class="fas fa-money-bill-wave"></i>
                             ₡@Html.DisplayFor(model => model.salario_base)
                             <span style="font-size: 0.875rem; opacity: 0.9;">mensual</span>
                         </div>
@@ -363,7 +379,7 @@
                         }
                         else
                         {
-                            <span style="color: #6c757d; font-style: italic;">
+                            <span style="color: var(--text-muted); font-style: italic;">
                                 <i class="fas fa-exclamation-circle"></i>
                                 Sin horario específico asignado
                             </span>
@@ -374,7 +390,7 @@
                 <div class="detail-row">
                     <div class="detail-label">
                         <i class="fas fa-align-left"></i>
-                        Descripción
+                        Descripción del Puesto
                     </div>
                     <div class="detail-value">
                         @if (!string.IsNullOrEmpty(Model.descripcion))
@@ -396,7 +412,7 @@
                         Fecha de Creación
                     </div>
                     <div class="detail-value">
-                        @if (Model.fecha_creacion!= null)
+                        @if (Model.fecha_creacion != null)
                         {
                             <div>
                                 <i class="fas fa-clock"></i>
@@ -405,7 +421,7 @@
                         }
                         else
                         {
-                            <span style="color: #6c757d; font-style: italic;">No registrada</span>
+                            <span style="color: var(--text-muted); font-style: italic;">No registrada</span>
                         }
                     </div>
                 </div>
@@ -416,7 +432,7 @@
                         Última Actualización
                     </div>
                     <div class="detail-value">
-                        @if (Model.fecha_actualizacion!= null)
+                        @if (Model.fecha_actualizacion != null)
                         {
                             <div>
                                 <i class="fas fa-sync-alt"></i>
@@ -425,14 +441,14 @@
                         }
                         else
                         {
-                            <span style="color: #6c757d; font-style: italic;">No registrada</span>
+                            <span style="color: var(--text-muted); font-style: italic;">No registrada</span>
                         }
                     </div>
                 </div>
             </div>
 
             <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center mt-4">
-                @Html.ActionLink("Editar", "Edit", new { id = Model.id_puesto }, new { @class = "btn-primary-custom" })
+                @Html.ActionLink("Editar Puesto", "Edit", new { id = Model.id_puesto }, new { @class = "btn-primary-custom" })
                 @Html.ActionLink("Volver a la Lista", "Index", null, new { @class = "btn-secondary-custom" })
             </div>
         </div>

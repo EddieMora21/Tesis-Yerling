@@ -41,7 +41,7 @@
                                     <span class="info-box-icon"><i class="fa fa-calendar-plus-o"></i></span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">Días Disponibles</span>
-                                        <span class="info-box-number">@(Model.dias_disponibles - (Model.dias_disfrutados ?? 0))</span>
+                                        <span class="info-box-number">@(Model.dias_disponibles - (Model.dias_disfrutados))</span>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                     <span class="info-box-icon"><i class="fa fa-calendar-check-o"></i></span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">Días Disfrutados</span>
-                                        <span class="info-box-number">@(Model.dias_disfrutados ?? 0)</span>
+                                        <span class="info-box-number">@(Model.dias_disfrutados)</span>
                                     </div>
                                 </div>
                             </div>
@@ -59,11 +59,11 @@
                         <div class="progress" style="margin-top: 15px;">
                             @{
                                 var porcentajeUsado = Model.dias_disponibles > 0 ?
-                                    (double)(Model.dias_disfrutados ?? 0) / Model.dias_disponibles * 100 : 0;
+                                    (double)(Model.dias_disfrutados) / Model.dias_disponibles * 100 : 0;
                             }
                             <div class="progress-bar progress-bar-success" role="progressbar"
                                  style="width: @(porcentajeUsado)%">
-                                @((Model.dias_disfrutados ?? 0)) de @Model.dias_disponibles días
+                                @((Model.dias_disfrutados)) de @Model.dias_disponibles días
                             </div>
                         </div>
 
@@ -84,7 +84,7 @@
                         </h3>
                     </div>
                     <div class="panel-body text-center">
-                        @if ((Model.dias_disponibles - (Model.dias_disfrutados ?? 0)) > 0)
+                        @if ((Model.dias_disponibles - (Model.dias_disfrutados )) > 0)
                         {
                             <a href="@Url.Action("SolicitarVacaciones")" class="btn btn-success btn-lg btn-block">
                                 <i class="fa fa-calendar-plus-o"></i><br>

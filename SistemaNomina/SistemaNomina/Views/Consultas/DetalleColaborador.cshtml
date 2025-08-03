@@ -1,4 +1,4 @@
-﻿@model SistemaNomina.DetalleColaboradorViewModel
+﻿@model SistemaNomina.Models.DetalleColaboradorViewModel
 @{
     ViewBag.Title = "Detalle del Colaborador";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -40,7 +40,7 @@
                         </tr>
                         <tr>
                             <th>Fecha de Nacimiento:</th>
-                            <td>@Model.Empleado.fecha_nacimiento.Value.ToString("dd/MM/yyyy")</td>
+                            <td>@Model.Empleado.fecha_nacimiento.ToString("dd/MM/yyyy")</td>
                         </tr>
                         <tr>
                             <th>Estado Civil:</th>
@@ -48,7 +48,7 @@
                         </tr>
                         <tr>
                             <th>Cantidad de Hijos:</th>
-                            <td>@(Model.Empleado.cantidad_hijos ?? 0)</td>
+                            <td>@(Model.Empleado.cantidad_hijos)</td>
                         </tr>
                         <tr>
                             <th>Dirección:</th>
@@ -217,11 +217,11 @@
                                             </tr>
                                             <tr>
                                                 <th>Días Disfrutados:</th>
-                                                <td>@(Model.VacacionesActuales.dias_disfrutados ?? 0)</td>
+                                                <td>@(Model.VacacionesActuales.dias_disfrutados)</td>
                                             </tr>
                                             <tr>
                                                 <th>Saldo Pendiente:</th>
-                                                <td><strong class="text-success">@(Model.VacacionesActuales.dias_disponibles - (Model.VacacionesActuales.dias_disfrutados ?? 0))</strong></td>
+                                                <td><strong class="text-success">@(Model.VacacionesActuales.dias_disponibles - (Model.VacacionesActuales.dias_disfrutados))</strong></td>
                                             </tr>
                                         </table>
                                     }

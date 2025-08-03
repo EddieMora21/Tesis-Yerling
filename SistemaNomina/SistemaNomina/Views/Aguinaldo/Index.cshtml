@@ -1,408 +1,993 @@
 ﻿@model IEnumerable<SistemaNomina.Aguinaldo>
 
 @{
-    ViewBag.Title = "Gestion de Aguinaldos";
+    ViewBag.Title = "Gestión de Aguinaldos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
     :root {
-        --azul-oscuro: #221d42;
-        --celeste: #1788ca;
-        --amarillo: #fab61b;
-        --gris-claro: #e7e8eb;
-        --blanco: #ffffff;
-        --verde: #28a745;
-        --rojo: #dc3545;
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
     }
 
-    .header-section {
-        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
-        color: var(--blanco);
+    /* Header Principal */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        margin-bottom: 0;
+        box-shadow: var(--shadow-main);
     }
 
-    .stats-card {
-        background: var(--blanco);
-        border-radius: 8px;
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0.5rem 0 0 0;
+    }
+
+    /* Sección de Filtros */
+    .filters-section {
+        background: var(--white);
+        padding: 2rem;
+        border-left: 1px solid var(--neutral-color);
+        border-right: 1px solid var(--neutral-color);
+    }
+
+    .filters-card {
+        background: var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+        box-shadow: var(--shadow-main);
+    }
+
+    .filters-header {
+        background: var(--accent-color);
+        color: var(--white);
+        padding: 1rem 1.5rem;
+    }
+
+    .filters-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filters-content {
         padding: 1.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        text-align: center;
-        margin-bottom: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 2fr auto;
+        gap: 1.5rem;
+        align-items: end;
     }
 
-    .stats-number {
-        font-size: 2rem;
-        font-weight: bold;
-        color: var(--celeste);
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
-    .stats-label {
-        color: var(--azul-oscuro);
+    .filter-label {
+        font-weight: 600;
+        color: var(--primary-color);
         font-size: 0.9rem;
     }
 
-    .action-buttons {
-        margin-bottom: 2rem;
+    .filter-input, .filter-select {
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--white);
+        border-radius: var(--border-radius-sm);
+        font-size: 0.95rem;
+        transition: var(--transition);
     }
 
-    .btn-primary-custom {
-        background-color: var(--celeste);
-        border-color: var(--celeste);
-        color: var(--blanco);
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-weight: 600;
-        margin-right: 10px;
-        margin-bottom: 10px;
+    .search-wrapper {
+        position: relative;
     }
 
-        .btn-primary-custom:hover {
-            background-color: var(--azul-oscuro);
-            border-color: var(--azul-oscuro);
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .filter-input {
+        padding-left: 2.5rem;
+    }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(23, 136, 202, 0.1);
         }
 
-    .btn-warning-custom {
-        background-color: var(--amarillo);
-        border-color: var(--amarillo);
-        color: var(--azul-oscuro);
-        padding: 10px 20px;
-        border-radius: 5px;
+    /* Tabla */
+    .table-section {
+        background: var(--white);
+        padding: 0 2rem 2rem 2rem;
+        border: 1px solid var(--neutral-color);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+
+    .table-card {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
+    }
+
+    .table-header {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .table-title {
+        font-size: 1.3rem;
         font-weight: 600;
-        margin-right: 10px;
-        margin-bottom: 10px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .record-count {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        font-weight: 400;
+    }
+
+    .table-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
     }
 
     .table-responsive {
-        background: var(--blanco);
-        border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow-x: auto;
     }
 
-    .table th {
-        background-color: var(--azul-oscuro);
-        color: var(--blanco);
+    .table-custom {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--white);
+    }
+
+        .table-custom thead th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            white-space: nowrap;
+        }
+
+            .table-custom thead th i {
+                margin-right: 0.5rem;
+                opacity: 0.8;
+            }
+
+        .table-custom tbody tr {
+            border-bottom: 1px solid var(--neutral-color);
+            transition: var(--transition);
+        }
+
+            .table-custom tbody tr:hover {
+                background: rgba(23, 136, 202, 0.05);
+            }
+
+        .table-custom tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+    /* Botones Corporativos */
+    .btn {
+        padding: 0.75rem 1.5rem;
         border: none;
-        padding: 12px;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.25);
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 29, 66, 0.3);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, var(--accent-color), #e09900);
+        color: var(--primary-color);
+        font-weight: 700;
+        border: 2px solid transparent;
+    }
+
+        .btn-warning-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, var(--success-color), #229954);
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+    .btn-secondary-custom {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+        .btn-secondary-custom:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(34, 29, 66, 0.3);
+            text-decoration: none;
+        }
+
+    /* Botones de acción pequeños */
+    .btn-sm {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, var(--secondary-color), #138496);
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+        .btn-info-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(23, 136, 202, 0.3);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+    .btn-edit-custom {
+        background: linear-gradient(135deg, var(--accent-color), #e09900);
+        color: var(--primary-color);
+        border: 2px solid transparent;
+    }
+
+        .btn-edit-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(250, 182, 27, 0.3);
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+    /* Badges */
+    .badge-year {
+        background: linear-gradient(135deg, var(--secondary-color), #138496);
+        color: var(--white);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
         font-weight: 600;
     }
 
-    .table td {
-        padding: 12px;
-        vertical-align: middle;
-        border-bottom: 1px solid var(--gris-claro);
-    }
-
-    .badge-year {
-        background-color: var(--celeste);
-        color: var(--blanco);
-        padding: 4px 8px;
-        border-radius: 4px;
+    .badge-meses {
+        background: linear-gradient(135deg, var(--accent-color), #e09900);
+        color: var(--primary-color);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
         font-size: 0.8rem;
+        font-weight: 600;
     }
 
-    .filter-section {
-        background: var(--blanco);
-        padding: 1.5rem;
-        border-radius: 8px;
+    .monto-highlight {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--success-color);
+    }
+
+    /* Actions buttons group */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--neutral-color), #d3d3d3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 3rem;
+        color: #6c757d;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .empty-message {
+        color: #6c757d;
         margin-bottom: 2rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-size: 1.1rem;
+    }
+
+    /* Modal Styles */
+    .modal-content {
+        border: none;
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-main);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        border-bottom: none;
+        border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid var(--neutral-color);
+        padding: 1rem 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-select, .form-control {
+        border: 2px solid #dee2e6;
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+    }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
+
+    .alert {
+        border-radius: var(--border-radius-sm);
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        color: #0c5460;
+        border-left: 4px solid var(--secondary-color);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid var(--danger-color);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .filters-content {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .table-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+            .table-actions .btn {
+                width: 100%;
+            }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 280px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .filters-section, .table-section {
+            padding: 1rem;
+        }
     }
 </style>
 
-<div class="header-section">
-    <div class="row">
-        <div class="col-md-8">
-            <h2><i class="fas fa-gift"></i> Gestion de Aguinaldos</h2>
-            <p class="mb-0">Sistema automatizado para el calculo de aguinaldos segun el Codigo de Trabajo de Costa Rica</p>
-        </div>
-        <div class="col-md-4">
-            <div class="stats-card">
-                <div class="stats-number">@Model.Count()</div>
-                <div class="stats-label">Aguinaldos Registrados</div>
+<div class="aguinaldo-container">
+    <!-- Header Principal -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-gift"></i>
+                    Gestión de Aguinaldos
+                </h1>
+                <p class="page-subtitle">Sistema automatizado para el cálculo de aguinaldos según el Código de Trabajo de Costa Rica</p>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Seccion de Estadisticas -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-number">@Model.Count(a => a.anio == DateTime.Now.Year)</div>
-            <div class="stats-label">Ano @DateTime.Now.Year</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-number">₡@Model.Where(a => a.anio == DateTime.Now.Year).Sum(a => a.monto_total).ToString("#,##0.00")</div>
-            <div class="stats-label">Total @DateTime.Now.Year</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-number">@Model.GroupBy(a => a.anio).Count()</div>
-            <div class="stats-label">Anos con Aguinaldos</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-number">₡@Model.Average(a => a.monto_total).ToString("#,##0.00")</div>
-            <div class="stats-label">Promedio</div>
-        </div>
-    </div>
-</div>
-
-<!-- Filtros -->
-<div class="filter-section">
-    <div class="row">
-        <div class="col-md-4">
-            <label for="filtroAnio" class="form-label fw-bold">Filtrar por Ano:</label>
-            <select id="filtroAnio" class="form-select">
-                <option value="">Todos los anos</option>
-                @foreach (var anio in Model.Select(a => a.anio).Distinct().OrderByDescending(a => a))
-                {
-                    <option value="@anio">@anio</option>
-                }
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label for="filtroEmpleado" class="form-label fw-bold">Buscar Empleado:</label>
-            <input type="text" id="filtroEmpleado" class="form-control" placeholder="Nombre o cedula...">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Acciones Rapidas:</label>
-            <div>
-                <button type="button" class="btn btn-sm btn-outline-primary" onclick="limpiarFiltros()">
-                    <i class="fas fa-eraser"></i> Limpiar Filtros
-                </button>
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="filters-card">
+            <div class="filters-header">
+                <h3 class="filters-title">
+                    <i class="fas fa-filter"></i>
+                    Filtros de Búsqueda
+                </h3>
+            </div>
+            <div class="filters-content">
+                <div class="filter-group">
+                    <label class="filter-label">Filtrar por Año</label>
+                    <select id="filtroAnio" class="filter-select">
+                        <option value="">Todos los años</option>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var anio in Model.Select(a => a.anio).Distinct().OrderByDescending(a => a))
+                            {
+                                <option value="@anio">@anio</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Buscar Empleado</label>
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="filtroEmpleado" class="filter-input" placeholder="Nombre del empleado...">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="button" class="btn btn-secondary-custom" onclick="limpiarFiltros()">
+                        <i class="fas fa-times"></i>
+                        Limpiar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Tabla -->
+    <div class="table-section">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 class="empty-title">No hay aguinaldos registrados</h3>
+                <p class="empty-message">Comience calculando el aguinaldo para sus empleados</p>
+                <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
+                    <i class="fas fa-calculator"></i>
+                    Calcular Primer Aguinaldo
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">
+                        <i class="fas fa-list"></i>
+                        Lista de Aguinaldos
+                        <span class="record-count">(@Model.Count() registros)</span>
+                    </h3>
+                    <div class="table-actions">
+                        <!-- Botones de acción principales -->
+                        <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
+                            <i class="fas fa-calculator"></i> Calcular Individual
+                        </a>
+                        <button type="button" class="btn btn-warning-custom" onclick="mostrarCalculoMasivo()">
+                            <i class="fas fa-users"></i> Calcular Todos
+                        </button>
+                        <a href="@Url.Action("Create")" class="btn btn-success-custom">
+                            <i class="fas fa-plus"></i> Registro Manual
+                        </a>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom" id="tablaAguinaldos">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <i class="fas fa-user"></i>
+                                    Empleado
+                                </th>
+                                <th>
+                                    <i class="fas fa-id-card"></i>
+                                    Cédula
+                                </th>
+                                <th>
+                                    <i class="fas fa-calendar"></i>
+                                    Año
+                                </th>
+                                <th>
+                                    <i class="fas fa-calendar-check"></i>
+                                    Meses Laborados
+                                </th>
+                                <th>
+                                    <i class="fas fa-coins"></i>
+                                    Monto Total
+                                </th>
+                                <th>
+                                    <i class="fas fa-clock"></i>
+                                    Fecha Creación
+                                </th>
+                                <th class="text-center">
+                                    <i class="fas fa-cogs"></i>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderByDescending(a => a.anio).ThenBy(a => a.Empleados.apellido1))
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@item.Empleados.nombre1 @item.Empleados.apellido1</strong>
+                                        @if (!string.IsNullOrEmpty(item.Empleados.nombre2) || !string.IsNullOrEmpty(item.Empleados.apellido2))
+                                        {
+                                            <br>
+                                            <small class="text-muted">@item.Empleados.nombre2 @item.Empleados.apellido2</small>
+                                        }
+                                    </td>
+                                    <td>@item.Empleados.cedula</td>
+                                    <td><span class="badge-year">@item.anio</span></td>
+                                    <td>
+                                        <span class="badge-meses">@item.meses_laborados meses</span>
+                                    </td>
+                                    <td>
+                                        <span class="monto-highlight">₡@item.monto_total.ToString("#,##0.00")</span>
+                                    </td>
+                                    <td>
+                                        @if (item.fecha_creacion != null)
+                                        {
+                                            @item.fecha_creacion.Value.ToString("dd/MM/yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No registrada</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="@Url.Action("Details", new { id = item.id_aguinaldo })"
+                                               class="btn btn-info-custom btn-sm" title="Ver Detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="@Url.Action("Edit", new { id = item.id_aguinaldo })"
+                                               class="btn btn-edit-custom btn-sm" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="@Url.Action("Delete", new { id = item.id_aguinaldo })"
+                                               class="btn btn-danger-custom btn-sm" title="Eliminar"
+                                               onclick="return confirm('¿Está seguro de eliminar este aguinaldo?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
-<!-- Botones de Accion -->
-<div class="action-buttons">
-    <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
-        <i class="fas fa-calculator"></i> Calcular Aguinaldo Individual
-    </a>
-    <button type="button" class="btn btn-warning-custom" onclick="mostrarCalculoMasivo()">
-        <i class="fas fa-users"></i> Calcular para Todos los Empleados
-    </button>
-    <a href="@Url.Action("Create")" class="btn btn-success">
-        <i class="fas fa-plus"></i> Registro Manual
-    </a>
-</div>
-
-<!-- Modal para Calculo Masivo -->
-<div class="modal fade" id="modalCalculoMasivo" tabindex="-1">
-    <div class="modal-dialog">
+<!-- Modal para Cálculo Masivo -->
+<div class="modal fade" id="modalCalculoMasivo" tabindex="-1" aria-labelledby="modalCalculoMasivoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Calcular Aguinaldo Masivo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="modalCalculoMasivoLabel">
+                    <i class="fas fa-users"></i>
+                    Calcular Aguinaldo Masivo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="anioCalculoMasivo" class="form-label">Ano Fiscal:</label>
+                    <label for="anioCalculoMasivo" class="form-label">
+                        <i class="fas fa-calendar"></i>
+                        Año Fiscal:
+                    </label>
                     <select id="anioCalculoMasivo" class="form-select">
                         <option value="@DateTime.Now.Year">@DateTime.Now.Year</option>
                         <option value="@(DateTime.Now.Year - 1)">@(DateTime.Now.Year - 1)</option>
+                        <option value="@(DateTime.Now.Year + 1)">@(DateTime.Now.Year + 1)</option>
                     </select>
                 </div>
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Informacion:</strong> Este proceso calculara automaticamente el aguinaldo para todos los empleados activos segun el periodo legal (1 dic - 30 nov).
+                    <strong>Información:</strong> Este proceso calculará automáticamente el aguinaldo para todos los empleados activos según el período legal (1 dic - 30 nov).
                 </div>
                 <div id="resultadoCalculoMasivo" style="display: none;"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="ejecutarCalculoMasivo()">
-                    <i class="fas fa-play"></i> Ejecutar Calculo
+                <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary-custom" id="btnEjecutarCalculo" onclick="ejecutarCalculoMasivo()">
+                    <i class="fas fa-play"></i>
+                    Ejecutar Cálculo
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Tabla de Aguinaldos -->
-<div class="table-responsive">
-    <table class="table-hover table" id="tablaAguinaldos">
-        <thead>
-            <tr>
-                <th><i class="fas fa-user"></i> Empleado</th>
-                <th><i class="fas fa-id-card"></i> Cedula</th>
-                <th><i class="fas fa-calendar"></i> Ano</th>
-                <th><i class="fas fa-calendar-check"></i> Meses Laborados</th>
-                <th><i class="fas fa-dollar-sign"></i> Monto Total</th>
-                <th><i class="fas fa-clock"></i> Fecha Creacion</th>
-                <th><i class="fas fa-cogs"></i> Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderByDescending(a => a.anio).ThenBy(a => a.Empleados.apellido1))
-            {
-                <tr>
-                    <td>
-                        <strong>@item.Empleados.nombre1 @item.Empleados.apellido1</strong>
-                        <br>
-                        <small class="text-muted">@item.Empleados.nombre2 @item.Empleados.apellido2</small>
-                    </td>
-                    <td>@item.Empleados.cedula</td>
-                    <td><span class="badge-year">@item.anio</span></td>
-                    <td>
-                        <span class="badge bg-info">@item.meses_laborados meses</span>
-                    </td>
-                    <td>
-                        <strong style="color: var(--verde);">₡@item.monto_total.ToString("#,##0.00")</strong>
-                    </td>
-                    <td>
-                        @if (item.fecha_creacion!= null)
-                        {
-                            @item.fecha_creacion.Value.ToString("dd/MM/yyyy")
-                        }
-                        else
-                        {
-                            <span class="text-muted">No registrada</span>
-                        }
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a href="@Url.Action("Details", new { id = item.id_aguinaldo })"
-                               class="btn btn-sm btn-outline-info" title="Ver Detalles">
-                                <i class="fas fa-eye"></i> Ver
-                            </a>
-                            <a href="@Url.Action("Edit", new { id = item.id_aguinaldo })"
-                               class="btn btn-sm btn-outline-warning" title="Editar">
-                                <i class="fas fa-edit"></i> Editar
-                            </a>
-                            <a href="@Url.Action("Delete", new { id = item.id_aguinaldo })"
-                               class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                <i class="fas fa-trash"></i> Eliminar
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-@if (!Model.Any())
-{
-    <div class="py-5 text-center">
-        <i class="fas fa-gift fa-5x text-muted mb-3"></i>
-        <h3 class="text-muted">No hay aguinaldos registrados</h3>
-        <p class="text-muted">Comience calculando el aguinaldo para sus empleados</p>
-        <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-primary-custom">
-            <i class="fas fa-calculator"></i> Calcular Primer Aguinaldo
-        </a>
-    </div>
-}
-
 @section Scripts {
     <script>
-    // Filtros en tiempo real
-    $(document).ready(function() {
-        $('#filtroAnio, #filtroEmpleado').on('input change', function() {
-            filtrarTabla();
-        });
-    });
+        $(document).ready(function () {
+            console.log('=== GESTIÓN AGUINALDOS INICIADA ===');
 
-    function filtrarTabla() {
-        var filtroAnio = $('#filtroAnio').val().toLowerCase();
-        var filtroEmpleado = $('#filtroEmpleado').val().toLowerCase();
-
-        $('#tablaAguinaldos tbody tr').each(function() {
-            var fila = $(this);
-            var anio = fila.find('td:eq(2)').text().toLowerCase();
-            var empleado = fila.find('td:eq(0)').text().toLowerCase();
-            var cedula = fila.find('td:eq(1)').text().toLowerCase();
-
-            var mostrarAnio = filtroAnio === '' || anio.includes(filtroAnio);
-            var mostrarEmpleado = filtroEmpleado === '' ||
-                                 empleado.includes(filtroEmpleado) ||
-                                 cedula.includes(filtroEmpleado);
-
-            if (mostrarAnio && mostrarEmpleado) {
-                fila.show();
-            } else {
-                fila.hide();
-            }
-        });
-    }
-
-    function limpiarFiltros() {
-        $('#filtroAnio').val('');
-        $('#filtroEmpleado').val('');
-        filtrarTabla();
-    }
-
-    function mostrarCalculoMasivo() {
-        $('#modalCalculoMasivo').modal('show');
-    }
-
-    function ejecutarCalculoMasivo() {
-        var anio = $('#anioCalculoMasivo').val();
-        var btnEjecutar = $('button[onclick="ejecutarCalculoMasivo()"]');
-
-        // Deshabilitar boton y mostrar loading
-        btnEjecutar.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Calculando...');
-
-        $.post('@Url.Action("GenerarParaTodosLosEmpleados")', { anio: anio })
-            .done(function(response) {
-                if (response.success) {
-                    var html = '<div class="alert alert-success">' +
-                              '<h6><i class="fas fa-check-circle"></i> Calculo Completado</h6>' +
-                              '<p><strong>Exitosos:</strong> ' + response.exitosos + ' | ' +
-                              '<strong>Errores:</strong> ' + response.errores + ' | ' +
-                              '<strong>Total:</strong> ' + response.total + '</p></div>';
-
-                    if (response.resultados && response.resultados.length > 0) {
-                        html += '<div class="table-responsive" style="max-height: 300px; overflow-y: auto;">' +
-                               '<table class="table-sm table">' +
-                               '<thead><tr><th>Empleado</th><th>Cedula</th><th>Monto</th><th>Estado</th></tr></thead><tbody>';
-
-                        response.resultados.forEach(function(item) {
-                            var estadoClass = item.estado === 'Creado' ? 'success' :
-                                            item.estado === 'Ya existia' ? 'info' : 'danger';
-                            html += '<tr><td>' + item.empleado + '</td>' +
-                                   '<td>' + item.cedula + '</td>' +
-                                   '<td>' + item.monto + '</td>' +
-                                   '<td><span class="badge bg-'+ estadoClass +'">' + item.estado + '</span></td></tr>';
-                        });
-
-                        html += '</tbody></table></div>';
-                    }
-
-                    $('#resultadoCalculoMasivo').html(html).show();
-
-                    // Actualizar pagina despues de 3 segundos
-                    setTimeout(function() {
-                        location.reload();
-                    }, 3000);
-                } else {
-                    $('#resultadoCalculoMasivo').html(
-                        '<div class="alert alert-danger">' +
-                        '<i class="fas fa-exclamation-triangle"></i> Error: ' + response.message +
-                        '</div>'
-                    ).show();
-                }
-            })
-            .fail(function() {
-                $('#resultadoCalculoMasivo').html(
-                    '<div class="alert alert-danger">' +
-                    '<i class="fas fa-exclamation-triangle"></i> Error de conexion. Intente nuevamente.' +
-                    '</div>'
-                ).show();
-            })
-            .always(function() {
-                btnEjecutar.prop('disabled', false).html('<i class="fas fa-play"></i> Ejecutar Calculo');
+            // Filtros en tiempo real
+            $('#filtroAnio, #filtroEmpleado').on('input change', function () {
+                filtrarTabla();
             });
-    }
+
+            updateRecordCount();
+        });
+
+        function filtrarTabla() {
+            var filtroAnio = $('#filtroAnio').val().toLowerCase();
+            var filtroEmpleado = $('#filtroEmpleado').val().toLowerCase();
+
+            $('#tablaAguinaldos tbody tr').each(function () {
+                var fila = $(this);
+                var anio = fila.find('td:eq(2)').text().toLowerCase();
+                var empleado = fila.find('td:eq(0)').text().toLowerCase();
+                var cedula = fila.find('td:eq(1)').text().toLowerCase();
+
+                var mostrarAnio = filtroAnio === '' || anio.includes(filtroAnio);
+                var mostrarEmpleado = filtroEmpleado === '' ||
+                    empleado.includes(filtroEmpleado) ||
+                    cedula.includes(filtroEmpleado);
+
+                if (mostrarAnio && mostrarEmpleado) {
+                    fila.show();
+                } else {
+                    fila.hide();
+                }
+            });
+
+            updateRecordCount();
+        }
+
+        function updateRecordCount() {
+            var visibleRows = $('#tablaAguinaldos tbody tr:visible').length;
+            var totalRows = $('#tablaAguinaldos tbody tr').length;
+            $('.record-count').text('(' + visibleRows + ' de ' + totalRows + ' registros)');
+        }
+
+        function limpiarFiltros() {
+            $('#filtroAnio').val('');
+            $('#filtroEmpleado').val('');
+            filtrarTabla();
+        }
+
+        function mostrarCalculoMasivo() {
+            // Limpiar resultados anteriores
+            $('#resultadoCalculoMasivo').hide().html('');
+
+            // Resetear botón
+            $('#btnEjecutarCalculo')
+                .prop('disabled', false)
+                .html('<i class="fas fa-play"></i> Ejecutar Cálculo');
+
+            // Mostrar modal
+            var modal = new bootstrap.Modal(document.getElementById('modalCalculoMasivo'));
+            modal.show();
+        }
+
+        function ejecutarCalculoMasivo() {
+            var anio = $('#anioCalculoMasivo').val();
+            var btnEjecutar = $('#btnEjecutarCalculo');
+
+            console.log('=== EJECUTAR CÁLCULO MASIVO ===');
+            console.log('Año:', anio);
+
+            if (!anio) {
+                alert('Por favor seleccione un año fiscal');
+                return;
+            }
+
+            // Deshabilitar botón y mostrar loading
+            btnEjecutar.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Calculando...');
+
+            // Ocultar resultados anteriores
+            $('#resultadoCalculoMasivo').hide();
+
+            $.post('@Url.Action("GenerarParaTodosLosEmpleados", "Aguinaldo")', { anio: anio })
+                .done(function (response) {
+                    console.log('Respuesta del cálculo masivo:', response);
+
+                    if (response && response.success) {
+                        var html = '<div class="alert alert-success">' +
+                            '<h6><i class="fas fa-check-circle"></i> Cálculo Completado Exitosamente</h6>' +
+                            '<div class="row text-center">' +
+                            '<div class="col-md-4"><strong>Exitosos:</strong> ' + response.exitosos + '</div>' +
+                            '<div class="col-md-4"><strong>Errores:</strong> ' + response.errores + '</div>' +
+                            '<div class="col-md-4"><strong>Total:</strong> ' + response.total + '</div>' +'</div></div>';
+
+                       if (response.resultados && response.resultados.length > 0) {
+                           html += '<div class="mt-3">' +
+                               '<h6><i class="fas fa-list"></i> Resultados Detallados:</h6>' +
+                               '<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">' +
+                               '<table class="table-sm table-striped table">' +
+                               '<thead class="table-dark">' +
+                               '<tr>' +
+                               '<th><i class="fas fa-user"></i> Empleado</th>' +
+                               '<th><i class="fas fa-id-card"></i> Cédula</th>' +
+                               '<th><i class="fas fa-coins"></i> Monto</th>' +
+                               '<th><i class="fas fa-calendar-check"></i> Meses</th>' +
+                               '<th><i class="fas fa-info-circle"></i> Estado</th>' +
+                               '</tr>' +
+                               '</thead><tbody>';
+
+                           response.resultados.forEach(function (item) {
+                               var estadoClass = '';
+                               var estadoIcon = '';
+
+                               switch(item.estado) {
+                                   case 'Creado':
+                                       estadoClass = 'success';
+                                       estadoIcon = 'fas fa-check-circle';
+                                       break;
+                                   case 'Ya existía':
+                                       estadoClass = 'info';
+                                       estadoIcon = 'fas fa-info-circle';
+                                       break;
+                                   default:
+                                       estadoClass = 'danger';
+                                       estadoIcon = 'fas fa-exclamation-triangle';
+                                       break;
+                               }
+
+                               html += '<tr>' +
+                                   '<td><strong>' + item.empleado + '</strong></td>' +
+                                   '<td>' + item.cedula + '</td>' +
+                                   '<td><strong>' + item.monto + '</strong></td>' +
+                                   '<td>' + item.meses + '</td>' +
+                                   '<td><span class="badge bg-'+ estadoClass +'"><i class="'+ estadoIcon +'"></i> ' + item.estado + '</span></td>' +
+                                   '</tr>';
+                           });
+
+                           html += '</tbody></table></div></div>';
+                       }
+
+                       html += '<div class="mt-3 text-center">' +
+                           '<button type="button" class="btn btn-success-custom" onclick="recargarPagina()">' +
+                           '<i class="fas fa-sync-alt"></i> Actualizar Lista' +
+                           '</button>' +
+                           '</div>';
+
+                       $('#resultadoCalculoMasivo').html(html).slideDown();
+
+                       // Auto-actualizar después de 5 segundos si hay resultados exitosos
+                       if (response.exitosos > 0) {
+                           setTimeout(function () {
+                               recargarPagina();
+                           }, 5000);
+                       }
+                   } else {
+                       $('#resultadoCalculoMasivo').html(
+                           '<div class="alert alert-danger">' +
+                           '<i class="fas fa-exclamation-triangle"></i> ' +
+                           '<strong>Error en el cálculo:</strong> ' + (response.message || 'Error desconocido') +
+                           '</div>'
+                       ).slideDown();
+                   }
+               })
+               .fail(function (xhr, status, error) {
+                   console.error('Error en cálculo masivo:', error);
+                   $('#resultadoCalculoMasivo').html(
+                       '<div class="alert alert-danger">' +
+                       '<i class="fas fa-exclamation-triangle"></i> ' +
+                       '<strong>Error de conexión:</strong> No se pudo conectar con el servidor. Intente nuevamente.' +
+                       '<br><small>Error: ' + error + '</small>' +
+                       '</div>'
+                   ).slideDown();
+               })
+               .always(function () {
+                   // Rehabilitar botón
+                   btnEjecutar.prop('disabled', false).html('<i class="fas fa-play"></i> Ejecutar Cálculo');
+               });
+       }
+
+       function recargarPagina() {
+           console.log('Recargando página...');
+           window.location.reload();
+       }
+
+       // Prevenir cierre accidental del modal durante el cálculo
+       $('#modalCalculoMasivo').on('hide.bs.modal', function (e) {
+           var btnEjecutar = $('#btnEjecutarCalculo');
+
+           // Si el botón está deshabilitado (calculando), confirmar antes de cerrar
+           if (btnEjecutar.prop('disabled')) {
+               if (!confirm('¿Está seguro de cancelar el cálculo en progreso?')) {
+                   e.preventDefault();
+                   return false;
+               }
+           }
+       });
+
+       // Limpiar modal al cerrarse
+       $('#modalCalculoMasivo').on('hidden.bs.modal', function () {
+           $('#resultadoCalculoMasivo').hide().html('');
+           $('#btnEjecutarCalculo')
+               .prop('disabled', false)
+               .html('<i class="fas fa-play"></i> Ejecutar Cálculo');
+       });
+
+       // Función para formatear números como moneda
+       function formatearMoneda(numero) {
+           return '₡' + parseFloat(numero).toLocaleString('es-CR', {
+               minimumFractionDigits: 2,
+               maximumFractionDigits: 2
+           });
+       }
+
+       // Función para mostrar notificaciones toast (opcional)
+       function mostrarNotificacion(mensaje, tipo = 'success') {
+           // Esta función podría expandirse para mostrar toasts más elegantes
+           if (tipo === 'success') {
+               console.log('✅ ' + mensaje);
+           } else {
+               console.log('❌ ' + mensaje);
+           }
+       }
     </script>
 }

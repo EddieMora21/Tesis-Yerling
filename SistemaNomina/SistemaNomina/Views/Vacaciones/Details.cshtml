@@ -357,7 +357,7 @@
                                 @{
                                     // CORRECCIÓN: Sin nullable - son tipos int normales
                                     int diasDisponibles = Model.dias_disponibles;
-                                    int diasDisfrutados = Model.dias_disfrutados.Value;
+                                    int diasDisfrutados = Model.dias_disfrutados;
                                     int diasRestantes = diasDisponibles - diasDisfrutados;
                                 }
                                 <strong style="color: #1788ca; font-size: 1.2rem;">@diasRestantes días</strong>
@@ -365,22 +365,7 @@
                         </div>
 
                         <!-- Barra de progreso -->
-                        <div class="detail-row">
-                            <div class="detail-label">
-                                <i class="fas fa-chart-bar"></i>
-                                Progreso de Utilización
-                            </div>
-                            <div class="detail-value" style="flex: 2;">
-                                @{
-                                    // CORRECCIÓN: Cálculo del porcentaje sin errores
-                                    double porcentajeUsado = diasDisponibles > 0 ? (diasDisfrutados * 100.0 / diasDisponibles) : 0;
-                                }
-                                <div class="progress-container">
-                                    <div class="progress-bar" style="width: @(porcentajeUsado)%"></div>
-                                </div>
-                                <small style="color: #6c757d;">@porcentajeUsado.ToString("F1")% utilizado</small>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <!-- Información de Registro -->

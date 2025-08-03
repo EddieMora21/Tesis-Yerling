@@ -31,19 +31,19 @@
                                     <tr>
                                         <th>
                                             <i class="fas fa-tag me-1"></i>
-                                            @Html.DisplayNameFor(model => model.nombre)
+                                            Nombre del Tipo
                                         </th>
                                         <th>
                                             <i class="fas fa-info-circle me-1"></i>
-                                            @Html.DisplayNameFor(model => model.descripcion)
+                                            Descripción
                                         </th>
                                         <th>
                                             <i class="fas fa-calendar-plus me-1"></i>
-                                            @Html.DisplayNameFor(model => model.fecha_creacion)
+                                            Fecha de Creación
                                         </th>
                                         <th>
                                             <i class="fas fa-calendar-edit me-1"></i>
-                                            @Html.DisplayNameFor(model => model.fecha_actualizacion)
+                                            Última Actualización
                                         </th>
                                         <th class="text-center">
                                             <i class="fas fa-cogs"></i>
@@ -63,11 +63,13 @@
                                             </td>
                                             <td>
                                                 <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>
                                                     @Html.DisplayFor(modelItem => item.fecha_creacion)
                                                 </small>
                                             </td>
                                             <td>
                                                 <small class="text-muted">
+                                                    <i class="fas fa-sync me-1"></i>
                                                     @Html.DisplayFor(modelItem => item.fecha_actualizacion)
                                                 </small>
                                             </td>

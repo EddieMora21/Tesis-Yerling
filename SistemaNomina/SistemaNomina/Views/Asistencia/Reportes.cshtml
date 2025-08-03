@@ -138,36 +138,18 @@
         color: #1788ca;
     }
 
-    .quick-filters {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
+    /* 🎯 VALIDACIÓN DE CAMPOS */
+    .form-control-custom.error {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
     }
 
-    .quick-filter-btn {
-        background: white;
-        border: 2px solid #e7e8eb;
-        border-radius: 20px;
-        padding: 8px 16px;
-        color: #221d42;
-        font-size: 13px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        cursor: pointer;
+    .error-message {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 4px;
+        display: block;
     }
-
-        .quick-filter-btn:hover {
-            border-color: #1788ca;
-            color: #1788ca;
-            transform: translateY(-1px);
-        }
-
-        .quick-filter-btn.active {
-            background: #1788ca;
-            border-color: #1788ca;
-            color: white;
-        }
 
     @@media (max-width: 768px) {
         .header-reportes {
@@ -177,16 +159,6 @@
 
         .filters-card {
             padding: 20px 15px;
-        }
-
-        .quick-filters {
-            justify-content: center;
-        }
-
-        .quick-filter-btn {
-            flex: 1;
-            text-align: center;
-            min-width: 80px;
         }
     }
 </style>
@@ -209,41 +181,22 @@
                 Filtros de Búsqueda
             </h4>
 
-            <div class="quick-filters">
-                <button type="button" class="quick-filter-btn" onclick="setQuickFilter('hoy')">
-                    <i class="fa fa-calendar-day" style="margin-right: 5px;"></i>
-                    Hoy
-                </button>
-                <button type="button" class="quick-filter-btn" onclick="setQuickFilter('semana')">
-                    <i class="fa fa-calendar-week" style="margin-right: 5px;"></i>
-                    Esta Semana
-                </button>
-                <button type="button" class="quick-filter-btn" onclick="setQuickFilter('mes')">
-                    <i class="fa fa-calendar-alt" style="margin-right: 5px;"></i>
-                    Este Mes
-                </button>
-                <button type="button" class="quick-filter-btn" onclick="clearFilters()">
-                    <i class="fa fa-eraser" style="margin-right: 5px;"></i>
-                    Limpiar
-                </button>
-            </div>
-
             <div class="filters-card">
                 @using (Html.BeginForm("GenerarReporte", "Asistencia", FormMethod.Post, new { @id = "formReporte" }))
                 {
                     @Html.AntiForgeryToken()
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="control-label-custom">
                                     <i class="filter-icon fa fa-user"></i>
                                     Empleado
                                 </label>
-                                @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-control form-control-custom" })
+                                @Html.DropDownList("empleadoId", ViewBag.Empleados as SelectList, "-- Todos los empleados --", new { @class = "form-control form-control-custom", @id = "empleadoSelect" })
                                 <small class="help-text">Selecciona un empleado específico o deja en blanco para todos</small>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="control-label-custom">
                                     <i class="filter-icon fa fa-building"></i>
@@ -253,24 +206,26 @@
                                 <small class="help-text">Filtra por departamento específico</small>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label class="control-label-custom">
                                     <i class="filter-icon fa fa-calendar"></i>
-                                    Fecha Inicio
+                                    Fecha Inicio <span style="color: red;">*</span>
                                 </label>
-                                <input type="date" name="fechaInicio" id="fechaInicio" class="form-control form-control-custom" />
+                                <input type="date" name="fechaInicio" id="fechaInicio" class="form-control form-control-custom" required />
                                 <small class="help-text">Fecha de inicio del período</small>
+                                <span class="error-message" id="errorFechaInicio" style="display: none;"></span>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label class="control-label-custom">
                                     <i class="filter-icon fa fa-calendar"></i>
-                                    Fecha Fin
+                                    Fecha Fin <span style="color: red;">*</span>
                                 </label>
-                                <input type="date" name="fechaFin" id="fechaFin" class="form-control form-control-custom" />
+                                <input type="date" name="fechaFin" id="fechaFin" class="form-control form-control-custom" required />
                                 <small class="help-text">Fecha de fin del período</small>
+                                <span class="error-message" id="errorFechaFin" style="display: none;"></span>
                             </div>
                         </div>
                     </div>
@@ -295,6 +250,8 @@
             <i class="fa fa-chart-bar"></i>
             <h5 style="color: #221d42; margin-bottom: 10px;">Reportes de Asistencia</h5>
             <p style="margin: 0;">Selecciona los filtros deseados y haz clic en "Generar Reporte" para visualizar los datos de asistencia.</p>
+            <br />
+            <small style="color: #6c757d;">📋 Los campos marcados con (*) son obligatorios</small>
         </div>
         <div class="loading-state" id="loadingState">
             <div class="loading-spinner"></div>
@@ -307,8 +264,18 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // 🎯 VALIDACIÓN EN TIEMPO REAL
+            $('#fechaInicio, #fechaFin').on('change', function() {
+                validarFechas();
+            });
+
+            // 🎯 VALIDAR FORMULARIO ANTES DE ENVIAR
             $('#formReporte').submit(function (e) {
                 e.preventDefault();
+
+                if (!validarFormulario()) {
+                    return false;
+                }
 
                 // Mostrar estado de carga
                 $('.empty-state').hide();
@@ -322,135 +289,189 @@
                         $('#loadingState').hide();
                         $('#resultadoReporte').html(response);
                     },
-                    error: function () {
+                    error: function (xhr, status, error) {
                         $('#loadingState').hide();
                         $('#resultadoReporte').html(
                             '<div style="text-align: center; padding: 40px; color: #dc3545;">' +
                             '<i class="fa fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>' +
                             '<h5>Error al generar el reporte</h5>' +
                             '<p>Ha ocurrido un error al procesar la solicitud. Por favor, inténtalo de nuevo.</p>' +
+                            '<small>Error técnico: ' + error + '</small>' +
                             '</div>'
                         );
+                        showNotification('Error al generar el reporte', 'error');
                     }
                 });
             });
         });
 
-        function exportarPDF() {
-    showNotification('Generando reporte PDF...', 'info');
+        // 🎯 FUNCIÓN DE VALIDACIÓN COMPLETA
+        function validarFormulario() {
+            var isValid = true;
 
-    // Obtener los valores de los filtros del formulario principal
-    var formData = $('#formReporte').serialize();
+            // Limpiar errores previos
+            $('.form-control-custom').removeClass('error');
+            $('.error-message').hide();
 
-    // Crear formulario temporal para envío
-    var form = $('<form>', {
-        'method': 'POST',
-        'action': '@Url.Action("ExportarReportePDF", "Asistencia")',
-        'target': '_blank'
-    });
+            var fechaInicio = $('#fechaInicio').val();
+            var fechaFin = $('#fechaFin').val();
 
-    // Agregar token de verificación
-    form.append($('<input>', {
-        'type': 'hidden',
-        'name': '__RequestVerificationToken',
-        'value': $('input[name="__RequestVerificationToken"]').val()
-    }));
-
-    // Agregar parámetros de filtro
-    var params = new URLSearchParams(formData);
-    for (let [key, value] of params) {
-        form.append($('<input>', {
-            'type': 'hidden',
-            'name': key,
-            'value': value
-        }));
-    }
-
-    $('body').append(form);
-    form.submit();
-    form.remove();
-
-    showNotification('Descarga de PDF iniciada', 'success');
-}
-
-function exportarExcel() {
-    showNotification('Generando reporte Excel...', 'info');
-
-    // Obtener los valores de los filtros del formulario principal
-    var formData = $('#formReporte').serialize();
-
-    // Crear formulario temporal para envío
-    var form = $('<form>', {
-        'method': 'POST',
-        'action': '@Url.Action("ExportarReporteExcel", "Asistencia")',
-        'target': '_blank'
-    });
-
-    // Agregar token de verificación
-    form.append($('<input>', {
-        'type': 'hidden',
-        'name': '__RequestVerificationToken',
-        'value': $('input[name="__RequestVerificationToken"]').val()
-    }));
-
-    // Agregar parámetros de filtro
-    var params = new URLSearchParams(formData);
-    for (let [key, value] of params) {
-        form.append($('<input>', {
-            'type': 'hidden',
-            'name': key,
-            'value': value
-        }));
-    }
-
-    $('body').append(form);
-    form.submit();
-    form.remove();
-
-    showNotification('Descarga de Excel iniciada', 'success');
-}
-
-        function setQuickFilter(periodo) {
-            // Limpiar filtros activos
-            $('.quick-filter-btn').removeClass('active');
-
-            var hoy = new Date();
-            var fechaInicio, fechaFin;
-
-            switch (periodo) {
-                case 'hoy':
-                    fechaInicio = fechaFin = hoy.toISOString().split('T')[0];
-                    $('button[onclick="setQuickFilter(\'hoy\')"]').addClass('active');
-                    break;
-                case 'semana':
-                    var primerDia = new Date(hoy.setDate(hoy.getDate() - hoy.getDay()));
-                    var ultimoDia = new Date(hoy.setDate(hoy.getDate() - hoy.getDay() + 6));
-                    fechaInicio = primerDia.toISOString().split('T')[0];
-                    fechaFin = ultimoDia.toISOString().split('T')[0];
-                    $('button[onclick="setQuickFilter(\'semana\')"]').addClass('active');
-                    break;
-                case 'mes':
-                    var primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-                    var ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-                    fechaInicio = primerDiaMes.toISOString().split('T')[0];
-                    fechaFin = ultimoDiaMes.toISOString().split('T')[0];
-                    $('button[onclick="setQuickFilter(\'mes\')"]').addClass('active');
-                    break;
+            // Validar fecha inicio
+            if (!fechaInicio) {
+                $('#fechaInicio').addClass('error');
+                $('#errorFechaInicio').text('La fecha de inicio es obligatoria').show();
+                isValid = false;
             }
 
-            $('#fechaInicio').val(fechaInicio);
-            $('#fechaFin').val(fechaFin);
+            // Validar fecha fin
+            if (!fechaFin) {
+                $('#fechaFin').addClass('error');
+                $('#errorFechaFin').text('La fecha de fin es obligatoria').show();
+                isValid = false;
+            }
+
+            // Validar que fecha inicio no sea mayor a fecha fin
+            if (fechaInicio && fechaFin && new Date(fechaInicio) > new Date(fechaFin)) {
+                $('#fechaInicio').addClass('error');
+                $('#fechaFin').addClass('error');
+                $('#errorFechaFin').text('La fecha de fin debe ser mayor o igual a la fecha de inicio').show();
+                showNotification('Las fechas seleccionadas no son válidas', 'error');
+                isValid = false;
+            }
+
+            // Validar que el rango no sea mayor a 1 año
+            if (fechaInicio && fechaFin) {
+                var inicio = new Date(fechaInicio);
+                var fin = new Date(fechaFin);
+                var diffTime = Math.abs(fin - inicio);
+                var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays > 365) {
+                    $('#fechaFin').addClass('error');
+                    $('#errorFechaFin').text('El rango de fechas no puede ser mayor a 1 año').show();
+                    showNotification('El rango de fechas es demasiado amplio', 'warning');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
         }
 
-        function clearFilters() {
-            $('.quick-filter-btn').removeClass('active');
-            $('button[onclick="clearFilters()"]').addClass('active');
-            $('#fechaInicio').val('');
-            $('#fechaFin').val('');
-            $('select[name="empleadoId"]').val('');
-            $('select[name="departamentoId"]').val('');
+        // 🎯 VALIDACIÓN EN TIEMPO REAL DE FECHAS
+        function validarFechas() {
+            var fechaInicio = $('#fechaInicio').val();
+            var fechaFin = $('#fechaFin').val();
+
+            if (fechaInicio && fechaFin) {
+                if (new Date(fechaInicio) > new Date(fechaFin)) {
+                    $('#fechaFin').addClass('error');
+                    $('#errorFechaFin').text('La fecha de fin debe ser mayor o igual a la fecha de inicio').show();
+                } else {
+                    $('#fechaInicio, #fechaFin').removeClass('error');
+                    $('#errorFechaInicio, #errorFechaFin').hide();
+                }
+            }
         }
 
+        // 🎯 FUNCIONES DE EXPORTACIÓN (ya incluidas en tu controlador)
+        function exportarPDF() {
+            if (!validarFormulario()) {
+                showNotification('Por favor corrige los errores antes de exportar', 'error');
+                return;
+            }
 
+            showNotification('Generando reporte PDF...', 'info');
+
+            var formData = $('#formReporte').serialize();
+
+            var form = $('<form>', {
+                'method': 'POST',
+                'action': '@Url.Action("ExportarReportePDF", "Asistencia")',
+                'target': '_blank'
+            });
+
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': '__RequestVerificationToken',
+                'value': $('input[name="__RequestVerificationToken"]').val()
+            }));
+
+            var params = new URLSearchParams(formData);
+            for (let [key, value] of params) {
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': key,
+                    'value': value
+                }));
+            }
+
+            $('body').append(form);
+            form.submit();
+            form.remove();
+
+            showNotification('Descarga de PDF iniciada', 'success');
+        }
+
+        function exportarExcel() {
+            if (!validarFormulario()) {
+                showNotification('Por favor corrige los errores antes de exportar', 'error');
+                return;
+            }
+
+            showNotification('Generando reporte Excel...', 'info');
+
+            var formData = $('#formReporte').serialize();
+
+            var form = $('<form>', {
+                'method': 'POST',
+                'action': '@Url.Action("ExportarReporteExcel", "Asistencia")',
+                'target': '_blank'
+            });
+
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': '__RequestVerificationToken',
+                'value': $('input[name="__RequestVerificationToken"]').val()
+            }));
+
+            var params = new URLSearchParams(formData);
+            for (let [key, value] of params) {
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': key,
+                    'value': value
+                }));
+            }
+
+            $('body').append(form);
+            form.submit();
+            form.remove();
+
+            showNotification('Descarga de Excel iniciada', 'success');
+        }
+
+        // 🎯 FUNCIÓN PARA MOSTRAR NOTIFICACIONES
+        function showNotification(message, type) {
+            // Si tienes Toastr configurado
+            if (typeof toastr !== 'undefined') {
+                toastr[type](message);
+            }
+            // Si tienes SweetAlert configurado
+            else if (typeof Swal !== 'undefined') {
+                var icon = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info';
+                Swal.fire({
+                    icon: icon,
+                    title: message,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+            // Fallback a alert nativo
+            else {
+                alert(message);
+            }
+        }
     </script>
 }

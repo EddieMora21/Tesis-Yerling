@@ -7,146 +7,408 @@
 
 <style>
     :root {
-        --azul-oscuro: #221d42;
-        --celeste: #1788ca;
-        --amarillo: #fab61b;
-        --gris-claro: #e7e8eb;
-        --blanco: #ffffff;
-        --verde: #28a745;
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
+        padding: 2rem 0;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-main);
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
     }
 
     .form-container {
-        background: var(--blanco);
-        border-radius: 15px;
+        background: var(--white);
+        border-radius: var(--border-radius);
         padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-main);
         margin-bottom: 2rem;
-    }
-
-    .form-header {
-        background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--celeste) 100%);
-        color: var(--blanco);
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        text-align: center;
     }
 
     .form-section {
-        background: var(--gris-claro);
-        border-radius: 8px;
+        background: var(--neutral-color);
+        border-radius: var(--border-radius-sm);
         padding: 1.5rem;
         margin-bottom: 1.5rem;
     }
 
+    .form-section h4 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
     .warning-box {
-        background: #fff3cd;
-        border: 1px solid #ffecb5;
-        border-radius: 8px;
-        padding: 1rem;
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid var(--accent-color);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
         margin-bottom: 1.5rem;
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .warning-box h6 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .form-control, .form-select {
         border: 2px solid #dee2e6;
-        border-radius: 8px;
-        padding: 12px;
-        transition: all 0.3s ease;
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        font-size: 0.95rem;
     }
 
-        .form-control:focus, .form-select:focus {
-            border-color: var(--celeste);
-            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
-        }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
 
     .calculation-preview {
-        background: linear-gradient(135deg, var(--verde) 0%, #20c997 100%);
-        color: var(--blanco);
+        background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+        color: var(--white);
         border-radius: 10px;
         padding: 1.5rem;
         margin-top: 1rem;
         text-align: center;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
     }
 
     .preview-amount {
-        font-size: 2rem;
+        font-size: 2.5rem;
         font-weight: bold;
         margin: 0.5rem 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        border: 2px solid transparent;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(34, 29, 66, 0.3);
+        color: var(--white);
+    }
+
+    .btn-outline-info {
+        background: transparent;
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+
+    .btn-outline-info:hover {
+        background: var(--secondary-color);
+        color: var(--white);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-outline-secondary:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.3);
+    }
+
+    .empleado-info-card {
+        background: var(--white);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        margin-top: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #dee2e6;
+    }
+
+    .empleado-info-card h6 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        flex: 0 0 40%;
+    }
+
+    .info-value {
+        color: #495057;
+        flex: 1;
+        text-align: right;
+    }
+
+    .badge-success {
+        background: var(--success-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .input-group {
+        display: flex;
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+    }
+
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+        flex: 1;
+    }
+
+    .input-group .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 1px solid var(--secondary-color);
+    }
+
+    .alert {
+        border-radius: var(--border-radius-sm);
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        border-left: 4px solid var(--accent-color);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .form-container {
+            padding: 1.5rem;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+
+        .info-label, .info-value {
+            flex: none;
+            text-align: left;
+        }
+
+        .preview-amount {
+            font-size: 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .form-section h4 {
+            font-size: 1.1rem;
+        }
     }
 </style>
 
-<div class="container">
-    <div class="form-header">
+<div class="container" style="max-width: 1200px;">
+    <!-- Header de la página -->
+    <div class="page-header">
         <h2><i class="fas fa-plus-circle"></i> Registrar Nuevo Aguinaldo</h2>
-        <p class="mb-0">Complete la informacion para registrar el aguinaldo del empleado</p>
+        <p>Complete la información para registrar el aguinaldo del empleado</p>
     </div>
 
-    @using (Html.BeginForm("Create", "Aguinaldo", FormMethod.Post))
+    @using (Html.BeginForm("Create", "Aguinaldo", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
     {
         @Html.AntiForgeryToken()
 
         <div class="form-container">
             @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
-            <!-- Informacion del Empleado -->
+            <!-- Información del Empleado -->
             <div class="form-section">
-                <h4 class="mb-3"><i class="fas fa-user"></i> Informacion del Empleado</h4>
+                <h4><i class="fas fa-user"></i> Información del Empleado</h4>
 
                 <div class="row">
                     <div class="col-md-8">
                         <label for="id_empleado" class="form-label">
                             <i class="fas fa-user-check"></i> Seleccionar Empleado
                         </label>
-                        @Html.DropDownList("id_empleado", ViewBag.id_empleado as SelectList, "Seleccione un empleado...", new { @class = "form-select", @id = "empleadoSelect" })
+                        @Html.DropDownList("id_empleado", ViewBag.id_empleado as IEnumerable<SelectListItem>, "Seleccione un empleado...", new { @class = "form-select", @id = "empleadoSelect", @required = "required" })
                         @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger" })
+                        <div class="form-text">Seleccione el empleado para calcular su aguinaldo</div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">
-                            <i class="fas fa-calendar"></i> Ano Fiscal
+                        <label for="anio" class="form-label">
+                            <i class="fas fa-calendar"></i> Año Fiscal
                         </label>
-                        @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control", @id = "anioInput" } })
+                        @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control", @id = "anioInput", @required = "required", @min = "2020", @max = "2026" } })
                         @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger" })
+                        <div class="form-text">Año del aguinaldo a calcular</div>
                     </div>
                 </div>
 
-                <div id="empleadoInfo" class="info-card mt-3" style="display: none;">
-                    <h6><i class="fas fa-info-circle"></i> Informacion del Empleado Seleccionado</h6>
-                    <div id="empleadoDetalles"></div>
+                <div id="empleadoInfo" class="empleado-info-card" style="display: none;">
+                    <h6><i class="fas fa-info-circle"></i> Información del Empleado Seleccionado</h6>
+                    <div id="empleadoDetalles">
+                        <!-- Contenido dinámico cargado por JavaScript -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Calculo del Aguinaldo -->
+            <!-- Cálculo del Aguinaldo -->
             <div class="form-section">
-                <h4 class="mb-3"><i class="fas fa-calculator"></i> Calculo del Aguinaldo</h4>
+                <h4><i class="fas fa-calculator"></i> Cálculo del Aguinaldo</h4>
 
                 <div class="row">
                     <div class="col-md-4">
                         <label for="meses_laborados" class="form-label">
                             <i class="fas fa-calendar-check"></i> Meses Laborados
                         </label>
-                        @Html.EditorFor(model => model.meses_laborados, new { htmlAttributes = new { @class = "form-control", @id = "mesesInput" } })
+                        @Html.EditorFor(model => model.meses_laborados, new { htmlAttributes = new { @class = "form-control", @id = "mesesInput", @required = "required", @min = "1", @max = "12", @step = "1" } })
                         @Html.ValidationMessageFor(model => model.meses_laborados, "", new { @class = "text-danger" })
                         <div class="form-text">Entre 1 y 12 meses</div>
                     </div>
                     <div class="col-md-8">
                         <label for="monto_total" class="form-label">
-                            <i class="fas fa-dollar-sign"></i> Monto Total del Aguinaldo
+                            <i class="fas fa-coins"></i> Monto Total del Aguinaldo
                         </label>
                         <div class="input-group">
-                            @Html.EditorFor(model => model.monto_total, new { htmlAttributes = new { @class = "form-control", @id = "montoInput", @step = "0.01" } })
-                            <button type="button" class="btn btn-outline-info" onclick="recalcularMonto()">
+                            @Html.EditorFor(model => model.monto_total, new { htmlAttributes = new { @class = "form-control", @id = "montoInput", @step = "0.01", @min = "0", @required = "required", @placeholder = "0.00" } })
+                            <button type="button" class="btn btn-outline-info" onclick="recalcularMonto()" title="Recalcular automáticamente">
                                 <i class="fas fa-sync-alt"></i> Recalcular
                             </button>
                         </div>
                         @Html.ValidationMessageFor(model => model.monto_total, "", new { @class = "text-danger" })
+                        <div class="form-text">Monto en colones costarricenses</div>
                     </div>
                 </div>
 
                 <div class="row mt-3">
                     <div class="col-md-12">
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 flex-wrap">
                             <button type="button" class="btn btn-outline-info" onclick="calcularAutomaticamente()">
-                                <i class="fas fa-magic"></i> Calcular Automaticamente
+                                <i class="fas fa-magic"></i> Calcular Automáticamente
                             </button>
                             <button type="button" class="btn btn-outline-secondary" onclick="verificarDuplicado()">
                                 <i class="fas fa-search"></i> Verificar si Ya Existe
@@ -156,45 +418,47 @@
                 </div>
 
                 <div id="calculationPreview" style="display: none;">
-                    <!-- Aqui se mostrara la vista previa del calculo -->
+                    <!-- Aquí se mostrará la vista previa del cálculo -->
                 </div>
             </div>
 
             <!-- Control de Fechas -->
             <div class="form-section">
-                <h4 class="mb-3"><i class="fas fa-clock"></i> Control de Fechas</h4>
+                <h4><i class="fas fa-clock"></i> Control de Fechas</h4>
 
                 <div class="row">
                     <div class="col-md-6">
                         <label for="fecha_creacion" class="form-label">
-                            <i class="fas fa-calendar-plus"></i> Fecha de Creacion
+                            <i class="fas fa-calendar-plus"></i> Fecha de Creación
                         </label>
-                        @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local" } })
+                        @Html.EditorFor(model => model.fecha_creacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger" })
+                        <div class="form-text">Se establece automáticamente al guardar</div>
                     </div>
                     <div class="col-md-6">
                         <label for="fecha_actualizacion" class="form-label">
-                            <i class="fas fa-calendar-edit"></i> Fecha de Actualizacion
+                            <i class="fas fa-calendar-edit"></i> Fecha de Actualización
                         </label>
-                        @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local", @readonly = "readonly" } })
+                        @Html.EditorFor(model => model.fecha_actualizacion, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local", @readonly = "readonly", @disabled = "disabled" } })
                         @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger" })
-                        <div class="form-text">Se actualiza automaticamente</div>
+                        <div class="form-text">Se actualiza automáticamente en ediciones</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Informacion Legal -->
+            <!-- Información Legal -->
             <div class="warning-box">
-                <h6><i class="fas fa-gavel"></i> Base Legal del Calculo</h6>
+                <h6><i class="fas fa-gavel"></i> Base Legal del Cálculo</h6>
                 <ul class="mb-0">
-                    <li><strong>Periodo de calculo:</strong> 1 de diciembre del ano anterior al 30 de noviembre del ano actual</li>
-                    <li><strong>Formula legal:</strong> (Suma de salarios devengados en el periodo) dividido 12</li>
+                    <li><strong>Período de cálculo:</strong> 1 de diciembre del año anterior al 30 de noviembre del año actual</li>
+                    <li><strong>Fórmula legal:</strong> (Suma de salarios devengados en el período) dividido entre 12</li>
                     <li><strong>Proporcional:</strong> Para empleados con menos de 12 meses laborados</li>
-                    <li><strong>Ausencias:</strong> Se descuentan ausencias injustificadas del calculo</li>
+                    <li><strong>Ausencias:</strong> Se descuentan ausencias injustificadas del cálculo</li>
+                    <li><strong>Referencia legal:</strong> Código de Trabajo de Costa Rica, Artículo 177</li>
                 </ul>
             </div>
 
-            <!-- Botones de Accion -->
+            <!-- Botones de Acción -->
             <div class="text-center">
                 <button type="submit" class="btn btn-primary btn-lg me-3">
                     <i class="fas fa-save"></i> Registrar Aguinaldo
@@ -207,9 +471,12 @@
     }
 
     <!-- Enlaces Adicionales -->
-    <div class="mt-3 text-center">
+    <div class="text-center">
         <a href="@Url.Action("CalcularAguinaldo")" class="btn btn-outline-info">
-            <i class="fas fa-calculator"></i> Ir a Calculadora Automatica
+            <i class="fas fa-calculator"></i> Ir a Calculadora Automática
+        </a>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary ms-2">
+            <i class="fas fa-list"></i> Ver Lista de Aguinaldos
         </a>
     </div>
 </div>
@@ -219,18 +486,30 @@
 
     <script>
         $(document).ready(function() {
-            // Establecer ano actual por defecto
+            console.log('=== AGUINALDO CREATE - INICIANDO ===');
+
+            // Establecer año actual por defecto
             if (!$('#anioInput').val()) {
                 $('#anioInput').val(new Date().getFullYear());
             }
 
-            // Cargar informacion del empleado cuando se selecciona
+            // Verificar que el dropdown tenga opciones
+            var opciones = $('#empleadoSelect option').length;
+            console.log('Opciones en dropdown:', opciones);
+
+            // Event listener para cambio de empleado
             $('#empleadoSelect').change(function() {
                 var empleadoId = $(this).val();
-                if (empleadoId) {
+                var empleadoTexto = $(this).find('option:selected').text();
+
+                console.log('Empleado seleccionado ID:', empleadoId);
+                console.log('Empleado seleccionado texto:', empleadoTexto);
+
+                if (empleadoId && empleadoId !== '' && empleadoId !== 'Seleccione un empleado...') {
                     cargarInfoEmpleado(empleadoId);
                 } else {
-                    $('#empleadoInfo').hide();
+                    $('#empleadoInfo').slideUp();
+                    $('#calculationPreview').slideUp();
                 }
             });
 
@@ -238,29 +517,135 @@
             $('#mesesInput, #montoInput').on('input', function() {
                 actualizarVistaPrevia();
             });
+
+            // Validar año
+            $('#anioInput').on('change', function() {
+                var anio = parseInt($(this).val());
+                var anioActual = new Date().getFullYear();
+
+                if (anio > anioActual + 1) {
+                    alert('No se puede calcular aguinaldo para años tan futuros');
+                    $(this).val(anioActual);
+                }
+
+                if (anio < 2020) {
+                    alert('Año muy antiguo para el cálculo');
+                    $(this).val(anioActual);
+                }
+            });
+
+            // Validación de formulario
+            $('form').on('submit', function(e) {
+                var empleadoId = $('#empleadoSelect').val();
+                var meses = $('#mesesInput').val();
+                var monto = $('#montoInput').val();
+
+                if (!empleadoId || empleadoId === '') {
+                    e.preventDefault();
+                    alert('Por favor seleccione un empleado');
+                    $('#empleadoSelect').focus();
+                    return false;
+                }
+
+                if (!meses || parseInt(meses) < 1 || parseInt(meses) > 12) {
+                    e.preventDefault();
+                    alert('Los meses laborados deben estar entre 1 y 12');
+                    $('#mesesInput').focus();
+                    return false;
+                }
+
+                if (!monto || parseFloat(monto) <= 0) {
+                    e.preventDefault();
+                    alert('El monto del aguinaldo debe ser mayor a 0');
+                    $('#montoInput').focus();
+                    return false;
+                }
+
+                return true;
+            });
         });
 
         function cargarInfoEmpleado(empleadoId) {
-            $('#empleadoInfo').show();
-            $('#empleadoDetalles').html('<p><i class="fas fa-spinner fa-spin"></i> Cargando informacion del empleado...</p>');
+            console.log('=== CARGANDO INFO EMPLEADO ===');
+            console.log('ID:', empleadoId);
 
-            // Simular carga de datos
-            setTimeout(function() {
-                $('#empleadoDetalles').html(
-                    '<div class="row">' +
-                    '<div class="col-md-6"><strong>Fecha de Ingreso:</strong> <span id="fechaIngreso">Cargando...</span></div>' +
-                    '<div class="col-md-6"><strong>Puesto:</strong> <span id="puestoEmpleado">Cargando...</span></div>' +
-                    '</div>'
-                );
-            }, 1000);
+            $('#empleadoInfo').slideDown();
+            $('#empleadoDetalles').html('<p class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando información del empleado...</p>');
+
+            var url = '@Url.Action("GetEmpleadoInfo", "Aguinaldo")';
+            console.log('URL:', url);
+
+            $.get(url, { id: empleadoId })
+                .done(function(response) {
+                    console.log('Respuesta exitosa:', response);
+
+                    if (response && response.success) {
+                        var html = `
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-user"></i> Nombre Completo:</span>
+                                <span class="info-value">${response.nombreCompleto || 'No disponible'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-id-card"></i> Cédula:</span>
+                                <span class="info-value">${response.cedula || 'No disponible'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-calendar-alt"></i> Fecha de Ingreso:</span>
+                                <span class="info-value">${response.fechaIngreso || 'No disponible'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-briefcase"></i> Puesto:</span>
+                                <span class="info-value">${response.puesto || 'No asignado'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-building"></i> Departamento:</span>
+                                <span class="info-value">${response.departamento || 'No asignado'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-money-bill-wave"></i> Salario Base:</span>
+                                <span class="info-value">${response.salarioBase || 'No disponible'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-toggle-on"></i> Estado:</span>
+                                <span class="info-value"><span class="badge-success">${response.estado || 'No disponible'}</span></span>
+                            </div>
+                        `;
+                        $('#empleadoDetalles').html(html);
+                    } else {
+                        $('#empleadoDetalles').html(`
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i> ${response.message || 'Error desconocido al cargar información'}
+                            </div>
+                        `);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Error en petición AJAX:');
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response Text:', xhr.responseText);
+
+                    $('#empleadoDetalles').html(`
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Error de conexión al cargar información del empleado
+                            <br><small><strong>Error:</strong> ${error}</small>
+                            <br><small><strong>Status:</strong> ${status}</small>
+                            ${xhr.responseText ? '<br><small><strong>Respuesta:</strong> ' + xhr.responseText + '</small>' : ''}
+                        </div>
+                    `);
+                });
         }
 
         function calcularAutomaticamente() {
             var empleadoId = $('#empleadoSelect').val();
             var anio = $('#anioInput').val();
 
-            if (!empleadoId || !anio) {
-                alert('Por favor seleccione un empleado y especifique el ano');
+            console.log('=== CALCULAR AUTOMATICAMENTE ===');
+            console.log('Empleado ID:', empleadoId);
+            console.log('Año:', anio);
+
+            if (!empleadoId || empleadoId === '' || !anio) {
+                alert('Por favor seleccione un empleado y especifique el año');
                 return;
             }
 
@@ -268,87 +653,171 @@
             $('#calculationPreview').html(
                 '<div class="calculation-preview">' +
                 '<i class="fas fa-spinner fa-spin fa-2x"></i>' +
-                '<p class="mt-2">Calculando aguinaldo automaticamente...</p>' +
+                '<p class="mt-2">Calculando aguinaldo automáticamente...</p>' +
                 '</div>'
-            ).show();
+            ).slideDown();
 
-            // Llamar al controlador para calculo automatico
-            $.post('@Url.Action("CalcularAguinaldoAutomatico")', {
+            // Llamar al controlador para cálculo automático
+            $.post('@Url.Action("CalcularAguinaldoAutomatico", "Aguinaldo")', {
                 idEmpleado: empleadoId,
                 anio: anio
             })
             .done(function(response) {
-                if (response.success) {
+                console.log('Respuesta del cálculo:', response);
+
+                if (response && response.success) {
                     // Llenar los campos con los valores calculados
                     $('#mesesInput').val(response.mesesLaborados);
-                    $('#montoInput').val(parseFloat(response.montoAguinaldo.replace(/[^\d.-]/g, '')).toFixed(2));
 
-                    // Mostrar vista previa del calculo
+                    // Limpiar y convertir el monto
+                    var montoLimpio = response.montoAguinaldo.replace(/[^\d.-]/g, '');
+                    $('#montoInput').val(parseFloat(montoLimpio).toFixed(2));
+
+                    // Mostrar vista previa del cálculo
                     mostrarVistaPrevia(response);
                 } else {
                     $('#calculationPreview').html(
                         '<div class="alert alert-danger">' +
-                        '<i class="fas fa-exclamation-triangle"></i> ' + response.message +
+                        '<i class="fas fa-exclamation-triangle"></i> ' + (response.message || 'Error desconocido en el cálculo') +
                         '</div>'
                     );
                 }
             })
-            .fail(function() {
+            .fail(function(xhr, status, error) {
+                console.error('Error en cálculo automático:', error);
                 $('#calculationPreview').html(
                     '<div class="alert alert-danger">' +
-                    '<i class="fas fa-exclamation-triangle"></i> Error de conexion. Intente nuevamente.' +
+                    '<i class="fas fa-exclamation-triangle"></i> Error de conexión: ' + error +
                     '</div>'
                 );
             });
         }
 
         function mostrarVistaPrevia(data) {
-            var html = '<div class="calculation-preview">' +
-                      '<h5><i class="fas fa-check-circle"></i> Calculo Completado</h5>' +
-                      '<div class="preview-amount">' + data.montoAguinaldo + '</div>' +
-                      '<div class="row text-start">' +
-                      '<div class="col-md-6"><small><strong>Periodo:</strong> ' + data.periodoInicio + ' - ' + data.periodoFin + '</small></div>' +
-                      '<div class="col-md-6"><small><strong>Suma de Salarios:</strong> ' + data.sumaSalarios + '</small></div>' +
-                      '</div>' +
-                      '<div class="row mt-2 text-start">' +
-                      '<div class="col-md-6"><small><strong>Dias de Ausencias:</strong> ' + data.diasAusencias + '</small></div>' +
-                      '<div class="col-md-6"><small><strong>Descuento por Ausencias:</strong> ' + data.montoDescontadoAusencias + '</small></div>' +
-                      '</div>' +
-                      '</div>';
+            var alertaExistente = data.aguinaldoExistente ?
+                '<div class="alert alert-warning mt-2"><i class="fas fa-exclamation-triangle"></i> Ya existe aguinaldo para este empleado en el año ' + data.periodoInicio.split('/')[2] + '</div>' : '';
+
+            var html = `
+                <div class="calculation-preview">
+                    <h5><i class="fas fa-check-circle"></i> Cálculo Completado</h5>
+                    <div class="preview-amount">${data.montoAguinaldo}</div>
+                    <div class="row mt-3 text-start">
+                        <div class="col-md-6">
+                            <small><strong><i class="fas fa-calendar"></i> Período:</strong><br>${data.periodoInicio} - ${data.periodoFin}</small>
+                        </div>
+                        <div class="col-md-6">
+                            <small><strong><i class="fas fa-calculator"></i> Suma de Salarios:</strong><br>${data.sumaSalarios}</small>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-start">
+                        <div class="col-md-6">
+                            <small><strong><i class="fas fa-calendar-check"></i> Meses Laborados:</strong><br>${data.mesesLaborados} meses</small>
+                        </div>
+                        <div class="col-md-6">
+                            <small><strong><i class="fas fa-exclamation-circle"></i> Días de Ausencias:</strong><br>${data.diasAusencias} días</small>
+                        </div>
+                    </div>
+                    ${alertaExistente}
+                </div>
+            `;
 
             $('#calculationPreview').html(html);
         }
 
         function verificarDuplicado() {
-            var empleadoId = $('#empleadoSelect').val();
-            var anio = $('#anioInput').val();
+           var empleadoId = $('#empleadoSelect').val();
+           var anio = $('#anioInput').val();
 
-            if (!empleadoId || !anio) {
-                alert('Por favor seleccione un empleado y especifique el ano');
-                return;
-            }
+           console.log('=== VERIFICAR DUPLICADO ===');
+           console.log('Empleado ID:', empleadoId);
+           console.log('Año:', anio);
 
-            alert('Funcionalidad de verificacion de duplicados - Por implementar');
-        }
+           if (!empleadoId || empleadoId === '' || !anio) {
+               alert('Por favor seleccione un empleado y especifique el año');
+               return;
+           }
 
-        function actualizarVistaPrevia() {
-            var meses = $('#mesesInput').val();
-            var monto = $('#montoInput').val();
+           // Verificar si ya existe aguinaldo para este empleado y año
+           $.get('@Url.Action("VerificarDuplicado", "Aguinaldo")', {
+               idEmpleado: empleadoId,
+               anio: anio
+           })
+           .done(function(response) {
+               console.log('Respuesta verificación:', response);
 
-            if (meses && monto) {
-                var montoFormateado = '₡' + parseFloat(monto).toLocaleString('es-CR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
+               if (response && response.existe) {
+                   alert('⚠️ Ya existe un aguinaldo registrado para este empleado en el año ' + anio +
+                         '\n\n📋 Empleado: ' + response.empleado +
+                         '\n💰 Monto: ' + response.monto +
+                         '\n📅 Fecha: ' + response.fecha);
+               } else {
+                   alert('✅ No se encontró un aguinaldo existente para este empleado en el año ' + anio +
+                         '\n\nPuede proceder con el registro.');
+               }
+           })
+           .fail(function(xhr, status, error) {
+               console.error('Error al verificar duplicados:', error);
+               alert('❌ Error al verificar duplicados: ' + error);
+           });
+       }
 
-                $('#calculationPreview').html(
-                    '<div class="calculation-preview">' +
-                    '<h6>Vista Previa</h6>' +
-                    '<div class="preview-amount">' + montoFormateado + '</div>' +
-                    '<small>Por ' + meses + ' meses laborados</small>' +
-                    '</div>'
-                ).show();
-            }
-        }
+       function recalcularMonto() {
+           console.log('Recalculando monto...');
+           calcularAutomaticamente();
+       }
+
+       function actualizarVistaPrevia() {
+           var meses = $('#mesesInput').val();
+           var monto = $('#montoInput').val();
+
+           if (meses && monto && parseFloat(monto) > 0) {
+               var montoFormateado = '₡' + parseFloat(monto).toLocaleString('es-CR', {
+                   minimumFractionDigits: 2,
+                   maximumFractionDigits: 2
+               });
+
+               $('#calculationPreview').html(
+                   '<div class="calculation-preview">' +
+                   '<h6><i class="fas fa-eye"></i> Vista Previa</h6>' +
+                   '<div class="preview-amount">' + montoFormateado + '</div>' +
+                   '<small><i class="fas fa-calendar-check"></i> Por ' + meses + ' meses laborados</small>' +
+                   '</div>'
+               ).slideDown();
+           } else {
+               $('#calculationPreview').slideUp();
+           }
+       }
+
+       // Función para formatear números como moneda
+       function formatearMoneda(numero) {
+           return '₡' + parseFloat(numero).toLocaleString('es-CR', {
+               minimumFractionDigits: 2,
+               maximumFractionDigits: 2
+           });
+       }
+
+       // Función para mostrar mensajes de éxito
+       function mostrarExito(mensaje) {
+           var alertaExito = `
+               <div class="alert alert-success alert-dismissible fade show" role="alert">
+                   <i class="fas fa-check-circle"></i> ${mensaje}
+                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+               </div>
+           `;
+           $('.form-container').prepend(alertaExito);
+       }
+
+       // Función para mostrar mensajes de error
+       function mostrarError(mensaje) {
+           var alertaError = `
+               <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                   <i class="fas fa-exclamation-triangle"></i> ${mensaje}
+                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+               </div>
+           `;
+           $('.form-container').prepend(alertaError);
+       }
+
+       console.log('=== AGUINALDO CREATE - LISTO ===');
     </script>
 }

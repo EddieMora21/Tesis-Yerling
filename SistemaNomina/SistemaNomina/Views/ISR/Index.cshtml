@@ -5,13 +5,30 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     .page-header-custom {
-        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
         .page-header-custom h1 {
@@ -21,21 +38,21 @@
         }
 
     .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
         overflow: hidden;
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: var(--primary-color);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -43,88 +60,33 @@
     }
 
         .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #e09f15, #d18c00);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-secondary-custom {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        margin: 0 2px;
-    }
-
-        .btn-secondary-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-info-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        margin: 0 2px;
-    }
-
-        .btn-info-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-danger-custom {
-        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        margin: 0 2px;
-    }
-
-        .btn-danger-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-            color: white;
+            color: var(--primary-color);
             text-decoration: none;
         }
 
     .table-custom {
         margin: 0;
-        border-radius: 15px;
+        border-radius: var(--border-radius);
         overflow: hidden;
     }
 
         .table-custom thead th {
-            background: #221d42;
-            color: white;
+            background: var(--primary-color);
+            color: var(--white);
             border: none;
             padding: 1rem;
             font-weight: 600;
             border-bottom: none;
             font-size: 0.875rem;
+            white-space: nowrap;
         }
 
         .table-custom tbody tr {
-            transition: all 0.3s ease;
-            border-bottom: 1px solid #e7e8eb;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--neutral-color);
         }
 
             .table-custom tbody tr:hover {
@@ -136,13 +98,13 @@
             padding: 1rem;
             vertical-align: middle;
             border: none;
-            color: #495057;
+            color: var(--text-color);
             font-size: 0.875rem;
         }
 
     .badge-year {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color) 100%);
+        color: var(--white);
         padding: 6px 14px;
         border-radius: 20px;
         font-size: 0.875rem;
@@ -153,8 +115,8 @@
     }
 
     .badge-percentage {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--success-color) 100%);
+        color: var(--white);
         padding: 4px 10px;
         border-radius: 15px;
         font-size: 0.8rem;
@@ -162,43 +124,123 @@
     }
 
     .currency {
-        color: #1788ca;
+        color: var(--secondary-color);
         font-weight: 600;
-    }
-
-    .range-display {
-        background: #f8f9fa;
-        padding: 4px 8px;
-        border-radius: 8px;
-        border-left: 3px solid #1788ca;
-        font-size: 0.8rem;
-        font-weight: 500;
     }
 
     .empty-state {
         text-align: center;
         padding: 3rem 2rem;
-        color: #6c757d;
+        color: var(--text-muted);
     }
 
         .empty-state i {
             font-size: 4rem;
-            color: #e7e8eb;
+            color: var(--neutral-color);
             margin-bottom: 1rem;
         }
 
+    /* === BOTONES DE ACCIONES (ESTÁNDAR) === */
+    .action-buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        min-width: 210px;
+    }
+
+    .btn-action {
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 65px;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
+    }
+
+    .btn-view:hover {
+        background: linear-gradient(135deg, #0f6da3, #0c5a87);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.3);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    /* === RESPONSIVE DESIGN === */
     @@media (max-width: 1200px) {
-        .table-custom {
-            font-size: 0.8rem;
+        .action-buttons {
+            min-width: 190px;
         }
 
-            .table-custom thead th {
-                padding: 0.75rem 0.5rem;
-            }
+        .btn-action {
+            min-width: 60px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+    }
 
-            .table-custom tbody td {
-                padding: 0.75rem 0.5rem;
-            }
+    @@media (max-width: 992px) {
+        .table-custom thead th {
+            padding: 1rem 0.7rem;
+            font-size: 0.85rem;
+        }
+
+        .table-custom tbody td {
+            padding: 0.8rem 0.7rem;
+        }
+
+        .action-buttons {
+            min-width: 170px;
+            gap: 3px;
+        }
+
+        .btn-action {
+            min-width: 55px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action .btn-text {
+            display: none; /* Oculta el texto, solo muestra iconos */
+        }
     }
 
     @@media (max-width: 768px) {
@@ -216,7 +258,26 @@
         }
 
         .table-responsive {
-            border-radius: 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .table-custom {
+            min-width: 850px;
+        }
+
+        .action-buttons {
+            min-width: 160px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            min-width: 50px;
+            padding: 5px 6px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action i {
+            font-size: 0.8rem;
         }
     }
 
@@ -226,6 +287,42 @@
             justify-content: center;
             margin-bottom: 1rem;
         }
+
+        .table-custom {
+            min-width: 800px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            min-width: 80px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            width: 100%;
+            min-width: auto;
+            padding: 4px;
+            font-size: 0.65rem;
+        }
+    }
+
+    /* Scroll horizontal personalizado */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: var(--secondary-color);
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-color);
     }
 </style>
 
@@ -254,7 +351,7 @@
             <div class="mb-4 text-right">
                 @Html.ActionLink("Crear Nueva Tabla ISR", "Create", null, new
                 {
-                    @class = "btn btn-primary-custom",
+                    @class = "btn-primary-custom",
                     title = "Agregar un nuevo tramo de ISR"
                 })
             </div>
@@ -269,7 +366,7 @@
                                 <tr>
                                     <th>
                                         <i class="fas fa-calendar-alt mr-2"></i>
-                                        @Html.DisplayNameFor(model => model.anio)
+                                        Año
                                     </th>
                                     <th>
                                         <i class="fas fa-arrow-down mr-2"></i>
@@ -355,23 +452,28 @@
                                                 <span class="text-muted">Sin descripción</span>
                                             }
                                         </td>
-                                        <td class="text-center">
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.id_isr }, new
-                                            {
-                                                @class = "btn btn-secondary-custom",
-                                                title = "Editar tramo ISR"
-                                            })
-                                            @Html.ActionLink("Details", "Details", new { id = item.id_isr }, new
-                                            {
-                                                @class = "btn btn-info-custom",
-                                                title = "Ver detalles"
-                                            })
-                                            @Html.ActionLink("Delete", "Delete", new { id = item.id_isr }, new
-                                            {
-                                                @class = "btn btn-danger-custom",
-                                                title = "Eliminar tramo ISR",
-                                                onclick = "return confirm('¿Está seguro de que desea eliminar este tramo de ISR?');"
-                                            })
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="@Url.Action("Details", new { id = item.id_isr })"
+                                                   class="btn-action btn-view"
+                                                   title="Ver detalles">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span class="btn-text">Ver</span>
+                                                </a>
+                                                <a href="@Url.Action("Edit", new { id = item.id_isr })"
+                                                   class="btn-action btn-edit"
+                                                   title="Editar tramo ISR">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="btn-text">Editar</span>
+                                                </a>
+                                                <a href="@Url.Action("Delete", new { id = item.id_isr })"
+                                                   class="btn-action btn-delete"
+                                                   title="Eliminar tramo ISR"
+                                                   onclick="return confirm('¿Está seguro de que desea eliminar este tramo de ISR?');">
+                                                    <i class="fas fa-trash"></i>
+                                                    <span class="btn-text">Eliminar</span>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 }
@@ -387,7 +489,7 @@
                         <p class="text-muted">Comience agregando los tramos de impuesto sobre la renta para los cálculos de nómina.</p>
                         @Html.ActionLink("Crear Primera Tabla", "Create", null, new
                         {
-                            @class = "btn btn-primary-custom mt-3"
+                            @class = "btn-primary-custom mt-3"
                         })
                     </div>
                 }

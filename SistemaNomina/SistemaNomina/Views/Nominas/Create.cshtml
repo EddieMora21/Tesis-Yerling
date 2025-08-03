@@ -5,182 +5,615 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --white: #ffffff;
+        --warning-color: #fd7e14;
+        --info-color: #17a2b8;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .header-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: var(--white);
+        padding: 2rem 0;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .card-custom {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .card-custom:hover {
+        box-shadow: 0 12px 40px rgba(34, 29, 66, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .card-header-create {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        color: var(--white);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-custom {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        font-size: 1rem;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .form-control-custom.is-valid {
+        border-color: var(--success-color);
+    }
+
+    .form-control-custom.is-invalid {
+        border-color: var(--danger-color);
+    }
+
+    /* ✅ ESTILOS ESPECIALES PARA SELECT DE EMPLEADOS */
+    .form-select-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        background-color: var(--white);
+        font-size: 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-select-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    /* ✅ ESTILO MEJORADO PARA EL SELECT DE EMPLEADOS */
+    .empleado-select {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+        border: 2px solid var(--secondary-color) !important;
+        font-weight: 500;
+    }
+
+    .empleado-select:focus {
+        background: var(--white);
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 0.3rem rgba(34, 29, 66, 0.15);
+    }
+
+    .empleado-select option {
+        padding: 10px;
+        font-size: 0.95rem;
+        color: var(--text-color);
+        background-color: var(--white);
+    }
+
+    .empleado-select option:hover {
+        background-color: rgba(23, 136, 202, 0.1);
+    }
+
+    .empleado-preview {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: var(--border-radius-sm);
+        border-left: 4px solid var(--secondary-color);
+        display: none;
+    }
+
+    .empleado-info-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .empleado-avatar-preview {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .empleado-details-preview {
+        flex-grow: 1;
+    }
+
+    .empleado-name-preview {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .empleado-cedula-preview {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        border: none;
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        color: var(--white);
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, var(--success-color) 0%, rgba(40, 167, 69, 0.8) 100%);
+        border: none;
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
+    }
+
+    .btn-success-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        color: var(--white);
+    }
+
+    .btn-outline-custom {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        transform: translateY(-1px);
+    }
+
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+    }
+
+    .input-group-custom {
+        position: relative;
+    }
+
+    .input-group-custom .currency-symbol {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--secondary-color);
+        font-weight: 600;
+        z-index: 3;
+    }
+
+    .input-group-custom .form-control-custom {
+        padding-left: 2rem;
+    }
+
+    .help-text {
+        color: var(--text-muted);
+        font-style: italic;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .validation-error {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--secondary-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- ENCABEZADO -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="text-primary">
-                        <i class="bi bi-plus-circle"></i> Crear Nómina Manual
-                    </h2>
-                    <p class="text-muted">Complete los datos para crear una nómina individual</p>
-                </div>
-                <div>
-                    @Html.ActionLink("📊 Generar Automática", "SeleccionarPeriodo", null, new { @class = "btn btn-success" })
-                    @Html.ActionLink("📋 Ver Nóminas", "Index", null, new { @class = "btn btn-outline-secondary" })
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-white text-center">
+            <div class="spinner"></div>
+            <p class="mt-3">Procesando...</p>
+        </div>
+    </div>
+
+    <!-- ENCABEZADO -->
+    <div class="header-gradient">
+        <div class="container">
+            <h1 class="mb-2">
+                <i class="fas fa-plus-circle fa-2x"></i>
+                Crear Nómina Manual
+            </h1>
+            <p class="mb-0 fs-5">Complete los datos para crear una nómina individual</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- FORMULARIO PRINCIPAL -->
+            <div class="col-md-8">
+                <div class="card-custom">
+                    <div class="card-header-create">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Información de la Nómina
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Create", "Nominas", FormMethod.Post, new { @id = "formNomina" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger alert-custom" })
+
+                            <!-- ✅ SELECCIÓN DE EMPLEADO MEJORADA -->
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-user icon-primary"></i>
+                                            Empleado *
+                                        </label>
+                                        @Html.DropDownList("id_empleado", ViewBag.id_empleado as SelectList, "-- Seleccione un empleado --", new
+                                        {
+                                            @class = "form-select empleado-select",
+                                            @required = "required",
+                                            @id = "empleadoSelect",
+                                            @title = "Seleccione el empleado por cédula y nombre"
+                                        })
+                                        @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "validation-error" })
+
+                                        <!-- ✅ PREVIEW DEL EMPLEADO SELECCIONADO -->
+                                        <div id="empleadoPreview" class="empleado-preview">
+                                            <div class="empleado-info-preview">
+                                                <div id="empleadoAvatar" class="empleado-avatar-preview">
+                                                    U
+                                                </div>
+                                                <div class="empleado-details-preview">
+                                                    <div id="empleadoNombre" class="empleado-name-preview">
+                                                        Empleado Seleccionado
+                                                    </div>
+                                                    <div id="empleadoCedula" class="empleado-cedula-preview">
+                                                        Cédula del empleado
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="help-text">
+                                            <i class="fas fa-search"></i>
+                                            Busque por cédula o escriba el nombre del empleado
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PERÍODO -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-calendar icon-primary"></i>
+                                            Mes *
+                                        </label>
+                                        @Html.DropDownListFor(model => model.mes, new SelectList(new[]
+                                        {
+                                            new { Value = 1, Text = "Enero" },
+                                            new { Value = 2, Text = "Febrero" },
+                                            new { Value = 3, Text = "Marzo" },
+                                            new { Value = 4, Text = "Abril" },
+                                            new { Value = 5, Text = "Mayo" },
+                                            new { Value = 6, Text = "Junio" },
+                                            new { Value = 7, Text = "Julio" },
+                                            new { Value = 8, Text = "Agosto" },
+                                            new { Value = 9, Text = "Septiembre" },
+                                            new { Value = 10, Text = "Octubre" },
+                                            new { Value = 11, Text = "Noviembre" },
+                                            new { Value = 12, Text = "Diciembre" }
+                                        }, "Value", "Text"), "-- Seleccione mes --", new { @class = "form-select form-select-custom integer-field", @required = "required", @id = "mes" })
+                                        @Html.ValidationMessageFor(model => model.mes, "", new { @class = "validation-error" })
+                                        <div class="help-text">Mes de la nómina</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-calendar-alt icon-primary"></i>
+                                            Año *
+                                        </label>
+                                        @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control form-control-custom integer-field", @type = "number", @min = "2020", @max = "2030", @value = DateTime.Now.Year, @required = "required", @id = "anio" } })
+                                        @Html.ValidationMessageFor(model => model.anio, "", new { @class = "validation-error" })
+                                        <div class="help-text">Año de la nómina</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- INGRESOS -->
+                            <div class="card-custom">
+                                <div class="card-header-create">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        Ingresos
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group-custom">
+                                                <label class="form-label-custom">
+                                                    <i class="fas fa-money-bill icon-primary"></i>
+                                                    Salario Bruto *
+                                                </label>
+                                                <div class="input-group-custom">
+                                                    <span class="currency-symbol">₡</span>
+                                                    @Html.EditorFor(model => model.salario_bruto, new { htmlAttributes = new { @class = "form-control form-control-custom numeric-field currency-field salary-field", @type = "number", @step = "0.01", @min = "0", @required = "required", @placeholder = "0.00", @id = "salario_bruto" } })
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.salario_bruto, "", new { @class = "validation-error" })
+                                                <div class="help-text">Salario base del empleado</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group-custom">
+                                                <label class="form-label-custom">
+                                                    <i class="fas fa-clock icon-primary"></i>
+                                                    Horas Extras
+                                                </label>
+                                                <div class="input-group-custom">
+                                                    <span class="currency-symbol">₡</span>
+                                                    @Html.EditorFor(model => model.horas_extras, new { htmlAttributes = new { @class = "form-control form-control-custom numeric-field currency-field", @type = "number", @step = "0.01", @min = "0", @placeholder = "0.00", @id = "horas_extras" } })
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.horas_extras, "", new { @class = "validation-error" })
+                                                <div class="help-text">Pago por horas trabajadas adicionales</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group-custom">
+                                                <label class="form-label-custom">
+                                                    <i class="fas fa-calendar-day icon-primary"></i>
+                                                    Días Feriados
+                                                </label>
+                                                <div class="input-group-custom">
+                                                    <span class="currency-symbol">₡</span>
+                                                    @Html.EditorFor(model => model.salario_dias_feriados, new { htmlAttributes = new { @class = "form-control form-control-custom numeric-field currency-field", @type = "number", @step = "0.01", @min = "0", @placeholder = "0.00", @id = "dias_feriados" } })
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.salario_dias_feriados, "", new { @class = "validation-error" })
+                                                <div class="help-text">Pago por días feriados trabajados</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group-custom">
+                                                <label class="form-label-custom">
+                                                    <i class="fas fa-percentage icon-primary"></i>
+                                                    Categoría ISR
+                                                </label>
+                                                @Html.DropDownList("id_isr", ViewBag.id_isr as SelectList, "-- Seleccione categoría ISR --", new { @class = "form-select form-select-custom", @id = "isr_categoria" })
+                                                @Html.ValidationMessageFor(model => model.id_isr, "", new { @class = "validation-error" })
+                                                <div class="help-text">Categoría de impuesto sobre la renta</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DEDUCCIONES CALCULADAS AUTOMÁTICAMENTE -->
+                            <div class="card-custom">
+                                <div class="card-header-create">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-calculator"></i>
+                                        Deducciones (Calculadas Automáticamente)
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info alert-custom">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Información:</strong> Las deducciones legales se calcularán automáticamente basadas en el salario bruto ingresado.
+                                        <ul class="mt-2 mb-0">
+                                            <li><strong>CCSS:</strong> 10.67% del salario bruto</li>
+                                            <li><strong>IVM:</strong> 4.17% del salario bruto</li>
+                                            <li><strong>ISR:</strong> Según tabla progresiva costarricense</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-outline-custom" onclick="mostrarVistaPrevia()">
+                                            <i class="fas fa-eye"></i> Vista Previa de Cálculos
+                                        </button>
+                                    </div>
+
+                                    <!-- VISTA PREVIA DE CÁLCULOS -->
+                                    <div id="vistaPrevia" style="display: none;" class="mt-4">
+                                        <div class="card border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <h6 class="mb-0">
+                                                    <i class="fas fa-calculator"></i>
+                                                    Vista Previa de Cálculos
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6 class="text-success">Ingresos:</h6>
+                                                        <ul class="list-unstyled">
+                                                            <li>Salario Bruto: <span id="preview-salario">₡0.00</span></li>
+                                                            <li>Horas Extras: <span id="preview-horas">₡0.00</span></li>
+                                                            <li>Días Feriados: <span id="preview-feriados">₡0.00</span></li>
+                                                            <li><strong>Total Ingresos: <span id="preview-total-ingresos">₡0.00</span></strong></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <h6 class="text-danger">Deducciones:</h6>
+                                                        <ul class="list-unstyled">
+                                                            <li>CCSS (10.67%): <span id="preview-ccss">₡0.00</span></li>
+                                                            <li>IVM (4.17%): <span id="preview-ivm">₡0.00</span></li>
+                                                            <li>ISR: <span id="preview-isr">₡0.00</span></li>
+                                                            <li><strong>Total Deducciones: <span id="preview-total-deducciones">₡0.00</span></strong></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="text-center">
+                                                    <h5 class="text-primary">
+                                                        <strong>Salario Neto: <span id="preview-salario-neto">₡0.00</span></strong>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BOTONES -->
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <div>
+                                    @Html.ActionLink("⬅️ Volver a la lista", "Index", null, new { @class = "btn btn-outline-custom" })
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary-custom me-2" onclick="mostrarVistaPrevia()">
+                                        <i class="fas fa-calculator"></i> Calcular
+                                    </button>
+                                    <button type="submit" class="btn btn-success-custom btn-lg">
+                                        <i class="fas fa-save"></i> Crear Nómina
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <!-- FORMULARIO PRINCIPAL -->
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">📝 Información de la Nómina</h5>
-                        </div>
-                        <div class="card-body">
-                            @using (Html.BeginForm())
-                            {
-                                @Html.AntiForgeryToken()
+            <!-- PANEL DE AYUDA -->
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <div class="card-header-create">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle"></i>
+                            Información Útil
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="text-primary">📊 Deducciones Legales Costa Rica:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>CCSS:</strong> 10.67% del salario bruto</li>
+                            <li><strong>IVM:</strong> 4.17% del salario bruto</li>
+                            <li><strong>ISR:</strong> Tabla progresiva según Hacienda</li>
+                        </ul>
 
-                                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                        <hr>
 
-                                <div class="row mb-4">
-                                    <!-- SELECCIÓN DE EMPLEADO -->
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="form-label fw-bold">
-                                                <i class="bi bi-person"></i> Empleado *
-                                            </label>
-                                            @Html.DropDownList("id_empleado", ViewBag.id_empleado as SelectList, "-- Seleccione un empleado --", new { @class = "form-select form-select-lg", @required = "required" })
-                                            @Html.ValidationMessageFor(model => model.id_empleado, "", new { @class = "text-danger small" })
-                                        </div>
-                                    </div>
-                                </div>
+                        <h6 class="text-success">✨ Tramos ISR 2025:</h6>
+                        <ul class="list-unstyled small">
+                            <li>Hasta ₡922,000: 0%</li>
+                            <li>₡922,001 - ₡1,352,000: 10%</li>
+                            <li>₡1,352,001 - ₡2,373,000: 15%</li>
+                            <li>₡2,373,001 - ₡4,745,000: 20%</li>
+                            <li>Más de ₡4,745,000: 25%</li>
+                        </ul>
 
-                                <div class="row mb-4">
-                                    <!-- PERÍODO -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label fw-bold">
-                                                <i class="bi bi-calendar"></i> Mes *
-                                            </label>
-                                            @Html.DropDownListFor(model => model.mes, new SelectList(new[]
-                                            {
-                                                new { Value = 1, Text = "Enero" },
-                                                new { Value = 2, Text = "Febrero" },
-                                                new { Value = 3, Text = "Marzo" },
-                                                new { Value = 4, Text = "Abril" },
-                                                new { Value = 5, Text = "Mayo" },
-                                                new { Value = 6, Text = "Junio" },
-                                                new { Value = 7, Text = "Julio" },
-                                                new { Value = 8, Text = "Agosto" },
-                                                new { Value = 9, Text = "Septiembre" },
-                                                new { Value = 10, Text = "Octubre" },
-                                                new { Value = 11, Text = "Noviembre" },
-                                                new { Value = 12, Text = "Diciembre" }
-                                            }, "Value", "Text"), "-- Seleccione mes --", new { @class = "form-select", @required = "required" })
-                                            @Html.ValidationMessageFor(model => model.mes, "", new { @class = "text-danger small" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label fw-bold">
-                                                <i class="bi bi-calendar-date"></i> Año *
-                                            </label>
-                                            @Html.EditorFor(model => model.anio, new { htmlAttributes = new { @class = "form-control", @type = "number", @min = "2020", @max = "2030", @value = DateTime.Now.Year, @required = "required" } })
-                                            @Html.ValidationMessageFor(model => model.anio, "", new { @class = "text-danger small" })
-                                        </div>
-                                    </div>
-                                </div>
+                        <hr>
 
-                                <div class="row mb-4">
-                                    <!-- SALARIOS -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label fw-bold">
-                                                <i class="bi bi-currency-dollar"></i> Salario Bruto *
-                                            </label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">₡</span>
-                                                @Html.EditorFor(model => model.salario_bruto, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01", @min = "0", @required = "required", @placeholder = "0.00" } })
-                                            </div>
-                                            @Html.ValidationMessageFor(model => model.salario_bruto, "", new { @class = "text-danger small" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label fw-bold">
-                                                <i class="bi bi-clock"></i> Horas Extras
-                                            </label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">₡</span>
-                                                @Html.EditorFor(model => model.horas_extras, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "0.01", @min = "0", @placeholder = "0.00" } })
-                                            </div>
-                                            @Html.ValidationMessageFor(model => model.horas_extras, "", new { @class = "text-danger small" })
-                                        </div>
-                                    </div>
-                                </div>
+                        <h6 class="text-info">🔧 Recomendación:</h6>
+                        <p class="small text-muted">
+                            Para múltiples empleados, use la
+                            <strong>generación automática</strong> que procesa todo el período.
+                        </p>
 
-                                <div class="row mb-4">
-                                    <!-- DEDUCCIONES AUTOMÁTICAS -->
-                                    <div class="col-md-12">
-                                        <div class="alert alert-info">
-                                            <i class="bi bi-info-circle"></i>
-                                            <strong>Nota:</strong> Las deducciones legales (CCSS, IVM, ISR) se calcularán automáticamente basadas en el salario bruto.
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- BOTONES -->
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        @Html.ActionLink("⬅️ Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
-                                    </div>
-                                    <div>
-                                        <button type="button" class="btn btn-outline-warning me-2" onclick="calcularAutomatico()">
-                                            🧮 Calcular Deducciones
-                                        </button>
-                                        <button type="submit" class="btn btn-success btn-lg">
-                                            <i class="bi bi-save"></i> Crear Nómina
-                                        </button>
-                                    </div>
-                                </div>
-                            }
+                        <div class="d-grid">
+                            @Html.ActionLink("📊 Generación Automática", "SeleccionarPeriodo", null, new { @class = "btn btn-outline-custom" })
                         </div>
                     </div>
                 </div>
 
-                <!-- PANEL DE AYUDA -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">💡 Información Útil</h5>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="text-primary">📊 Deducciones Legales:</h6>
-                            <ul class="list-unstyled">
-                                <li><strong>CCSS:</strong> 10.67% del salario bruto</li>
-                                <li><strong>IVM:</strong> 4.17% del salario bruto</li>
-                                <li><strong>ISR:</strong> Según tabla progresiva</li>
-                            </ul>
-
-                            <hr>
-
-                            <h6 class="text-success">✨ Recomendación:</h6>
-                            <p class="small text-muted">
-                                Para múltiples empleados, es más eficiente usar la
-                                <strong>generación automática</strong> que calcula todo el período.
-                            </p>
-
-                            <div class="d-grid">
-                                @Html.ActionLink("📊 Generar Automática", "SeleccionarPeriodo", null, new { @class = "btn btn-outline-success" })
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ÚLTIMO REGISTRO PARA REFERENCIA -->
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h6 class="card-title mb-0">📋 Última Nómina Creada</h6>
-                        </div>
-                        <div class="card-body">
-                            <p class="small text-muted">Referencia para verificar datos similares</p>
-                            <!-- Aquí podrías mostrar la última nómina del empleado seleccionado -->
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
     </div>
@@ -190,27 +623,257 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script>
-        function calcularAutomatico() {
-            var salarioBruto = parseFloat($('#salario_bruto').val()) || 0;
+        $(document).ready(function () {
 
-            if (salarioBruto > 0) {
-                var ccss = salarioBruto * 0.1067; // 10.67%
-                var ivm = salarioBruto * 0.0417;  // 4.17%
+            // ✅ FUNCIÓN MEJORADA: Manejar selección de empleado
+            $('#empleadoSelect').on('change', function () {
+                var empleadoId = $(this).val();
+                var empleadoTexto = $(this).find('option:selected').text();
 
-                alert(`Deducciones calculadas:\n\nCCSS (10.67%): ₡${ccss.toFixed(2)}\nIVM (4.17%): ₡${ivm.toFixed(2)}\n\nEstos valores se aplicarán automáticamente.`);
-            } else {
-                alert('Por favor ingrese primero el salario bruto.');
-                $('#salario_bruto').focus();
-            }
+                if (empleadoId && empleadoTexto !== '-- Seleccione un empleado --') {
+                    // Extraer cédula y nombre del texto
+                    var partes = empleadoTexto.split(' - ');
+                    var cedula = partes[0];
+                    var nombre = partes[1] || 'Empleado';
 
+                    // Mostrar preview del empleado
+                    $('#empleadoAvatar').text(nombre.charAt(0).toUpperCase());
+                    $('#empleadoNombre').text(nombre);
+                    $('#empleadoCedula').text('Cédula: ' + cedula);
+                    $('#empleadoPreview').slideDown();
+
+                    // Cargar información adicional
+                    cargarInformacionEmpleado(empleadoId, nombre, cedula);
+                } else {
+                    $('#empleadoPreview').slideUp();
+                    $('#historialEmpleado').html('<p class="text-muted small">Seleccione un empleado para ver su información</p>');
+                }
+            });
+
+            // ✅ VALIDACIÓN: Solo números en campos numéricos
+            $('.numeric-field').on('input', function () {
+                var value = $(this).val();
+                var numericValue = value.replace(/[^0-9.,]/g, '');
+
+                // Permitir solo un punto decimal
+                var parts = numericValue.split('.');
+                if (parts.length > 2) {
+                    numericValue = parts[0] + '.' + parts.slice(1).join('');
+                }
+
+                $(this).val(numericValue);
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            });
+
+            // ✅ VALIDACIÓN: Solo números enteros en mes y año
+            $('.integer-field').on('input', function () {
+                var value = $(this).val();
+                var integerValue = value.replace(/[^0-9]/g, '');
+                $(this).val(integerValue);
+            });
+
+            // ✅ VALIDACIÓN: Validar rangos de mes (1-12)
+            $('#mes').on('change', function () {
+                var mes = parseInt($(this).val());
+                if (mes && (mes < 1 || mes > 12)) {
+                    mostrarError('El mes debe estar entre 1 y 12');
+                    $(this).val('');
+                    $(this).focus();
+                }
+            });
+
+            // ✅ VALIDACIÓN: Validar año (no futuro)
+            $('#anio').on('blur', function () {
+                var anio = parseInt($(this).val());
+                var anioActual = new Date().getFullYear();
+
+                if (anio > anioActual + 1) {
+                    mostrarError('El año no puede ser mayor al próximo año');
+                    $(this).val(anioActual);
+                }
+
+                if (anio < 2020) {
+                    mostrarError('El año debe ser mayor a 2020');
+                    $(this).val(anioActual);
+                }
+            });
+
+            // ✅ VALIDACIÓN: Salarios no negativos
+            $('.salary-field').on('blur', function () {
+                var valor = parseFloat($(this).val());
+                if (valor < 0) {
+                    mostrarError('Los montos no pueden ser negativos');
+                    $(this).val('0');
+                }
+            });
+
+            // ✅ FORMATEO: Agregar separadores de miles en tiempo real
+            $('.currency-field').on('blur', function () {
+                var value = parseFloat($(this).val().replace(/,/g, ''));
+                if (!isNaN(value) && value > 0) {
+                    $(this).val(value.toLocaleString('es-CR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }));
+                }
+            });
+
+            // ✅ REMOVER FORMATO antes de enviar el formulario
+            $('#formNomina').on('submit', function () {
+                $('.currency-field').each(function () {
+                    var cleanValue = $(this).val().replace(/,/g, '');
+                    $(this).val(cleanValue);
+                });
+
+                // Mostrar loading
+                $('#loadingOverlay').show();
+            });
+
+            // ✅ VALIDACIÓN: Prevenir caracteres especiales en el pegado
+            $('.numeric-field, .integer-field').on('paste', function (e) {
+                setTimeout(() => {
+                    $(this).trigger('input');
+                }, 10);
+            });
+        });
+
+        // ✅ FUNCIÓN: Cargar información del empleado
+        function cargarInformacionEmpleado(empleadoId, nombre, cedula) {
+            $('#historialEmpleado').html(`
+                    <div class="text-center">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="small text-muted mt-2">Cargando información...</p>
+                    </div>
+                `);
+
+            // Simulación de carga (reemplazar con AJAX real si tienes endpoint)
+            setTimeout(function () {
+                $('#historialEmpleado').html(`
+                        <div class="empleado-info-card">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-user-circle"></i>
+                                ${nombre}
+                            </h6>
+                            <div class="info-row">
+                                <small class="text-muted">
+                                    <i class="fas fa-id-card"></i>
+                                    <strong>Cédula:</strong> ${cedula}
+                                </small>
+                            </div>
+                            <div class="info-row mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <strong>Estado:</strong> Activo
+                                </small>
+                            </div>
+                            <hr>
+                            <div class="text-center">
+                                <small class="text-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Empleado seleccionado correctamente
+                                </small>
+                            </div>
+                        </div>
+                    `);
+            }, 800);
         }
 
-        // Validación en tiempo real
-        $('#salario_bruto').on('input', function() {
-            var value = parseFloat($(this).val());
-            if (value < 0) {
-                $(this).val(0);
+        // ✅ FUNCIÓN: Mostrar vista previa de cálculos
+        function mostrarVistaPrevia() {
+            var salarioBruto = parseFloat($('#salario_bruto').val().replace(/,/g, '')) || 0;
+            var horasExtras = parseFloat($('#horas_extras').val().replace(/,/g, '')) || 0;
+            var diasFeriados = parseFloat($('#dias_feriados').val().replace(/,/g, '')) || 0;
+
+            if (salarioBruto <= 0) {
+                mostrarError('Por favor ingrese un salario bruto válido');
+                $('#salario_bruto').focus();
+                return;
             }
-        });
+
+            // Calcular deducciones
+            var ccss = salarioBruto * 0.1067;
+            var ivm = salarioBruto * 0.0417;
+            var isr = calcularISR(salarioBruto);
+
+            var totalIngresos = salarioBruto + horasExtras + diasFeriados;
+            var totalDeducciones = ccss + ivm + isr;
+            var salarioNeto = totalIngresos - totalDeducciones;
+
+            // Actualizar vista previa
+            $('#preview-salario').text(formatearMoneda(salarioBruto));
+            $('#preview-horas').text(formatearMoneda(horasExtras));
+            $('#preview-feriados').text(formatearMoneda(diasFeriados));
+            $('#preview-total-ingresos').text(formatearMoneda(totalIngresos));
+            $('#preview-ccss').text(formatearMoneda(ccss));
+            $('#preview-ivm').text(formatearMoneda(ivm));
+            $('#preview-isr').text(formatearMoneda(isr));
+            $('#preview-total-deducciones').text(formatearMoneda(totalDeducciones));
+            $('#preview-salario-neto').text(formatearMoneda(salarioNeto));
+
+            // Mostrar vista previa
+            $('#vistaPrevia').slideDown();
+        }
+
+        // ✅ FUNCIÓN: Calcular ISR simplificado
+        function calcularISR(salarioBruto) {
+            if (salarioBruto <= 922000) return 0;
+
+            var isr = 0;
+
+            // Tramo 2: 10%
+            if (salarioBruto > 922000) {
+                var tramo2 = Math.min(salarioBruto, 1352000) - 922000;
+                isr += tramo2 * 0.10;
+            }
+
+            // Tramo 3: 15%
+            if (salarioBruto > 1352000) {
+                var tramo3 = Math.min(salarioBruto, 2373000) - 1352000;
+                isr += tramo3 * 0.15;
+            }
+
+            // Tramo 4: 20%
+            if (salarioBruto > 2373000) {
+                var tramo4 = Math.min(salarioBruto, 4745000) - 2373000;
+                isr += tramo4 * 0.20;
+            }
+
+            // Tramo 5: 25%
+            if (salarioBruto > 4745000) {
+                var tramo5 = salarioBruto - 4745000;
+                isr += tramo5 * 0.25;
+            }
+
+            return Math.max(0, isr);
+        }
+
+        // ✅ FUNCIÓN: Formatear moneda
+        function formatearMoneda(valor) {
+            return '₡' + valor.toLocaleString('es-CR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // ✅ FUNCIÓN: Mostrar mensajes de error
+        function mostrarError(mensaje) {
+            // Crear alerta temporal
+            var alerta = $(`
+                    <div class="alert alert-danger alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        ${mensaje}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+
+            $('body').append(alerta);
+
+            // Auto-ocultar después de 5 segundos
+            setTimeout(function () {
+                alerta.alert('close');
+            }, 5000);
+        }
     </script>
 }

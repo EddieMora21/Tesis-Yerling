@@ -5,123 +5,530 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --info-color: #17a2b8;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        color: var(--white);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
+    }
+
+    .page-header * {
+        color: var(--white) !important;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .page-subtitle {
+        opacity: 0.9;
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    .tipo-liquidacion-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .tipo-liquidacion-card:hover {
+        box-shadow: 0 12px 40px rgba(34, 29, 66, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .card-header-create {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        color: var(--white);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+
+    .card-header-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-custom {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        font-size: 1rem;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .form-control-custom.is-valid {
+        border-color: var(--success-color);
+        background-color: rgba(40, 167, 69, 0.05);
+    }
+
+    .form-control-custom.is-invalid {
+        border-color: var(--danger-color);
+        background-color: rgba(220, 53, 69, 0.05);
+    }
+
+    .input-group-custom {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .input-group-text-custom {
+        background: linear-gradient(135deg, var(--neutral-color) 0%, #d6d8db 100%);
+        border: 2px solid var(--neutral-color);
+        border-right: none;
+        border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        color: var(--secondary-color);
+        font-weight: 600;
+    }
+
+    .input-group-custom .form-control-custom {
+        border-left: none;
+        border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    }
+
+    .input-group-custom .form-control-custom:focus {
+        border-left: 2px solid var(--secondary-color);
+    }
+
+    .textarea-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        font-size: 1rem;
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .textarea-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
+        border: none;
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        color: var(--white);
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, var(--success-color) 0%, rgba(40, 167, 69, 0.8) 100%);
+        border: none;
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
+    }
+
+    .btn-success-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        color: var(--white);
+    }
+
+    .btn-outline-custom {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        transform: translateY(-1px);
+    }
+
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+    }
+
+    .help-text {
+        color: var(--text-muted);
+        font-style: italic;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .validation-error {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .alert-error-custom {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border-left: 4px solid var(--danger-color);
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        border-left: 4px solid var(--info-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .info-card h6 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-color);
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--secondary-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .character-counter {
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .character-counter.warning {
+        color: var(--warning-color);
+    }
+
+    .character-counter.danger {
+        color: var(--danger-color);
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 0;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .tipo-liquidacion-card {
+            margin: 0 1rem 1.5rem 1rem;
+        }
+    }
+</style>
+
 <div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-plus-circle me-2"></i>
-                        Crear Nuevo Tipo de Liquidación
-                    </h4>
-                </div>
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="text-white text-center">
+            <div class="spinner"></div>
+            <p class="mt-3">Guardando...</p>
+        </div>
+    </div>
 
-                @using (Html.BeginForm("Create", "TipoLiquidacion", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-                {
-                    @Html.AntiForgeryToken()
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">
+                <i class="fas fa-plus-circle fa-2x"></i>
+                Crear Tipo de Liquidación
+            </h1>
+            <p class="page-subtitle">
+                Configure un nuevo tipo de liquidación para el sistema
+            </p>
+        </div>
+    </div>
 
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- FORMULARIO PRINCIPAL -->
+            <div class="col-lg-8">
+                <div class="tipo-liquidacion-card">
+                    <div class="card-header-create">
+                        <h5 class="card-header-title">
+                            <i class="fas fa-cog"></i>
+                            Información del Tipo de Liquidación
+                        </h5>
+                    </div>
                     <div class="card-body">
-                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                        @using (Html.BeginForm("Create", "TipoLiquidacion", FormMethod.Post, new { @id = "formTipoLiquidacion", @class = "needs-validation", novalidate = "novalidate" }))
+                        {
+                            @Html.AntiForgeryToken()
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    @Html.LabelFor(model => model.nombre, new { @class = "form-label fw-bold" })
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-tag"></i>
-                                        </span>
-                                        @Html.EditorFor(model => model.nombre, new
-                                        {
-                                            htmlAttributes = new
-                                            {
-                                                @class = "form-control",
-                                                placeholder = "Ej: Con responsabilidad patronal",
-                                                required = "required"
-                                            }
-                                        })
+                            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger alert-custom" })
+
+                            <!-- INFORMACIÓN BÁSICA -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-tag icon-primary"></i>
+                                            Nombre del Tipo *
+                                        </label>
+                                        <div class="input-group-custom">
+                                            <span class="input-group-text-custom">
+                                                <i class="fas fa-tag"></i>
+                                            </span>
+                                            @Html.EditorFor(model => model.nombre, new
+                                       {
+                                           htmlAttributes = new
+                                           {
+                                               @class = "form-control form-control-custom text-only-field",
+                                               @placeholder = "Ej: Con responsabilidad patronal",
+                                               @required = "required",
+                                               @maxlength = "100",
+                                               @id = "nombre"
+                                           }
+                                       })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "validation-error" })
+                                        <div class="help-text">Nombre descriptivo del tipo de liquidación</div>
+                                        <div id="nombreCounter" class="character-counter">0/100 caracteres</div>
                                     </div>
-                                    @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger small" })
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    @Html.LabelFor(model => model.descripcion, new { @class = "form-label fw-bold" })
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-info-circle"></i>
-                                        </span>
-                                        @Html.EditorFor(model => model.descripcion, new
-                                        {
-                                            htmlAttributes = new
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-info-circle icon-primary"></i>
+                                            Descripción
+                                        </label>
+                                        <div class="input-group-custom">
+                                            <span class="input-group-text-custom">
+                                                <i class="fas fa-align-left"></i>
+                                            </span>
+                                            @Html.TextAreaFor(model => model.descripcion, new
                                             {
-                                                @class = "form-control",
-                                                placeholder = "Descripción del tipo de liquidación"
-                                            }
-                                        })
+                                                @class = "form-control textarea-custom",
+                                                @placeholder = "Descripción detallada del tipo de liquidación...",
+                                                @maxlength = "500",
+                                                @rows = "4",
+                                                @id = "descripcion"
+                                            })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "validation-error" })
+                                        <div class="help-text">Explicación detallada de cuándo se aplica este tipo</div>
+                                        <div id="descripcionCounter" class="character-counter">0/500 caracteres</div>
                                     </div>
-                                    @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger small" })
                                 </div>
+                            </div>
+
+                            <!-- CAMPOS DE FECHAS (OCULTOS - SE ESTABLECEN AUTOMÁTICAMENTE) -->
+                            @Html.HiddenFor(model => model.fecha_creacion)
+                            @Html.HiddenFor(model => model.fecha_actualizacion)
+
+                            <!-- BOTONES -->
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <div>
+                                    @Html.ActionLink("⬅️ Volver al listado", "Index", null, new { @class = "btn btn-outline-custom" })
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary-custom me-2" onclick="validarFormulario()">
+                                        <i class="fas fa-check-circle"></i> Validar
+                                    </button>
+                                    <button type="submit" class="btn btn-success-custom btn-lg">
+                                        <i class="fas fa-save"></i> Crear Tipo
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL LATERAL DE INFORMACIÓN -->
+            <div class="col-lg-4">
+                <!-- INFORMACIÓN ÚTIL -->
+                <div class="tipo-liquidacion-card">
+                    <div class="card-header-create">
+                        <h5 class="card-header-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Información Útil
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-card">
+                            <h6>📋 Tipos Comunes de Liquidación:</h6>
+                            <div class="info-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Con responsabilidad patronal</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Sin responsabilidad patronal</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Por renuncia voluntaria</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Por jubilación</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Por incapacidad permanente</span>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    @Html.LabelFor(model => model.fecha_creacion, new { @class = "form-label fw-bold" })
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-calendar-plus"></i>
-                                        </span>
-                                        @Html.EditorFor(model => model.fecha_creacion, new
-                                        {
-                                            htmlAttributes = new
-                                            {
-                                                @class = "form-control",
-                                                @type = "datetime-local"
-                                            }
-                                        })
-                                    </div>
-                                    @Html.ValidationMessageFor(model => model.fecha_creacion, "", new { @class = "text-danger small" })
-                                </div>
+                        <div class="info-card">
+                            <h6>⚖️ Consideraciones Legales:</h6>
+                            <div class="info-item">
+                                <i class="fas fa-exclamation-triangle text-warning"></i>
+                                <span>Cada tipo afecta el cálculo de prestaciones</span>
                             </div>
+                            <div class="info-item">
+                                <i class="fas fa-exclamation-triangle text-warning"></i>
+                                <span>Revisar legislación laboral vigente</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-exclamation-triangle text-warning"></i>
+                                <span>Consultar con departamento legal</span>
+                            </div>
+                        </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    @Html.LabelFor(model => model.fecha_actualizacion, new { @class = "form-label fw-bold" })
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-calendar-edit"></i>
-                                        </span>
-                                        @Html.EditorFor(model => model.fecha_actualizacion, new
-                                        {
-                                            htmlAttributes = new
-                                            {
-                                                @class = "form-control",
-                                                @type = "datetime-local"
-                                            }
-                                        })
-                                    </div>
-                                    @Html.ValidationMessageFor(model => model.fecha_actualizacion, "", new { @class = "text-danger small" })
-                                </div>
+                        <div class="info-card">
+                            <h6>💡 Recomendaciones:</h6>
+                            <div class="info-item">
+                                <i class="fas fa-lightbulb text-info"></i>
+                                <span>Use nombres descriptivos y claros</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-lightbulb text-info"></i>
+                                <span>Incluya el motivo en la descripción</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-lightbulb text-info"></i>
+                                <span>Mantenga consistencia en los nombres</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="card-footer bg-light">
-                        <div class="d-flex justify-content-between">
-                            <a href="@Url.Action("Index")" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>
-                                Volver a la Lista
-                            </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save me-1"></i>
-                                Crear Tipo de Liquidación
-                            </button>
-                        </div>
-                    </div>
-                }
+                </div>
             </div>
         </div>
     </div>
@@ -129,17 +536,153 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
     <script>
-        // Validación en tiempo real
-        $(document).ready(function() {
-            $('.form-control').on('blur', function() {
-                $(this).removeClass('is-invalid is-valid');
-                if (this.checkValidity()) {
-                    $(this).addClass('is-valid');
-                } else {
-                    $(this).addClass('is-invalid');
+        $(document).ready(function () {
+
+            // ✅ VALIDACIÓN: Solo letras en campo de nombre
+            $('.text-only-field').on('input', function () {
+                var value = $(this).val();
+                var textValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]/g, '');
+                $(this).val(textValue);
+                validarCampo($(this));
+            });
+
+            // ✅ CONTADOR DE CARACTERES
+            $('#nombre').on('input', function () {
+                actualizarContador('nombre', 'nombreCounter', 100);
+            });
+
+            $('#descripcion').on('input', function () {
+                actualizarContador('descripcion', 'descripcionCounter', 500);
+            });
+
+            // ✅ VALIDACIÓN EN TIEMPO REAL
+            $('.form-control-custom, .textarea-custom').on('blur', function () {
+                validarCampo($(this));
+            });
+
+            // ✅ VALIDACIÓN AL ENVIAR
+            $('#formTipoLiquidacion').on('submit', function (e) {
+                if (!validarFormularioCompleto()) {
+                    e.preventDefault();
+                    mostrarError('Por favor corrija los errores antes de continuar');
+                    return false;
+                }
+
+                $('#loadingOverlay').show();
+            });
+
+            // ✅ ESTABLECER FECHAS AUTOMÁTICAMENTE
+            establecerFechas();
+
+            // ✅ INICIALIZAR CONTADORES
+            actualizarContador('nombre', 'nombreCounter', 100);
+            actualizarContador('descripcion', 'descripcionCounter', 500);
+        });
+
+        // ✅ FUNCIÓN: Validar campo individual
+        function validarCampo(campo) {
+            var valor = campo.val().trim();
+            var esRequerido = campo.prop('required');
+            var esValido = true;
+
+            campo.removeClass('is-valid is-invalid');
+
+            if (esRequerido && valor === '') {
+                esValido = false;
+            } else if (campo.attr('id') === 'nombre' && valor.length < 3) {
+                esValido = false;
+            }
+
+            if (esValido) {
+                campo.addClass('is-valid');
+            } else {
+                campo.addClass('is-invalid');
+            }
+
+            return esValido;
+        }
+
+        // ✅ FUNCIÓN: Validar formulario completo
+        function validarFormularioCompleto() {
+            var esValido = true;
+
+            $('.form-control-custom, .textarea-custom').each(function () {
+                if (!validarCampo($(this))) {
+                    esValido = false;
                 }
             });
-        });
+
+            return esValido;
+        }
+
+        // ✅ FUNCIÓN: Validar desde botón
+        function validarFormulario() {
+            if (validarFormularioCompleto()) {
+                mostrarExito('✅ Formulario válido. Puede proceder a guardar.');
+            } else {
+                mostrarError('❌ Hay errores en el formulario. Por favor revise los campos marcados.');
+            }
+        }
+
+        // ✅ FUNCIÓN: Actualizar contador de caracteres
+        function actualizarContador(campoId, contadorId, limite) {
+            var valor = $('#' + campoId).val();
+            var longitud = valor.length;
+            var contador = $('#' + contadorId);
+
+            contador.text(longitud + '/' + limite + ' caracteres');
+
+            contador.removeClass('warning danger');
+
+            if (longitud > limite * 0.8) {
+                contador.addClass('warning');
+            }
+
+            if (longitud >= limite) {
+                contador.addClass('danger');
+            }
+        }
+
+        // ✅ FUNCIÓN: Establecer fechas automáticamente
+        function establecerFechas() {
+            var ahora = new Date();
+            var fechaISO = ahora.toISOString().slice(0, 19);
+
+            // Solo establecer si están vacías
+            if (!$('input[name="fecha_creacion"]').val()) {
+                $('input[name="fecha_creacion"]').val(fechaISO);
+            }
+            if (!$('input[name="fecha_actualizacion"]').val()) {
+                $('input[name="fecha_actualizacion"]').val(fechaISO);
+            }
+        }
+
+        // ✅ FUNCIÓN: Mostrar mensajes de éxito
+        function mostrarExito(mensaje) {
+            var alerta = $(`
+                    <div class="alert alert-success alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
+                        <i class="fas fa-check-circle"></i> ${mensaje}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+
+            $('body').append(alerta);
+            setTimeout(() => alerta.alert('close'), 3000);
+        }
+
+        // ✅ FUNCIÓN: Mostrar mensajes de error
+        function mostrarError(mensaje) {
+            var alerta = $(`
+                    <div class="alert alert-danger alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
+                        <i class="fas fa-exclamation-triangle"></i> ${mensaje}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+
+            $('body').append(alerta);
+            setTimeout(() => alerta.alert('close'), 5000);
+        }
     </script>
 }

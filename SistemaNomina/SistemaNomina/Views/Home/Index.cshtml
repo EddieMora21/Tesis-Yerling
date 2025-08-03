@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Inicio";
+    ViewBag.Title = "Control de Asistencia";
     var empleado = ViewBag.Empleado as SistemaNomina.Empleados;
     var asistenciaHoy = ViewBag.AsistenciaHoy as SistemaNomina.Asistencia;
     var esFeriado = (bool)(ViewBag.EsFeriado ?? false);
@@ -7,51 +7,64 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --shadow-hover: 0 12px 40px rgba(34, 29, 66, 0.15);
+        --transition: all 0.3s ease;
+    }
+
     .dashboard-container {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e7e8eb 100%);
+        background: linear-gradient(135deg, #f8f9fa 0%, var(--neutral-color) 100%);
         min-height: 100vh;
-        padding: 20px 0;
+        padding: 2rem 0;
         margin: -15px -15px 0 -15px;
     }
 
-    .welcome-header {
-        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
-        color: white;
-        padding: 40px;
-        border-radius: 20px;
-        margin-bottom: 30px;
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(34, 29, 66, 0.3);
+        box-shadow: var(--shadow-main);
     }
 
     .logo-container {
-        margin-bottom: 20px;
+        margin-bottom: 1.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-        .logo-container img {
-            max-width: 180px;
-            height: auto;
-            /* REMOVIDO: filter: brightness(0) invert(1); */
-            opacity: 0.9;
-            display: block;
-            margin: 0 auto;
-            /* Agregamos un fondo semi-transparente para que se vea bien */
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 10px;
-        }
+    .logo-container img {
+        max-width: 180px;
+        height: auto;
+        opacity: 0.9;
+        display: block;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+    }
 
-    .welcome-title {
+    .page-title {
         font-size: 2.5rem;
         font-weight: 700;
-        margin-bottom: 15px;
+        margin-bottom: 1rem;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .welcome-subtitle {
+    .page-subtitle {
         font-size: 1.2rem;
         opacity: 0.9;
         margin-bottom: 0;
@@ -60,190 +73,207 @@
     .employee-info {
         background: rgba(255,255,255,0.15);
         backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 20px;
-        margin-top: 25px;
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        margin-top: 1.5rem;
         border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 25px;
-        margin-bottom: 30px;
+    .employee-info h4 {
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .action-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
+    .employee-info p {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.9;
+    }
+
+    .employee-info p:last-child {
+        margin-bottom: 0;
+    }
+
+    .asistencia-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .asistencia-card {
+        background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+        color: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
         overflow: hidden;
-        transition: all 0.3s ease;
+        transition: var(--transition);
     }
 
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(34, 29, 66, 0.2);
-        }
-
-    .marcar-card {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        border: none;
+    .asistencia-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
     }
-
-        .marcar-card:hover {
-            background: linear-gradient(135deg, #218838 0%, #1e7e6d 100%);
-        }
 
     .card-header {
-        padding: 25px 25px 20px 25px;
-        border-bottom: 1px solid rgba(231, 232, 235, 0.5);
-    }
-
-    .marcar-card .card-header {
+        padding: 2rem 2rem 1.5rem 2rem;
+        text-align: center;
         border-bottom: 1px solid rgba(255,255,255,0.2);
     }
 
     .card-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        color: #1788ca;
-    }
-
-    .marcar-card .card-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
         color: rgba(255,255,255,0.9);
+        animation: pulse 2s infinite;
     }
 
     .card-title {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 600;
-        color: #221d42;
-        margin-bottom: 10px;
-    }
-
-    .marcar-card .card-title {
-        color: white;
+        margin-bottom: 0.75rem;
     }
 
     .card-description {
-        color: #6c757d;
-        margin-bottom: 0;
-    }
-
-    .marcar-card .card-description {
         color: rgba(255,255,255,0.9);
+        margin-bottom: 0;
+        font-size: 1.1rem;
     }
 
     .card-body {
-        padding: 0 25px 25px 25px;
+        padding: 2rem;
     }
 
-    .btn-card-primary {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        border: none;
-        border-radius: 10px;
-        padding: 15px 25px;
-        color: white;
-        font-weight: 600;
-        width: 100%;
-        transition: all 0.3s ease;
-        font-size: 16px;
-        text-decoration: none;
-        display: inline-block;
+    .feriado-alert {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid var(--accent-color);
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 1.5rem;
+        color: #856404;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .time-widget {
         text-align: center;
+        padding: 1.5rem;
+        background: rgba(23, 136, 202, 0.1);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 1.5rem;
     }
 
-        .btn-card-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
-            color: white;
-            text-decoration: none;
-        }
+    .current-time {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        font-family: 'Courier New', monospace;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-    .btn-card-accent {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        border: none;
-        border-radius: 10px;
-        padding: 15px 25px;
-        color: white;
+    .current-date {
+        font-size: 1.1rem;
+        color: #6c757d;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    .status-info {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        border-left: 4px solid var(--secondary-color);
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 1.5rem;
+        color: #0c5460;
+    }
+
+    .status-info h5 {
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         font-weight: 600;
-        width: 100%;
-        transition: all 0.3s ease;
-        font-size: 16px;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
     }
 
-        .btn-card-accent:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
-            color: white;
-            text-decoration: none;
-        }
+    .status-info p {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-info p:last-child {
+        margin-bottom: 0;
+    }
 
     .btn-marcar {
         position: relative;
-        padding: 18px 35px;
-        font-size: 18px;
+        padding: 1.25rem 2.5rem;
+        font-size: 1.2rem;
         font-weight: 700;
         border: none;
-        border-radius: 12px;
+        border-radius: var(--border-radius-sm);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition);
         width: 100%;
         text-transform: uppercase;
         letter-spacing: 1px;
         overflow: hidden;
-        margin-bottom: 10px;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
     }
 
-        .btn-marcar:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
+    .btn-marcar:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
 
-        .btn-marcar:hover:before {
-            left: 100%;
-        }
+    .btn-marcar:hover:before {
+        left: 100%;
+    }
 
     .btn-entrada {
-        background: white;
-        color: #28a745;
+        background: var(--white);
+        color: var(--success-color);
         border: 2px solid rgba(255,255,255,0.3);
         box-shadow: 0 4px 15px rgba(255,255,255,0.3);
     }
 
-        .btn-entrada:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: white;
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.4);
-        }
+    .btn-entrada:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: var(--white);
+        color: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255,255,255,0.4);
+    }
 
     .btn-salida {
-        background: white;
-        color: #dc3545;
+        background: var(--white);
+        color: var(--danger-color);
         border: 2px solid rgba(255,255,255,0.3);
         box-shadow: 0 4px 15px rgba(255,255,255,0.3);
     }
 
-        .btn-salida:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: white;
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.4);
-        }
+    .btn-salida:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: var(--white);
+        color: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255,255,255,0.4);
+    }
 
     .btn-marcar:disabled {
         opacity: 0.5;
@@ -252,269 +282,244 @@
         box-shadow: none !important;
     }
 
-    .time-widget {
-        text-align: center;
-        padding: 20px;
-        background: rgba(23, 136, 202, 0.1);
-        border-radius: 15px;
-        margin-bottom: 20px;
-    }
-
-    .current-time {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #221d42;
-        font-family: 'Courier New', monospace;
-        margin-bottom: 5px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .current-date {
-        font-size: 1.1rem;
-        color: #6c757d;
-        font-weight: 500;
-    }
-
-    .status-info {
-        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-        border-left: 4px solid #17a2b8;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        color: #0c5460;
-    }
-
-    .feriado-alert {
-        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-        border-left: 4px solid #ffc107;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        color: #856404;
-    }
-
     .asistencia-completa {
         text-align: center;
-        padding: 20px;
+        padding: 1.5rem;
         background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-        border-radius: 12px;
+        border-radius: var(--border-radius-sm);
         color: #155724;
-        border: 2px solid #28a745;
-        margin-bottom: 15px;
+        border: 2px solid var(--success-color);
+        margin-bottom: 1rem;
+    }
+
+    .asistencia-completa h5 {
+        margin: 0.75rem 0 0.5rem 0;
+        font-weight: 600;
     }
 
     .info-no-disponible {
         text-align: center;
-        padding: 20px;
+        padding: 1.5rem;
         background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-        border-radius: 12px;
+        border-radius: var(--border-radius-sm);
         color: #721c24;
-        border: 2px solid #dc3545;
-        margin-bottom: 15px;
+        border: 2px solid var(--danger-color);
+        margin-bottom: 1rem;
+    }
+
+    .info-no-disponible h5 {
+        margin: 0.75rem 0 0.5rem 0;
+        font-weight: 600;
     }
 
     .loading-indicator {
         display: none;
         text-align: center;
-        padding: 15px;
+        padding: 1rem;
         color: rgba(255,255,255,0.8);
     }
 
     .spinner {
         border: 3px solid rgba(255,255,255,0.3);
         border-radius: 50%;
-        border-top: 3px solid white;
-        width: 30px;
-        height: 30px;
+        border-top: 3px solid var(--white);
+        width: 40px;
+        height: 40px;
         animation: spin 1s linear infinite;
-        margin: 0 auto 10px auto;
+        margin: 0 auto 0.75rem auto;
     }
 
-    @@keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
+    .success-message, .error-message {
+        border-radius: var(--border-radius-sm);
+        padding: 1rem 1.5rem;
+        margin-top: 1rem;
+        display: none;
+        text-align: center;
+        font-weight: 600;
     }
 
     .success-message {
         background: rgba(40, 167, 69, 0.2);
-        border: 1px solid #28a745;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 15px;
-        color: #28a745;
-        display: none;
-        text-align: center;
+        border: 1px solid var(--success-color);
+        color: var(--success-color);
     }
 
     .error-message {
         background: rgba(220, 53, 69, 0.2);
-        border: 1px solid #dc3545;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 15px;
-        color: #dc3545;
-        display: none;
-        text-align: center;
-    }
-
-    .navigation-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .nav-card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        border: 2px solid #e7e8eb;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        text-decoration: none;
-        color: inherit;
-    }
-
-        .nav-card:hover {
-            border-color: #1788ca;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.15);
-            text-decoration: none;
-            color: inherit;
-        }
-
-    .nav-icon {
-        font-size: 2.5rem;
-        color: #1788ca;
-        margin-bottom: 15px;
-    }
-
-    .nav-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #221d42;
-        margin-bottom: 8px;
-    }
-
-    .nav-description {
-        font-size: 14px;
-        color: #6c757d;
-        margin: 0;
+        border: 1px solid var(--danger-color);
+        color: var(--danger-color);
     }
 
     .link-asistencias {
         background: rgba(255,255,255,0.2);
         border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 8px;
-        padding: 10px 20px;
-        color: white;
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1.5rem;
+        color: var(--white);
         text-decoration: none;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
         width: 100%;
-        text-align: center;
-        margin-top: 10px;
-        font-size: 14px;
-        transition: all 0.3s ease;
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: var(--transition);
     }
 
-        .link-asistencias:hover {
-            background: rgba(255,255,255,0.3);
-            border-color: rgba(255,255,255,0.5);
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
+    .link-asistencias:hover {
+        background: rgba(255,255,255,0.3);
+        border-color: rgba(255,255,255,0.5);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
 
-    .pulse {
-        animation: pulse 2s infinite;
+    .link-verificar {
+        background: rgba(220, 53, 69, 0.2);
+        border-color: var(--danger-color);
+        color: #721c24;
+    }
+
+    .link-verificar:hover {
+        background: rgba(220, 53, 69, 0.3);
+        color: #721c24;
     }
 
     @@keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-
-        50% {
-            transform: scale(1.05);
-        }
-
-        100% {
-            transform: scale(1);
-        }
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
     }
 
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
     @@media (max-width: 768px) {
         .dashboard-container {
-            padding: 10px 0;
+            padding: 1rem 0;
             margin: -15px -10px 0 -10px;
         }
 
-        .welcome-header {
-            padding: 25px 20px;
-            margin-bottom: 20px;
+        .page-header {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .welcome-title {
+        .page-title {
             font-size: 2rem;
         }
 
-        .quick-actions {
-            grid-template-columns: 1fr;
-            gap: 20px;
+        .card-header {
+            padding: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .current-time {
+            font-size: 2.5rem;
+        }
+
+        .btn-marcar {
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .page-header {
+            padding: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+        }
+
+        .card-header, .card-body {
+            padding: 1rem;
         }
 
         .current-time {
             font-size: 2rem;
         }
 
-        .navigation-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .nav-card {
-            padding: 15px;
-        }
-
-        .nav-icon {
-            font-size: 2rem;
-        }
-
         .btn-marcar {
-            font-size: 16px;
-            padding: 15px 25px;
+            font-size: 1rem;
+            padding: 0.875rem 1.5rem;
         }
     }
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+        text-align: center; /* Ya estaba centrado */
+        box-shadow: var(--shadow-main);
+    }
+
+    .employee-info {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius-sm);
+        padding: 1.5rem;
+        margin: 1.5rem auto 0 auto; /* Centrado horizontalmente */
+        border: 1px solid rgba(255,255,255,0.2);
+        max-width: 400px; /* Ancho máximo para mejor presentación */
+        text-align: center; /* Centrar el texto interno */
+    }
+
+        .employee-info h4 {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrar horizontalmente */
+            gap: 0.5rem;
+        }
+
+        .employee-info p {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrar horizontalmente */
+            gap: 0.5rem;
+            opacity: 0.9;
+        }
+
+            .employee-info p:last-child {
+                margin-bottom: 0;
+            }
 </style>
 
 <div class="dashboard-container">
-    <div class="container" style="max-width: 1200px;">
-        <!-- Header de Bienvenida -->
-        <div class="welcome-header">
+    <div class="container" style="max-width: 800px;">
+        <!-- Header Principal -->
+        <div class="page-header">
             <div class="logo-container">
                 <img src="~/logo.jpeg" alt="Smart Building Solutions" />
             </div>
-            <h1 class="welcome-title">Bienvenido al Sistema SBS</h1>
-            <p class="welcome-subtitle">Gestión integral de recursos humanos y nómina</p>
+            <h1 class="page-title">Control de Asistencia</h1>
+            <p class="page-subtitle">Sistema de marcado de entrada y salida</p>
 
             @if (empleado != null)
             {
                 <div class="employee-info">
-                    <h4 style="margin-bottom: 10px;">
-                        <i class="fa fa-user" style="margin-right: 10px;"></i>
+                    <h4>
+                        <i class="fas fa-user"></i>
                         @(empleado.nombre1 ?? "") @(empleado.apellido1 ?? "")
                     </h4>
-                    <p style="margin-bottom: 5px; opacity: 0.9;">
-                        <i class="fa fa-briefcase" style="margin-right: 8px;"></i>
+                    <p>
+                        <i class="fas fa-briefcase"></i>
                         @(empleado.Puestos?.nombre_puesto ?? "Sin puesto asignado")
                     </p>
-                    <p style="margin: 0; opacity: 0.8;">
-                        <i class="fa fa-building" style="margin-right: 8px;"></i>
+                    <p>
+                        <i class="fas fa-building"></i>
                         @(empleado.Puestos?.Departamentos?.nombre ?? "Sin departamento asignado")
                     </p>
                 </div>
@@ -522,38 +527,40 @@
             else
             {
                 <div class="employee-info">
-                    <h4 style="margin-bottom: 10px;">
-                        <i class="fa fa-user" style="margin-right: 10px;"></i>
+                    <h4>
+                        <i class="fas fa-user"></i>
                         Usuario del Sistema
                     </h4>
-                    <p style="margin: 0; opacity: 0.8;">
-                        <i class="fa fa-info-circle" style="margin-right: 8px;"></i>
+                    <p>
+                        <i class="fas fa-info-circle"></i>
                         Información de empleado no disponible
                     </p>
                 </div>
             }
         </div>
 
-        <!-- Acciones Rápidas -->
-        <div class="quick-actions">
-            <!-- Card de Marcar Asistencia -->
-            <div class="action-card marcar-card">
+        <!-- Card de Control de Asistencia -->
+        <div class="asistencia-container">
+            <div class="asistencia-card">
                 <div class="card-header">
-                    <div class="text-center">
-                        <i class="fa fa-clock card-icon pulse"></i>
-                        <h3 class="card-title">Control de Asistencia</h3>
-                        <p class="card-description">Marca tu entrada y salida desde aquí</p>
-                    </div>
+                    <i class="fas fa-clock card-icon"></i>
+                    <h3 class="card-title">Registro de Asistencia</h3>
+                    <p class="card-description">Marca tu entrada y salida del día</p>
                 </div>
+
                 <div class="card-body">
                     @if (esFeriado && feriado != null)
                     {
                         <div class="feriado-alert">
-                            <i class="fa fa-calendar" style="margin-right: 8px;"></i>
-                            <strong>Día Feriado:</strong> @feriado.nombre
+                            <i class="fas fa-calendar"></i>
+                            <div>
+                                <strong>Día Feriado:</strong> @feriado.nombre
+                                <br><small>Recargo aplicable si trabajas hoy</small>
+                            </div>
                         </div>
                     }
 
+                    <!-- Widget de Tiempo -->
                     <div class="time-widget">
                         <div class="current-time" id="currentTime"></div>
                         <div class="current-date" id="currentDate"></div>
@@ -561,159 +568,90 @@
 
                     @if (empleado != null)
                     {
+                        <!-- Estado de Asistencia del Día -->
                         if (asistenciaHoy != null)
                         {
                             <div class="status-info">
-                                <h5 style="margin-bottom: 10px;">
-                                    <i class="fa fa-info-circle" style="margin-right: 8px;"></i>
+                                <h5>
+                                    <i class="fas fa-info-circle"></i>
                                     Estado de Hoy
                                 </h5>
-                                @if (asistenciaHoy.hora_entrada!= null)
+                                @if (asistenciaHoy.hora_entrada != null)
                                 {
-                                    <p style="margin-bottom: 5px;">
+                                    <p>
+                                        <i class="fas fa-sign-in-alt"></i>
                                         <strong>Entrada:</strong> @asistenciaHoy.hora_entrada.Value.ToString(@"hh\:mm")
                                     </p>
                                 }
-                                @if (asistenciaHoy.hora_salida!= null)
+                                @if (asistenciaHoy.hora_salida != null)
                                 {
-                                    <p style="margin: 0;">
+                                    <p>
+                                        <i class="fas fa-sign-out-alt"></i>
                                         <strong>Salida:</strong> @asistenciaHoy.hora_salida.Value.ToString(@"hh\:mm")
                                     </p>
                                 }
                             </div>
                         }
 
-                        <!-- Botones de Marcar -->
+                        <!-- Botones de Marcado -->
                         if (asistenciaHoy == null)
                         {
                             <button class="btn-marcar btn-entrada" id="btnEntrada">
-                                <i class="fa fa-sign-in" style="margin-right: 10px; font-size: 20px;"></i>
+                                <i class="fas fa-sign-in-alt"></i>
                                 Marcar Entrada
                             </button>
                         }
-                        else if (asistenciaHoy.hora_salida!= null)
+                        else if (asistenciaHoy.hora_salida == null)
                         {
                             <button class="btn-marcar btn-salida" id="btnSalida">
-                                <i class="fa fa-sign-out" style="margin-right: 10px; font-size: 20px;"></i>
+                                <i class="fas fa-sign-out-alt"></i>
                                 Marcar Salida
                             </button>
                         }
                         else
                         {
                             <div class="asistencia-completa">
-                                <i class="fa fa-check-circle" style="margin-right: 8px; font-size: 24px;"></i>
-                                <h5 style="margin: 10px 0 5px 0;">¡Asistencia Completa!</h5>
-                                <p style="margin: 0; font-size: 14px;">Has registrado tu entrada y salida del día</p>
+                                <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                                <h5>¡Asistencia Completa!</h5>
+                                <p style="margin: 0; font-size: 0.95rem;">Has registrado tu entrada y salida del día</p>
                             </div>
                         }
 
-                        <!-- Indicador de carga -->
+                        <!-- Indicador de Carga -->
                         <div class="loading-indicator" id="loading">
                             <div class="spinner"></div>
                             <p>Registrando en la base de datos...</p>
                         </div>
 
-                        <!-- Mensajes de respuesta -->
+                        <!-- Mensajes de Respuesta -->
                         <div class="success-message" id="successMessage">
-                            <i class="fa fa-check-circle"></i> <span id="successText"></span>
+                            <i class="fas fa-check-circle"></i> <span id="successText"></span>
                         </div>
 
                         <div class="error-message" id="errorMessage">
-                            <i class="fa fa-exclamation-triangle"></i> <span id="errorText"></span>
+                            <i class="fas fa-exclamation-triangle"></i> <span id="errorText"></span>
                         </div>
 
+                        <!-- Enlace a Historial -->
                         <a href="@Url.Action("Index", "Asistencia")" class="link-asistencias">
-                            <i class="fa fa-list" style="margin-right: 8px;"></i>
-                            Ver Todas las Asistencias
+                            <i class="fas fa-list"></i>
+                            Ver Historial de Asistencias
                         </a>
                     }
                     else
                     {
                         <div class="info-no-disponible">
-                            <i class="fa fa-exclamation-triangle" style="margin-right: 8px; font-size: 20px;"></i>
-                            <h5 style="margin: 10px 0 5px 0;">Información No Disponible</h5>
-                            <p style="margin: 0; font-size: 14px;">No se pudo cargar la información del empleado</p>
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                            <h5>Información No Disponible</h5>
+                            <p style="margin: 0; font-size: 0.95rem;">No se pudo cargar la información del empleado</p>
                         </div>
-                        <a href="@Url.Action("Login", "Usuarios")" class="link-asistencias" style="background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #721c24;">
-                            <i class="fa fa-sign-in" style="margin-right: 8px;"></i>
+                        <a href="@Url.Action("Login", "Usuarios")" class="link-asistencias link-verificar">
+                            <i class="fas fa-sign-in-alt"></i>
                             Verificar Sesión
                         </a>
                     }
                 </div>
             </div>
-
-            <!-- Card de Gestión de Empleados -->
-            <div class="action-card">
-                <div class="card-header">
-                    <div class="text-center">
-                        <i class="fa fa-users card-icon"></i>
-                        <h3 class="card-title">Gestión de Empleados</h3>
-                        <p class="card-description">Administra la información del personal</p>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <a href="@Url.Action("Index", "Empleados")" class="btn-card-primary">
-                        <i class="fa fa-users" style="margin-right: 10px;"></i>
-                        Ver Empleados
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card de Nóminas -->
-            <div class="action-card">
-                <div class="card-header">
-                    <div class="text-center">
-                        <i class="fa fa-money-bill-wave card-icon"></i>
-                        <h3 class="card-title">Gestión de Nóminas</h3>
-                        <p class="card-description">Procesa y administra los pagos</p>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <a href="@Url.Action("Index", "Nominas")" class="btn-card-accent">
-                        <i class="fa fa-calculator" style="margin-right: 10px;"></i>
-                        Ver Nóminas
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navegación Rápida -->
-        <div class="navigation-grid">
-            <a href="@Url.Action("Index", "Vacaciones")" class="nav-card">
-                <i class="fa fa-umbrella-beach nav-icon"></i>
-                <div class="nav-title">Vacaciones</div>
-                <p class="nav-description">Solicitudes y gestión de vacaciones</p>
-            </a>
-
-            <a href="@Url.Action("Index", "HorasExtras")" class="nav-card">
-                <i class="fa fa-clock nav-icon"></i>
-                <div class="nav-title">Horas Extras</div>
-                <p class="nav-description">Control de tiempo adicional</p>
-            </a>
-
-            <a href="@Url.Action("Index", "Incapacidades")" class="nav-card">
-                <i class="fa fa-user-injured nav-icon"></i>
-                <div class="nav-title">Incapacidades</div>
-                <p class="nav-description">Registro de ausencias médicas</p>
-            </a>
-
-            <a href="@Url.Action("Index", "Reportes")" class="nav-card">
-                <i class="fa fa-chart-bar nav-icon"></i>
-                <div class="nav-title">Reportes</div>
-                <p class="nav-description">Informes y estadísticas</p>
-            </a>
-
-            <a href="@Url.Action("Index", "Aguinaldo")" class="nav-card">
-                <i class="fa fa-gift nav-icon"></i>
-                <div class="nav-title">Aguinaldo</div>
-                <p class="nav-description">Cálculo de prestaciones</p>
-            </a>
-
-            <a href="@Url.Action("Index", "Liquidaciones")" class="nav-card">
-                <i class="fa fa-file-invoice nav-icon"></i>
-                <div class="nav-title">Liquidaciones</div>
-                <p class="nav-description">Cálculos de finiquitos</p>
-            </a>
         </div>
     </div>
 </div>
@@ -723,11 +661,13 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Actualizar reloj
+            console.log('=== CONTROL DE ASISTENCIA INICIADO ===');
+
+            // Actualizar reloj en tiempo real
             updateClock();
             setInterval(updateClock, 1000);
 
-            // Eventos de botones
+            // Event listeners para botones de marcado
             $('#btnEntrada').click(function () {
                 marcarAsistencia('entrada');
             });
@@ -739,12 +679,14 @@
 
         function updateClock() {
             var now = new Date();
+
             var time = now.toLocaleTimeString('es-CR', {
                 hour12: false,
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit'
             });
+
             var date = now.toLocaleDateString('es-CR', {
                 weekday: 'long',
                 year: 'numeric',
@@ -757,10 +699,18 @@
         }
 
         function marcarAsistencia(tipo) {
-            var url = tipo === 'entrada' ? '@Url.Action("MarcarEntrada", "Home")' : '@Url.Action("MarcarSalida", "Home")';
+            console.log('=== MARCAR ASISTENCIA ===');
+            console.log('Tipo:', tipo);
+
+            var url = tipo === 'entrada' ?
+                '@Url.Action("MarcarEntrada", "Home")' :
+                '@Url.Action("MarcarSalida", "Home")';
             var btn = tipo === 'entrada' ? '#btnEntrada' : '#btnSalida';
 
+            // Ocultar mensajes anteriores
             $('#successMessage, #errorMessage').hide();
+
+            // Deshabilitar botón y mostrar loading
             $(btn).prop('disabled', true);
             $('#loading').show();
 
@@ -771,25 +721,39 @@
                     __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                 },
                 success: function (response) {
+                    console.log('Respuesta del servidor:', response);
                     $('#loading').hide();
-                    if (response.success) {
+
+                    if (response && response.success) {
                         $('#successText').text(response.message + ' a las ' + response.hora);
                         $('#successMessage').fadeIn();
+
+                        // Recargar página después de 2 segundos para mostrar el nuevo estado
                         setTimeout(function () {
-                            location.reload();
+                            window.location.reload();
                         }, 2000);
                     } else {
-                        $('#errorText').text(response.message);
+                        $('#errorText').text(response.message || 'Error desconocido al marcar asistencia');
                         $('#errorMessage').fadeIn();
                         $(btn).prop('disabled', false);
                     }
                 },
-                error: function () {
+                error: function (xhr, status, error) {
+                    console.error('Error en AJAX:', error);
                     $('#loading').hide();
-                    $('#errorText').text('Error de conexión');
+                    $('#errorText').text('Error de conexión con el servidor. Intente nuevamente.');
                     $('#errorMessage').fadeIn();
                     $(btn).prop('disabled', false);
                 }
+            });
+        }
+
+        // Función para mostrar la hora en formato legible
+        function formatearHora(hora) {
+            return new Date('1970-01-01T' + hora).toLocaleTimeString('es-CR', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
             });
         }
     </script>

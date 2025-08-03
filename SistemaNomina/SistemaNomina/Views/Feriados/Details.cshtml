@@ -5,74 +5,166 @@
 }
 
 <style>
-    .page-header-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
-        color: white;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
     }
 
-        .page-header-custom h1 {
-            margin: 0;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-    .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
-        padding: 2rem;
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
+        padding: 2rem 0;
         margin-bottom: 2rem;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
+    }
+
+    .page-header * {
+        color: var(--white) !important;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .page-subtitle {
+        opacity: 0.9;
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    .details-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
+        border: 1px solid var(--neutral-color);
+        margin-bottom: 2rem;
+    }
+
+    .details-header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #0f6da3 100%);
+        padding: 1.5rem;
+        color: var(--white);
+    }
+
+    .details-header h4 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .details-body {
+        padding: 2rem;
     }
 
     .detail-row {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         padding: 1rem 0;
-        border-bottom: 1px solid #e7e8eb;
-        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--neutral-color);
+        transition: var(--transition);
     }
 
-        .detail-row:last-child {
-            border-bottom: none;
-        }
+    .detail-row:last-child {
+        border-bottom: none;
+    }
 
-        .detail-row:hover {
-            background: rgba(23, 136, 202, 0.03);
-            border-radius: 8px;
-            margin: 0 -1rem;
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
+    .detail-row:hover {
+        background: rgba(23, 136, 202, 0.03);
+        border-radius: var(--border-radius-sm);
+        margin: 0 -1rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 
     .detail-label {
         font-weight: 600;
-        color: #221d42;
-        min-width: 200px;
+        color: var(--primary-color);
+        min-width: 180px;
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 0.5rem;
+        font-size: 1rem;
     }
 
     .detail-value {
         flex: 1;
-        color: #495057;
+        color: var(--text-color);
         font-size: 1.1rem;
     }
 
-        .detail-value strong {
-            color: #221d42;
-        }
+    .detail-value strong {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .feriado-name-display {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        background: linear-gradient(135deg, var(--neutral-color), #f8f9fa);
+        padding: 12px 16px;
+        border-radius: var(--border-radius-sm);
+        border-left: 4px solid var(--warning-color);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .feriado-icon-large {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--warning-color), #e55d00);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: bold;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .fecha-highlight {
+        background: linear-gradient(135deg, #e7f3ff, #f0f8ff);
+        color: var(--secondary-color);
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid var(--secondary-color);
+    }
 
     .badge-obligatorio {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
-        color: white;
-        padding: 8px 16px;
+        background: linear-gradient(135deg, var(--success-color), #20a53a);
+        color: var(--white);
+        padding: 10px 20px;
         border-radius: 25px;
         font-size: 1.1rem;
         font-weight: 600;
@@ -82,21 +174,9 @@
     }
 
     .badge-no-obligatorio {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 25px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .badge-recargo {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
-        padding: 8px 16px;
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: var(--white);
+        padding: 10px 20px;
         border-radius: 25px;
         font-size: 1.1rem;
         font-weight: 600;
@@ -106,308 +186,322 @@
     }
 
     .date-badge {
-        background: linear-gradient(135deg, #e7e8eb 0%, #e7e8eb 100%);
-        color: #6c757d;
-        padding: 6px 12px;
+        background: linear-gradient(135deg, var(--neutral-color), #f8f9fa);
+        color: var(--text-color);
+        padding: 8px 16px;
         border-radius: 20px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 500;
-        display: inline-block;
-    }
-
-    .fecha-highlight {
-        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
-        color: #1788ca;
-        padding: 12px 20px;
-        border-radius: 25px;
-        font-size: 1.2rem;
-        font-weight: 700;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        border: 2px solid #1788ca;
+        gap: 6px;
+        border: 1px solid #dee2e6;
     }
 
     .description-box {
         background: #f8f9fa;
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
         padding: 1.5rem;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         font-style: italic;
         line-height: 1.6;
+        color: var(--text-color);
     }
 
-    .btn-primary-custom {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-right: 1rem;
-    }
-
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-secondary-custom {
-        background: linear-gradient(135deg, #6c757d 0%, #6c757d 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-        .btn-secondary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-    .stats-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
+    .info-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
         padding: 1.5rem;
+        border: 1px solid var(--neutral-color);
         text-align: center;
-        border: 1px solid #e7e8eb;
     }
 
-    .stats-icon {
+    .info-icon {
         font-size: 2.5rem;
-        color: #fab61b;
+        color: var(--accent-color);
         margin-bottom: 1rem;
     }
 
-    .stats-title {
+    .info-title {
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--text-muted);
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 1px;
         margin-bottom: 0.5rem;
     }
 
-    .stats-value {
-        font-size: 1.75rem;
+    .info-value {
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #221d42;
+        color: var(--primary-color);
     }
 
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--neutral-color);
+        justify-content: center;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        border: none;
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(250, 182, 27, 0.4);
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .btn-back {
+        background: var(--neutral-color);
+        border: 2px solid var(--neutral-color);
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-back:hover {
+        background: #d6d8db;
+        border-color: #d6d8db;
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    /* === RESPONSIVE === */
     @@media (max-width: 768px) {
-        .page-header-custom {
+        .page-header {
             padding: 1.5rem 0;
         }
 
-            .page-header-custom h1 {
-                font-size: 1.5rem;
-            }
+        .page-title {
+            font-size: 1.6rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
 
-        .card-custom {
+        .page-subtitle {
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .details-body {
             padding: 1.5rem;
         }
 
         .detail-row {
             flex-direction: column;
             align-items: flex-start;
+            gap: 0.5rem;
         }
 
         .detail-label {
             min-width: auto;
-            margin-bottom: 0.5rem;
         }
 
-        .btn-primary-custom,
-        .btn-secondary-custom {
+        .detail-value {
             width: 100%;
-            margin-bottom: 0.5rem;
-            justify-content: center;
-            margin-right: 0;
         }
 
-        .stats-card {
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-edit,
+        .btn-back {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .feriado-name-display {
+            flex-direction: column;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .feriado-icon-large {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .info-card {
             margin-bottom: 1rem;
         }
     }
 </style>
 
-<!-- Header de la página -->
-<div class="page-header-custom">
+<div class="page-header">
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1>
-                    <i class="fas fa-info-circle" style="font-size: 2rem; margin-right: 15px;"></i>
-                    Detalles del Feriado
-                </h1>
-                <p class="mb-0" style="opacity: 0.9; margin-top: 0.5rem;">
-                    Información completa del día feriado seleccionado
-                </p>
-            </div>
-        </div>
+        <h1 class="page-title">
+            <i class="fas fa-eye"></i>
+            Detalles del Feriado
+        </h1>
+        <p class="page-subtitle">
+            Información completa del día feriado seleccionado
+        </p>
     </div>
 </div>
 
-<!-- Contenido principal -->
 <div class="container" style="max-width: 1000px;">
     <div class="row">
         <!-- Información principal -->
         <div class="col-lg-8">
-            <div class="card-custom">
-                <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
-                    <i class="fas fa-clipboard-list"></i>
-                    Información General
-                </h4>
-
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <i class="fas fa-tag"></i>
-                        @Html.DisplayNameFor(model => model.nombre)
-                    </div>
-                    <div class="detail-value">
-                        <strong>@Html.DisplayFor(model => model.nombre)</strong>
-                    </div>
+            <div class="details-card">
+                <div class="details-header">
+                    <h4>
+                        <i class="fas fa-info-circle"></i>
+                        Información General
+                    </h4>
                 </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <i class="fas fa-calendar-day"></i>
-                        @Html.DisplayNameFor(model => model.fecha)
+                <div class="details-body">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-tag"></i>
+                            Nombre:
+                        </div>
+                        <div class="detail-value">
+                            <div class="feriado-name-display">
+                                <div class="feriado-icon-large">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span>@Model.nombre</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="detail-value">
-                        <span class="fecha-highlight">
-                            <i class="fas fa-calendar-alt"></i>
-                            @Html.DisplayFor(model => model.fecha)
-                        </span>
-                    </div>
-                </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <i class="fas fa-check-circle"></i>
-                        Pago Obligatorio
-                    </div>
-                    <div class="detail-value">
-                        @if (Model.pago_obligatorio == true)
-                        {
-                            <span class="badge-obligatorio">
-                                <i class="fas fa-check"></i>
-                                Obligatorio
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-calendar-day"></i>
+                            Fecha:
+                        </div>
+                        <div class="detail-value">
+                            <span class="fecha-highlight">
+                                <i class="fas fa-calendar-alt"></i>
+                                @(Model.fecha.ToString("dd/MM/yyyy") ?? "No registrada")
                             </span>
-                        }
-                        else
-                        {
-                            <span class="badge-no-obligatorio">
-                                <i class="fas fa-times"></i>
-                                No Obligatorio
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-check-circle"></i>
+                            Pago Obligatorio:
+                        </div>
+                        <div class="detail-value">
+                            @if (Model.pago_obligatorio == true)
+                            {
+                                <span class="badge-obligatorio">
+                                    <i class="fas fa-check"></i>
+                                    Obligatorio
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge-no-obligatorio">
+                                    <i class="fas fa-times"></i>
+                                    No Obligatorio
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-calendar-plus"></i>
+                            Fecha de Creación:
+                        </div>
+                        <div class="detail-value">
+                            <span class="date-badge">
+                                <i class="fas fa-calendar"></i>
+                                @(Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm") ?? "No registrada")
                             </span>
-                        }
+                        </div>
                     </div>
-                </div>
 
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <i class="fas fa-percentage"></i>
-                        @Html.DisplayNameFor(model => model.recargo)
-                    </div>
-                    <div class="detail-value">
-                        <span class="badge-recargo">
-                            <i class="fas fa-plus"></i>
-                            @Html.DisplayFor(model => model.recargo)%
-                        </span>
-                    </div>
-                </div>
-
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <i class="fas fa-calendar-plus"></i>
-                        @Html.DisplayNameFor(model => model.fecha_creacion)
-                    </div>
-                    <div class="detail-value">
-                        <span class="date-badge">
-                            @Html.DisplayFor(model => model.fecha_creacion)
-                        </span>
-                    </div>
-                </div>
-
-                <div class="detail-row">
-                    <div class="detail-label">
-                        <i class="fas fa-calendar-edit"></i>
-                        @Html.DisplayNameFor(model => model.fecha_actualizacion)
-                    </div>
-                    <div class="detail-value">
-                        <span class="date-badge">
-                            @Html.DisplayFor(model => model.fecha_actualizacion)
-                        </span>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="fas fa-calendar-edit"></i>
+                            Última Actualización:
+                        </div>
+                        <div class="detail-value">
+                            <span class="date-badge">
+                                <i class="fas fa-clock"></i>
+                                @(Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "No registrada")
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             @if (!string.IsNullOrEmpty(Model.descripcion))
             {
-                <div class="card-custom">
-                    <h4 style="color: #221d42; margin-bottom: 1.5rem; font-weight: 600;">
-                        <i class="fas fa-align-left"></i>
-                        Descripción
-                    </h4>
-                    <div class="description-box">
-                        @Html.DisplayFor(model => model.descripcion)
+                <div class="details-card">
+                    <div class="details-header">
+                        <h4>
+                            <i class="fas fa-align-left"></i>
+                            Descripción
+                        </h4>
+                    </div>
+                    <div class="details-body">
+                        <div class="description-box">
+                            @Model.descripcion
+                        </div>
                     </div>
                 </div>
             }
         </div>
 
-        <!-- Panel lateral con estadísticas -->
+        <!-- Panel lateral con información -->
         <div class="col-lg-4">
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="fas fa-calculator"></i>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-calendar-check"></i>
                 </div>
-                <div class="stats-title">Factor de Pago</div>
-                <div class="stats-value">
-                    @(1 + (Model.recargo / 100))x
+                <div class="info-title">Estado del Feriado</div>
+                <div class="info-value">
+                    @(Model.pago_obligatorio == true ? "Obligatorio" : "No Obligatorio")
                 </div>
                 <small class="text-muted mt-2 d-block">
-                    Multiplicador del salario base
+                    Tipo de día feriado
                 </small>
             </div>
 
-            <div class="stats-card mt-3">
-                <div class="stats-icon">
-                    <i class="fas fa-money-bill-wave"></i>
-                </div>
-                <div class="stats-title">Ejemplo de Cálculo</div>
-                <div class="stats-value" style="font-size: 1.2rem;">
-                    ¢1,000 → ¢@((1000 * (1 + (Model.recargo / 100))).Value.ToString("N0"))
-                </div>
-                <small class="text-muted mt-2 d-block">
-                    Hora normal → Hora en feriado
-                </small>
-            </div>
-
-            <div class="card-custom mt-3" style="padding: 1.5rem;">
-                <h6 style="color: #221d42; margin-bottom: 1rem;">
-                    <i class="fas fa-info-circle text-info"></i>
+            <div class="info-card mt-3" style="text-align: left;">
+                <h6 style="color: var(--primary-color); margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle" style="color: var(--secondary-color);"></i>
                     Información del Sistema
                 </h6>
                 <small class="text-muted">
                     <strong>ID del Registro:</strong> @Model.id_feriado<br>
-                    <strong>Estado:</strong> <span class="text-success">Activo</span><br>
+                    <strong>Estado:</strong> <span style="color: var(--success-color);">Activo</span><br>
                     <strong>Categoría:</strong> Día Feriado<br>
                     <strong>Tipo:</strong> @(Model.pago_obligatorio == true ? "Obligatorio" : "No Obligatorio")
                 </small>
@@ -416,31 +510,18 @@
     </div>
 
     <!-- Botones de acción -->
-    <div class="row mt-4">
-        <div class="col-12 text-center">
-            <hr style="margin: 2rem 0; border-color: #e7e8eb;">
-            @Html.ActionLink("Editar", "Edit", new { id = Model.id_feriado }, new
-            {
-                @class = "btn btn-primary-custom"
-            })
-            @Html.ActionLink("Volver al Listado", "Index", null, new
-            {
-                @class = "btn btn-secondary-custom"
-            })
+    <div class="row">
+        <div class="col-12">
+            <div class="button-group">
+                <a href="@Url.Action("Edit", new { id = Model.id_feriado })" class="btn-edit">
+                    <i class="fas fa-edit"></i>
+                    Editar Feriado
+                </a>
+                <a href="@Url.Action("Index")" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Listado
+                </a>
+            </div>
         </div>
-    </div>
-
-    <!-- Información adicional -->
-    <div class="mt-4 p-3" style="background: #e7f3ff; border-radius: 10px; border-left: 4px solid #1788ca;">
-        <h6 style="color: #221d42; margin-bottom: 0.5rem;">
-            <i class="fas fa-lightbulb text-info"></i>
-            Información sobre feriados
-        </h6>
-        <ul class="mb-0" style="font-size: 0.875rem; color: #6c757d;">
-            <li>Los recargos se aplican cuando los empleados trabajan en días feriados</li>
-            <li>Un recargo del @Html.DisplayFor(model => model.recargo)% significa que se paga @(1 + (Model.recargo / 100)) veces el valor normal</li>
-            <li>Los feriados obligatorios deben pagarse aunque el empleado no trabaje</li>
-            <li>Los feriados no obligatorios solo se pagan si el empleado trabaja</li>
-        </ul>
     </div>
 </div>

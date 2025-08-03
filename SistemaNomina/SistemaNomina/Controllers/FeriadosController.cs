@@ -24,16 +24,16 @@ namespace SistemaNomina.Controllers
         // Muestra detalles de un feriado específico
         public ActionResult Details(int? id)
         {
-            if (id == null) // Si no se recibe un ID válido
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Feriados feriados = db.Feriados.Find(id); // Busca el feriado por ID
-            if (feriados == null) // Si no existe, muestra error 
+            Feriados feriados = db.Feriados.Find(id);
+            if (feriados == null)
             {
                 return HttpNotFound();
             }
-            return View(feriados); // Muestra los datos del feriado
+            return View(feriados);
         }
 
         // Muestra el formulario para crear un feriado
@@ -44,61 +44,92 @@ namespace SistemaNomina.Controllers
 
         // Procesa los datos del formulario de creación
         [HttpPost]
-        [ValidateAntiForgeryToken] // Seguridad contra ataques 
-        public ActionResult Create([Bind(Include = "id_feriado,nombre,fecha,pago_obligatorio,recargo,descripcion,fecha_creacion,fecha_actualizacion")] Feriados feriados)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "id_feriado,nombre,fecha,pago_obligatorio,descripcion")] Feriados feriados)
         {
-            if (ModelState.IsValid) // Verifica que los datos sean válidos
+            // ✅ VALIDACIÓN PARA EVITAR FECHAS DUPLICADAS - CORREGIDA
+            if (feriados.fecha != null)
             {
-                db.Feriados.Add(feriados); // Agrega el feriado a la bd
-                db.SaveChanges(); // Guarda los cambios
-                return RedirectToAction("Index"); // Vuelve a la lista
+                var fechaExistente = db.Feriados.Any(f => f.fecha == feriados.fecha);
+                if (fechaExistente)
+                {
+                    ModelState.AddModelError("fecha", "Ya existe un feriado registrado para esta fecha. Por favor seleccione una fecha diferente.");
+                }
             }
 
-            return View(feriados); // Si hay error, vuelve al formulario
+            if (ModelState.IsValid)
+            {
+                // Asignar fechas automáticamente
+                feriados.fecha_creacion = DateTime.Now;
+                feriados.fecha_actualizacion = DateTime.Now;
+
+                db.Feriados.Add(feriados);
+                db.SaveChanges();
+
+                TempData["Success"] = "Feriado creado exitosamente.";
+                return RedirectToAction("Index");
+            }
+
+            return View(feriados);
         }
 
         // Muestra el formulario para editar un feriado
         public ActionResult Edit(int? id)
         {
-            if (id == null) // Si no hay ID válido
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Feriados feriados = db.Feriados.Find(id); // Busca el feriado
-            if (feriados == null) // Si no existe, error 
+            Feriados feriados = db.Feriados.Find(id);
+            if (feriados == null)
             {
                 return HttpNotFound();
             }
-            return View(feriados); // Muestra el formulario con datos
+            return View(feriados);
         }
 
         // Procesa los datos del formulario de edición
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id_feriado,nombre,fecha,pago_obligatorio,recargo,descripcion,fecha_creacion,fecha_actualizacion")] Feriados feriados)
+        public ActionResult Edit([Bind(Include = "id_feriado,nombre,fecha,pago_obligatorio,descripcion,fecha_creacion")] Feriados feriados)
         {
-            if (ModelState.IsValid) // Si los datos son válidos
+            // ✅ VALIDACIÓN PARA EVITAR FECHAS DUPLICADAS EN EDICIÓN - CORREGIDA
+            if (feriados.fecha != null)
             {
-                db.Entry(feriados).State = EntityState.Modified; // Marca como modificado
-                db.SaveChanges(); // Guarda cambios
-                return RedirectToAction("Index"); // Vuelve a la lista
+                var fechaExistente = db.Feriados.Any(f => f.fecha == feriados.fecha && f.id_feriado != feriados.id_feriado);
+                if (fechaExistente)
+                {
+                    ModelState.AddModelError("fecha", "Ya existe otro feriado registrado para esta fecha. Por favor seleccione una fecha diferente.");
+                }
             }
-            return View(feriados); // Si hay error, vuelve al formulario
+
+            if (ModelState.IsValid)
+            {
+                // Actualizar solo la fecha de actualización
+                feriados.fecha_actualizacion = DateTime.Now;
+
+                db.Entry(feriados).State = EntityState.Modified;
+                db.SaveChanges();
+
+                TempData["Success"] = "Feriado actualizado exitosamente.";
+                return RedirectToAction("Index");
+            }
+            return View(feriados);
         }
 
         // Muestra la confirmación para eliminar un feriado
         public ActionResult Delete(int? id)
         {
-            if (id == null) // Si no hay ID
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Feriados feriados = db.Feriados.Find(id); // Busca el feriado
-            if (feriados == null) // Si no existe, error 
+            Feriados feriados = db.Feriados.Find(id);
+            if (feriados == null)
             {
                 return HttpNotFound();
             }
-            return View(feriados); // Muestra datos para confirmar eliminación
+            return View(feriados);
         }
 
         // Confirma la eliminación de un feriado
@@ -106,10 +137,12 @@ namespace SistemaNomina.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Feriados feriados = db.Feriados.Find(id); // Busca el feriado
-            db.Feriados.Remove(feriados); // Lo elimina
-            db.SaveChanges(); // Guarda cambios
-            return RedirectToAction("Index"); // Vuelve a la lista
+            Feriados feriados = db.Feriados.Find(id);
+            db.Feriados.Remove(feriados);
+            db.SaveChanges();
+
+            TempData["Success"] = "Feriado eliminado exitosamente.";
+            return RedirectToAction("Index");
         }
 
         // Libera recursos del sistema
@@ -117,9 +150,9 @@ namespace SistemaNomina.Controllers
         {
             if (disposing)
             {
-                db.Dispose(); // Cierra conexión a la bd
+                db.Dispose();
             }
-            base.Dispose(disposing); // Llama al método base
+            base.Dispose(disposing);
         }
     }
 }

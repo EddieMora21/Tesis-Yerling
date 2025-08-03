@@ -11,128 +11,446 @@
         --secondary-color: #1788ca;
         --accent-color: #fab61b;
         --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --info-color: #17a2b8;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
     }
 
-    .header-gradient {
+    .page-header {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        color: white;
+        color: var(--white);
         padding: 2rem 0;
-        border-radius: 0 0 15px 15px;
         margin-bottom: 2rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
-    .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+    .page-header * {
+        color: var(--white) !important;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .page-subtitle {
+        opacity: 0.9;
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, var(--success-color), #20a53a);
+        border: none;
+        color: var(--white);
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+
+    .btn-create:hover {
+        background: linear-gradient(135deg, #20a53a, #1e7e34);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        color: var(--white);
+        text-decoration: none;
+    }
+
+    .btn-secondary-header {
+        background: transparent;
+        border: 2px solid var(--white);
+        color: var(--white);
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-secondary-header:hover {
+        background: var(--white);
+        color: var(--primary-color);
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .nominas-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        overflow: hidden;
         border: 1px solid var(--neutral-color);
         margin-bottom: 1.5rem;
     }
 
     .card-header-custom {
         background: linear-gradient(135deg, var(--primary-color) 0%, rgba(34, 29, 66, 0.9) 100%);
-        color: white;
-        border-radius: 15px 15px 0 0;
+        color: var(--white);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
         padding: 1.5rem;
         border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .btn-primary-custom {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 12px 24px;
+    .card-header-title {
+        font-size: 1.1rem;
         font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
-    }
-
-    .btn-success-custom {
-        background: linear-gradient(135deg, #28a745 0%, rgba(40, 167, 69, 0.8) 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-success-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    }
-
-    .btn-outline-custom {
-        border: 2px solid var(--secondary-color);
-        color: var(--secondary-color);
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-custom:hover {
-        background: var(--secondary-color);
-        color: white;
-        transform: translateY(-1px);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .form-control-custom {
         border: 2px solid var(--neutral-color);
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
+        transition: var(--transition);
+        font-size: 1rem;
     }
 
     .form-control-custom:focus {
         border-color: var(--secondary-color);
         box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
     }
 
-    .table-custom {
-        margin-bottom: 0;
+    .form-select-custom {
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        background-color: var(--white);
     }
 
-    .table-custom thead th {
-        background: var(--primary-color);
-        color: white;
+    .form-select-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+        outline: none;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(23, 136, 202, 0.8) 100%);
         border: none;
-        padding: 1rem;
+        border-radius: var(--border-radius-sm);
+        padding: 12px 24px;
         font-weight: 600;
-        font-size: 0.9rem;
+        color: var(--white);
+        transition: var(--transition);
     }
 
-    .table-custom tbody tr:hover {
-        background-color: rgba(23, 136, 202, 0.05);
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(23, 136, 202, 0.4);
+        color: var(--white);
     }
 
-    .table-custom tbody td {
-        padding: 1rem;
-        border-color: var(--neutral-color);
+    /* ✅ CORRECCIÓN: Tabla responsive mejorada */
+    .table-container {
+        position: relative;
+        background: var(--white);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
     }
 
-    .badge-custom {
-        background: linear-gradient(135deg, var(--accent-color) 0%, rgba(250, 182, 27, 0.8) 100%);
-        color: var(--primary-color);
+    .table-responsive {
+        overflow-x: auto;
+        overflow-y: visible;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        /* ✅ IMPORTANTE: Scroll más visible */
+        max-height: 70vh;
+        position: relative;
+    }
+
+    /* ✅ SCROLL PERSONALIZADO MÁS VISIBLE */
+    .table-responsive::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f8f9fa;
+        border-radius: 6px;
+        margin: 0 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        border-radius: 6px;
+        border: 2px solid #f8f9fa;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .table-responsive::-webkit-scrollbar-corner {
+        background: #f8f9fa;
+    }
+
+    /* ✅ INDICADOR DE SCROLL */
+    .scroll-indicator {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background: rgba(23, 136, 202, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
         font-weight: 600;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 10;
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
     }
 
-    .icon-primary {
-        color: var(--secondary-color);
+    .table-container:hover .scroll-indicator {
+        opacity: 1;
+    }
+
+    .custom-table {
+        margin: 0;
+        background: var(--white);
+        border-collapse: collapse;
+        min-width: 1200px; /* ✅ Ancho mínimo controlado */
+    }
+
+    .custom-table thead th {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 1.2rem 1rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .custom-table tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--neutral-color);
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .custom-table tbody tr:hover {
+        background: rgba(23, 136, 202, 0.05);
+    }
+
+    .custom-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .empleado-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 200px;
+    }
+
+    .empleado-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: bold;
         font-size: 1.2rem;
-        margin-right: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .empleado-details {
+        flex-grow: 1;
+        min-width: 120px;
+    }
+
+    .empleado-name {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .empleado-cedula {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .periodo-badge {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        min-width: 100px;
+        justify-content: center;
+    }
+
+    .salary-amount {
+        font-weight: 600;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    .salary-bruto {
+        color: var(--success-color);
+    }
+
+    .salary-neto {
+        color: var(--secondary-color);
+    }
+
+    .salary-deductions {
+        color: var(--warning-color);
+    }
+
+    .amount-small {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .records-badge {
+        background: linear-gradient(135deg, var(--info-color), #138496);
+        color: var(--white);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        min-width: 240px;
+    }
+
+    .btn-action {
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 70px;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
+    }
+
+    .btn-view:hover {
+        background: linear-gradient(135deg, #0f6da3, #0c5a87);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.3);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .alert-error-custom {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border-left: 4px solid var(--danger-color);
     }
 
     .empty-state {
         text-align: center;
         padding: 4rem 2rem;
-        color: #6c757d;
+        color: var(--text-muted);
     }
 
     .empty-state i {
@@ -141,129 +459,360 @@
         margin-bottom: 1rem;
     }
 
+    .empty-state h4 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .form-label-custom {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .icon-primary {
+        color: var(--secondary-color);
+        font-size: 1rem;
+    }
+
+    /* ✅ CORRECCIÓN: Media queries con una sola  */
+
+    @@media (max-width: 1200px) {
+        .custom-table {
+            min-width: 1100px;
+        }
+
+        .action-buttons {
+            min-width: 220px;
+        }
+
+        .btn-action {
+            min-width: 65px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .custom-table {
+            min-width: 1000px;
+        }
+
+        .custom-table thead th {
+            padding: 1rem 0.7rem;
+            font-size: 0.85rem;
+        }
+
+        .custom-table tbody td {
+            padding: 0.8rem 0.7rem;
+        }
+
+        .action-buttons {
+            min-width: 200px;
+            gap: 3px;
+        }
+
+        .btn-action {
+            min-width: 60px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action .btn-text {
+            display: none;
+        }
+
+        .empleado-avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .empleado-info {
+            min-width: 180px;
+        }
+    }
+
     @@media (max-width: 768px) {
-        .header-gradient {
+        .page-header {
             padding: 1.5rem 0;
         }
 
-        .btn-group {
+        .page-title {
+            font-size: 1.8rem;
             flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
         }
 
-        .btn-group .btn {
-            margin-bottom: 0.5rem;
+        .page-subtitle {
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .btn-create,
+        .btn-secondary-header {
+            width: 100%;
+            justify-content: center;
+            margin-top: 0.5rem;
+            margin-right: 0;
         }
 
         .table-responsive {
-            font-size: 0.875rem;
+            max-height: 60vh;
+        }
+
+        .custom-table {
+            min-width: 900px;
+        }
+
+        .custom-table thead th {
+            padding: 0.8rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .custom-table tbody td {
+            padding: 0.8rem 0.5rem;
+        }
+
+        .empleado-info {
+            min-width: 160px;
+        }
+
+        .empleado-avatar {
+            width: 35px;
+            height: 35px;
+            font-size: 0.9rem;
+        }
+
+        .empleado-name {
+            font-size: 0.9rem;
+        }
+
+        .empleado-cedula {
+            font-size: 0.8rem;
+        }
+
+        .periodo-badge {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            min-width: 80px;
+        }
+
+        .salary-amount {
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            min-width: 180px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            min-width: 55px;
+            padding: 5px 6px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action i {
+            font-size: 0.8rem;
+        }
+
+        /* ✅ Scroll indicator en móvil siempre visible */
+        .scroll-indicator {
+            opacity: 1;
+            font-size: 0.7rem;
+            padding: 6px 10px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .table-responsive {
+            max-height: 50vh;
+        }
+
+        .custom-table {
+            min-width: 800px;
+        }
+
+        .empleado-info {
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .empleado-avatar {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            min-width: 90px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            width: 100%;
+            min-width: auto;
+            padding: 4px;
+            font-size: 0.65rem;
         }
     }
 </style>
 
-<div class="container-fluid">
-    <!-- ENCABEZADO PRINCIPAL -->
-    <div class="header-gradient">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="mb-2">
-                        <i class="fas fa-calculator fa-2x"></i>
-                        Gestión de Nóminas
-                    </h1>
-                    <p class="mb-0 fs-5">Administra y consulta las nóminas generadas en el sistema</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <div class="btn-group" role="group">
-                        @Html.ActionLink("Generar Nómina", "SeleccionarPeriodo", null, new { @class = "btn btn-success-custom btn-lg" })
-                        @Html.ActionLink("Crear Manual", "Create", null, new { @class = "btn btn-outline-light" })
-                    </div>
-                </div>
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-calculator"></i>
+                    Gestión de Nóminas
+                </h1>
+                <p class="page-subtitle">
+                    Administra y consulta las nóminas generadas en el sistema
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("SeleccionarPeriodo")" class="btn-create">
+                    <i class="fas fa-magic"></i>
+                    Generar Automática
+                </a>
+                <a href="@Url.Action("Create")" class="btn-secondary-header">
+                    <i class="fas fa-plus"></i>
+                    Crear Manual
+                </a>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <!-- FILTROS Y BÚSQUEDA -->
-        <div class="card-custom">
-            <div class="card-header-custom">
-                <h5 class="mb-0">
-                    <i class="fas fa-search"></i>
-                    Filtros de Búsqueda
-                </h5>
-            </div>
-            <div class="card-body p-4">
-                <form method="get" class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">
-                            <i class="fas fa-calendar-alt icon-primary"></i>Año:
-                        </label>
-                        <select name="anio" class="form-select form-control-custom">
-                            <option value="">Todos los años</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">
-                            <i class="fas fa-calendar icon-primary"></i>Mes:
-                        </label>
-                        <select name="mes" class="form-select form-control-custom">
-                            <option value="">Todos los meses</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">
-                            <i class="fas fa-user icon-primary"></i>Empleado:
-                        </label>
-                        <input type="text" name="empleado" class="form-control form-control-custom"
-                               placeholder="Buscar por cédula o nombre..." />
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary-custom w-100">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                    </div>
-                </form>
-            </div>
+<div class="container">
+    <!-- Alertas -->
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+    }
 
-        <!-- LISTADO DE NÓMINAS -->
-        <div class="card-custom">
-            <div class="card-header-custom d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="fas fa-list"></i>
-                    Listado de Nóminas
-                </h5>
-                <span class="badge-custom">@Model.Count() registros</span>
-            </div>
-            <div class="card-body p-0">
-                @if (Model.Any())
-                {
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error-custom alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- FILTROS Y BÚSQUEDA -->
+    <div class="nominas-card">
+        <div class="card-header-custom">
+            <h5 class="card-header-title">
+                <i class="fas fa-search"></i>
+                Filtros de Búsqueda
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="get" class="row g-3" id="filtrosForm">
+                <div class="col-md-3">
+                    <label class="form-label-custom">
+                        <i class="fas fa-calendar-alt icon-primary"></i>
+                        Año:
+                    </label>
+                    <select name="anio" class="form-select form-select-custom">
+                        <option value="">Todos los años</option>
+                        <option value="2025" @(ViewBag.FiltroAnio == "2025" ? "selected" : "")>2025</option>
+                        <option value="2024" @(ViewBag.FiltroAnio == "2024" ? "selected" : "")>2024</option>
+                        <option value="2023" @(ViewBag.FiltroAnio == "2023" ? "selected" : "")>2023</option>
+                        <option value="2022" @(ViewBag.FiltroAnio == "2022" ? "selected" : "")>2022</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label-custom">
+                        <i class="fas fa-calendar icon-primary"></i>
+                        Mes:
+                    </label>
+                    <select name="mes" class="form-select form-select-custom">
+                        <option value="">Todos los meses</option>
+                        <option value="1" @(ViewBag.FiltroMes == "1" ? "selected" : "")>Enero</option>
+                        <option value="2" @(ViewBag.FiltroMes == "2" ? "selected" : "")>Febrero</option>
+                        <option value="3" @(ViewBag.FiltroMes == "3" ? "selected" : "")>Marzo</option>
+                        <option value="4" @(ViewBag.FiltroMes == "4" ? "selected" : "")>Abril</option>
+                        <option value="5" @(ViewBag.FiltroMes == "5" ? "selected" : "")>Mayo</option>
+                        <option value="6" @(ViewBag.FiltroMes == "6" ? "selected" : "")>Junio</option>
+                        <option value="7" @(ViewBag.FiltroMes == "7" ? "selected" : "")>Julio</option>
+                        <option value="8" @(ViewBag.FiltroMes == "8" ? "selected" : "")>Agosto</option>
+                        <option value="9" @(ViewBag.FiltroMes == "9" ? "selected" : "")>Septiembre</option>
+                        <option value="10" @(ViewBag.FiltroMes == "10" ? "selected" : "")>Octubre</option>
+                        <option value="11" @(ViewBag.FiltroMes == "11" ? "selected" : "")>Noviembre</option>
+                        <option value="12" @(ViewBag.FiltroMes == "12" ? "selected" : "")>Diciembre</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-custom">
+                        <i class="fas fa-user icon-primary"></i>
+                        Empleado:
+                    </label>
+                    <input type="text" name="empleado" class="form-control form-control-custom"
+                           placeholder="Buscar por cédula o nombre..."
+                           value="@ViewBag.FiltroEmpleado" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary-custom w-100">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LISTADO DE NÓMINAS -->
+    <div class="nominas-card">
+        <div class="card-header-custom">
+            <h5 class="card-header-title">
+                <i class="fas fa-list"></i>
+                Listado de Nóminas
+            </h5>
+            <span class="records-badge">
+                <i class="fas fa-database"></i>
+                @Model.Count() registros
+            </span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <!-- ✅ CONTENEDOR MEJORADO CON INDICADOR -->
+                <div class="table-container">
+                    <div class="scroll-indicator">
+                        <i class="fas fa-arrows-alt-h"></i>
+                        Desliza para ver más
+                    </div>
                     <div class="table-responsive">
-                        <table class="table-custom table">
+                        <table class="custom-table table">
                             <thead>
                                 <tr>
-                                    <th><i class="fas fa-user"></i> Empleado</th>
-                                    <th><i class="fas fa-calendar"></i> Período</th>
-                                    <th><i class="fas fa-money-bill-wave"></i> Salario Bruto</th>
-                                    <th><i class="fas fa-clock"></i> Horas Extras</th>
-                                    <th><i class="fas fa-calendar-day"></i> Días Feriados</th>
-                                    <th><i class="fas fa-minus-circle"></i> Deducciones</th>
-                                    <th><i class="fas fa-check-circle"></i> Salario Neto</th>
-                                    <th class="text-center"><i class="fas fa-cogs"></i> Acciones</th>
+                                    <th><i class="fas fa-user me-2"></i>Empleado</th>
+                                    <th class="text-center"><i class="fas fa-calendar me-2"></i>Período</th>
+                                    <th class="text-end"><i class="fas fa-money-bill-wave me-2"></i>Salario Bruto</th>
+                                    <th class="text-end"><i class="fas fa-clock me-2"></i>H. Extras</th>
+                                    <th class="text-end"><i class="fas fa-calendar-day me-2"></i>Feriados</th>
+                                    <th class="text-end"><i class="fas fa-minus-circle me-2"></i>Deducciones</th>
+                                    <th class="text-end"><i class="fas fa-check-circle me-2"></i>Salario Neto</th>
+                                    <th class="text-center"><i class="fas fa-cogs me-2"></i>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -271,31 +820,72 @@
                                 {
                                     <tr>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-circle me-3" style="background: var(--secondary-color); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                                                    @(item.Empleados?.nombre1?.Substring(0, 1) ?? "N")
+                                            <div class="empleado-info">
+                                                <div class="empleado-avatar">
+                                                    @(item.Empleados?.nombre1?.Substring(0, 1).ToUpper() ?? "N")
                                                 </div>
-                                                <div>
-                                                    <div class="fw-bold">@Html.DisplayFor(modelItem => item.Empleados.nombre1) @Html.DisplayFor(modelItem => item.Empleados.apellido1)</div>
-                                                    <small class="text-muted">@Html.DisplayFor(modelItem => item.Empleados.cedula)</small>
+                                                <div class="empleado-details">
+                                                    <div class="empleado-name">
+                                                        @Html.DisplayFor(modelItem => item.Empleados.nombre1) @Html.DisplayFor(modelItem => item.Empleados.apellido1)
+                                                    </div>
+                                                    <div class="empleado-cedula">
+                                                        @Html.DisplayFor(modelItem => item.Empleados.cedula)
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <span class="badge" style="background: var(--primary-color); color: white; font-size: 0.9rem;">
+                                        <td class="text-center">
+                                            <span class="periodo-badge">
+                                                <i class="fas fa-calendar-alt"></i>
                                                 @Html.DisplayFor(modelItem => item.mes)/@Html.DisplayFor(modelItem => item.anio)
                                             </span>
                                         </td>
-                                        <td class="fw-bold text-success">₡@Html.DisplayFor(modelItem => item.salario_bruto)</td>
-                                        <td>₡@(item.horas_extras?.ToString("N0") ?? "0")</td>
-                                        <td>₡@(item.salario_dias_feriados?.ToString("N0") ?? "0")</td>
-                                        <td class="text-warning fw-bold">₡@((item.ccss ?? 0) + (item.ivm ?? 0) + (item.isr ?? 0))</td>
-                                        <td class="fw-bold" style="color: var(--secondary-color);">₡@Html.DisplayFor(modelItem => item.salario_neto)</td>
+                                        <td class="text-end">
+                                            <div class="salary-amount salary-bruto">
+                                                ₡@(item.salario_bruto.ToString("N0") ?? "0")
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="amount-small">
+                                                ₡@(item.horas_extras?.ToString("N0") ?? "0")
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="amount-small">
+                                                ₡@(item.salario_dias_feriados?.ToString("N0") ?? "0")
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="salary-amount salary-deductions">
+                                                ₡@(((item.ccss ?? 0) + (item.ivm ?? 0) + (item.isr ?? 0) + (item.otros_descuentos ?? 0)).ToString("N0"))
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="salary-amount salary-neto">
+                                                ₡@(item.salario_neto.ToString("N0") ?? "0")
+                                            </div>
+                                        </td>
                                         <td>
-                                            <div class="btn-group" role="group">
-                                                @Html.ActionLink("Detalles", "Details", new { id = item.id_nomina }, new { @class = "btn btn-outline-custom btn-sm", title = "Ver detalles", @data_bs_toggle = "tooltip" })
-                                                @Html.ActionLink("Editar", "Edit", new { id = item.id_nomina }, new { @class = "btn btn-outline-custom btn-sm", title = "Editar", @data_bs_toggle = "tooltip" })
-                                                @Html.ActionLink("Delete", "Delete", new { id = item.id_nomina }, new { @class = "btn btn-outline-danger btn-sm", title = "Eliminar", @data_bs_toggle = "tooltip" })
+                                            <div class="action-buttons">
+                                                <a href="@Url.Action("Details", new { id = item.id_nomina })"
+                                                   class="btn-action btn-view"
+                                                   title="Ver detalles">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span class="btn-text">Ver</span>
+                                                </a>
+                                                <a href="@Url.Action("Edit", new { id = item.id_nomina })"
+                                                   class="btn-action btn-edit"
+                                                   title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="btn-text">Editar</span>
+                                                </a>
+                                                <a href="@Url.Action("Delete", new { id = item.id_nomina })"
+                                                   class="btn-action btn-delete"
+                                                   title="Eliminar"
+                                                   onclick="return confirm('¿Está seguro de eliminar esta nómina?');">
+                                                    <i class="fas fa-trash"></i>
+                                                    <span class="btn-text">Eliminar</span>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -303,27 +893,70 @@
                             </tbody>
                         </table>
                     </div>
-                }
-                else
-                {
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <h4>No se encontraron nóminas</h4>
-                        <p>No hay registros que coincidan con los filtros aplicados.</p>
-                        @Html.ActionLink("Generar Primera Nómina", "SeleccionarPeriodo", null, new { @class = "btn btn-primary-custom" })
-                    </div>
-                }
-            </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-calculator"></i>
+                    <h4>No se encontraron nóminas</h4>
+                    <p class="mb-3">No hay registros que coincidan con los filtros aplicados.</p>
+                    <a href="@Url.Action("SeleccionarPeriodo")" class="btn-create">
+                        <i class="fas fa-magic"></i>
+                        Generar Primera Nómina
+                    </a>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 <script>
-    // Inicializar tooltips
     document.addEventListener('DOMContentLoaded', function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        // ✅ Búsqueda en tiempo real (opcional)
+        let timeoutId;
+
+        function realizarBusqueda() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(function() {
+                document.getElementById('filtrosForm').submit();
+            }, 500); // Esperar 500ms después de que el usuario deje de escribir
+        }
+
+        // ✅ Eventos para búsqueda automática
+        document.querySelector('input[name="empleado"]').addEventListener('input', realizarBusqueda);
+        document.querySelector('select[name="anio"]').addEventListener('change', function() {
+            document.getElementById('filtrosForm').submit();
+        });
+        document.querySelector('select[name="mes"]').addEventListener('change', function() {
+            document.getElementById('filtrosForm').submit();
+        });
+
+        // ✅ Limpiar filtros
+        function limpiarFiltros() {
+            document.querySelector('select[name="anio"]').value = '';
+            document.querySelector('select[name="mes"]').value = '';
+            document.querySelector('input[name="empleado"]').value = '';
+            document.getElementById('filtrosForm').submit();
+        }
+
+        // ✅ Agregar botón de limpiar si no existe
+        if (!document.querySelector('.btn-clear-filters')) {
+            const clearButton = document.createElement('button');
+            clearButton.type = 'button';
+            clearButton.className = 'btn btn-outline-secondary btn-clear-filters';
+            clearButton.innerHTML = '<i class="fas fa-eraser"></i> Limpiar';
+            clearButton.onclick = limpiarFiltros;
+
+            const searchButton = document.querySelector('.btn-primary-custom');
+            searchButton.parentNode.insertBefore(clearButton, searchButton);
+            searchButton.parentNode.insertBefore(document.createTextNode(' '), searchButton);
+        }
+
+        // ✅ Mostrar estadísticas de búsqueda
+        const totalRegistros = @Model.Count();
+        if (totalRegistros > 0) {
+            console.log(`Búsqueda completada: ${totalRegistros} registros encontrados`);
+        }
     });
 </script>

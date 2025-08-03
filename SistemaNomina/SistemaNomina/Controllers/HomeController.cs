@@ -12,7 +12,8 @@ namespace SistemaNomina.Controllers
     {
         private smartbuilding_rhEntities db = new smartbuilding_rhEntities();
 
-        public ActionResult Index()
+        [Authorize]
+       public ActionResult Index()
         {
             try
             {

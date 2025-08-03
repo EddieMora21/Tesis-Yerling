@@ -6,12 +6,28 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --text-color: #495057;
+    }
+
     .page-header {
-        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin-bottom: 2rem;
         border-radius: 0 0 15px 15px;
+        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
+    }
+
+    .page-header * {
+        color: var(--white) !important;
     }
 
     .page-title {
@@ -19,28 +35,34 @@
         font-weight: 600;
         margin: 0;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
 
     .details-card {
-        background: white;
+        background: var(--white);
         border-radius: 15px;
         box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
         overflow: hidden;
-        border: 1px solid #e7e8eb;
+        border: 1px solid var(--neutral-color);
     }
 
     .details-header {
-        background: linear-gradient(135deg, #1788ca 0%, #0f6da3 100%);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #0f6da3 100%);
         padding: 1.5rem;
-        border-bottom: 1px solid #e7e8eb;
-        color: white;
+        border-bottom: 1px solid var(--neutral-color);
+        color: var(--white);
     }
 
-        .details-header h4 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.3rem;
-        }
+    .details-header h4 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
     .details-body {
         padding: 2rem;
@@ -50,16 +72,16 @@
         display: flex;
         align-items: center;
         padding: 1rem 0;
-        border-bottom: 1px solid #e7e8eb;
+        border-bottom: 1px solid var(--neutral-color);
     }
 
-        .detail-row:last-child {
-            border-bottom: none;
-        }
+    .detail-row:last-child {
+        border-bottom: none;
+    }
 
     .detail-label {
         font-weight: 600;
-        color: #221d42;
+        color: var(--primary-color);
         font-size: 1rem;
         min-width: 140px;
         display: flex;
@@ -69,7 +91,7 @@
 
     .detail-value {
         font-size: 1rem;
-        color: #495057;
+        color: var(--text-color);
         margin-left: 2rem;
         flex: 1;
     }
@@ -77,11 +99,11 @@
     .permiso-name-display {
         font-size: 1.2rem;
         font-weight: 600;
-        color: #221d42;
-        background: linear-gradient(135deg, #e7e8eb, #f8f9fa);
+        color: var(--primary-color);
+        background: linear-gradient(135deg, var(--neutral-color), #f8f9fa);
         padding: 12px 16px;
         border-radius: 8px;
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
         display: flex;
         align-items: center;
         gap: 12px;
@@ -95,16 +117,17 @@
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
-        color: white;
+        color: var(--white);
         font-weight: bold;
+        flex-shrink: 0;
     }
 
     .icon-con-goce {
-        background: linear-gradient(135deg, #28a745, #20a53a);
+        background: linear-gradient(135deg, var(--success-color), #20a53a);
     }
 
     .icon-sin-goce {
-        background: linear-gradient(135deg, #dc3545, #c82333);
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
     }
 
     .badge-goce-large {
@@ -131,18 +154,27 @@
         background: #f8f9fa;
         padding: 1rem;
         border-radius: 8px;
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
         font-style: italic;
         line-height: 1.6;
+        color: var(--text-color);
     }
 
     .fecha-display {
-        background: linear-gradient(135deg, #e7e8eb, #f8f9fa);
+        background: linear-gradient(135deg, var(--neutral-color), #f8f9fa);
         padding: 8px 16px;
         border-radius: 20px;
         font-weight: 500;
-        color: #495057;
-        display: inline-block;
+        color: var(--text-color);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .fecha-display i {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
     }
 
     .button-group {
@@ -151,13 +183,14 @@
         align-items: center;
         margin-top: 2rem;
         padding-top: 1.5rem;
-        border-top: 1px solid #e7e8eb;
+        border-top: 1px solid var(--neutral-color);
+        justify-content: center;
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, #fab61b 0%, #e09f15 100%);
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
         border: none;
-        color: #221d42;
+        color: var(--primary-color);
         font-weight: 600;
         padding: 12px 24px;
         border-radius: 8px;
@@ -168,18 +201,18 @@
         gap: 8px;
     }
 
-        .btn-primary-custom:hover {
-            background: linear-gradient(135deg, #e09f15 0%, #c8890f 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
-            color: #221d42;
-            text-decoration: none;
-        }
+    .btn-primary-custom:hover {
+        background: linear-gradient(135deg, #e09f15 0%, #c8890f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(250, 182, 27, 0.4);
+        color: var(--primary-color);
+        text-decoration: none;
+    }
 
     .btn-secondary-custom {
-        background: #e7e8eb;
-        border: 2px solid #e7e8eb;
-        color: #221d42;
+        background: var(--neutral-color);
+        border: 2px solid var(--neutral-color);
+        color: var(--primary-color);
         font-weight: 600;
         padding: 10px 24px;
         border-radius: 8px;
@@ -190,14 +223,15 @@
         gap: 8px;
     }
 
-        .btn-secondary-custom:hover {
-            background: #d6d8db;
-            border-color: #d6d8db;
-            color: #221d42;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
+    .btn-secondary-custom:hover {
+        background: #d6d8db;
+        border-color: #d6d8db;
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
 
+    /* === RESPONSIVE === */
     @@media (max-width: 768px) {
         .page-header {
             padding: 1.5rem 0;
@@ -205,6 +239,9 @@
 
         .page-title {
             font-size: 1.6rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
         }
 
         .details-body {
@@ -237,6 +274,12 @@
             justify-content: center;
         }
 
+        .permiso-name-display {
+            flex-direction: column;
+            gap: 8px;
+            text-align: center;
+        }
+
         .permiso-icon-large {
             width: 40px;
             height: 40px;
@@ -248,7 +291,7 @@
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">
-            <i class="fas fa-eye me-3"></i>
+            <i class="fas fa-eye"></i>
             Detalles del Tipo de Permiso
         </h1>
     </div>
@@ -260,7 +303,7 @@
             <div class="details-card">
                 <div class="details-header">
                     <h4>
-                        <i class="fas fa-info-circle me-2"></i>
+                        <i class="fas fa-info-circle"></i>
                         Información Completa
                     </h4>
                 </div>
@@ -276,7 +319,7 @@
                                 <div class="permiso-icon-large @(Model.con_goce ? "icon-con-goce" : "icon-sin-goce")">
                                     @(Model.con_goce ? "CG" : "SG")
                                 </div>
-                                @Model.nombre
+                                <span>@Model.nombre</span>
                             </div>
                         </div>
                     </div>
@@ -313,7 +356,18 @@
                         </div>
                         <div class="detail-value">
                             <div class="fecha-display">
-                                @Model.fecha_creacion?.ToString("dd/MM/yyyy HH:mm")
+                                <i class="fas fa-calendar-alt"></i>
+                                @if (Model.fecha_creacion.HasValue)
+                                {
+                                    @Model.fecha_creacion.Value.ToString("dd/MM/yyyy")
+                                    <span style="margin-left: 8px; color: #6c757d; font-size: 0.9rem;">
+                                        @Model.fecha_creacion.Value.ToString("HH:mm")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>No registrada</span>
+                                }
                             </div>
                         </div>
                     </div>
@@ -325,7 +379,18 @@
                         </div>
                         <div class="detail-value">
                             <div class="fecha-display">
-                                @Model.fecha_actualizacion?.ToString("dd/MM/yyyy HH:mm")
+                                <i class="fas fa-clock"></i>
+                                @if (Model.fecha_actualizacion.HasValue)
+                                {
+                                    @Model.fecha_actualizacion.Value.ToString("dd/MM/yyyy")
+                                    <span style="margin-left: 8px; color: #6c757d; font-size: 0.9rem;">
+                                        @Model.fecha_actualizacion.Value.ToString("HH:mm")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>No registrada</span>
+                                }
                             </div>
                         </div>
                     </div>

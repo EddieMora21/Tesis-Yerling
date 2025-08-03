@@ -5,96 +5,122 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     .header-create {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin: -15px -15px 30px -15px;
-        border-radius: 0 0 15px 15px;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .form-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
         padding: 30px;
     }
 
     .form-control-custom {
-        border: 2px solid #e7e8eb;
-        border-radius: 8px;
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
         padding: 0.75rem 1rem;
         font-size: 14px;
-        transition: all 0.3s ease;
+        transition: var(--transition);
     }
 
         .form-control-custom:focus {
-            border-color: #1788ca;
+            border-color: var(--secondary-color);
             box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
             outline: none;
         }
 
         .form-control-custom.error {
-            border-color: #dc3545 !important;
+            border-color: var(--danger-color) !important;
             box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
         }
 
     .control-label-custom {
-        color: #221d42;
+        color: var(--primary-color);
         font-weight: 600;
         margin-bottom: 8px;
         display: block;
     }
 
     .btn-success-custom {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
+        background: linear-gradient(135deg, var(--success-color) 0%, #20a53a 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        color: white;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        color: var(--white);
+        font-weight: 600;
+        transition: var(--transition);
     }
 
         .btn-success-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-            color: white;
+            color: var(--white);
         }
 
     .btn-default-custom {
-        background: white;
-        border: 2px solid #e7e8eb;
-        border-radius: 8px;
+        background: var(--white);
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        color: #221d42;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        color: var(--primary-color);
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
         .btn-default-custom:hover {
             background: #f8f9fa;
-            border-color: #1788ca;
-            color: #1788ca;
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
             transform: translateY(-2px);
             text-decoration: none;
         }
 
     .section-title {
-        color: #221d42;
+        color: var(--primary-color);
         font-weight: 600;
-        border-bottom: 2px solid #1788ca;
+        border-bottom: 2px solid var(--secondary-color);
         padding-bottom: 10px;
         margin-bottom: 25px;
     }
 
     .help-text {
-        color: #6c757d;
+        color: var(--text-muted);
         font-style: italic;
         font-size: 12px;
         margin-top: 4px;
+    }
+
+    .help-text.future-allowed {
+        color: var(--secondary-color);
+        font-weight: 500;
     }
 
     .form-section {
@@ -102,15 +128,28 @@
         border-radius: 10px;
         padding: 20px;
         margin-bottom: 25px;
-        border-left: 4px solid #1788ca;
+        border-left: 4px solid var(--secondary-color);
     }
 
     .error-message {
-        color: #dc3545;
+        color: var(--danger-color);
         font-size: 12px;
         margin-top: 5px;
         font-weight: 500;
         display: none;
+    }
+
+    .future-date-info {
+        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+        border-left: 4px solid var(--secondary-color);
+        padding: 1rem;
+        border-radius: var(--border-radius-sm);
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    .future-date-info.show {
+        display: block;
     }
 
     @@media (max-width: 768px) {
@@ -150,7 +189,7 @@
 
             <div class="form-section">
                 <h4 class="section-title">
-                    <i class="fa fa-user" style="margin-right: 10px; color: #1788ca;"></i>
+                    <i class="fa fa-user" style="margin-right: 10px; color: var(--secondary-color);"></i>
                     Información Personal
                 </h4>
 
@@ -276,7 +315,7 @@
 
             <div class="form-section">
                 <h4 class="section-title">
-                    <i class="fa fa-briefcase" style="margin-right: 10px; color: #1788ca;"></i>
+                    <i class="fa fa-briefcase" style="margin-right: 10px; color: var(--secondary-color);"></i>
                     Información Laboral
                 </h4>
 
@@ -296,9 +335,23 @@
                                 <i class="fa fa-calendar-check" style="margin-right: 5px;"></i>
                                 Fecha de Ingreso
                             </label>
-                            @Html.EditorFor(model => model.fecha_ingreso, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "date", @required = "required", max = DateTime.Today.ToString("yyyy-MM-dd") } })
+                            @Html.EditorFor(model => model.fecha_ingreso, new { htmlAttributes = new { @class = "form-control form-control-custom", type = "date", @required = "required", id = "input_fecha_ingreso" } })
                             @Html.ValidationMessageFor(model => model.fecha_ingreso, "", new { @class = "text-danger" })
-                            <small class="help-text">No puede ser fecha futura</small>
+                            <small class="help-text future-allowed">
+                                <i class="fa fa-info-circle"></i>
+                                Puede seleccionar fechas futuras para empleados que ingresarán próximamente
+                            </small>
+                            <div class="future-date-info" id="future-date-info">
+                                <div style="color: var(--secondary-color); font-weight: 600;">
+                                    <i class="fa fa-calendar-plus"></i>
+                                    Ingreso Programado
+                                </div>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--text-color);">
+                                    Este empleado tiene programado su ingreso para una fecha futura.
+                                    Asegúrese de tener todos los documentos y procesos listos para la fecha indicada.
+                                </p>
+                            </div>
+                            <div class="error-message" id="error_fecha_ingreso"></div>
                         </div>
                     </div>
 
@@ -511,6 +564,38 @@
                 }
             });
 
+            // ✅ NUEVA VALIDACIÓN DE FECHA DE INGRESO - PERMITIR FECHAS FUTURAS
+            $("#input_fecha_ingreso").on('change', function () {
+                var fechaIngreso = new Date($(this).val());
+                var hoy = new Date();
+                hoy.setHours(0, 0, 0, 0); // Resetear horas para comparación solo de fecha
+
+                if (!isNaN(fechaIngreso.getTime())) {
+                    if (fechaIngreso > hoy) {
+                        // Fecha futura - mostrar información
+                        $('#future-date-info').addClass('show');
+
+                        // Calcular días hasta el ingreso
+                        var diasHastaIngreso = Math.ceil((fechaIngreso - hoy) / (1000 * 60 * 60 * 24));
+
+                        if (diasHastaIngreso <= 30) {
+                            $('#future-date-info p').html(
+                                `Este empleado ingresará en <strong>${diasHastaIngreso} días</strong>. ` +
+                                'Recuerde preparar los documentos y procesos de inducción.'
+                            );
+                        } else {
+                            $('#future-date-info p').html(
+                                `Este empleado ingresará en <strong>${diasHastaIngreso} días</strong>. ` +
+                                'Hay tiempo suficiente para preparar todos los procesos.'
+                            );
+                        }
+                    } else {
+                        // Fecha pasada o presente - ocultar información
+                        $('#future-date-info').removeClass('show');
+                    }
+                }
+            });
+
             // ✅ CAPITALIZAR NOMBRES AL SALIR DEL CAMPO
             $('.campo-letras').on('blur', function () {
                 if (this.value.trim() !== '') {
@@ -566,10 +651,30 @@
                     errores++;
                 }
 
+                // Validar fecha de ingreso
+                var fechaIngreso = $('#input_fecha_ingreso').val().trim();
+                if (fechaIngreso === '') {
+                    mostrarError('input_fecha_ingreso', 'La fecha de ingreso es obligatoria');
+                    errores++;
+                }
+
                 if (errores > 0) {
                     e.preventDefault();
                     alert('❌ Por favor, corrija los errores antes de continuar.');
                     return false;
+                }
+
+                // Confirmación para fechas futuras
+                var fechaIngresoDate = new Date(fechaIngreso);
+                var hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+
+                if (fechaIngresoDate > hoy) {
+                    var diasHastaIngreso = Math.ceil((fechaIngresoDate - hoy) / (1000 * 60 * 60 * 24));
+                    if (!confirm(`✅ Confirmación requerida:\n\nEste empleado ingresará en ${diasHastaIngreso} días (${fechaIngresoDate.toLocaleDateString()}).\n\n¿Está seguro de registrar este empleado con fecha futura?`)) {
+                        e.preventDefault();
+                        return false;
+                    }
                 }
             });
 

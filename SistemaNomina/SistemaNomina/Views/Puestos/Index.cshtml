@@ -6,35 +6,52 @@
 }
 
 <style>
+    :root {
+        --primary-color: #221d42;
+        --secondary-color: #1788ca;
+        --accent-color: #fab61b;
+        --neutral-color: #e7e8eb;
+        --white: #ffffff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #fd7e14;
+        --text-color: #495057;
+        --text-muted: #6c757d;
+        --border-radius: 15px;
+        --border-radius-sm: 8px;
+        --shadow-main: 0 8px 32px rgba(34, 29, 66, 0.1);
+        --transition: all 0.3s ease;
+    }
+
     .page-header-custom {
-        background: linear-gradient(135deg, #221d42 0%, #1788ca 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--white);
         padding: 2rem 0;
         margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(34, 29, 66, 0.2);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--shadow-main);
     }
 
-    .page-header-custom h1 {
-        margin: 0;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
+        .page-header-custom h1 {
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
     .card-custom {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(34, 29, 66, 0.1);
-        border: 1px solid #e7e8eb;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-main);
+        border: 1px solid var(--neutral-color);
         overflow: hidden;
     }
 
     .alert-success {
         background: rgba(40, 167, 69, 0.1);
-        border-left: 4px solid #28a745;
+        border-left: 4px solid var(--success-color);
         color: #155724;
         padding: 1rem;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
@@ -43,10 +60,10 @@
 
     .alert-error {
         background: rgba(220, 53, 69, 0.1);
-        border-left: 4px solid #dc3545;
+        border-left: 4px solid var(--danger-color);
         color: #721c24;
         padding: 1rem;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
@@ -54,25 +71,25 @@
     }
 
     .btn-primary-custom {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #0f6da3 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: var(--border-radius-sm);
         padding: 12px 24px;
-        font-weight: 500;
-        color: white;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: var(--white);
+        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
     }
 
-    .btn-primary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
-        color: white;
-        text-decoration: none;
-    }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 136, 202, 0.4);
+            color: var(--white);
+            text-decoration: none;
+        }
 
     .search-container {
         background: #f8f9fa;
@@ -94,30 +111,30 @@
     .search-input {
         width: 100%;
         padding: 0.75rem 1rem 0.75rem 3rem;
-        border: 2px solid #e7e8eb;
-        border-radius: 8px;
+        border: 2px solid var(--neutral-color);
+        border-radius: var(--border-radius-sm);
         font-size: 1rem;
-        transition: all 0.3s ease;
+        transition: var(--transition);
     }
 
-    .search-input:focus {
-        border-color: #1788ca;
-        box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
-        outline: none;
-    }
+        .search-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(23, 136, 202, 0.25);
+            outline: none;
+        }
 
     .search-icon {
         position: absolute;
         left: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
+        color: var(--text-muted);
         font-size: 1rem;
     }
 
     .counter-badge {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
+        color: var(--white);
         padding: 0.5rem 1rem;
         border-radius: 20px;
         font-size: 0.875rem;
@@ -125,87 +142,38 @@
         white-space: nowrap;
     }
 
-    .btn-action-custom {
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        margin: 0 2px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-edit {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
-    }
-
-    .btn-edit:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(250, 182, 27, 0.4);
-        color: white;
-        text-decoration: none;
-    }
-
-    .btn-details {
-        background: linear-gradient(135deg, #1788ca 0%, #1788ca 100%);
-        color: white;
-    }
-
-    .btn-details:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(23, 136, 202, 0.4);
-        color: white;
-        text-decoration: none;
-    }
-
-    .btn-delete {
-        background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
-        color: white;
-    }
-
-    .btn-delete:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-        color: white;
-        text-decoration: none;
-    }
-
     .table-custom {
         margin: 0;
     }
 
-    .table-custom thead {
-        background: #221d42;
-        color: white;
-    }
+        .table-custom thead {
+            background: var(--primary-color);
+            color: var(--white);
+        }
 
-    .table-custom thead th {
-        border: none;
-        padding: 1rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-    }
+            .table-custom thead th {
+                border: none;
+                padding: 1rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.5px;
+                white-space: nowrap;
+            }
 
-    .table-custom tbody tr {
-        transition: all 0.3s ease;
-    }
+        .table-custom tbody tr {
+            transition: var(--transition);
+        }
 
-    .table-custom tbody tr:hover {
-        background-color: rgba(23, 136, 202, 0.05);
-    }
+            .table-custom tbody tr:hover {
+                background-color: rgba(23, 136, 202, 0.05);
+            }
 
-    .table-custom td {
-        padding: 1rem;
-        border-color: #e7e8eb;
-        vertical-align: middle;
-    }
+        .table-custom td {
+            padding: 1rem;
+            border-color: var(--neutral-color);
+            vertical-align: middle;
+        }
 
     .job-info {
         display: flex;
@@ -216,12 +184,12 @@
     .job-avatar {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #1788ca 0%, #221d42 100%);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--white);
         font-size: 1rem;
         font-weight: 600;
     }
@@ -229,18 +197,18 @@
     .job-details h6 {
         margin: 0;
         font-weight: 600;
-        color: #221d42;
+        color: var(--primary-color);
     }
 
     .job-dept {
         font-size: 0.75rem;
-        color: #6c757d;
+        color: var(--text-muted);
         margin: 0;
     }
 
     .salary-badge {
-        background: linear-gradient(135deg, #28a745 0%, #28a745 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--success-color) 0%, #20a53a 100%);
+        color: var(--white);
         padding: 0.5rem 1rem;
         border-radius: 20px;
         font-weight: 600;
@@ -252,7 +220,7 @@
 
     .hours-badge {
         background: rgba(23, 136, 202, 0.1);
-        color: #1788ca;
+        color: var(--secondary-color);
         padding: 0.25rem 0.75rem;
         border-radius: 15px;
         font-size: 0.75rem;
@@ -260,8 +228,8 @@
     }
 
     .boss-badge {
-        background: linear-gradient(135deg, #fab61b 0%, #fab61b 100%);
-        color: white;
+        background: linear-gradient(135deg, var(--accent-color) 0%, #e09f15 100%);
+        color: var(--white);
         padding: 0.25rem 0.75rem;
         border-radius: 15px;
         font-size: 0.75rem;
@@ -273,7 +241,7 @@
 
     .employee-badge {
         background: rgba(108, 117, 125, 0.1);
-        color: #6c757d;
+        color: var(--text-muted);
         padding: 0.25rem 0.75rem;
         border-radius: 15px;
         font-size: 0.75rem;
@@ -283,22 +251,118 @@
     .empty-state {
         text-align: center;
         padding: 3rem;
-        color: #6c757d;
+        color: var(--text-muted);
     }
 
-    .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        color: #e7e8eb;
-    }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--neutral-color);
+        }
 
-    .actions-group {
+    /* === BOTONES DE ACCIONES (ESTÁNDAR) === */
+    .action-buttons {
         display: flex;
-        gap: 0.25rem;
+        gap: 4px;
         justify-content: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        min-width: 210px;
     }
-    
+
+    .btn-action {
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 65px;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, var(--secondary-color), #0f6da3);
+        color: var(--white);
+    }
+
+    .btn-view:hover {
+        background: linear-gradient(135deg, #0f6da3, #0c5a87);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(23, 136, 202, 0.3);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color), #e09f15);
+        color: var(--primary-color);
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #e09f15, #d18c00);
+        color: var(--primary-color);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(250, 182, 27, 0.3);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, var(--danger-color), #c82333);
+        color: var(--white);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        color: var(--white);
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    /* === RESPONSIVE DESIGN === */
+    @@media (max-width: 1200px) {
+        .action-buttons {
+            min-width: 190px;
+        }
+
+        .btn-action {
+            min-width: 60px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .table-custom thead th {
+            padding: 1rem 0.7rem;
+            font-size: 0.85rem;
+        }
+
+        .table-custom tbody td {
+            padding: 0.8rem 0.7rem;
+        }
+
+        .action-buttons {
+            min-width: 170px;
+            gap: 3px;
+        }
+
+        .btn-action {
+            min-width: 55px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action .btn-text {
+            display: none; /* Oculta el texto, solo muestra iconos */
+        }
+    }
+
     @@media (max-width: 768px) {
         .btn-primary-custom {
             padding: 10px 20px;
@@ -318,25 +382,25 @@
             min-width: auto;
         }
 
-        .btn-action-custom {
-            padding: 4px 8px;
-            font-size: 0.75rem;
-        }
-
         .job-info {
             flex-direction: column;
             text-align: center;
             gap: 0.5rem;
         }
 
-        .actions-group {
-            flex-direction: column;
-            gap: 0.5rem;
+        .action-buttons {
+            min-width: 160px;
+            gap: 2px;
         }
 
-        .btn-action-custom {
-            width: 100%;
-            justify-content: center;
+        .btn-action {
+            min-width: 50px;
+            padding: 5px 6px;
+            font-size: 0.7rem;
+        }
+
+        .btn-action i {
+            font-size: 0.8rem;
         }
     }
 
@@ -344,6 +408,38 @@
         .hidden-mobile {
             display: none;
         }
+
+        .action-buttons {
+            flex-direction: column;
+            min-width: 80px;
+            gap: 2px;
+        }
+
+        .btn-action {
+            width: 100%;
+            min-width: auto;
+            padding: 4px;
+            font-size: 0.65rem;
+        }
+    }
+
+    /* Scroll horizontal personalizado */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: var(--secondary-color);
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-color);
     }
 </style>
 
@@ -368,7 +464,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1><i class="fas fa-briefcase"></i> Gestión de Puestos</h1>
+                <h1 style="color:white"><i class="fas fa-briefcase"></i> Gestión de Puestos</h1>
                 <p class="mb-0">Administra los puestos de trabajo de la organización</p>
             </div>
         </div>
@@ -393,8 +489,8 @@
 
             <div class="card-custom">
                 <div class="card-body p-0">
-                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom" style="border-color: #e7e8eb !important;">
-                        <h4 class="mb-0" style="color: #221d42; font-weight: 600;">
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom" style="border-color: var(--neutral-color) !important;">
+                        <h4 class="mb-0" style="color: var(--primary-color); font-weight: 600;">
                             <i class="fas fa-list-alt"></i> Lista de Puestos
                         </h4>
                     </div>
@@ -405,13 +501,12 @@
                             <table class="table-custom table">
                                 <thead>
                                     <tr>
-                                        <th><i class="fas fa-briefcase"></i> Puesto</th>
-                                        <th><i class="fas fa-dollar-sign"></i> Salario</th>
-                                        <th class="hidden-mobile"><i class="fas fa-align-left"></i> Descripción</th>
-                                        <th class="hidden-mobile"><i class="fas fa-clock"></i> Horas</th>
-                                        <th><i class="fas fa-crown"></i> Jefatura</th>
-                                        <th class="hidden-mobile"><i class="fas fa-schedule"></i> Horario</th>
-                                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                                        <th><i class="fas fa-briefcase mr-2"></i>Puesto</th>
+                                        <th>Salario</th>
+                                        <th class="hidden-mobile"><i class="fas fa-align-left mr-2"></i>Descripción</th>
+                                        <th class="hidden-mobile"><i class="fas fa-clock mr-2"></i>Horas</th>
+                                        <th><i class="fas fa-crown mr-2"></i>Jefatura</th>
+                                        <th class="text-center"><i class="fas fa-cogs mr-2"></i>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="puestosTableBody">
@@ -431,7 +526,6 @@
                                             </td>
                                             <td>
                                                 <div class="salary-badge">
-                                                    <i class="fas fa-dollar-sign"></i>
                                                     ₡@Html.DisplayFor(modelItem => item.salario_base)
                                                 </div>
                                             </td>
@@ -444,7 +538,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <span style="color: #6c757d; font-style: italic;">Sin descripción</span>
+                                                    <span style="color: var(--text-muted); font-style: italic;">Sin descripción</span>
                                                 }
                                             </td>
                                             <td class="hidden-mobile">
@@ -456,32 +550,38 @@
                                             <td>
                                                 @if (item.es_jefe == true)
                                                 {
-                                                <span class="boss-badge">
-                                                    <i class="fas fa-crown"></i> Jefe
-                                                </span>
+                                                    <span class="boss-badge">
+                                                        <i class="fas fa-crown"></i> Jefe
+                                                    </span>
                                                 }
                                                 else
                                                 {
-                                                <span class="employee-badge">
-                                                    <i class="fas fa-user"></i> Empleado
-                                                </span>
-                                                }
-                                            </td>
-                                            <td class="hidden-mobile">
-                                                @if (item.Horarios != null)
-                                                {
-                                                    <span>@Html.DisplayFor(modelItem => item.Horarios.nombre)</span>
-                                                }
-                                                else
-                                                {
-                                                    <span style="color: #6c757d; font-style: italic;">Sin horario asignado</span>
+                                                    <span class="employee-badge">
+                                                        <i class="fas fa-user"></i> Empleado
+                                                    </span>
                                                 }
                                             </td>
                                             <td>
-                                                <div class="actions-group">
-                                                    @Html.ActionLink("Details", "Details", new { id = item.id_puesto }, new { @class = "btn-action-custom btn-details", title = "Ver Detalles" }) 
-                                                    @Html.ActionLink("Edit", "Edit", new { id = item.id_puesto }, new { @class = "btn-action-custom btn-edit", title = "Editar" }) 
-                                                    @Html.ActionLink("Delete", "Delete", new { id = item.id_puesto }, new { @class = "btn-action-custom btn-delete", title = "Eliminar" }) 
+                                                <div class="action-buttons">
+                                                    <a href="@Url.Action("Details", new { id = item.id_puesto })"
+                                                       class="btn-action btn-view"
+                                                       title="Ver detalles">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span class="btn-text">Ver</span>
+                                                    </a>
+                                                    <a href="@Url.Action("Edit", new { id = item.id_puesto })"
+                                                       class="btn-action btn-edit"
+                                                       title="Editar puesto">
+                                                        <i class="fas fa-edit"></i>
+                                                        <span class="btn-text">Editar</span>
+                                                    </a>
+                                                    <a href="@Url.Action("Delete", new { id = item.id_puesto })"
+                                                       class="btn-action btn-delete"
+                                                       title="Eliminar puesto"
+                                                       onclick="return confirm('¿Está seguro de que desea eliminar este puesto?');">
+                                                        <i class="fas fa-trash"></i>
+                                                        <span class="btn-text">Eliminar</span>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -494,7 +594,7 @@
                     {
                         <div class="empty-state">
                             <i class="fas fa-briefcase"></i>
-                            <h5 style="color: #221d42; margin-bottom: 1rem;">No hay puestos registrados</h5>
+                            <h5 style="color: var(--primary-color); margin-bottom: 1rem;">No hay puestos registrados</h5>
                             <p style="margin-bottom: 2rem;">Comienza creando el primer puesto de trabajo para la organización.</p>
                             @Html.ActionLink("Crear Primer Puesto", "Create", null, new { @class = "btn-primary-custom" })
                         </div>
@@ -507,13 +607,13 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Búsqueda en tiempo real
-            $('#searchInput').on('keyup', function() {
+            $('#searchInput').on('keyup', function () {
                 var searchTerm = $(this).val().toLowerCase();
                 var visibleCount = 0;
 
-                $('.puesto-row').each(function() {
+                $('.puesto-row').each(function () {
                     var jobName = $(this).find('.job-name').text().toLowerCase();
                     var deptName = $(this).find('.job-dept').text().toLowerCase();
                     var description = $(this).find('td:nth-child(3)').text().toLowerCase();
@@ -533,14 +633,14 @@
                 if (visibleCount === 0 && searchTerm !== '') {
                     if ($('#noResults').length === 0) {
                         $('#puestosTableBody').append(`
-                            <tr id="noResults">
-                                <td colspan="7" class="empty-state">
-                                    <i class="fas fa-search"></i>
-                                    <h5 style="color: #221d42; margin-bottom: 1rem;">No se encontraron resultados</h5>
-                                    <p>Intenta con otro término de búsqueda</p>
-                                </td>
-                            </tr>
-                        `);
+                                <tr id="noResults">
+                                    <td colspan="6" class="empty-state">
+                                        <i class="fas fa-search"></i>
+                                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">No se encontraron resultados</h5>
+                                        <p>Intenta con otro término de búsqueda</p>
+                                    </td>
+                                </tr>
+                            `);
                     }
                 } else {
                     $('#noResults').remove();
@@ -548,7 +648,7 @@
             });
 
             // Animación de entrada para las filas
-            $('.puesto-row').each(function(index) {
+            $('.puesto-row').each(function (index) {
                 $(this).css({
                     'opacity': '0',
                     'transform': 'translateY(20px)'
@@ -564,7 +664,7 @@
             });
 
             // Confirmación para eliminar
-            $('.btn-delete').on('click', function(e) {
+            $('.btn-delete').on('click', function (e) {
                 var jobName = $(this).closest('tr').find('.job-name').text();
                 if (!confirm(`¿Estás seguro de que deseas eliminar el puesto "${jobName}"?\n\nEsta acción no se puede deshacer.`)) {
                     e.preventDefault();
